@@ -7,10 +7,23 @@
 aba_model()
 }
 \value{
-abaModel
+An abaModel object
 }
 \description{
-Create an aba model
+An aba model is composed of the following:
+\itemize{
+\item data: a data.frame to be used to fit the statistical models
+\item spec: the specification for the aba model composed of the following:
+\itemize{
+\item groups: which parts of the data to fit separate models on
+\item outcomes: which variables to use as dependent variables
+\item covariates: which variables to use as fixed independent variables in
+every single model that is fit
+\item predictors: which variables to use as independent variables, but never
+together in the same model
+}
+\item fits: the fitted statistical models once \code{fit()} is called
+}
 }
 \examples{
 m <- aba_model()

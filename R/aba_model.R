@@ -3,7 +3,20 @@
 
 #' Create an aba model
 #'
-#' @return abaModel
+#' An aba model is composed of the following:
+#'   - data: a data.frame to be used to fit the statistical models
+#'   - spec: the specification for the aba model composed of the following:
+#'     - groups: which parts of the data to fit separate models on
+#'     - outcomes: which variables to use as dependent variables
+#'     - covariates: which variables to use as fixed independent variables in
+#'         every single model that is fit
+#'     - predictors: which variables to use as independent variables, but never
+#'         together in the same model
+#'   - fits: the fitted statistical models once `fit()` is called
+#'
+#' @return
+#' An abaModel object
+#'
 #' @export
 #'
 #' @examples
@@ -12,7 +25,7 @@ aba_model <- function() {
 
   m <- list(
     'data' = list(),
-    'spec' = list(),
+    'spec' = aba_spec(),
     'fits' = list()
   )
 

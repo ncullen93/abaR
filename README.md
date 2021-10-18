@@ -27,3 +27,17 @@ You can install the development version from
 # install.packages("devtools")
 devtools::install_github("ncullen93/abaR")
 ```
+
+## Example: statistical analysis
+
+The general workflow of fitting an aba model for statistical analysis
+looks like this:
+
+``` r
+model <- aba_model() %>% 
+  set_groups() %>% 
+  set_outcomes() %>% 
+  set_covariates() %>% 
+  set_predictors()
+  
+```
