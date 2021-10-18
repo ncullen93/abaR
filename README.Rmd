@@ -39,10 +39,21 @@ The general workflow of fitting an aba model for statistical analysis looks like
 
 ``` r
 model <- aba_model() %>% 
-  set_groups() %>% 
-  set_outcomes() %>% 
-  set_covariates() %>% 
-  set_predictors()
+  set_groups(
+    #DX_bl == 'CU',
+    #DX_bl == 'MCI',
+    #DX_bl %in% c('CU', 'MCI')
+  ) %>% 
+  set_outcomes(
+    #MMSE_4y:ADAS_4y
+  ) %>% 
+  set_covariates(
+    #AGE, SEX, EDUCATION
+  ) %>% 
+  set_predictors(
+    #ABETA, TAU, NFL,
+    #c(ABETA, TAU,)
+  )
   
 ```
 
