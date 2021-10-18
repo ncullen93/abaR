@@ -7,9 +7,11 @@ Authors@R:
            role = c("aut", "cre"),
            email = "nicholas.cullen@med.lu.se",
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+Description: Automated biomarker analysis in R (abaR) is intended to make it
+    easier to fit statistical models on biomarker data, to make it easier to
+    use biomarkers to plan and analysis clinical trials, and to facilitate more
+    multi-cohort validation studies.
+License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
