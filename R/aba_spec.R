@@ -92,10 +92,3 @@ set_covariates <- function(.model, ...) {
 set_predictors <- function(.model, ...) {
   .model
 }
-
-
-
-
-
-
-

@@ -23,4 +23,3 @@ test_that('set_predictors works', {
   m <- aba_model() %>% set_predictors()
   expect_s3_class(m, 'abaModel')
 })
-
