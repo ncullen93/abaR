@@ -13,48 +13,23 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Automated biomarker analysis in R (aba)
+# Automated biomarker analysis in R (abaR)
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of aba is to ...
+The goal of abaR is to make it easier to fit statistical models on permuatations
+of covariates / predictors / outcomes / groups, to make it easier to investigate how biomarkers can be used to plan (screening / enirichment) and analyze clinical trials, and to facilitate multi-cohort validation studies when data cannot be easily shared between collaborators.
+
+The abaR package is based on tidyverse principles, which is why it features a workflow heavily based on the pipe ( %>% ) operator. This lets you analyze data in a manner which is more similar to the way we talk and think about biomarker analysis.
 
 ## Installation
 
-You can install the released version of aba from [CRAN](https://CRAN.R-project.org) with:
-
-``` r
-install.packages("aba")
-```
-
-And the development version from [GitHub](https://github.com/) with:
+You can install the development version from 
+[GitHub](https://github.com/ncullen93/abaR) with:
 
 ``` r
 # install.packages("devtools")
 devtools::install_github("ncullen93/abaR")
 ```
-## Example
 
-This is a basic example which shows you how to solve a common problem:
-
-```{r example}
-library(aba)
-## basic example code
-```
-
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
-
-```{r cars}
-summary(cars)
-```
-
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this. You could also use GitHub Actions to re-render `README.Rmd` every time you push. An example workflow can be found here: <https://github.com/r-lib/actions/tree/master/examples>.
-
-You can also embed plots, for example:
-
-```{r pressure, echo = FALSE}
-plot(pressure)
-```
-
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub and CRAN.
