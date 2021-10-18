@@ -1,11 +1,11 @@
 Package: abaR
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
+Title: Automated biomarker analysis in R
+Version: 0.0.2
 Authors@R: 
-    person(given = "First",
-           family = "Last",
+    person(given = "Nicholas",
+           family = "Cullen",
            role = c("aut", "cre"),
-           email = "first.last@example.com",
+           email = "nicholas.cullen@med.lu.se",
            comment = c(ORCID = "YOUR-ORCID-ID"))
 Description: What the package does (one paragraph).
 License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
