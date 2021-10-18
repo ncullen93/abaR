@@ -1,6 +1,3 @@
-
-
-
 #' Create an aba spec
 #'
 #' An aba spec is composed of the following:

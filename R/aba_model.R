@@ -1,6 +1,3 @@
-
-
-
 #' Create an aba model
 #'
 #' An aba model is composed of the following:
