@@ -4,12 +4,12 @@
 \alias{set_data}
 \title{Set data element of an aba model}
 \usage{
-set_data(.model, ...)
+set_data(model, data)
 }
 \arguments{
-\item{.model}{abaModel. model to which data will be added}
+\item{model}{abaModel. model to which data will be added}
 
-\item{...}{data.frames. data to add}
+\item{data}{data.frames. data to add}
 }
 \value{
 An abaModel object

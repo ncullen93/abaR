@@ -1,23 +1,21 @@
 #' Set data element of an aba model
 #'
-#' @param .model abaModel. model to which data will be added
-#' @param ... data.frames. data to add
+#' @param model abaModel. model to which data will be added
+#' @param data data.frames. data to add
 #'
 #' @return An abaModel object
 #' @export
 #'
 #' @examples
 #' m <- aba_model() %>% set_data(data.frame(x=c(1,2,3)))
-set_data <- function(.model, ...) {
+set_data <- function(model, data) {
   UseMethod('set_data')
 }
 
 #' @export
-set_data.abaModel <- function(.model, ...) {
-  inputs <- list(...)
-  sum_nondf <- inputs %>% purrr::map_lgl(~!is.data.frame(.)) %>% sum()
-  if (sum_nondf > 0) stop('arguments should only be data.frames')
+set_data.abaModel <- function(model, data) {
+  if (!is.data.frame(data)) stop('data argument must be data.frame')
 
-  .model[['data']] <- list(...)
-  .model
+  model[['data']] <- data
+  model
 }

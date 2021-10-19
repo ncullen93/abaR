@@ -143,4 +143,3 @@ set_stats.abaModel <- function(model, ...) {
   model[['spec']][['stats']] <- list(...)
   model
 }
-

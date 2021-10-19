@@ -40,8 +40,19 @@ aba_model <- function(data = NULL,
 }
 
 
-
-
-
+#' Compile the spec of an abaModel to ensure it is consistent with the
+#' data that the abModel has. This also creates a tibble with all the
+#' different combinations that will be tested ('fits')
+#'
+#' @param model abaModel. The model to compile.
+#'
+#' @return abaModel
+#' @export
+#'
+#' @examples
+#' m <- aba_model()
+compile <- function(model) {
+  model
+}
 
 
