@@ -16,8 +16,7 @@
 #'   aba_spec().
 #' @param fits list the fitted statistical models
 #'
-#' @return
-#' An abaModel object
+#' @return An abaModel object
 #'
 #' @export
 #'
@@ -41,12 +40,6 @@ aba_model <- function(data = NULL,
 }
 
 
-set_data <- function(model, data) {
-  if (class(model) != 'abaModel') stop('`model` must be an abaModel object')
-
-  model[['data']] <- data
-  model
-}
 
 
 

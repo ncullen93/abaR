@@ -6,20 +6,30 @@
 #'   - covariates
 #'   - predictors
 #'
-#' @return
-#' An abaSpec object
+#' @param groups vector. groups to use.
+#' @param outcomes vector. outcomes to use.
+#' @param covariates vector. covariates to use.
+#' @param predictors vector or list. predictors to use
+#' @param stats character or vector. stats to use.
+#'
+#' @return An abaSpec object
 #'
 #' @export
 #'
 #' @examples
 #' spec <- aba_spec()
-aba_spec <- function() {
+aba_spec <- function(groups=NULL,
+                     outcomes=NULL,
+                     covariates=NULL,
+                     predictors=NULL,
+                     stats=NULL) {
 
   spec <- list(
-    'groups' = NULL,
-    'outcomes' = NULL,
-    'covariates' = NULL,
-    'predictors' = NULL
+    'groups' = groups,
+    'outcomes' = outcomes,
+    'covariates' = covariates,
+    'predictors' = predictors,
+    'stats' = stats
   )
 
   class(spec) <- 'abaSpec'
@@ -34,8 +44,7 @@ aba_spec <- function() {
 #' @param .model abaModel
 #' @param ... groups
 #'
-#' @return
-#' An abaModel with groups altered
+#' @return An abaModel object
 #'
 #' @export
 #'
@@ -47,7 +56,7 @@ set_groups <- function(.model, ...) {
 
 #' @export
 set_groups.abaModel <- function(.model, ...) {
-  .model[['spec']][['groups']] <- c(...)
+  .model[['spec']][['groups']] <- list(...)
   .model
 }
 
@@ -56,8 +65,7 @@ set_groups.abaModel <- function(.model, ...) {
 #' @param .model abaModel
 #' @param ... outcomes
 #'
-#' @return
-#' An abaModel with outcomes altered
+#' @return An abaModel object
 #'
 #' @export
 #'
@@ -78,8 +86,7 @@ set_outcomes.abaModel <- function(.model, ...) {
 #' @param .model abaModel
 #' @param ... covariates
 #'
-#' @return
-#' An abaModel with covariates altered
+#' @return An abaModel object
 #'
 #' @export
 #'
@@ -100,8 +107,7 @@ set_covariates.abaModel <- function(.model, ...) {
 #' @param .model abaModel
 #' @param ... predictors
 #'
-#' @return
-#' An abaModel with predictors altered
+#' @return An abaModel object
 #'
 #' @export
 #'
@@ -116,3 +122,25 @@ set_predictors.abaModel <- function(.model, ...) {
   .model[['spec']][['predictors']] <- list(...)
   .model
 }
+
+
+#' Set statistical model of an aba model
+#'
+#' @param model abaModel. aba model to alter.
+#' @param stat string. which statistical model to use.
+#'
+#' @return An abaModel object
+#' @export
+#'
+#' @examples
+#' m <- aba_model() %>% set_stats('glm')
+set_stats <- function(model, stat) {
+  UseMethod('set_stats')
+}
+
+#' @export
+set_stats.abaModel <- function(model, ...) {
+  model[['spec']][['stats']] <- list(...)
+  model
+}
+

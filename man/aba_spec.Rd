@@ -4,7 +4,24 @@
 \alias{aba_spec}
 \title{Create an aba spec}
 \usage{
-aba_spec()
+aba_spec(
+  groups = NULL,
+  outcomes = NULL,
+  covariates = NULL,
+  predictors = NULL,
+  stats = NULL
+)
+}
+\arguments{
+\item{groups}{vector. groups to use.}
+
+\item{outcomes}{vector. outcomes to use.}
+
+\item{covariates}{vector. covariates to use.}
+
+\item{predictors}{vector or list. predictors to use}
+
+\item{stats}{character or vector. stats to use.}
 }
 \value{
 An abaSpec object

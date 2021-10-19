@@ -12,7 +12,7 @@ set_predictors(.model, ...)
 \item{...}{predictors}
 }
 \value{
-An abaModel with predictors altered
+An abaModel object
 }
 \description{
 Set the predictors of an aba spec

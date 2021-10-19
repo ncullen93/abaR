@@ -12,7 +12,7 @@ set_covariates(.model, ...)
 \item{...}{covariates}
 }
 \value{
-An abaModel with covariates altered
+An abaModel object
 }
 \description{
 Set the covariates of an aba spec

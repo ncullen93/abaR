@@ -12,7 +12,7 @@ set_outcomes(.model, ...)
 \item{...}{outcomes}
 }
 \value{
-An abaModel with outcomes altered
+An abaModel object
 }
 \description{
 Set the outcomes of an aba spec

@@ -12,7 +12,7 @@ set_groups(.model, ...)
 \item{...}{groups}
 }
 \value{
-An abaModel with groups altered
+An abaModel object
 }
 \description{
 Set the groups of an aba spec
