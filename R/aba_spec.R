@@ -42,6 +42,12 @@ aba_spec <- function() {
 #' @examples
 #' m <- aba_model() %>% set_groups()
 set_groups <- function(.model, ...) {
+  UseMethod('set_groups')
+}
+
+#' @export
+set_groups.abaModel <- function(.model, ...) {
+  .model[['spec']][['groups']] <- c(...)
   .model
 }
 
@@ -58,6 +64,12 @@ set_groups <- function(.model, ...) {
 #' @examples
 #' m <- aba_model() %>% set_outcomes()
 set_outcomes <- function(.model, ...) {
+  UseMethod('set_outcomes')
+}
+
+#' @export
+set_outcomes.abaModel <- function(.model, ...) {
+  .model[['spec']][['outcomes']] <- c(...)
   .model
 }
 
@@ -74,6 +86,12 @@ set_outcomes <- function(.model, ...) {
 #' @examples
 #' m <- aba_model() %>% set_covariates()
 set_covariates <- function(.model, ...) {
+  UseMethod('set_covariates')
+}
+
+#' @export
+set_covariates.abaModel <- function(.model, ...) {
+  .model[['spec']][['covariates']] <- c(...)
   .model
 }
 
@@ -90,5 +108,11 @@ set_covariates <- function(.model, ...) {
 #' @examples
 #' m <- aba_model() %>% set_predictors()
 set_predictors <- function(.model, ...) {
+  UseMethod('set_predictors')
+}
+
+#' @export
+set_predictors.abaModel <- function(.model, ...) {
+  .model[['spec']][['predictors']] <- list(...)
   .model
 }

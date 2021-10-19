@@ -35,6 +35,7 @@ looks like this:
 
 ``` r
 model <- aba_model() %>% 
+  # set_data(ADNI_EXAMPLE)
   set_groups(
     #DX_bl == 'CU',
     #DX_bl == 'MCI',
@@ -48,7 +49,7 @@ model <- aba_model() %>%
   ) %>% 
   set_predictors(
     #ABETA, TAU, NFL,
-    #c(ABETA, TAU,)
+    #c(ABETA, TAU, NFL)
   )
   
 ```

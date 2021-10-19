@@ -4,7 +4,15 @@
 \alias{aba_model}
 \title{Create an aba model}
 \usage{
-aba_model()
+aba_model(data = NULL, spec = aba_spec(), fits = list())
+}
+\arguments{
+\item{data}{data.frame the data to use for the object}
+
+\item{spec}{abaSpec the spec to use for the model. Can be created with
+aba_spec().}
+
+\item{fits}{list the fitted statistical models}
 }
 \value{
 An abaModel object

@@ -11,6 +11,11 @@
 #'         together in the same model
 #'   - fits: the fitted statistical models once `fit()` is called
 #'
+#' @param data data.frame the data to use for the object
+#' @param spec abaSpec the spec to use for the model. Can be created with
+#'   aba_spec().
+#' @param fits list the fitted statistical models
+#'
 #' @return
 #' An abaModel object
 #'
@@ -18,12 +23,14 @@
 #'
 #' @examples
 #' m <- aba_model()
-aba_model <- function() {
+aba_model <- function(data = NULL,
+                      spec = aba_spec(),
+                      fits = list()) {
 
   m <- list(
-    'data' = list(),
-    'spec' = aba_spec(),
-    'fits' = list()
+    'data' = data,
+    'spec' = spec,
+    'fits' = fits
   )
 
   class(m) <- 'abaModel'
@@ -32,3 +39,16 @@ aba_model <- function() {
     m
   )
 }
+
+
+set_data <- function(model, data) {
+  if (class(model) != 'abaModel') stop('`model` must be an abaModel object')
+
+  model[['data']] <- data
+  model
+}
+
+
+
+
+
