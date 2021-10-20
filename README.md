@@ -18,6 +18,14 @@ features a workflow heavily based on the pipe ( %&gt;% ) operator. This
 lets you analyze data in a manner which is more similar to the way we
 talk and think about biomarker analysis.
 
+A meta-goal of the abaR framework is to cater to users at a wide range
+of abstraction levels. This means that abaR should work equally well for
+users whether they want a high-level framework to analyze biomarkers
+without thinking much about the underlying statistics, or wether they
+want a low-level framework where they just want a way to easily run
+their own highly custom statistical models on different parameter
+combinations and across cohorts.
+
 ## Installation
 
 You can install the development version from
