@@ -24,5 +24,6 @@ Config/testthat/edition: 3
 Imports: 
     purrr,
     dplyr,
-    magrittr
+    magrittr,
+    stringr
 VignetteBuilder: knitr

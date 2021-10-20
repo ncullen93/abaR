@@ -56,7 +56,7 @@ set_groups <- function(.model, ...) {
 
 #' @export
 set_groups.abaModel <- function(.model, ...) {
-  .model[['spec']][['groups']] <- list(...)
+  .model[['spec']][['groups']] <- c(...)
   .model
 }
 
@@ -119,7 +119,8 @@ set_predictors <- function(.model, ...) {
 
 #' @export
 set_predictors.abaModel <- function(.model, ...) {
-  .model[['spec']][['predictors']] <- list(...)
+  .model[['spec']][['predictors']] <- list(...) %>%
+    purrr::map_chr(~stringr::str_c(., collapse='_+_'))
   .model
 }
 
@@ -127,19 +128,19 @@ set_predictors.abaModel <- function(.model, ...) {
 #' Set statistical model of an aba model
 #'
 #' @param model abaModel. aba model to alter.
-#' @param stat string. which statistical model to use.
+#' @param ... vector. Which statistical models to use.
 #'
 #' @return An abaModel object
 #' @export
 #'
 #' @examples
 #' m <- aba_model() %>% set_stats('glm')
-set_stats <- function(model, stat) {
+set_stats <- function(model, ...) {
   UseMethod('set_stats')
 }
 
 #' @export
 set_stats.abaModel <- function(model, ...) {
-  model[['spec']][['stats']] <- list(...)
+  model[['spec']][['stats']] <- c(...)
   model
 }
