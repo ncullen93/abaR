@@ -40,10 +40,44 @@ aba_spec <- function(groups=NULL,
 }
 
 # take characters or tidy evaluation inputs and turn to strings
-parse_spec_input <- function(...) {
-  quos(...) %>% purrr::map(
+parse_select_expr <- function(..., data) {
+
+
+  #rlang::enquos(...) %>% purrr::map(
+  #  function(x) {
+  #    data %>% select(!!x) %>% colnames()
+  #  }
+  #)
+  rlang::enexprs(...) %>% purrr::map(
     function(x) {
-      df %>% select(!!x) %>% colnames()
+      if (is.character(x)) {
+        x <- str2lang(x)
+        if (is.null(data)) return(x)
+      } else if (is.call(x)){
+        if (is.null(data)) return(eval(x))
+      } else {
+        if (is.null(data)) stop('You must set data first when using tidy evaluation.')
+      }
+      # check that filter works
+      data %>% dplyr::select(!!x) %>% colnames()
+    }
+  )
+}
+
+parse_filter_expr <- function(..., data) {
+
+  rlang::enexprs(...) %>% purrr::map(
+    function(x) {
+      if (is.character(x)) {
+        x <- str2lang(x)
+        if (is.null(data)) return(x)
+      } else {
+        if (is.null(data)) stop('You must set data if you are using tidy evaluation.')
+      }
+      # check that filter works
+      data_tmp <- data %>% dplyr::filter(!!x)
+      # return string version of filter
+      deparse(x)
     }
   )
 }
@@ -65,7 +99,7 @@ set_groups <- function(.model, ...) {
 
 #' @export
 set_groups.abaModel <- function(.model, ...) {
-  .model[['spec']][['groups']] <- c(...)
+  .model[['spec']][['groups']] <- unlist(parse_filter_expr(..., data=.model$data))
   .model
 }
 
@@ -86,7 +120,7 @@ set_outcomes <- function(.model, ...) {
 
 #' @export
 set_outcomes.abaModel <- function(.model, ...) {
-  .model[['spec']][['outcomes']] <- unlist(parse_spec_input(...))
+  .model[['spec']][['outcomes']] <- unlist(parse_select_expr(..., data=.model$data))
   .model
 }
 
@@ -107,7 +141,7 @@ set_covariates <- function(.model, ...) {
 
 #' @export
 set_covariates.abaModel <- function(.model, ...) {
-  .model[['spec']][['covariates']] <- unlist(parse_spec_input(...))
+  .model[['spec']][['covariates']] <- unlist(parse_select_expr(..., data=.model$data))
   .model
 }
 
@@ -129,7 +163,7 @@ set_predictors <- function(.model, ...) {
 #' @export
 set_predictors.abaModel <- function(.model, ...) {
   .model[['spec']][['predictors']] <-
-    parse_spec_input(...) %>%
+    parse_select_expr(..., data=.model$data) %>%
     purrr::map_chr(~stringr::str_c(., collapse='_+_'))
   .model
 }

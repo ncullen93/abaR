@@ -25,7 +25,11 @@ Imports:
     purrr,
     dplyr,
     magrittr,
-    stringr
+    stringr,
+    rlang,
+    glue,
+    tidyr,
+    methods
 VignetteBuilder: knitr
 Depends: 
     R (>= 2.10)

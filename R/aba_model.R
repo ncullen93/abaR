@@ -14,7 +14,7 @@
 #' @param data data.frame the data to use for the object
 #' @param spec abaSpec the spec to use for the model. Can be created with
 #'   aba_spec().
-#' @param fits list the fitted statistical models
+#' @param results list the fitted statistical models
 #'
 #' @return An abaModel object
 #'

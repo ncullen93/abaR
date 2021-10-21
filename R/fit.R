@@ -5,26 +5,26 @@
 #'
 #' @return abaModel
 #' @export
-#'
 #' @examples
+#' m <- aba_model()
 fit <- function(model) {
   # compile model
   model <- model %>% compile()
 
   # fit stats on spec
   fit_df <- model$results %>%
-    rowwise() %>%
-    mutate(
+    dplyr::rowwise() %>%
+    dplyr::mutate(
       fits = parse_then_fit(
-        data=m$data,
-        group=groups,
-        outcome=outcomes,
-        predictors=predictors,
-        covariates=covariates,
-        stats=stats
+        data=model$data,
+        group=.data$groups,
+        outcome=.data$outcomes,
+        predictors=.data$predictors,
+        covariates=.data$covariates,
+        stats=.data$stats
       )
     ) %>%
-    tidyr::unnest_wider(fits)
+    tidyr::unnest_wider(.data$fits)
 
   model$results <- fit_df
   return(model)
@@ -59,7 +59,7 @@ compile <- function(model) {
 
 stat_lookup <- function(stat) {
   if (is.character(stat)) {
-    stat_fn <- getFunction(glue::glue('aba_{stat}'))
+    stat_fn <- methods::getFunction(glue::glue('aba_{stat}'))
   } else {
     stat_fn <- stat
   }
@@ -70,7 +70,9 @@ stat_lookup <- function(stat) {
 parse_then_fit <- function(data, group, outcome, predictors, covariates, stats) {
 
   # filter original data by group
-  my_data <- data %>% filter(rlang::eval_tidy(rlang::parse_expr(group)))
+  my_data <- data %>% dplyr::filter(
+    rlang::eval_tidy(rlang::parse_expr(group))
+  )
 
   # parse predictors and covariates into vectors
   predictors <- unlist(strsplit(predictors,'\\_\\+\\_'))
