@@ -124,7 +124,6 @@ set_predictors.abaModel <- function(.model, ...) {
   .model
 }
 
-
 #' Set statistical model of an aba model
 #'
 #' @param model abaModel. aba model to alter.

@@ -29,6 +29,14 @@ compile <- function(model) {
   )
 
   init_df <- val_list %>% purrr::cross_df()
+  init_df <- cbind(MID = stringr::str_c('M', rownames(init_df)), init_df)
   model$fits$init_df <- init_df
+  model$fits$is_compiled <- TRUE
+  model
+}
+
+fit <- function(model) {
+  if (!model$fits$is_compiled) model <- model %>% compile()
+
   model
 }
