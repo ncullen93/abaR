@@ -1,14 +1,36 @@
-#' Compile the spec of an abaModel to ensure it is consistent with the
-#' data that the abModel has. This also creates a tibble with all the
-#' different combinations that will be tested ('fits')
+#' Fit an aba model. This will trigger the fitting of all statistical models
+#' (`stats`) on the different parameter combinations (`spec`).
 #'
-#' @param model abaModel. The model to compile.
+#' @param model abaModel. The aba model to be fitted.
 #'
 #' @return abaModel
 #' @export
 #'
 #' @examples
-#' m <- aba_model()
+fit <- function(model) {
+  # compile model
+  model <- model %>% compile()
+
+  # fit stats on spec
+  fit_df <- model$results %>%
+    rowwise() %>%
+    mutate(
+      fits = parse_then_fit(
+        data=m$data,
+        group=groups,
+        outcome=outcomes,
+        predictors=predictors,
+        covariates=covariates,
+        stats=stats
+      )
+    ) %>%
+    tidyr::unnest_wider(fits)
+
+  model$results <- fit_df
+  return(model)
+}
+
+
 compile <- function(model) {
   if (is.null(model$data)) stop('You must set data first.')
 
@@ -30,13 +52,46 @@ compile <- function(model) {
 
   init_df <- val_list %>% purrr::cross_df()
   init_df <- cbind(MID = stringr::str_c('M', rownames(init_df)), init_df)
-  model$fits$init_df <- init_df
-  model$fits$is_compiled <- TRUE
+  model$results <- init_df
   model
 }
 
-fit <- function(model) {
-  if (!model$fits$is_compiled) model <- model %>% compile()
 
-  model
+stat_lookup <- function(stat) {
+  if (is.character(stat)) {
+    stat_fn <- getFunction(glue::glue('aba_{stat}'))
+  } else {
+    stat_fn <- stat
+  }
+  return(stat_fn())
 }
+
+# need a preprocessing function to parse
+parse_then_fit <- function(data, group, outcome, predictors, covariates, stats) {
+
+  # filter original data by group
+  my_data <- data %>% filter(rlang::eval_tidy(rlang::parse_expr(group)))
+
+  # parse predictors and covariates into vectors
+  predictors <- unlist(strsplit(predictors,'\\_\\+\\_'))
+  covariates <- unlist(strsplit(covariates,'\\_\\+\\_'))
+  stats <- unlist(strsplit(stats,'\\_\\+\\_'))
+
+  # lookup stat objects from strings
+  stat_objs <- purrr::map(stats %>% purrr::set_names(), ~stat_lookup(.))
+
+  # fit the models
+  stat_models <- stat_objs %>%
+    purrr::map(
+      function(stat_obj) {
+        my_formula <- stat_obj$formula_fn(outcome, predictors, covariates)
+        my_model <- stat_obj$fit_fn(my_formula, my_data)
+        return(my_model)
+      }
+    )
+
+  return(
+    list(stat_models)
+  )
+}
+

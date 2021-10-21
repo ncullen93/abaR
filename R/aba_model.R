@@ -24,12 +24,12 @@
 #' m <- aba_model()
 aba_model <- function(data = NULL,
                       spec = aba_spec(),
-                      fits = list()) {
+                      results = list()) {
 
   m <- list(
     'data' = data,
     'spec' = spec,
-    'fits' = fits
+    'results' = results
   )
 
   class(m) <- 'abaModel'

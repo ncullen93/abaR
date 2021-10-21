@@ -39,6 +39,15 @@ aba_spec <- function(groups=NULL,
   )
 }
 
+# take characters or tidy evaluation inputs and turn to strings
+parse_spec_input <- function(...) {
+  quos(...) %>% purrr::map(
+    function(x) {
+      df %>% select(!!x) %>% colnames()
+    }
+  )
+}
+
 #' Set the groups of an aba spec
 #'
 #' @param .model abaModel
@@ -77,7 +86,7 @@ set_outcomes <- function(.model, ...) {
 
 #' @export
 set_outcomes.abaModel <- function(.model, ...) {
-  .model[['spec']][['outcomes']] <- c(...)
+  .model[['spec']][['outcomes']] <- unlist(parse_spec_input(...))
   .model
 }
 
@@ -98,7 +107,7 @@ set_covariates <- function(.model, ...) {
 
 #' @export
 set_covariates.abaModel <- function(.model, ...) {
-  .model[['spec']][['covariates']] <- c(...)
+  .model[['spec']][['covariates']] <- unlist(parse_spec_input(...))
   .model
 }
 
@@ -119,7 +128,8 @@ set_predictors <- function(.model, ...) {
 
 #' @export
 set_predictors.abaModel <- function(.model, ...) {
-  .model[['spec']][['predictors']] <- list(...) %>%
+  .model[['spec']][['predictors']] <-
+    parse_spec_input(...) %>%
     purrr::map_chr(~stringr::str_c(., collapse='_+_'))
   .model
 }
