@@ -27,8 +27,9 @@ test_that('set_predictors works', {
 test_that("set_covariates with strings", {
   m <- aba_model()
   # string / no data -> should work
-  expect_works(
-    m2 <- m %>% set_covariates('a','b','c')
+  expect_error(
+    m2 <- m %>% set_covariates('a','b','c'),
+    NA
   )
   # string / data -> should throw error if variable(s) doesnt exist
   expect_error(
@@ -40,3 +41,42 @@ test_that("set_covariates with strings", {
     NA
   )
 })
+
+test_that("tidy eval throws error without data set", {
+  # set_predictors()
+  expect_error(
+    aba_model() %>% set_predictors('x','y',z)
+  )
+  expect_error(
+    aba_model() %>% set_predictors('x','y',c(x,y))
+  )
+  expect_error(
+    aba_model() %>% set_predictors('x','y',contains('x'))
+  )
+
+  # set_groups()
+  expect_error(
+    aba_model() %>% set_groups(x > 1)
+  )
+})
+
+test_that("string eval works without data set", {
+  # set_predictors()
+  expect_error(
+    aba_model() %>% set_predictors('x','y','z'),
+    NA
+  )
+  expect_error(
+    aba_model() %>% set_predictors('x','y',c('x','y')),
+    NA
+  )
+  # set_groups()
+  expect_error(
+    aba_model() %>% set_groups('x > 1'),
+    NA
+  )
+})
+
+
+
+

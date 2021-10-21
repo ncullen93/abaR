@@ -29,7 +29,8 @@ Imports:
     rlang,
     glue,
     tidyr,
-    methods
+    methods,
+    tidyselect
 VignetteBuilder: knitr
 Depends: 
     R (>= 2.10)
