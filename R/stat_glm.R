@@ -25,23 +25,11 @@
 #' )
 aba_glm <- function() {
   fns <- list(
-    'formula_fn' = aba_glm_formula,
+    'formula_fn' = standard_formula_fn,
     'fit_fn' = aba_glm_fit,
     'evaluate_fn' = aba_glm_evaluate
   )
   return(fns)
-}
-
-# create formula for glm model
-aba_glm_formula <- function(outcome, predictors, covariates) {
-  f <- paste0(outcome, " ~ ")
-  if (length(covariates) > 0) {
-    f <- paste0(f, paste(covariates, collapse = " + "))
-    if (length(predictors) > 0) f <- paste0(f, ' + ')
-  }
-  if (length(predictors) > 0) f <- paste0(f, paste(predictors, collapse = " + "))
-  if (length(covariates) + length(predictors) == 0) f <- paste0(f, '1')
-  return(f)
 }
 
 # fit a glm model

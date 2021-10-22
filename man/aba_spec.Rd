@@ -21,7 +21,7 @@ aba_spec(
 
 \item{predictors}{vector or list. predictors to use}
 
-\item{stats}{character or vector. stats to use.}
+\item{stats}{character or vector. stat to use.}
 }
 \value{
 An abaSpec object

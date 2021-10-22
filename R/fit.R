@@ -96,4 +96,3 @@ parse_then_fit <- function(data, group, outcome, predictors, covariates, stats) 
     list(stat_models)
   )
 }
-

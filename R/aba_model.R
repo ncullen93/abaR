@@ -39,5 +39,59 @@ aba_model <- function(data = NULL,
   )
 }
 
+#' @export
+print.abaModel <- function(x, ...) {
+  model <- x
+  # has not been fit
+
+  group_vals <- model$spec$group
+  outcome_vals <- model$spec$outcomes
+  covariate_vals <- model$spec$covariates
+  predictor_vals <- model$spec$predictors
+  stat_vals <- model$spec$stats
+  cat('Groups:\n ', group_vals, '\n')
+  cat('Outcomes:\n ', outcome_vals, '\n')
+  cat('Covariates:\n ', covariate_vals, '\n')
+  cat('Predictors:\n ', predictor_vals, '\n')
+  cat('Stats:\n ', stat_vals, '\n')
+  cat('---\n')
+  if (length(model$results) == 0) {
+    cat('Fitted: No')
+  } else {
+    cat('Fitted: Yes')
+  }
+
+  #parameters <- x$spec
+  #for (group in parameters$groups) {
+  #  for (outcome in parameters$outcomes) {
+  #    for (predictor in parameters$predictors) {
+  #      cat(":\n")
+  #      line1 <- paste0(
+  #        "Group: ", group, "\n",
+  #        "Outcome: ", outcome, "\n",
+  #        "Predictors: ", stringr::str_replace_all(predictor, '\\_\\+\\_', ' + '),
+  #      )
+  #      #res.df <- x[["models"]][[group]][[outcome]][[predictor]]
+#
+  #      cat(paste0(line1, "\n"))
+  #      cat('Fit:\n')
+  #      if (x$is_fit) {
+  #        r <- x$results %>%
+  #          filter(
+  #            groups == group,
+  #            outcomes == outcome,
+  #            predictors == predictor
+  #          )
+  #        cat()
+  #      }
+  #      cat("---\n")
+  #      # cat('\n')
+  #    }
+  #  }
+  #}
+}
+
+
+
 
 

@@ -10,7 +10,7 @@
 #' @param outcomes vector. outcomes to use.
 #' @param covariates vector. covariates to use.
 #' @param predictors vector or list. predictors to use
-#' @param stats character or vector. stats to use.
+#' @param stats character or vector. stat to use.
 #'
 #' @return An abaSpec object
 #'
