@@ -6,7 +6,16 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of abaR is to make it easier to fit statistical models on
+The goals of abaR are the following:
+
+-   to make it easy to fit many statistical models
+-   to provide high-level functions for common model visualizations
+-   to improve workflows for biomarker-based planning and analysis of
+    clinical trials
+-   to facilitate multi-cohort validation studies without direct data
+    sharing
+
+With the abaR package, it becomes easier to fit statistical models on
 permuatations of covariates / predictors / outcomes / groups, to make it
 easier to investigate how biomarkers can be used to plan (screening /
 enirichment) and analyze clinical trials, and to facilitate multi-cohort
