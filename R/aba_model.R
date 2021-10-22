@@ -42,19 +42,22 @@ aba_model <- function(data = NULL,
 #' @export
 print.abaModel <- function(x, ...) {
   model <- x
-  # has not been fit
 
   group_vals <- model$spec$group
   outcome_vals <- model$spec$outcomes
   covariate_vals <- model$spec$covariates
   predictor_vals <- model$spec$predictors
   stat_vals <- model$spec$stats
-  cat('Groups:\n ', group_vals, '\n')
-  cat('Outcomes:\n ', outcome_vals, '\n')
-  cat('Covariates:\n ', covariate_vals, '\n')
-  cat('Predictors:\n ', predictor_vals, '\n')
-  cat('Stats:\n ', stat_vals, '\n')
+  cat('Groups:\n   ')
+  cat(group_vals, sep='\n   ')
+  cat('Outcomes:\n   ')
+  cat(outcome_vals, sep='\n   ')
+  cat('Covariates:\n   ', covariate_vals, '\n')
+  cat('Predictors:\n   ')
+  cat(predictor_vals, sep='\n   ')
+  cat('Stats:\n   ', stat_vals, '\n')
   cat('---\n')
+
   if (length(model$results) == 0) {
     cat('Fitted: No')
   } else {
