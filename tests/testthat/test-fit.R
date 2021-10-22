@@ -108,3 +108,31 @@ test_that("tidy eval before setting data gives error", {
       fit()
   )
 })
+
+
+test_that("fit with only one value for each spec param works", {
+
+  # no group & no predictors - should still work
+  expect_error(
+    m <- adni_sample %>%
+      aba_model() %>%
+      set_outcomes(MMSE) %>%
+      set_covariates(AGE_bl) %>%
+      set_stats('lm') %>%
+      fit(),
+    NA
+  )
+
+  # no group & no covariates - should still work
+  expect_error(
+    m <- adni_sample %>%
+      aba_model() %>%
+      set_outcomes(MMSE) %>%
+      set_covariates(AGE_bl) %>%
+      set_stats('lm') %>%
+      fit(),
+    NA
+  )
+})
+
+

@@ -1,0 +1,46 @@
+---
+title: "Nature_Communications_study"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Nature_Communications_study}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This vignette will show how to use the `aba` package to recreate the analysis I did in a Nature Communications article (Cullen et al, 2021) where we looked at how plasma biomarkers are related to cognitive decline and risk of Alzheimer's disease in a cognitively unimpaired population.
+
+This study demonstrates a standard use case for the `aba` package, where you have multiple outcome variables and want to test different combinations of a few predictors. We also performed some sensitivity analyses with addedcovariates and also a completely different set of predictors. Moreover, this analysis also was interested because the outcomes were a mix of binary and continuous. 
+
+In any case, it was easy in my life before writing `aba` to simply copy and paste a bunch of `glm()` or `lm()` calls, and *maybe* write a function to automatically gather the coefficients and metrics from each model fit. At the worst, I sometimes actually would just print out each model fit and then read off the coefficients and metrics from the RStudio console as I typed them into a Word table. We've all been there. 
+
+So, let's see how this works. We start with a dataset in long format. This is
+where each row is a different patient visit. In other words, a patient with five longitudinal visits would have different rows in the data -- *not* one row with five different columns for each measurement at the different timepoints. That's enough about long format data, but there are numerous tutorials out there about how to get your data into this format. 
+
+There is a sample dataset from ADNI which largely matches the format I used from the BioFINDER study:
+
+```{r setup}
+library(aba)
+adni_sample %>% head()
+```
+```{r}
+m <- adni_sample %>% 
+  aba_model() %>% 
+  set_outcomes(MMSE, CDRSB) %>% 
+  set_predictors(
+    PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl
+  )
+
+
+```
+
+
+
+
+

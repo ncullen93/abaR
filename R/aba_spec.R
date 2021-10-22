@@ -18,11 +18,13 @@
 #'
 #' @examples
 #' spec <- aba_spec()
-aba_spec <- function(groups=NULL,
+aba_spec <- function(groups='everyone',
                      outcomes=NULL,
                      covariates=NULL,
                      predictors=NULL,
                      stats=NULL) {
+
+  if (groups == 'everyone') groups <- 'everyone()'
 
   spec <- list(
     'groups' = groups,
@@ -42,7 +44,7 @@ aba_spec <- function(groups=NULL,
 
 # take characters or tidy evaluation inputs and turn to strings
 parse_select_expr <- function(..., data) {
-  rlang::exprs(...) %>% purrr::map(
+  rlang::enexprs(...) %>% purrr::map(
     function(xx) {
       if (is.null(data)) {
         if (is.character(xx)) {
@@ -100,7 +102,7 @@ set_groups <- function(.model, ...) {
 
 #' @export
 set_groups.abaModel <- function(.model, ...) {
-  .model[['spec']][['groups']] <- unlist(parse_filter_expr(..., data=.model$data))
+  .model[['spec']][['groups']] <- unname(unlist(parse_filter_expr(..., data=.model$data)))
   .model
 }
 
@@ -121,7 +123,7 @@ set_outcomes <- function(.model, ...) {
 
 #' @export
 set_outcomes.abaModel <- function(.model, ...) {
-  .model[['spec']][['outcomes']] <- unlist(parse_select_expr(..., data=.model$data))
+  .model[['spec']][['outcomes']] <- unname(unlist(parse_select_expr(..., data=.model$data)))
   .model
 }
 
@@ -142,7 +144,7 @@ set_covariates <- function(.model, ...) {
 
 #' @export
 set_covariates.abaModel <- function(.model, ...) {
-  .model[['spec']][['covariates']] <- unlist(parse_select_expr(..., data=.model$data))
+  .model[['spec']][['covariates']] <- unname(unlist(parse_select_expr(..., data=.model$data)))
   .model
 }
 
@@ -163,9 +165,10 @@ set_predictors <- function(.model, ...) {
 
 #' @export
 set_predictors.abaModel <- function(.model, ...) {
-  .model[['spec']][['predictors']] <-
+  .model[['spec']][['predictors']] <- unname(
     parse_select_expr(..., data=.model$data) %>%
     purrr::map_chr(~stringr::str_c(., collapse='_+_'))
+  )
   .model
 }
 
@@ -188,3 +191,8 @@ set_stats.abaModel <- function(model, ...) {
   model[['spec']][['stats']] <- c(...)
   model
 }
+
+everyone <- function() {
+  TRUE
+}
+

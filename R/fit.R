@@ -32,25 +32,38 @@ fit <- function(model) {
 
 
 compile <- function(model) {
-  if (is.null(model$data)) stop('You must set data first.')
 
   data <- model$data
-
   group_vals <- model$spec$group
   outcome_vals <- model$spec$outcomes
   covariate_vals <- model$spec$covariates
   predictor_vals <- model$spec$predictors
   stat_vals <- model$spec$stats
 
+  #if (is.null(group_vals)) {
+  #  model <- model %>% set_groups(everyone())
+  #  group_vals <- model$spec$group
+  #}
+  if (is.null(predictor_vals)) predictor_vals <- ""
+
+  # check that minimum parameters have been set
+  if (is.null(model$data)) stop('You must set data before fitting.')
+  if (length(outcome_vals) == 0) stop('You must set at least one outcome.')
+  if (length(predictor_vals) + length(covariate_vals) == 0) {
+    stop('You must set at least one predictor or one covariate')
+  }
+  if (length(stat_vals) == 0) stop('You must set at least one stat.')
+
   val_list <- list(
     'groups' = group_vals,
-    'outcomes' = outcome_vals,
-    'predictors' = predictor_vals,
+    'outcomes' = as.vector(outcome_vals),
+    'predictors' = as.vector(predictor_vals),
     'covariates' = stringr::str_c(covariate_vals, collapse='_+_'),
     'stats' = stringr::str_c(stat_vals, collapse='_+_')
   )
 
   init_df <- val_list %>% purrr::cross_df()
+
   init_df <- cbind(MID = stringr::str_c('M', rownames(init_df)), init_df)
   model$results <- init_df
   model

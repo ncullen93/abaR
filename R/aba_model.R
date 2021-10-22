@@ -55,14 +55,18 @@ print.abaModel <- function(x, ...) {
   cat('Covariates:\n   ', covariate_vals, '\n')
   cat('Predictors:\n   ')
   cat(predictor_vals, sep='\n   ')
-  cat('Stats:\n   ', stat_vals, '\n')
-  cat('---\n')
-
-  if (length(model$results) == 0) {
-    cat('Fitted: No')
-  } else {
-    cat('Fitted: Yes')
+  cat('Stats:\n   ', stat_vals)
+  if (length(stat_vals) > 0) {
+    if (length(model$results) == 0) {
+      cat(' (not fit)')
+    } else {
+      cat(' (fit)')
+    }
   }
+
+  cat('\n')
+
+
 
   #parameters <- x$spec
   #for (group in parameters$groups) {
