@@ -62,7 +62,7 @@ aba_summary <- function(model, ...) {
 
 #' @export
 print.abaSummary <- function(x, ...) {
-  r_nested <- x %>%
+  r_nested <- x$results %>%
     dplyr::group_by(
       .data$groups,
       .data$outcomes,
