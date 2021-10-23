@@ -97,12 +97,8 @@ parse_filter_expr <- function(..., data) {
 #' @examples
 #' m <- aba_model() %>% set_groups()
 set_groups <- function(.model, ...) {
-  UseMethod('set_groups')
-}
-
-#' @export
-set_groups.abaModel <- function(.model, ...) {
-  .model[['spec']][['groups']] <- unname(unlist(parse_filter_expr(..., data=.model$data)))
+  .model[['spec']][['groups']] <-
+    unname(unlist(parse_filter_expr(..., data=.model$data)))
   .model
 }
 
@@ -118,12 +114,8 @@ set_groups.abaModel <- function(.model, ...) {
 #' @examples
 #' m <- aba_model() %>% set_outcomes()
 set_outcomes <- function(.model, ...) {
-  UseMethod('set_outcomes')
-}
-
-#' @export
-set_outcomes.abaModel <- function(.model, ...) {
-  .model[['spec']][['outcomes']] <- unname(unlist(parse_select_expr(..., data=.model$data)))
+  .model[['spec']][['outcomes']] <-
+    unname(unlist(parse_select_expr(..., data=.model$data)))
   .model
 }
 
@@ -139,12 +131,8 @@ set_outcomes.abaModel <- function(.model, ...) {
 #' @examples
 #' m <- aba_model() %>% set_covariates()
 set_covariates <- function(.model, ...) {
-  UseMethod('set_covariates')
-}
-
-#' @export
-set_covariates.abaModel <- function(.model, ...) {
-  .model[['spec']][['covariates']] <- unname(unlist(parse_select_expr(..., data=.model$data)))
+  .model[['spec']][['covariates']] <-
+    unname(unlist(parse_select_expr(..., data=.model$data)))
   .model
 }
 
@@ -160,11 +148,6 @@ set_covariates.abaModel <- function(.model, ...) {
 #' @examples
 #' m <- aba_model() %>% set_predictors()
 set_predictors <- function(.model, ...) {
-  UseMethod('set_predictors')
-}
-
-#' @export
-set_predictors.abaModel <- function(.model, ...) {
   .model[['spec']][['predictors']] <- unname(
     parse_select_expr(..., data=.model$data) %>%
     purrr::map_chr(~stringr::str_c(., collapse='_+_'))
@@ -183,11 +166,6 @@ set_predictors.abaModel <- function(.model, ...) {
 #' @examples
 #' m <- aba_model() %>% set_stats('glm')
 set_stats <- function(model, ...) {
-  UseMethod('set_stats')
-}
-
-#' @export
-set_stats.abaModel <- function(model, ...) {
   model[['spec']][['stats']] <- c(...)
   model
 }

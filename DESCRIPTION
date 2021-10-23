@@ -30,7 +30,10 @@ Imports:
     glue,
     tidyr,
     methods,
-    tidyselect
+    tidyselect,
+    generics,
+    stats,
+    nlme
 VignetteBuilder: knitr
 Depends: 
     R (>= 2.10)

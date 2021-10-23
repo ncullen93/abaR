@@ -1,13 +1,22 @@
-#' Fit an aba model. This will trigger the fitting of all statistical models
+#' @importFrom generics fit
+#' @export
+generics::fit
+
+#' Fit an aba model.
+#'
+#' This will trigger the fitting of all statistical models
 #' (`stats`) on the different parameter combinations (`spec`).
 #'
-#' @param model abaModel. The aba model to be fitted.
+#' @param object abaModel. The aba model to be fitted.
+#' @param ... additional parameters.
 #'
 #' @return abaModel
 #' @export
 #' @examples
 #' m <- aba_model()
-fit <- function(model) {
+fit.abaModel <- function(object, ...) {
+  model <- object
+
   # compile model
   model <- model %>% compile()
 
@@ -40,10 +49,6 @@ compile <- function(model) {
   predictor_vals <- model$spec$predictors
   stat_vals <- model$spec$stats
 
-  #if (is.null(group_vals)) {
-  #  model <- model %>% set_groups(everyone())
-  #  group_vals <- model$spec$group
-  #}
   if (is.null(predictor_vals)) predictor_vals <- ""
 
   # check that minimum parameters have been set

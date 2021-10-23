@@ -6,6 +6,11 @@
 \usage{
 aba_lme(id_var, time_var)
 }
+\arguments{
+\item{id_var}{string or variable. id variable}
+
+\item{time_var}{string or variable. time variable.}
+}
 \value{
 list of the following functions:
 \itemize{
@@ -18,17 +23,18 @@ list of the following functions:
 Create a lme stat to use for an aba model.
 }
 \examples{
-my_stat <- aba_lme()
+my_stat <- aba_lme(id_var='SUBJECT_ID',
+                   time_var='Years_bl')
 
-my_formula <- my_stat$formula_fn(
-  outcome='ConvertedToAlzheimers',
-  predictors=c('PLASMA_PTAU181_bl','PLASMA_NFL_bl'),
-  covariates=c('AGE_bl','GENDER','EDUCAT'),
-  id
-)
-
-my_model <- my_stat$fit_fn(
-  formula = my_formula,
-  data = adni_sample
-)
+#my_formula <- my_stat$formula_fn(
+#  outcome='ConvertedToAlzheimers',
+#  predictors=c('PLASMA_PTAU181_bl','PLASMA_NFL_bl'),
+#  covariates=c('AGE_bl','GENDER','EDUCAT'),
+#  id
+#)
+#
+#my_model <- my_stat$fit_fn(
+#  formula = my_formula,
+#  data = adni_sample
+#)
 }

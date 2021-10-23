@@ -48,6 +48,7 @@ print.abaModel <- function(x, ...) {
   covariate_vals <- model$spec$covariates
   predictor_vals <- model$spec$predictors
   stat_vals <- model$spec$stats
+
   cat('Groups:\n   ')
   cat(group_vals, sep='\n   ')
   cat('Outcomes:\n   ')
@@ -63,39 +64,8 @@ print.abaModel <- function(x, ...) {
       cat(' (fit)')
     }
   }
-
   cat('\n')
 
-
-
-  #parameters <- x$spec
-  #for (group in parameters$groups) {
-  #  for (outcome in parameters$outcomes) {
-  #    for (predictor in parameters$predictors) {
-  #      cat(":\n")
-  #      line1 <- paste0(
-  #        "Group: ", group, "\n",
-  #        "Outcome: ", outcome, "\n",
-  #        "Predictors: ", stringr::str_replace_all(predictor, '\\_\\+\\_', ' + '),
-  #      )
-  #      #res.df <- x[["models"]][[group]][[outcome]][[predictor]]
-#
-  #      cat(paste0(line1, "\n"))
-  #      cat('Fit:\n')
-  #      if (x$is_fit) {
-  #        r <- x$results %>%
-  #          filter(
-  #            groups == group,
-  #            outcomes == outcome,
-  #            predictors == predictor
-  #          )
-  #        cat()
-  #      }
-  #      cat("---\n")
-  #      # cat('\n')
-  #    }
-  #  }
-  #}
 }
 
 
