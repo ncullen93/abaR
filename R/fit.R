@@ -66,16 +66,14 @@ compile <- function(model) {
     'outcomes' = as.vector(outcome_vals),
     'predictors' = as.vector(predictor_vals),
     'covariates' = stringr::str_c(covariate_vals, collapse='_+_'),
-    'stats' = list(stat_vals)#stringr::str_c(names(stat_vals), collapse='_+_')
+    'stats' = list(stat_vals)
   )
 
   init_df <- val_list %>% purrr::cross_df()
 
-
-  init_df <- cbind(MID = stringr::str_c('M', rownames(init_df)), init_df) %>%
-    dplyr::tibble()
-  model$results <- init_df
-  model
+  init_df <- cbind(MID = stringr::str_c('M', rownames(init_df)), init_df)
+  model$results <- init_df %>% dplyr::tibble()
+  return(model)
 }
 
 
