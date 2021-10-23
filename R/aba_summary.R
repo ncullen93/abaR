@@ -72,8 +72,10 @@ print.abaSummary <- function(x, ...) {
     dplyr::mutate(
       label = glue::glue('{groups} | {outcomes} | {stat}')
     )
-  r_split <- stats::setNames(split(r_nested, 1:nrow(r_nested)),
-                      r_nested$label) %>%
+  r_split <- stats::setNames(
+    split(r_nested, 1:nrow(r_nested)),
+    r_nested$label
+  ) %>%
     purrr::map(~.$data[[1]] %>% dplyr::select(-.data$MID))
 
   r_split %>% purrr::iwalk(
