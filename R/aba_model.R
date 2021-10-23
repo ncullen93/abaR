@@ -56,15 +56,16 @@ print.abaModel <- function(x, ...) {
   cat('Covariates:\n   ', covariate_vals, '\n')
   cat('Predictors:\n   ')
   cat(predictor_vals, sep='\n   ')
-  cat('Stats:\n   ', stat_vals)
-  if (length(stat_vals) > 0) {
-    if (length(model$results) == 0) {
-      cat(' (not fit)')
-    } else {
-      cat(' (fit)')
-    }
-  }
-  cat('\n')
+  cat('Stats:\n   ')
+  xx <- stat_vals %>% purrr::map_chr(~.$stat_type)
+  cat(xx, sep='\n   ')
+  #if (length(stat_vals) > 0) {
+  #  if (length(model$results) == 0) {
+  #    cat(' (not fit)')
+  #  } else {
+  #    cat(' (fit)')
+  #  }
+  #}
 
 }
 

@@ -135,4 +135,94 @@ test_that("fit with only one value for each spec param works", {
   )
 })
 
+test_that("fit with stat objects instead of strings works", {
+
+  # one aba stat object
+  expect_error(
+    m <- adni_sample %>%
+      aba_model() %>%
+      set_groups(
+        DX_bl == 'CU',
+        everyone()
+      ) %>%
+      set_outcomes(
+        ConvertedToAlzheimers,
+        ConvertedToDementia
+      ) %>%
+      set_predictors(
+        PLASMA_ABETA_bl,
+        PLASMA_PTAU181_bl,
+        PLASMA_NFL_bl,
+        c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+      ) %>%
+      set_covariates(
+        AGE_bl, GENDER, EDUCAT
+      ) %>%
+      set_stats(
+        aba_glm()
+      ) %>%
+      fit(),
+    NA
+  )
+
+  # two aba stat objects
+  expect_error(
+    m <- adni_sample %>%
+      aba_model() %>%
+      set_groups(
+        DX_bl == 'CU',
+        everyone()
+      ) %>%
+      set_outcomes(
+        ConvertedToAlzheimers,
+        ConvertedToDementia
+      ) %>%
+      set_predictors(
+        PLASMA_ABETA_bl,
+        PLASMA_PTAU181_bl,
+        PLASMA_NFL_bl,
+        c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+      ) %>%
+      set_covariates(
+        AGE_bl, GENDER, EDUCAT
+      ) %>%
+      set_stats(
+        aba_glm(),
+        aba_lm()
+      ) %>%
+      fit(),
+    NA
+  )
+
+  # one aba stat object and one string
+  expect_error(
+    m <- adni_sample %>%
+      aba_model() %>%
+      set_groups(
+        DX_bl == 'CU',
+        everyone()
+      ) %>%
+      set_outcomes(
+        ConvertedToAlzheimers,
+        ConvertedToDementia
+      ) %>%
+      set_predictors(
+        PLASMA_ABETA_bl,
+        PLASMA_PTAU181_bl,
+        PLASMA_NFL_bl,
+        c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+      ) %>%
+      set_covariates(
+        AGE_bl, GENDER, EDUCAT
+      ) %>%
+      set_stats(
+        aba_glm(),
+        'lm'
+      ) %>%
+      fit(),
+    NA
+  )
+
+})
+
 

@@ -33,7 +33,9 @@ fit.abaModel <- function(object, ...) {
         stats=.data$stats
       )
     ) %>%
-    tidyr::unnest_wider(.data$fits)
+    tidyr::unnest_wider(
+      .data$fits
+    )
 
   model$results <- fit_df
   return(model)
@@ -64,25 +66,18 @@ compile <- function(model) {
     'outcomes' = as.vector(outcome_vals),
     'predictors' = as.vector(predictor_vals),
     'covariates' = stringr::str_c(covariate_vals, collapse='_+_'),
-    'stats' = stringr::str_c(stat_vals, collapse='_+_')
+    'stats' = list(stat_vals)#stringr::str_c(names(stat_vals), collapse='_+_')
   )
 
   init_df <- val_list %>% purrr::cross_df()
 
-  init_df <- cbind(MID = stringr::str_c('M', rownames(init_df)), init_df)
+
+  init_df <- cbind(MID = stringr::str_c('M', rownames(init_df)), init_df) %>%
+    dplyr::tibble()
   model$results <- init_df
   model
 }
 
-
-stat_lookup <- function(stat) {
-  if (is.character(stat)) {
-    stat_fn <- methods::getFunction(glue::glue('aba_{stat}'))
-  } else {
-    stat_fn <- stat
-  }
-  return(stat_fn())
-}
 
 # need a preprocessing function to parse
 parse_then_fit <- function(data, group, outcome, predictors, covariates, stats) {
@@ -95,13 +90,10 @@ parse_then_fit <- function(data, group, outcome, predictors, covariates, stats) 
   # parse predictors and covariates into vectors
   predictors <- unlist(strsplit(predictors,'\\_\\+\\_'))
   covariates <- unlist(strsplit(covariates,'\\_\\+\\_'))
-  stats <- unlist(strsplit(stats,'\\_\\+\\_'))
 
   # lookup stat objects from strings
-  stat_objs <- purrr::map(stats %>% purrr::set_names(), ~stat_lookup(.))
-
   # fit the models
-  stat_models <- stat_objs %>%
+  stat_models <- stats %>%
     purrr::map(
       function(stat_obj) {
         my_formula <- stat_obj$formula_fn(outcome, predictors, covariates)

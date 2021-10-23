@@ -29,11 +29,13 @@ aba_glm <- function() {
     'fit_fn' = aba_glm_fit,
     'evaluate_fn' = aba_glm_evaluate
   )
+  fns$stat_type <- 'glm'
+  class(fns) <- 'abaStat'
   return(fns)
 }
 
 # fit a glm model
-aba_glm_fit <- function(formula, data) {
+aba_glm_fit <- function(formula, data, ...) {
   model <- stats::glm(stats::formula(formula), family = 'binomial', data = data)
   model$call$formula <- stats::formula(formula)
   return(model)
@@ -44,4 +46,8 @@ aba_glm_evaluate <- function(model, data) {
 
 }
 
+#' @export
+print.abaStat <- function(x, ...) {
+  cat(x$stat_type)
+}
 

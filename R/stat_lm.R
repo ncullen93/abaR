@@ -29,11 +29,13 @@ aba_lm <- function() {
     'fit_fn' = aba_lm_fit,
     'evaluate_fn' = aba_lm_evaluate
   )
+  fns$stat_type <- 'lm'
+  class(fns) <- 'abaStat'
   return(fns)
 }
 
 # fit a lm model
-aba_lm_fit <- function(formula, data) {
+aba_lm_fit <- function(formula, data, ...) {
   model <- stats::lm(stats::formula(formula), data = data)
   model$call$formula <- stats::formula(formula)
   return(model)

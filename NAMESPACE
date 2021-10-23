@@ -2,6 +2,7 @@
 
 S3method(fit,abaModel)
 S3method(print,abaModel)
+S3method(print,abaStat)
 S3method(set_data,abaModel)
 export("%>%")
 export(aba_glm)

@@ -164,9 +164,20 @@ set_predictors <- function(.model, ...) {
 #' @export
 #'
 #' @examples
+#' # create default stat object by string
 #' m <- aba_model() %>% set_stats('glm')
+#' # create a stat object with - useful w/ extra params
+#' m <- aba_model() %>% set_stats(aba_glm())
 set_stats <- function(model, ...) {
-  model[['spec']][['stats']] <- c(...)
+  stats <- list(...) %>%
+    purrr::map(
+      function(x) {
+        if (is.character(x)) x <- aba_stat_lookup(x)
+        return(x)
+      }
+    )
+  names(stats) <- stats %>% purrr::map_chr('stat_type')
+  model[['spec']][['stats']] <- stats
   model
 }
 

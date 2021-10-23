@@ -18,5 +18,8 @@ An abaModel object
 Set statistical model of an aba model
 }
 \examples{
+# create default stat object by string
 m <- aba_model() \%>\% set_stats('glm')
+# create a stat object with - useful w/ extra params
+m <- aba_model() \%>\% set_stats(aba_glm())
 }
