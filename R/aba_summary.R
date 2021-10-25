@@ -1,4 +1,3 @@
-
 #' Create a summary of an aba model.
 #'
 #' @param model abaModel. the model to create a summary from
@@ -11,11 +10,31 @@
 #' m <- aba_model()
 aba_summary <- function(model, ...) {
 
+  coefs_df <- coefs_summary(model)
+  metrics_df <- metrics_summary(model)
+
+  results_df <- coefs_df %>%
+    dplyr::left_join(
+      metrics_df %>% select(-c(groups, outcomes, stat)),
+      by = 'MID'
+    )
+
+  s <- list(
+    model = model,
+    results = results_df
+  )
+  class(s) <- 'abaSummary'
+  return(s)
+}
+
+
+coefs_summary <- function(model) {
   coef_fmt <- paste(
     '{sprintf("%.1f", estimate)}',
     '(P={sprintf("%.4f", p.value)})'
   )
 
+  # coefficients
   r <- model$results %>%
     dplyr::mutate(
       dplyr::across(
@@ -52,12 +71,46 @@ aba_summary <- function(model, ...) {
       values_from = .data$coef
     )
 
-  s <- list(
-    'model' = model,
-    'results' = r
+  return(r)
+}
+
+metrics_summary <- function(model) {
+  metric_vars <- c(
+    'adj.r.squared',
+    'AIC',
+    'nobs'
   )
-  class(s) <- 'abaSummary'
-  return(s)
+  r <- model$results %>%
+    tidyr::pivot_longer(
+      cols = dplyr::all_of(names(model$spec$stats)),
+      names_to = 'stat',
+      values_to = 'fit'
+    ) %>%
+    dplyr::group_by(
+      .data$groups,
+      .data$outcomes,
+      .data$stat
+    ) %>%
+    dplyr::mutate(
+      # individual metrics
+      .glance = purrr::map(
+        fit,
+        broom::glance
+      )
+      # metrics requiring the entire model group (e.g., p-value versus basic)
+      # ...
+    ) %>%
+    tidyr::unnest(
+      .data$.glance
+    ) %>%
+    dplyr::select(
+      MID,
+      groups, outcomes, stat,
+      any_of(metric_vars)
+    ) %>%
+    dplyr::ungroup()
+
+  return(r)
 }
 
 #' @export
