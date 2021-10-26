@@ -97,7 +97,7 @@ parse_filter_expr <- function(..., data) {
 #' @examples
 #' m <- aba_model() %>% set_groups()
 set_groups <- function(.model, ...) {
-  .model[['spec']][['groups']] <-
+  .model$spec$groups <-
     unname(unlist(parse_filter_expr(..., data=.model$data)))
   .model
 }
@@ -114,7 +114,7 @@ set_groups <- function(.model, ...) {
 #' @examples
 #' m <- aba_model() %>% set_outcomes()
 set_outcomes <- function(.model, ...) {
-  .model[['spec']][['outcomes']] <-
+  .model$spec$outcomes <-
     unname(unlist(parse_select_expr(..., data=.model$data)))
   .model
 }
@@ -131,7 +131,7 @@ set_outcomes <- function(.model, ...) {
 #' @examples
 #' m <- aba_model() %>% set_covariates()
 set_covariates <- function(.model, ...) {
-  .model[['spec']][['covariates']] <-
+  .model$spec$covariates <-
     unname(unlist(parse_select_expr(..., data=.model$data)))
   .model
 }
@@ -148,9 +148,13 @@ set_covariates <- function(.model, ...) {
 #' @examples
 #' m <- aba_model() %>% set_predictors()
 set_predictors <- function(.model, ...) {
-  .model[['spec']][['predictors']] <- unname(
+  .model$spec$predictors <- unname(
     parse_select_expr(..., data=.model$data) %>%
     purrr::map_chr(~stringr::str_c(., collapse='_+_'))
+  )
+  .model$spec$predictors <- c(
+    '',
+    .model$spec$predictors
   )
   .model
 }
@@ -168,7 +172,7 @@ set_predictors <- function(.model, ...) {
 #' m <- aba_model() %>% set_stats('glm')
 #' # create a stat object with - useful w/ extra params
 #' m <- aba_model() %>% set_stats(aba_glm())
-set_stats <- function(model, ...) {
+set_stats <- function(.model, ...) {
   stats <- list(...) %>%
     purrr::map(
       function(x) {
@@ -177,8 +181,8 @@ set_stats <- function(model, ...) {
       }
     )
   names(stats) <- stats %>% purrr::map_chr('stat_type')
-  model[['spec']][['stats']] <- stats
-  model
+  .model$spec$stats <- stats
+  .model
 }
 
 everyone <- function() {

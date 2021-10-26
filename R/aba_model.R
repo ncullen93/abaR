@@ -46,7 +46,7 @@ print.abaModel <- function(x, ...) {
   group_vals <- model$spec$group
   outcome_vals <- model$spec$outcomes
   covariate_vals <- model$spec$covariates
-  predictor_vals <- model$spec$predictors
+  predictor_vals <- model$spec$predictors[-1]
   stat_vals <- model$spec$stats
 
   cat('Groups:\n   ')
