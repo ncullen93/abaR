@@ -52,24 +52,33 @@ devtools::install_github("ncullen93/abaR")
 The general workflow of fitting an aba model for statistical analysis looks like this:
 
 ``` r
-model <- aba_model() %>% 
-  # set_data(ADNI_EXAMPLE)
+model <- adni_sample %>% aba_model() %>%
   set_groups(
-    #DX_bl == 'CU',
-    #DX_bl == 'MCI',
-    #DX_bl %in% c('CU', 'MCI')
-  ) %>% 
+    DX_bl == 'CU',
+    everyone()
+  ) %>%
   set_outcomes(
-    #MMSE_4y:ADAS_4y
-  ) %>% 
-  set_covariates(
-    #AGE, SEX, EDUCATION
-  ) %>% 
+    ConvertedToAlzheimers,
+    ConvertedToDementia
+  ) %>%
   set_predictors(
-    #ABETA, TAU, NFL,
-    #c(ABETA, TAU, NFL)
-  )
-  
+    PLASMA_ABETA_bl,
+    PLASMA_PTAU181_bl,
+    PLASMA_NFL_bl,
+    c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+  ) %>%
+  set_covariates(
+    AGE_bl, GENDER, EDUCAT
+  ) %>%
+  set_stats(
+    'glm'
+  ) %>%
+  fit()
+
+print(model)
+
+model_summary <- model %>% aba_summary()
+print(model_summary)
 ```
 
 
