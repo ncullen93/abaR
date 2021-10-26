@@ -7,9 +7,9 @@
 set_stats(.model, ...)
 }
 \arguments{
-\item{...}{vector. Which statistical models to use.}
+\item{.model}{abaModel. aba model to alter.}
 
-\item{model}{abaModel. aba model to alter.}
+\item{...}{vector. Which statistical models to use.}
 }
 \value{
 An abaModel object

@@ -25,9 +25,8 @@
 #' )
 aba_glm <- function() {
   fns <- list(
-    'formula_fn' = standard_formula_fn,
-    'fit_fn' = aba_glm_fit,
-    'evaluate_fn' = aba_glm_evaluate
+    'formula_fn' = aba_formula_std,
+    'fit_fn' = aba_fit_glm
   )
   fns$stat_type <- 'glm'
   class(fns) <- 'abaStat'
@@ -35,19 +34,50 @@ aba_glm <- function() {
 }
 
 # fit a glm model
-aba_glm_fit <- function(formula, data, ...) {
-  model <- stats::glm(stats::formula(formula), family = 'binomial', data = data)
+aba_fit_glm <- function(formula, data, ...) {
+  model <- stats::glm(
+    stats::formula(formula),
+    family = 'binomial',
+    data = data
+  )
   model$call$formula <- stats::formula(formula)
   return(model)
 }
 
-# evaluate a glm model
-aba_glm_evaluate <- function(model, data) {
-
-}
-
 #' @export
-print.abaStat <- function(x, ...) {
-  cat(x$stat_type)
+aba_glance.glm <- function(x, ...) {
+  # tidy glance
+  glance_df <- broom::glance(x)
+
+  # custom glance
+  fit <- x
+  data <- stats::model.frame(fit) %>% tibble::tibble()
+  outcome <- colnames(data)[1]
+
+  data <- data %>%
+    dplyr::mutate(
+      .Predicted = stats::predict(fit, type='response'),
+      .Truth = factor(.data[[outcome]]) # probably should do this before fitting
+    )
+
+  auc_val <- yardstick::roc_auc(
+    data,
+    '.Truth',
+    '.Predicted',
+    event_level = 'second'
+  )[['.estimate']]
+
+  # add other metrics here... sens, spec, ppv, npv, etc..
+  # ...
+
+  # combine broom::glance with extra metrics
+  glance_df <- glance_df %>%
+    dplyr::bind_cols(
+      tibble::tibble(
+        AUC = auc_val
+      )
+    )
+  return(glance_df)
 }
+
 

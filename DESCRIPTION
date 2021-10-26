@@ -34,7 +34,9 @@ Imports:
     generics,
     stats,
     nlme,
-    broom
+    broom,
+    tibble,
+    yardstick
 VignetteBuilder: knitr
 Depends: 
     R (>= 2.10)

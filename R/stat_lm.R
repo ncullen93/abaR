@@ -25,9 +25,8 @@
 #' )
 aba_lm <- function() {
   fns <- list(
-    'formula_fn' = standard_formula_fn,
-    'fit_fn' = aba_lm_fit,
-    'evaluate_fn' = aba_lm_evaluate
+    'formula_fn' = aba_formula_std,
+    'fit_fn' = aba_fit_lm
   )
   fns$stat_type <- 'lm'
   class(fns) <- 'abaStat'
@@ -35,15 +34,18 @@ aba_lm <- function() {
 }
 
 # fit a lm model
-aba_lm_fit <- function(formula, data, ...) {
+aba_fit_lm <- function(formula, data, ...) {
   model <- stats::lm(stats::formula(formula), data = data)
   model$call$formula <- stats::formula(formula)
   return(model)
 }
 
-# evaluate a lm model
-aba_lm_evaluate <- function(model, data) {
-
+#' @export
+aba_glance.lm <- function(x, ...) {
+  # tidy glance
+  glance_df <- broom::glance(x)
+  return(glance_df)
 }
+
 
 

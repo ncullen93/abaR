@@ -15,7 +15,9 @@ aba_summary <- function(model, ...) {
 
   results_df <- coefs_df %>%
     dplyr::left_join(
-      metrics_df %>% select(-c(groups, outcomes, stat)),
+      metrics_df %>% dplyr::select(-c(.data$groups,
+                                      .data$outcomes,
+                                      .data$stat)),
       by = 'MID'
     )
 
@@ -93,27 +95,21 @@ metrics_summary <- function(model) {
       .data$stat
     ) %>%
     dplyr::mutate(
-      # individual metrics
+      # individual model metrics (tidy/custom)
       .glance = purrr::map(
         fit,
-        broom::glance
-      ),
-      # metrics requiring the entire model group (e.g., p-value versus basic)
-      .glance_extra = purrr::map2(
-        fit, outcomes,
-        glance_extra
+        aba_glance
       )
     ) %>%
     tidyr::unnest(
-      c(
-        .data$.glance,
-        .data$.glance_extra
-      )
+      c(.data$.glance)
     ) %>%
     dplyr::select(
-      MID,
-      groups, outcomes, stat,
-      any_of(metric_vars)
+      .data$MID,
+      .data$groups,
+      .data$outcomes,
+      .data$stat,
+      dplyr::any_of(metric_vars)
     ) %>%
     dplyr::ungroup()
 

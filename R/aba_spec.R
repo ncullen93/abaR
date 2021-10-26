@@ -161,7 +161,7 @@ set_predictors <- function(.model, ...) {
 
 #' Set statistical model of an aba model
 #'
-#' @param model abaModel. aba model to alter.
+#' @param .model abaModel. aba model to alter.
 #' @param ... vector. Which statistical models to use.
 #'
 #' @return An abaModel object
