@@ -4,12 +4,12 @@
 \alias{set_stats}
 \title{Set statistical model of an aba model}
 \usage{
-set_stats(model, ...)
+set_stats(.model, ...)
 }
 \arguments{
-\item{model}{abaModel. aba model to alter.}
-
 \item{...}{vector. Which statistical models to use.}
+
+\item{model}{abaModel. aba model to alter.}
 }
 \value{
 An abaModel object

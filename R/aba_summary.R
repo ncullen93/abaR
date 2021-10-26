@@ -77,6 +77,7 @@ coefs_summary <- function(model) {
 metrics_summary <- function(model) {
   metric_vars <- c(
     'adj.r.squared',
+    'AUC',
     'AIC',
     'nobs'
   )
@@ -96,12 +97,18 @@ metrics_summary <- function(model) {
       .glance = purrr::map(
         fit,
         broom::glance
-      )
+      ),
       # metrics requiring the entire model group (e.g., p-value versus basic)
-      # ...
+      .glance_extra = purrr::map2(
+        fit, outcomes,
+        glance_extra
+      )
     ) %>%
     tidyr::unnest(
-      .data$.glance
+      c(
+        .data$.glance,
+        .data$.glance_extra
+      )
     ) %>%
     dplyr::select(
       MID,
