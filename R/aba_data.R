@@ -16,6 +16,14 @@ set_data <- function(model, data) {
 set_data.abaModel <- function(model, data) {
   if (!is.data.frame(data)) stop('data argument must be data.frame')
 
-  model[['data']] <- data
+  model$data <- data
+  model
+}
+
+#' @export
+set_data.abaTrial <- function(model, data) {
+  if (!is.data.frame(data)) stop('data argument must be data.frame')
+
+  model$data <- data
   model
 }

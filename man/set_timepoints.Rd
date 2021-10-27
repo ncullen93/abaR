@@ -4,7 +4,7 @@
 \alias{set_timepoints}
 \title{Set the timepoints of a trial spec}
 \usage{
-set_timepoints(.model, ...)
+set_timepoints(.model, time_var, ...)
 }
 \arguments{
 \item{.model}{abaTrial}

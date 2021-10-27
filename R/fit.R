@@ -41,9 +41,23 @@ fit.abaModel <- function(object, ...) {
   return(model)
 }
 
+fit.abaTrial <- function(object, ...) {
 
+}
+
+# generic compile method
 compile <- function(model) {
+  UseMethod('compile')
+}
 
+# compile abaTrial
+compile.abaTrial <- function(model) {
+  print('compiling aba trial')
+  data <- model$data
+}
+
+# compile abaModel
+compile.abaModel <- function(model) {
   data <- model$data
   group_vals <- model$spec$group
   outcome_vals <- model$spec$outcomes

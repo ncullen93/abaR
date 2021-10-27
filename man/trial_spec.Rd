@@ -4,7 +4,13 @@
 \alias{trial_spec}
 \title{Create a trial spec}
 \usage{
-trial_spec(inclusion = NULL, outcomes = NULL, timepoints = NULL, stats = NULL)
+trial_spec(
+  inclusion = NULL,
+  outcomes = NULL,
+  time_var = NULL,
+  timepoints = NULL,
+  stats = NULL
+)
 }
 \arguments{
 \item{inclusion}{vector. inclusion criteria to use.}

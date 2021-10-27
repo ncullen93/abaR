@@ -19,12 +19,14 @@
 #' spec <- trial_spec()
 trial_spec <- function(inclusion=NULL,
                        outcomes=NULL,
+                       time_var=NULL,
                        timepoints=NULL,
                        stats=NULL) {
 
   spec <- list(
     'inclusion' = inclusion,
     'outcomes' = outcomes,
+    'timevar' = time_var,
     'timepoints' = timepoints,
     'stats' = stats
   )
@@ -65,10 +67,16 @@ set_inclusion <- function(.model, ...) {
 #'
 #' @examples
 #' m <- aba_model() %>% set_timepoints()
-set_timepoints <- function(.model, ...) {
-  .model$spec$outcomes <- c(...)
+set_timepoints <- function(.model, time_var, ...) {
+  if (!is.null(.model$data)) {
+    time_var <- colnames(
+      .model$data %>%
+        dplyr::select(rlang::enexpr(time_var))
+    )[1]
+  }
+  .model$spec$time_var <- time_var
+  .model$spec$timepoints <- c(...)
   .model
 }
-
 
 
