@@ -2,8 +2,16 @@
 #' @export
 generics::fit
 
-# generic compile method
+
+#' Generic compile method
+#'
+#' @param model aba-type model
+#'
+#' @return aba-type model
 #' @export
+#'
+#' @examples
+#' 1 == 1
 compile <- function(model) {
   UseMethod('compile')
 }

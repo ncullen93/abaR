@@ -33,22 +33,29 @@ aba_trial <- function(data = NULL,
   )
 }
 
-# compile abaTrial
+
+#' Compile an abaTrial model
+#'
+#' @param model abaTrial. model to compile
+#'
+#' @return abaTrial
 #' @export
+#'
+#' @examples
+#' m <- aba_trial()
 compile.abaTrial <- function(model) {
 
   data <- model$data
   group_vals <- model$spec$group
   outcome_vals <- model$spec$outcomes
   time_var <- model$spec$time_var
-  timepoint_vals <- model$spec$timepoints
+  time_vals <- model$spec$times
   stat_vals <- model$spec$stats
 
   val_list <- list(
     'groups' = group_vals,
     'outcomes' = as.vector(outcome_vals),
-    'time_var' = as.vector(time_var),
-    'timepoints' = as.vector(timepoint_vals),
+    'times' = as.vector(time_vals),
     'stats' = list(stat_vals)
   )
 
@@ -85,7 +92,7 @@ fit.abaTrial <- function(object, ...) {
         group=.data$groups,
         outcome=.data$outcomes,
         time_var=.data$time_VAR,
-        timepoint=.data$timepoints,
+        time=.data$times,
         stats=.data$stats
       )
     ) %>%
@@ -100,7 +107,7 @@ fit.abaTrial <- function(object, ...) {
 
 # need a preprocessing function to parse
 parse_then_fit_abaTrial <- function(
-  data, group, outcome, time_var, timepoint, stats
+  data, group, outcome, time_var, time, stats
 ) {
 
   # filter original data by group
@@ -112,7 +119,11 @@ parse_then_fit_abaTrial <- function(
   stat_models <- stats %>%
     purrr::map(
       function(stat_obj) {
-        my_formula <- stat_obj$formula_fn(outcome, predictors, covariates)
+        my_formula <- stat_obj$formula_fn(
+          outcome,
+          time_var,
+          time
+        )
         my_model <- stat_obj$fit_fn(my_formula, my_data)
         return(my_model)
       }
@@ -123,26 +134,25 @@ parse_then_fit_abaTrial <- function(
   )
 }
 
-#print.abaTrial <- function(x, ...) {
-#  model <- x
+#' @export
+print.abaTrial <- function(x, ...) {
+  model <- x
+
+  group_vals <- model$spec$group
+  outcome_vals <- model$spec$outcomes
+  time_vals <- model$spec$times
+  stat_vals <- model$spec$stats
 #
-#  #group_vals <- model$spec$group
-#  #outcome_vals <- model$spec$outcomes
-#  #covariate_vals <- model$spec$covariates
-#  #predictor_vals <- model$spec$predictors[-1]
-#  #stat_vals <- model$spec$stats
-##
-#  #cat('Groups:\n   ')
-#  #cat(group_vals, sep='\n   ')
-#  #cat('Outcomes:\n   ')
-#  #cat(outcome_vals, sep='\n   ')
-#  #cat('Covariates:\n   ', covariate_vals, '\n')
-#  #cat('Predictors:\n   ')
-#  #cat(predictor_vals, sep='\n   ')
-#  #cat('Stats:\n   ')
-#  #xx <- stat_vals %>% purrr::map_chr(~.$stat_type)
-#  #cat(xx, sep='\n   ')
-#}
+  cat('Groups:\n   ')
+  cat(group_vals, sep='\n   ')
+  cat('Outcomes:\n   ')
+  cat(outcome_vals, sep='\n   ')
+  cat('Times:\n   ')
+  cat(time_vals, sep='\n   ')
+  cat('Stats:\n   ')
+  xx <- stat_vals %>% purrr::map_chr(~.$stat_type)
+  cat(xx, sep='\n   ')
+}
 
 
 

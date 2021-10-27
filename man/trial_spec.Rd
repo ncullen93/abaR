@@ -4,24 +4,16 @@
 \alias{trial_spec}
 \title{Create a trial spec}
 \usage{
-trial_spec(
-  groups = NULL,
-  outcomes = NULL,
-  time_var = NULL,
-  timepoints = NULL,
-  stats = NULL
-)
+trial_spec(groups = NULL, outcomes = NULL, times = NULL, stats = NULL)
 }
 \arguments{
+\item{groups}{vector. group selection criteria to use.}
+
 \item{outcomes}{vector. outcomes to use.}
 
-\item{time_var}{string time variable in data.}
-
-\item{timepoints}{vector. timepoints to use.}
+\item{times}{vector. times to use.}
 
 \item{stats}{character or vector. stat to use.}
-
-\item{inclusion}{vector. inclusion criteria to use.}
 }
 \value{
 A trialSpec object
@@ -29,9 +21,9 @@ A trialSpec object
 \description{
 A trial spec is composed of the following:
 \itemize{
-\item inclusion
+\item groups
 \item outcomes
-\item timepoints
+\item times
 \item stats
 }
 }

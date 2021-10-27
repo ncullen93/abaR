@@ -8,6 +8,26 @@ test_that('set_groups works', {
   expect_s3_class(m, 'abaModel')
 })
 
+test_that('set_groups from list works', {
+  expect_error(
+    m <- adni_sample %>% aba_model() %>%
+      set_groups(
+        list(DX_bl == 'MCI', AGE_bl < 85)
+      ),
+    NA
+  )
+
+  expect_error(
+    m <- adni_sample %>% aba_model() %>%
+      set_groups(
+        list(DX_bl == 'MCI', AGE_bl < 85),
+        list(DX_bl == 'CU', GENDER == "1")
+      ),
+    NA
+  )
+})
+
+
 test_that('set_outcomes works', {
   m <- aba_model() %>% set_data(data.frame(c(1,2,3))) %>% set_outcomes()
   expect_s3_class(m, 'abaModel')

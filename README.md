@@ -84,16 +84,16 @@ trials with the help of biomarker-based screening looks like this:
 
 ``` r
 model <- adni_sample %>% aba_trial() %>%
-  set_inclusion(
-    DX_bl == 'MCI',
-    AGE_bl > 55, AGE_bl < 85
+  set_groups(
+    list(DX_bl == 'MCI', AGE_bl > 55, AGE_bl < 85),
+    DX_bl == 'MCI'
   ) %>%
   set_outcomes(
     MMSE, CDRSB
   ) %>%
-  set_timepoints(
-    Years_bl, 
-    1.5, 2
+  set_times(
+    VISIT == 1.5,
+    VISIT == 2.0
   ) %>%
   set_stats(
     stat_power(alpha=0.05, power=0.8, delta=0.3, method='t.test')

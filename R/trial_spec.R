@@ -3,13 +3,12 @@
 #' A trial spec is composed of the following:
 #'   - groups
 #'   - outcomes
-#'   - timepoints
+#'   - times
 #'   - stats
 #'
 #' @param groups vector. group selection criteria to use.
 #' @param outcomes vector. outcomes to use.
-#' @param time_var string time variable in data.
-#' @param timepoints vector. timepoints to use.
+#' @param times vector. times to use.
 #' @param stats character or vector. stat to use.
 #'
 #' @return A trialSpec object
@@ -20,15 +19,13 @@
 #' spec <- trial_spec()
 trial_spec <- function(groups=NULL,
                        outcomes=NULL,
-                       time_var=NULL,
-                       timepoints=NULL,
+                       times=NULL,
                        stats=NULL) {
 
   spec <- list(
     'groups' = groups,
     'outcomes' = outcomes,
-    'timevar' = time_var,
-    'timepoints' = timepoints,
+    'times' = times,
     'stats' = stats
   )
 
@@ -39,10 +36,9 @@ trial_spec <- function(groups=NULL,
   )
 }
 
-#' Set the timepoints of a trial spec
+#' Set the times of a trial spec
 #'
 #' @param .model abaTrial
-#' @param time_var variable or string. data variable with time values
 #' @param ... numeric or character. how long the trial will be.
 #'
 #' @return An abaTrial object
@@ -50,16 +46,11 @@ trial_spec <- function(groups=NULL,
 #' @export
 #'
 #' @examples
-#' m <- aba_model() %>% set_timepoints('VISIT', 1.5, 2)
-set_timepoints <- function(.model, time_var, ...) {
-  if (!is.null(.model$data)) {
-    time_var <- colnames(
-      .model$data %>%
-        dplyr::select(rlang::enexpr(time_var))
-    )[1]
-  }
-  .model$spec$time_var <- time_var
-  .model$spec$timepoints <- c(...)
+#' m <- adni_sample %>% aba_trial() %>%
+#'   set_times(VISIT == 1.5, VISIT==2)
+set_times <- function(.model, ...) {
+  .model$spec$times <-
+    unname(unlist(parse_filter_expr(..., data=.model$data)))
   .model
 }
 
