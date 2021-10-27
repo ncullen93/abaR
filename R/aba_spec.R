@@ -42,49 +42,6 @@ aba_spec <- function(groups='everyone',
 }
 
 
-# take characters or tidy evaluation inputs and turn to strings
-parse_select_expr <- function(..., data) {
-  rlang::enexprs(...) %>% purrr::map(
-    function(xx) {
-      if (is.null(data)) {
-        if (is.character(xx)) {
-          return(eval(xx))
-        } else if (is.call(xx)) {
-          xx <- tryCatch(
-            {
-              eval(xx, envir=new.env(parent=baseenv()))
-            },
-            error=function(cond) stop('You must set data if you are using tidy evaluation.')
-          )
-          return(xx)
-        }
-        else {
-          stop('You must set data if you are using tidy evaluation.')
-        }
-      }
-      names(tidyselect::eval_select(xx, data))
-    }
-  )
-}
-
-parse_filter_expr <- function(..., data) {
-
-  rlang::enexprs(...) %>% purrr::map(
-    function(x) {
-      if (is.character(x)) {
-        x <- str2lang(x)
-        if (is.null(data)) return(deparse(x))
-      } else {
-        if (is.null(data)) stop('You must set data if you are using tidy evaluation.')
-      }
-      # check that filter works
-      data_tmp <- data %>% dplyr::filter(!!x)
-      # return string version of filter
-      deparse(x)
-    }
-  )
-}
-
 #' Set the groups of an aba spec
 #'
 #' @param .model abaModel
@@ -183,9 +140,5 @@ set_stats <- function(.model, ...) {
   names(stats) <- stats %>% purrr::map_chr('stat_type')
   .model$spec$stats <- stats
   .model
-}
-
-everyone <- function() {
-  TRUE
 }
 

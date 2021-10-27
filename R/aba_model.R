@@ -57,16 +57,8 @@ print.abaModel <- function(x, ...) {
   cat('Predictors:\n   ')
   cat(predictor_vals, sep='\n   ')
   cat('Stats:\n   ')
-  xx <- stat_vals %>% purrr::map_chr(~.$stat_type)
-  cat(xx, sep='\n   ')
-  #if (length(stat_vals) > 0) {
-  #  if (length(model$results) == 0) {
-  #    cat(' (not fit)')
-  #  } else {
-  #    cat(' (fit)')
-  #  }
-  #}
-
+  stat_vals <- stat_vals %>% purrr::map_chr(~.$stat_type)
+  cat(stat_vals, sep='\n   ')
 }
 
 
