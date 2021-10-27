@@ -8,6 +8,7 @@
 #'
 #' @param inclusion vector. inclusion criteria to use.
 #' @param outcomes vector. outcomes to use.
+#' @param time_var string time variable in data.
 #' @param timepoints vector. timepoints to use.
 #' @param stats character or vector. stat to use.
 #'
@@ -59,6 +60,7 @@ set_inclusion <- function(.model, ...) {
 #' Set the timepoints of a trial spec
 #'
 #' @param .model abaTrial
+#' @param time_var variable or string. data variable with time values
 #' @param ... numeric or character. how long the trial will be.
 #'
 #' @return An abaTrial object
@@ -66,7 +68,7 @@ set_inclusion <- function(.model, ...) {
 #' @export
 #'
 #' @examples
-#' m <- aba_model() %>% set_timepoints()
+#' m <- aba_model() %>% set_timepoints('VISIT', 1.5, 2)
 set_timepoints <- function(.model, time_var, ...) {
   if (!is.null(.model$data)) {
     time_var <- colnames(

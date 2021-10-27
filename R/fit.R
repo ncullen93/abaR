@@ -46,17 +46,38 @@ fit.abaTrial <- function(object, ...) {
 }
 
 # generic compile method
+#' @export
 compile <- function(model) {
   UseMethod('compile')
 }
 
 # compile abaTrial
+#' @export
 compile.abaTrial <- function(model) {
-  print('compiling aba trial')
+
   data <- model$data
+  inclusion_vals <- paste(model$spec$inclusion, collapse=' & ')
+  outcome_vals <- model$spec$outcomes
+  time_var <- model$spec$time_var
+  timepoint_vals <- model$spec$timepoints
+  stat_vals <- model$spec$stats
+
+  val_list <- list(
+    'inclusion' = inclusion_vals,
+    'outcomes' = as.vector(outcome_vals),
+    'time_var' = as.vector(time_var),
+    'timepoints' = as.vector(timepoint_vals),
+    'stats' = list(stat_vals)
+  )
+
+  init_df <- val_list %>% purrr::cross_df()
+  init_df <- cbind(MID = stringr::str_c('T', rownames(init_df)), init_df)
+  model$results <- init_df %>% dplyr::tibble()
+  return(model)
 }
 
 # compile abaModel
+#' @export
 compile.abaModel <- function(model) {
   data <- model$data
   group_vals <- model$spec$group
@@ -84,7 +105,6 @@ compile.abaModel <- function(model) {
   )
 
   init_df <- val_list %>% purrr::cross_df()
-
   init_df <- cbind(MID = stringr::str_c('M', rownames(init_df)), init_df)
   model$results <- init_df %>% dplyr::tibble()
   return(model)

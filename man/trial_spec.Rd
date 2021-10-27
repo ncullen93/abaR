@@ -17,6 +17,8 @@ trial_spec(
 
 \item{outcomes}{vector. outcomes to use.}
 
+\item{time_var}{string time variable in data.}
+
 \item{timepoints}{vector. timepoints to use.}
 
 \item{stats}{character or vector. stat to use.}

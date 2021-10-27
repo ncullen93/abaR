@@ -9,6 +9,8 @@ set_timepoints(.model, time_var, ...)
 \arguments{
 \item{.model}{abaTrial}
 
+\item{time_var}{variable or string. data variable with time values}
+
 \item{...}{numeric or character. how long the trial will be.}
 }
 \value{
@@ -18,5 +20,5 @@ An abaTrial object
 Set the timepoints of a trial spec
 }
 \examples{
-m <- aba_model() \%>\% set_timepoints()
+m <- aba_model() \%>\% set_timepoints('VISIT', 1.5, 2)
 }
