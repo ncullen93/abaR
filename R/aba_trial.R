@@ -33,6 +33,95 @@ aba_trial <- function(data = NULL,
   )
 }
 
+# compile abaTrial
+#' @export
+compile.abaTrial <- function(model) {
+
+  data <- model$data
+  inclusion_vals <- paste(model$spec$inclusion, collapse=' & ')
+  outcome_vals <- model$spec$outcomes
+  time_var <- model$spec$time_var
+  timepoint_vals <- model$spec$timepoints
+  stat_vals <- model$spec$stats
+
+  val_list <- list(
+    'inclusion' = inclusion_vals,
+    'outcomes' = as.vector(outcome_vals),
+    'time_var' = as.vector(time_var),
+    'timepoints' = as.vector(timepoint_vals),
+    'stats' = list(stat_vals)
+  )
+
+  init_df <- val_list %>% purrr::cross_df()
+  init_df <- cbind(TID = stringr::str_c('T', rownames(init_df)), init_df)
+  model$results <- init_df %>% dplyr::tibble()
+  return(model)
+}
+
+#' Fit an aba trial
+#'
+#' This will trigger the fitting of all models
+#' (`stats`) on the different parameter combinations (`spec`).
+#'
+#' @param object abaTrial The aba trial to be fitted.
+#' @param ... additional parameters.
+#'
+#' @return abaTrial
+#' @export
+#' @examples
+#' m <- aba_trial()
+fit.abaTrial <- function(object, ...) {
+  model <- object
+
+  # compile model
+  model <- model %>% compile()
+
+  # fit stats on spec
+  fit_df <- model$results %>%
+    dplyr::rowwise() %>%
+    dplyr::mutate(
+      fits = parse_then_fit_abaTrial(
+        data=model$data,
+        inclusion=.data$inclusion,
+        outcome=.data$outcomes,
+        time_var=.data$time_VAR,
+        timepoint=.data$timepoints,
+        stats=.data$stats
+      )
+    ) %>%
+    tidyr::unnest_wider(
+      .data$fits
+    )
+#
+  #model$results <- fit_df
+  return(model)
+}
+
+
+# need a preprocessing function to parse
+parse_then_fit_abaTrial <- function(
+  data, inclusion, outcome, time_var, timepoint, stats
+) {
+
+  # filter original data by group
+  my_data <- data %>% dplyr::filter(
+    rlang::eval_tidy(rlang::parse_expr(group))
+  )
+
+  # fit all of the stats on the given parameters
+  stat_models <- stats %>%
+    purrr::map(
+      function(stat_obj) {
+        my_formula <- stat_obj$formula_fn(outcome, predictors, covariates)
+        my_model <- stat_obj$fit_fn(my_formula, my_data)
+        return(my_model)
+      }
+    )
+
+  return(
+    list(stat_models)
+  )
+}
 
 #print.abaTrial <- function(x, ...) {
 #  model <- x

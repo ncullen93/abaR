@@ -2,6 +2,13 @@
 #' @export
 generics::fit
 
+# generic compile method
+#' @export
+compile <- function(model) {
+  UseMethod('compile')
+}
+
+
 #' Fit an aba model.
 #'
 #' This will trigger the fitting of all statistical models
@@ -24,7 +31,7 @@ fit.abaModel <- function(object, ...) {
   fit_df <- model$results %>%
     dplyr::rowwise() %>%
     dplyr::mutate(
-      fits = parse_then_fit(
+      fits = parse_then_fit_abaModel(
         data=model$data,
         group=.data$groups,
         outcome=.data$outcomes,
@@ -41,40 +48,7 @@ fit.abaModel <- function(object, ...) {
   return(model)
 }
 
-fit.abaTrial <- function(object, ...) {
 
-}
-
-# generic compile method
-#' @export
-compile <- function(model) {
-  UseMethod('compile')
-}
-
-# compile abaTrial
-#' @export
-compile.abaTrial <- function(model) {
-
-  data <- model$data
-  inclusion_vals <- paste(model$spec$inclusion, collapse=' & ')
-  outcome_vals <- model$spec$outcomes
-  time_var <- model$spec$time_var
-  timepoint_vals <- model$spec$timepoints
-  stat_vals <- model$spec$stats
-
-  val_list <- list(
-    'inclusion' = inclusion_vals,
-    'outcomes' = as.vector(outcome_vals),
-    'time_var' = as.vector(time_var),
-    'timepoints' = as.vector(timepoint_vals),
-    'stats' = list(stat_vals)
-  )
-
-  init_df <- val_list %>% purrr::cross_df()
-  init_df <- cbind(MID = stringr::str_c('T', rownames(init_df)), init_df)
-  model$results <- init_df %>% dplyr::tibble()
-  return(model)
-}
 
 # compile abaModel
 #' @export
@@ -112,7 +86,9 @@ compile.abaModel <- function(model) {
 
 
 # need a preprocessing function to parse
-parse_then_fit <- function(data, group, outcome, predictors, covariates, stats) {
+parse_then_fit_abaModel <- function(
+  data, group, outcome, predictors, covariates, stats
+) {
 
   # filter original data by group
   my_data <- data %>% dplyr::filter(

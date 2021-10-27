@@ -45,7 +45,7 @@ You can install the development version from
 devtools::install_github("ncullen93/abaR")
 ```
 
-## Example: statistical analysis
+## Statistical analysis
 
 The general workflow of fitting an aba model for statistical analysis
 looks like this:
@@ -74,8 +74,28 @@ model <- adni_sample %>% aba_model() %>%
   ) %>%
   fit()
 
-print(model)
-
 model_summary <- model %>% aba_summary()
-print(model_summary)
+```
+
+## Trial planning with biomarkers
+
+The general workflow for fitting an aba trial for planning clinical
+trials with the help of biomarker-based screening looks like this:
+
+``` r
+model <- adni_sample %>% aba_trial() %>%
+  set_inclusion(
+    DX_bl == 'MCI',
+    AGE_bl > 55, AGE_bl < 85
+  ) %>%
+  set_outcomes(
+    MMSE, CDRSB
+  ) %>%
+  set_timepoints(
+    Years_bl, 
+    1.5, 2
+  ) %>%
+  set_stats(
+    stat_power(alpha=0.05, power=0.8, delta=0.3, method='t.test')
+  )
 ```
