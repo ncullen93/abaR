@@ -5,7 +5,7 @@
 \title{Create a trial spec}
 \usage{
 trial_spec(
-  inclusion = NULL,
+  groups = NULL,
   outcomes = NULL,
   time_var = NULL,
   timepoints = NULL,
@@ -13,8 +13,6 @@ trial_spec(
 )
 }
 \arguments{
-\item{inclusion}{vector. inclusion criteria to use.}
-
 \item{outcomes}{vector. outcomes to use.}
 
 \item{time_var}{string time variable in data.}
@@ -22,6 +20,8 @@ trial_spec(
 \item{timepoints}{vector. timepoints to use.}
 
 \item{stats}{character or vector. stat to use.}
+
+\item{inclusion}{vector. inclusion criteria to use.}
 }
 \value{
 A trialSpec object

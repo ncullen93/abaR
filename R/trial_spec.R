@@ -1,12 +1,12 @@
 #' Create a trial spec
 #'
 #' A trial spec is composed of the following:
-#'   - inclusion
+#'   - groups
 #'   - outcomes
 #'   - timepoints
 #'   - stats
 #'
-#' @param inclusion vector. inclusion criteria to use.
+#' @param groups vector. group selection criteria to use.
 #' @param outcomes vector. outcomes to use.
 #' @param time_var string time variable in data.
 #' @param timepoints vector. timepoints to use.
@@ -18,14 +18,14 @@
 #'
 #' @examples
 #' spec <- trial_spec()
-trial_spec <- function(inclusion=NULL,
+trial_spec <- function(groups=NULL,
                        outcomes=NULL,
                        time_var=NULL,
                        timepoints=NULL,
                        stats=NULL) {
 
   spec <- list(
-    'inclusion' = inclusion,
+    'groups' = groups,
     'outcomes' = outcomes,
     'timevar' = time_var,
     'timepoints' = timepoints,
@@ -37,24 +37,6 @@ trial_spec <- function(inclusion=NULL,
   return(
     spec
   )
-}
-
-
-#' Set the inclusion of a trial spec
-#'
-#' @param .model abaTrial
-#' @param ... statements. inclusion criteria
-#'
-#' @return An abaTrial object
-#'
-#' @export
-#'
-#' @examples
-#' m <- aba_model() %>% set_inclusion()
-set_inclusion <- function(.model, ...) {
-  .model$spec$inclusion <-
-    unname(unlist(parse_filter_expr(..., data=.model$data)))
-  .model
 }
 
 #' Set the timepoints of a trial spec

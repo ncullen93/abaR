@@ -38,14 +38,14 @@ aba_trial <- function(data = NULL,
 compile.abaTrial <- function(model) {
 
   data <- model$data
-  inclusion_vals <- paste(model$spec$inclusion, collapse=' & ')
+  group_vals <- model$spec$group
   outcome_vals <- model$spec$outcomes
   time_var <- model$spec$time_var
   timepoint_vals <- model$spec$timepoints
   stat_vals <- model$spec$stats
 
   val_list <- list(
-    'inclusion' = inclusion_vals,
+    'groups' = group_vals,
     'outcomes' = as.vector(outcome_vals),
     'time_var' = as.vector(time_var),
     'timepoints' = as.vector(timepoint_vals),
@@ -82,7 +82,7 @@ fit.abaTrial <- function(object, ...) {
     dplyr::mutate(
       fits = parse_then_fit_abaTrial(
         data=model$data,
-        inclusion=.data$inclusion,
+        group=.data$groups,
         outcome=.data$outcomes,
         time_var=.data$time_VAR,
         timepoint=.data$timepoints,
@@ -100,7 +100,7 @@ fit.abaTrial <- function(object, ...) {
 
 # need a preprocessing function to parse
 parse_then_fit_abaTrial <- function(
-  data, inclusion, outcome, time_var, timepoint, stats
+  data, group, outcome, time_var, timepoint, stats
 ) {
 
   # filter original data by group
