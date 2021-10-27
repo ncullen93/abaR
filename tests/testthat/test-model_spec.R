@@ -1,6 +1,6 @@
 test_that("creation works", {
-  spec <- aba_spec()
-  expect_s3_class(spec, 'abaSpec')
+  spec <- model_spec()
+  expect_s3_class(spec, 'modelSpec')
 })
 
 test_that('set_groups works', {

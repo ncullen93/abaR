@@ -1,6 +1,6 @@
-#' Create an aba spec
+#' Create a model spec
 #'
-#' An aba spec is composed of the following:
+#' A model spec is composed of the following:
 #'   - groups
 #'   - outcomes
 #'   - covariates
@@ -12,13 +12,13 @@
 #' @param predictors vector or list. predictors to use
 #' @param stats character or vector. stat to use.
 #'
-#' @return An abaSpec object
+#' @return An modelSpec object
 #'
 #' @export
 #'
 #' @examples
-#' spec <- aba_spec()
-aba_spec <- function(groups='everyone',
+#' spec <- model_spec()
+model_spec <- function(groups='everyone',
                      outcomes=NULL,
                      covariates=NULL,
                      predictors=NULL,
@@ -34,7 +34,7 @@ aba_spec <- function(groups='everyone',
     'stats' = stats
   )
 
-  class(spec) <- 'abaSpec'
+  class(spec) <- 'modelSpec'
 
   return(
     spec
@@ -42,7 +42,7 @@ aba_spec <- function(groups='everyone',
 }
 
 
-#' Set the groups of an aba spec
+#' Set the groups of an model spec
 #'
 #' @param .model abaModel
 #' @param ... groups
@@ -59,7 +59,7 @@ set_groups <- function(.model, ...) {
   .model
 }
 
-#' Set the outcomes of an aba spec
+#' Set the outcomes of an model spec
 #'
 #' @param .model abaModel
 #' @param ... outcomes
@@ -76,7 +76,7 @@ set_outcomes <- function(.model, ...) {
   .model
 }
 
-#' Set the covariates of an aba spec
+#' Set the covariates of an model spec
 #'
 #' @param .model abaModel
 #' @param ... covariates
@@ -93,7 +93,7 @@ set_covariates <- function(.model, ...) {
   .model
 }
 
-#' Set the predictors of an aba spec
+#' Set the predictors of an model spec
 #'
 #' @param .model abaModel
 #' @param ... predictors

@@ -28,5 +28,5 @@ A trial spec is composed of the following:
 }
 }
 \examples{
-spec <- aba_spec()
+spec <- trial_spec()
 }

@@ -16,7 +16,7 @@
 #' @export
 #'
 #' @examples
-#' spec <- aba_spec()
+#' spec <- trial_spec()
 trial_spec <- function(inclusion=NULL,
                        outcomes=NULL,
                        timepoints=NULL,
@@ -35,3 +35,40 @@ trial_spec <- function(inclusion=NULL,
     spec
   )
 }
+
+
+#' Set the inclusion of a trial spec
+#'
+#' @param .model abaTrial
+#' @param ... statements. inclusion criteria
+#'
+#' @return An abaTrial object
+#'
+#' @export
+#'
+#' @examples
+#' m <- aba_model() %>% set_inclusion()
+set_inclusion <- function(.model, ...) {
+  .model$spec$inclusion <-
+    unname(unlist(parse_filter_expr(..., data=.model$data)))
+  .model
+}
+
+#' Set the timepoints of a trial spec
+#'
+#' @param .model abaTrial
+#' @param ... numeric or character. how long the trial will be.
+#'
+#' @return An abaTrial object
+#'
+#' @export
+#'
+#' @examples
+#' m <- aba_model() %>% set_timepoints()
+set_timepoints <- function(.model, ...) {
+  .model$spec$outcomes <- c(...)
+  .model
+}
+
+
+

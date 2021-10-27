@@ -42,6 +42,8 @@ parse_filter_expr <- function(..., data) {
   )
 }
 
+# used to include all rows of dataset (no filtering)
+# e.g. aba_model() %>% set_groups(DX_bl=='CU', everyone())
 everyone <- function() {
   TRUE
 }
