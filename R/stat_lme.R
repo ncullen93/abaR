@@ -92,7 +92,7 @@ aba_fit_lme <- function(formula, data, extra_params) {
 #' @export
 aba_glance.lme <- function(x, ...) {
 
-  glance_df <- broom.mixed::glance(x) %>%
+  glance_df <- broom.mixed::glance(x) %>% #select(-logLik)
     dplyr::bind_cols(
       tibble::tibble(
         R2 = MuMIn::r.squaredGLMM(x)[1,][['R2m']]

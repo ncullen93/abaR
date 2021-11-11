@@ -9,7 +9,6 @@
 #' @examples
 #' m <- aba_model()
 aba_summary <- function(model, ...) {
-
   coefs_df <- coefs_summary(model)
   metrics_df <- metrics_summary(model)
   results_df <- coefs_df %>%
@@ -145,6 +144,8 @@ metrics_summary <- function(model) {
       dplyr::any_of(metric_vars)
     ) %>%
     dplyr::ungroup()
+
+
 
   return(r)
 }

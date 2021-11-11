@@ -86,7 +86,7 @@ aba_fit_mmrm <- function(formula, data, extra_params) {
 
 #' @export
 aba_glance.gls <- function(x, ...) {
-  glance_df <- broom.mixed::glance(x)
+  glance_df <- broom.mixed::glance(x) %>% select(-logLik)
   return(glance_df)
 }
 
