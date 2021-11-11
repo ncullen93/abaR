@@ -85,13 +85,20 @@ aba_fit_lme <- function(formula, data, extra_params) {
 
   model$call$fixed <- stats::formula(formula)
   model$call$random <- stats::formula(random_formula)
+  model$call$data <- data
   return(model)
 }
 
 #' @export
 aba_glance.lme <- function(x, ...) {
-  # tidy glance
-  glance_df <- broom.mixed::glance(x)
+
+  glance_df <- broom.mixed::glance(x) %>%
+    dplyr::bind_cols(
+      tibble::tibble(
+        R2 = MuMIn::r.squaredGLMM(x)[1,][['R2m']]
+      )
+    )
+
   return(glance_df)
 }
 

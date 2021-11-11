@@ -31,12 +31,11 @@ aba_summary <- function(model, ...) {
 aba_tidy <- function(model, predictors) {
   if ('lme' %in% class(model)) {
     time_var <- strsplit(as.character(model$call$random)[2],' | ',fixed=T)[[1]][1]
-    m <- broom.mixed::tidy(model) %>%
-      filter(effect == 'fixed') %>%
-      select(-c(df, effect, group)) %>%
+    m <- broom.mixed::tidy(model, effects='fixed', conf.int=T) %>%
+      select(-c(df, conf.low, conf.high)) %>%
       filter(
         !(term %in% predictors),
-        term !=time_var
+        term != time_var
       ) %>%
       mutate(
         term = strsplit(term, ':') %>%
@@ -101,6 +100,7 @@ coefs_summary <- function(model) {
 metrics_summary <- function(model) {
   metric_vars <- c(
     'adj.r.squared',
+    'R2',
     'AUC',
     'AIC',
     'nobs'
