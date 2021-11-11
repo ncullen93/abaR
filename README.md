@@ -51,6 +51,7 @@ The general workflow of fitting an aba model for statistical analysis
 looks like this:
 
 ``` r
+library(aba)
 model <- adni_sample %>% aba_model() %>%
   set_groups(
     DX_bl == 'CU',
@@ -83,6 +84,7 @@ The general workflow for fitting an aba trial for planning clinical
 trials with the help of biomarker-based screening looks like this:
 
 ``` r
+library(aba)
 model <- adni_sample %>% aba_trial() %>%
   set_groups(
     list(DX_bl == 'MCI', AGE_bl > 55, AGE_bl < 85),
