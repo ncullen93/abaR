@@ -16,6 +16,11 @@ test_that("standard lme works", {
       fit(),
     NA
   )
+
+  expect_error(
+    model_sum <- model %>% aba_summary(),
+    NA
+  )
 })
 
 test_that("forgetting parameters throws error", {

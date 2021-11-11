@@ -77,7 +77,7 @@ aba_fit_lme <- function(formula, data, extra_params) {
                      random = stats::formula(random_formula),
                      control = nlme::lmeControl(
                        maxIter = 1e10,
-                       msMaxIter=1000,
+                       msMaxIter = 1000,
                        opt = "optim"
                      ),
                      na.action = stats::na.omit,
@@ -88,4 +88,10 @@ aba_fit_lme <- function(formula, data, extra_params) {
   return(model)
 }
 
+#' @export
+aba_glance.lme <- function(x, ...) {
+  # tidy glance
+  glance_df <- broom.mixed::glance(x)
+  return(glance_df)
+}
 

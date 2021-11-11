@@ -12,7 +12,6 @@ aba_summary <- function(model, ...) {
 
   coefs_df <- coefs_summary(model)
   metrics_df <- metrics_summary(model)
-
   results_df <- coefs_df %>%
     dplyr::left_join(
       metrics_df %>% dplyr::select(-c(.data$groups,
@@ -29,12 +28,35 @@ aba_summary <- function(model, ...) {
   return(s)
 }
 
+aba_tidy <- function(model, predictors) {
+  if ('lme' %in% class(model)) {
+    time_var <- strsplit(as.character(model$call$random)[2],' | ',fixed=T)[[1]][1]
+    m <- broom.mixed::tidy(model) %>%
+      filter(effect == 'fixed') %>%
+      select(-c(df, effect, group)) %>%
+      filter(
+        !(term %in% predictors),
+        term !=time_var
+      ) %>%
+      mutate(
+        term = strsplit(term, ':') %>%
+          map_chr(~.[length(.)])
+      )
+  }
+  else {
+    broom::tidy(model)
+  }
+}
 
 coefs_summary <- function(model) {
   coef_fmt <- paste(
-    '{sprintf("%.1f", estimate)}',
+    '{sprintf("%.2f", estimate)}',
     '(P={sprintf("%.4f", p.value)})'
   )
+
+  all_predictors <- model$spec$predictors %>%
+    purrr::map(~strsplit(.,' | ',fixed=T)) %>%
+    unlist() %>% unique()
 
   # coefficients
   r <- model$results %>%
@@ -43,7 +65,7 @@ coefs_summary <- function(model) {
         names(model$spec$stats),
         ~purrr::map(
           .x,
-          broom::tidy
+          ~aba_tidy(., all_predictors)
         )
       )
     ) %>%

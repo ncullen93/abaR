@@ -2,6 +2,7 @@
 
 S3method(aba_glance,glm)
 S3method(aba_glance,lm)
+S3method(aba_glance,lme)
 S3method(compile,abaModel)
 S3method(compile,abaTrial)
 S3method(fit,abaModel)
