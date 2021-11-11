@@ -28,10 +28,10 @@ aba_summary <- function(model, ...) {
   return(s)
 }
 
-aba_tidy <- function(model, predictors) {
+aba_tidy <- function(model, predictors, covariates) {
   if ('lme' %in% class(model)) {
     time_var <- strsplit(as.character(model$call$random)[2],' | ',fixed=T)[[1]][1]
-    m <- broom.mixed::tidy(model, effects='fixed', conf.int=T) %>%
+    broom.mixed::tidy(model, effects='fixed', conf.int=T) %>%
       select(-c(df, conf.low, conf.high)) %>%
       filter(
         !(term %in% predictors),
@@ -41,8 +41,17 @@ aba_tidy <- function(model, predictors) {
         term = strsplit(term, ':') %>%
           map_chr(~.[length(.)])
       )
-  }
-  else {
+  } else if ('gls' %in% class(model)) {
+    time_var <- strsplit(as.character(model$call$weights)[2], ' | ')[[1]][3]
+    x <- broom.mixed::tidy(model, conf.int=T) %>%
+      select(-c(conf.low, conf.high)) %>%
+      filter(
+        !(term %in% predictors)
+      ) %>%
+      filter(
+        !startsWith(term, time_var) | grepl('\\:', term)
+      )
+  } else {
     broom::tidy(model)
   }
 }
@@ -57,6 +66,8 @@ coefs_summary <- function(model) {
     purrr::map(~strsplit(.,' | ',fixed=T)) %>%
     unlist() %>% unique()
 
+  all_covariates <- model$spec$covariates
+
   # coefficients
   r <- model$results %>%
     dplyr::mutate(
@@ -64,7 +75,7 @@ coefs_summary <- function(model) {
         names(model$spec$stats),
         ~purrr::map(
           .x,
-          ~aba_tidy(., all_predictors)
+          ~aba_tidy(., all_predictors, all_covariates)
         )
       )
     ) %>%
