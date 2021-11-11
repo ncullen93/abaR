@@ -36,4 +36,9 @@ aba_glance <- function(x, ...) {
 #' @export
 print.abaStat <- function(x, ...) {
   cat(x$stat_type)
+  if (!is.null(x$extra_params)) {
+    cat('( ')
+    x$extra_params %>% purrr::iwalk(~cat(.y, ': ', .x, ' | ', sep=''))
+    cat(')')
+  }
 }

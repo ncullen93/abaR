@@ -57,11 +57,9 @@ print.abaModel <- function(x, ...) {
   cat('Predictors:\n   ')
   cat(predictor_vals, sep='\n   ')
   cat('Stats:\n   ')
-  stat_vals <- stat_vals %>% purrr::map_chr(~.$stat_type)
-  cat(stat_vals, sep='\n   ')
+  #stat_vals <- stat_vals %>% purrr::map_chr(~.$stat_type)
+  stat_vals %>% purrr::walk(~cat(print(.),'\n   '))#, sep='\n   ')
 }
-
-
 
 
 

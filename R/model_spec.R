@@ -19,10 +19,10 @@
 #' @examples
 #' spec <- model_spec()
 model_spec <- function(groups='everyone',
-                     outcomes=NULL,
-                     covariates=NULL,
-                     predictors=NULL,
-                     stats=NULL) {
+                       outcomes=NULL,
+                       covariates=NULL,
+                       predictors=NULL,
+                       stats=NULL) {
 
   if (groups == 'everyone') groups <- 'everyone()'
 
