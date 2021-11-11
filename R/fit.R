@@ -82,7 +82,7 @@ compile.abaModel <- function(model) {
     'groups' = group_vals,
     'outcomes' = as.vector(outcome_vals),
     'predictors' = as.vector(predictor_vals),
-    'covariates' = stringr::str_c(covariate_vals, collapse='_+_'),
+    'covariates' = stringr::str_c(covariate_vals, collapse=' | '),
     'stats' = list(stat_vals)
   )
 
@@ -104,16 +104,21 @@ parse_then_fit_abaModel <- function(
   )
 
   # parse predictors and covariates into vectors
-  predictors <- unlist(strsplit(predictors,'\\_\\+\\_'))
-  covariates <- unlist(strsplit(covariates,'\\_\\+\\_'))
+  predictors <- unlist(strsplit(predictors,' \\| '))
+  covariates <- unlist(strsplit(covariates,' \\| '))
 
   # lookup stat objects from strings
   # fit the models
   stat_models <- stats %>%
     purrr::map(
       function(stat_obj) {
-        my_formula <- stat_obj$formula_fn(outcome, predictors, covariates)
-        my_model <- stat_obj$fit_fn(my_formula, my_data)
+        extra_params <- stat_obj$extra_params
+        my_formula <- stat_obj$formula_fn(
+          outcome, predictors, covariates, extra_params
+        )
+        my_model <- stat_obj$fit_fn(
+          my_formula, my_data, extra_params
+        )
         return(my_model)
       }
     )

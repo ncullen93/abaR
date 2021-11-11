@@ -107,7 +107,7 @@ set_covariates <- function(.model, ...) {
 set_predictors <- function(.model, ...) {
   .model$spec$predictors <- unname(
     parse_select_expr(..., data=.model$data) %>%
-    purrr::map_chr(~stringr::str_c(., collapse='_+_'))
+    purrr::map_chr(~stringr::str_c(., collapse=' | '))
   )
   .model$spec$predictors <- c(
     '',

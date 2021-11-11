@@ -37,8 +37,12 @@ aba_glance <- function(x, ...) {
 print.abaStat <- function(x, ...) {
   cat(x$stat_type)
   if (!is.null(x$extra_params)) {
-    cat('( ')
-    x$extra_params %>% purrr::iwalk(~cat(.y, ': ', .x, ' | ', sep=''))
+    cat('(')
+    ep <- x$extra_params
+    for (ix in seq_along(ep)) {
+      cat(names(ep)[ix], ' = ', ep[[ix]], sep='')
+      if (ix != length(ep)) cat(' | ')
+    }
     cat(')')
   }
 }

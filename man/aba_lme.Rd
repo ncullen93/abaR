@@ -4,12 +4,12 @@
 \alias{aba_lme}
 \title{Create a lme stat to use for an aba model.}
 \usage{
-aba_lme(id_var, time_var)
+aba_lme(id, time)
 }
 \arguments{
-\item{id_var}{string or variable. id variable}
+\item{id}{string or variable. id variable}
 
-\item{time_var}{string or variable. time variable.}
+\item{time}{string or variable. time variable.}
 }
 \value{
 list of the following functions:
@@ -23,8 +23,8 @@ list of the following functions:
 Create a lme stat to use for an aba model.
 }
 \examples{
-my_stat <- aba_lme(id_var='SUBJECT_ID',
-                   time_var='Years_bl')
+my_stat <- aba_lme(id='SUBJECT_ID',
+                   time='Years_bl')
 
 #my_formula <- my_stat$formula_fn(
 #  outcome='ConvertedToAlzheimers',

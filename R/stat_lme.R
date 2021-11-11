@@ -31,9 +31,8 @@
 aba_lme <- function(id,
                     time) {
   fns <- list(
-    'formula_fn' = aba_lme_formula,
-    'fit_fn' = aba_lme_fit,
-    'evaluate_fn' = aba_lme_evaluate,
+    'formula_fn' = aba_formula_lme,
+    'fit_fn' = aba_fit_lme,
     'extra_params' = list(
       'id' = id,
       'time' = time
@@ -45,11 +44,11 @@ aba_lme <- function(id,
   return(fns)
 }
 
-aba_lme_formula <- function(outcome, predictors, covariates, ...) {
-  formula_args <- list(...)
-  time <- formula_args$time
-  id <- formula_args$id
-  interaction_vars <- formula_args$interaction_vars
+aba_formula_lme <- function(outcome, predictors, covariates, extra_params) {
+  time <- extra_params$time
+  id <- extra_params$id
+  #interaction_vars <- extra_params$interaction_vars
+  interaction_vars <- c()
   covariates <- covariates[!(covariates %in% interaction_vars)]
 
   f <- paste(outcome, "~", time)
@@ -69,10 +68,9 @@ aba_lme_formula <- function(outcome, predictors, covariates, ...) {
 }
 
 # fit a lme model
-aba_lme_fit <- function(formula, data, ...) {
-  fit_args <- list(...)
-  time <- fit_args$time
-  id <- fit_args$id
+aba_fit_lme <- function(formula, data, extra_params) {
+  time <- extra_params$time
+  id <- extra_params$id
   random_formula <- glue::glue('~ {time} | {id}')
 
   model <- nlme::lme(stats::formula(formula),
@@ -82,16 +80,12 @@ aba_lme_fit <- function(formula, data, ...) {
                        msMaxIter=1000,
                        opt = "optim"
                      ),
-                     data = data, method = "ML")
+                     na.action = stats::na.omit,
+                     data = data, method = "REML")
 
   model$call$fixed <- stats::formula(formula)
   model$call$random <- stats::formula(random_formula)
   return(model)
-}
-
-# evaluate a lme model
-aba_lme_evaluate <- function(model, data) {
-
 }
 
 
