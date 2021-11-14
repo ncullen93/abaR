@@ -85,7 +85,7 @@ aba_fit_lme <- function(formula, data, extra_params) {
 
   model$call$fixed <- stats::formula(formula)
   model$call$random <- stats::formula(random_formula)
-  model$call$data <- data
+  #model$call$data <- data
   return(model)
 }
 

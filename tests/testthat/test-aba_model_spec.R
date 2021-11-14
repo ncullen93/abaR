@@ -1,5 +1,5 @@
 test_that("creation works", {
-  spec <- model_spec()
+  spec <- aba_model_spec()
   expect_s3_class(spec, 'modelSpec')
 })
 

@@ -12,7 +12,7 @@
 #'   - fits: the fitted statistical models once `fit()` is called
 #'
 #' @param data data.frame the data to use for the object
-#' @param spec modelSpec the spec to use for the model. Can be created with
+#' @param spec abaModelSpec the spec to use for the model. Can be created with
 #'   model_spec().
 #' @param results list the fitted statistical models
 #'
@@ -23,7 +23,7 @@
 #' @examples
 #' m <- aba_model()
 aba_model <- function(data = NULL,
-                      spec = model_spec(),
+                      spec = aba_model_spec(),
                       results = list()) {
 
   m <- list(
@@ -36,6 +36,76 @@ aba_model <- function(data = NULL,
 
   return(
     m
+  )
+}
+
+# compile abaModel
+#' @export
+compile.abaModel <- function(model) {
+  data <- model$data
+  group_vals <- model$spec$group
+  outcome_vals <- model$spec$outcomes
+  covariate_vals <- model$spec$covariates
+  predictor_vals <- model$spec$predictors
+  stat_vals <- model$spec$stats
+
+  if (is.null(predictor_vals)) predictor_vals <- ""
+
+  # check that minimum parameters have been set
+  if (is.null(model$data)) stop('You must set data before fitting.')
+  if (length(outcome_vals) == 0) stop('You must set at least one outcome.')
+  if (length(predictor_vals) + length(covariate_vals) == 0) {
+    stop('You must set at least one predictor or one covariate')
+  }
+  if (length(stat_vals) == 0) stop('You must set at least one stat.')
+
+  val_list <- list(
+    'groups' = group_vals,
+    'outcomes' = as.vector(outcome_vals),
+    'predictors' = as.vector(predictor_vals),
+    'covariates' = stringr::str_c(covariate_vals, collapse=' | '),
+    'stats' = list(stat_vals)
+  )
+
+  init_df <- val_list %>% purrr::cross_df()
+  init_df <- cbind(MID = stringr::str_c('M', rownames(init_df)), init_df)
+  model$results <- init_df %>% dplyr::tibble()
+  return(model)
+}
+
+# need a preprocessing function to parse
+
+parse_then_fit_abaModel <- function(
+  data, group, outcome, predictors, covariates, stats
+) {
+
+  # filter original data by group
+  my_data <- data %>% dplyr::filter(
+    rlang::eval_tidy(rlang::parse_expr(group))
+  )
+
+  # parse predictors and covariates into vectors
+  predictors <- unlist(strsplit(predictors,' \\| '))
+  covariates <- unlist(strsplit(covariates,' \\| '))
+
+  # lookup stat objects from strings
+  # fit the models
+  stat_models <- stats %>%
+    purrr::map(
+      function(stat_obj) {
+        extra_params <- stat_obj$extra_params
+        my_formula <- stat_obj$formula_fn(
+          outcome, predictors, covariates, extra_params
+        )
+        my_model <- stat_obj$fit_fn(
+          my_formula, my_data, extra_params
+        )
+        return(my_model)
+      }
+    )
+
+  return(
+    list(stat_models)
   )
 }
 

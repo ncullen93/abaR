@@ -12,13 +12,13 @@
 #' @param predictors vector or list. predictors to use
 #' @param stats character or vector. stat to use.
 #'
-#' @return An modelSpec object
+#' @return An abaModelSpec object
 #'
 #' @export
 #'
 #' @examples
-#' spec <- model_spec()
-model_spec <- function(groups='everyone',
+#' spec <- aba_model_spec()
+aba_model_spec <- function(groups='everyone',
                        outcomes=NULL,
                        covariates=NULL,
                        predictors=NULL,
@@ -34,7 +34,7 @@ model_spec <- function(groups='everyone',
     'stats' = stats
   )
 
-  class(spec) <- 'modelSpec'
+  class(spec) <- 'abaModelSpec'
 
   return(
     spec

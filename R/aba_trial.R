@@ -45,22 +45,25 @@ aba_trial <- function(data = NULL,
 #' m <- aba_trial()
 compile.abaTrial <- function(model) {
 
+  spec <- model$spec
   data <- model$data
-  group_vals <- model$spec$group
-  outcome_vals <- model$spec$outcomes
-  time_var <- model$spec$time_var
-  time_vals <- model$spec$times
-  stat_vals <- model$spec$stats
+
+  group_vals = as.vector(spec$group)
+  endpoint_vals = as.vector(spec$endpoints)
+  treatment_vals = as.vector(spec$treatment)
+  covariate_vals = stringr::str_c(spec$covariates, collapse=' | ')
+  stat_vals <- list(spec$stats)
 
   val_list <- list(
     'groups' = group_vals,
-    'outcomes' = as.vector(outcome_vals),
-    'times' = as.vector(time_vals),
-    'stats' = list(stat_vals)
+    'endpoints' = endpoint_vals,
+    'treatment' = treatment_vals,
+    'covariates' = covariate_vals,
+    'stats' = stat_vals
   )
 
   init_df <- val_list %>% purrr::cross_df()
-  init_df <- cbind(TID = stringr::str_c('T', rownames(init_df)), init_df)
+  init_df <- cbind(MID = stringr::str_c('M', rownames(init_df)), init_df)
   model$results <- init_df %>% dplyr::tibble()
   return(model)
 }
@@ -88,26 +91,31 @@ fit.abaTrial <- function(object, ...) {
     dplyr::rowwise() %>%
     dplyr::mutate(
       fits = parse_then_fit_abaTrial(
-        data=model$data,
-        group=.data$groups,
-        outcome=.data$outcomes,
-        time_var=.data$time_VAR,
-        time=.data$times,
-        stats=.data$stats
+        data = model$data,
+        group = .data$groups,
+        endpoint = .data$endpoints,
+        treatment = .data$treatment,
+        covariates = .data$covariates,
+        stats = .data$stats
       )
     ) %>%
     tidyr::unnest_wider(
       .data$fits
     )
-#
-  #model$results <- fit_df
+
+  model$results <- fit_df
   return(model)
 }
 
 
 # need a preprocessing function to parse
 parse_then_fit_abaTrial <- function(
-  data, group, outcome, time_var, time, stats
+  data,
+  group,
+  endpoint,
+  treatment,
+  covariates,
+  stats
 ) {
 
   # filter original data by group
@@ -115,17 +123,24 @@ parse_then_fit_abaTrial <- function(
     rlang::eval_tidy(rlang::parse_expr(group))
   )
 
+  covariates <- unlist(strsplit(covariates,' \\| '))
+
   # fit all of the stats on the given parameters
   stat_models <- stats %>%
     purrr::map(
       function(stat_obj) {
         my_formula <- stat_obj$formula_fn(
-          outcome,
-          time_var,
-          time
+          outcome = endpoint,
+          predictors = treatment,
+          covariates = covariates,
+          extra_params = stat_obj$extra_params
         )
-        my_model <- stat_obj$fit_fn(my_formula, my_data)
-        return(my_model)
+        my_fit <- stat_obj$fit_fn(
+          formula = my_formula,
+          data = my_data,
+          extra_params = stat_obj$extra_params
+        )
+        return(my_fit)
       }
     )
 

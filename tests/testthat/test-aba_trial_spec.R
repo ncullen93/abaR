@@ -1,4 +1,4 @@
 test_that("creation works", {
-  s <- trial_spec()
+  s <- aba_trial_spec()
   expect_s3_class(s, "trialSpec")
 })
