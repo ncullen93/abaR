@@ -5,7 +5,6 @@
 #' @param id string. id variable
 #' @param time string. time variable
 #'   (should be discrete visits common to all participants)
-#' @param treatment string. treatment variable.
 #'
 #' @return
 #' list of the following functions:
@@ -25,14 +24,13 @@
 #' #  covariates=c('AGE_bl','GENDER','EDUCAT'),
 #' #  id
 #' #)
-#'#
+#'
 #' #my_model <- my_stat$fit_fn(
 #' #  formula = my_formula,
 #' #  data = adni_sample
 #' #)
 aba_mmrm <- function(id,
-                     time,
-                     treatment=NULL) {
+                     time) {
   fns <- list(
     'formula_fn' = aba_formula_lme,
     'fit_fn' = aba_fit_mmrm,
@@ -41,7 +39,6 @@ aba_mmrm <- function(id,
       'time' = time
     )
   )
-  if (!is.null(treatment)) fns$extra_params$treatment <- treatment
   fns$stat_type <- 'mmrm'
   class(fns) <- 'abaStat'
 

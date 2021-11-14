@@ -17,7 +17,7 @@
 #' @examples
 #' m <- aba_model()
 aba_trial <- function(data = NULL,
-                      spec = trial_spec(),
+                      spec = aba_trial_spec(),
                       results = list()) {
 
   m <- list(
@@ -139,19 +139,45 @@ print.abaTrial <- function(x, ...) {
   model <- x
 
   group_vals <- model$spec$group
-  outcome_vals <- model$spec$outcomes
-  time_vals <- model$spec$times
+  endpoint_vals <- model$spec$endpoints
+  treatment_vals <- model$spec$treatment
+  covariate_vals <- model$spec$covariates
   stat_vals <- model$spec$stats
+  data <- model$data
 #
+  cat('Treatment:\n   ')
+  cat(treatment_vals, sep='\n   ')
   cat('Groups:\n   ')
   cat(group_vals, sep='\n   ')
-  cat('Outcomes:\n   ')
-  cat(outcome_vals, sep='\n   ')
-  cat('Times:\n   ')
-  cat(time_vals, sep='\n   ')
+  cat('Endpoints:\n   ')
+  cat(endpoint_vals, sep='\n   ')
+  cat('Covariates:\n   ')
+  cat(covariate_vals, sep=', ')
+  cat('\n')
   cat('Stats:\n   ')
-  xx <- stat_vals %>% purrr::map_chr(~.$stat_type)
-  cat(xx, sep='\n   ')
+  for (stat_idx in seq_along(stat_vals)) {
+    stat_val <- stat_vals[[stat_idx]]
+    x <- stat_val
+    cat(x$stat_type)
+    if (!is.null(x$extra_params)) {
+      cat('(')
+      ep <- x$extra_params
+      for (ix in seq_along(ep)) {
+        cat(names(ep)[ix], ' = ', ep[[ix]], sep='')
+        if (ix != length(ep)) cat(' | ')
+      }
+      cat(')')
+    }
+    if (stat_idx != length(stat_vals)) cat('\n   ')
+    #else cat('\n')
+  }
+
+  #xx <- stat_vals %>% purrr::walk(~print(.$stat_type))
+  cat('\n')
+  cat('Data:\n   ')
+  if (!is.null(data)) {
+    cat(paste(nrow(model$data), 'x', ncol(model$data)), sep='\n   ')
+  }
 }
 
 

@@ -4,15 +4,13 @@
 \alias{aba_mmrm}
 \title{Create a mmrm stat to use for an aba model.}
 \usage{
-aba_mmrm(id, time, treatment = NULL)
+aba_mmrm(id, time)
 }
 \arguments{
 \item{id}{string. id variable}
 
 \item{time}{string. time variable
 (should be discrete visits common to all participants)}
-
-\item{treatment}{string. treatment variable.}
 }
 \value{
 list of the following functions:
@@ -35,7 +33,7 @@ my_stat <- aba_mmrm(id='SUBJECT_ID',
 #  covariates=c('AGE_bl','GENDER','EDUCAT'),
 #  id
 #)
-#
+
 #my_model <- my_stat$fit_fn(
 #  formula = my_formula,
 #  data = adni_sample

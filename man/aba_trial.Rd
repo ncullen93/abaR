@@ -4,7 +4,7 @@
 \alias{aba_trial}
 \title{Create an aba trial}
 \usage{
-aba_trial(data = NULL, spec = trial_spec(), results = list())
+aba_trial(data = NULL, spec = aba_trial_spec(), results = list())
 }
 \arguments{
 \item{data}{data.frame. the data to use for the object}
