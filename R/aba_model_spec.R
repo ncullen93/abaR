@@ -18,13 +18,11 @@
 #'
 #' @examples
 #' spec <- aba_model_spec()
-aba_model_spec <- function(groups='everyone',
-                       outcomes=NULL,
-                       covariates=NULL,
-                       predictors=NULL,
-                       stats=NULL) {
-
-  if (groups == 'everyone') groups <- 'everyone()'
+aba_model_spec <- function(groups='everyone()',
+                           outcomes=NULL,
+                           covariates=NULL,
+                           predictors=NULL,
+                           stats=NULL) {
 
   spec <- list(
     'groups' = groups,

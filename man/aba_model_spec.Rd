@@ -5,7 +5,7 @@
 \title{Create a model spec}
 \usage{
 aba_model_spec(
-  groups = "everyone",
+  groups = "everyone()",
   outcomes = NULL,
   covariates = NULL,
   predictors = NULL,
