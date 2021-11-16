@@ -12,10 +12,10 @@ aba_summary <- function(model, ...) {
   coefs_df <- coefs_summary(model)
   metrics_df <- metrics_summary(model)
   results_df <- coefs_df %>%
-    dplyr::left_join(
-      metrics_df %>% dplyr::select(-c(.data$groups,
-                                      .data$outcomes,
-                                      .data$stat)),
+    left_join(
+      metrics_df %>% select(-c(.data$groups,
+                               .data$outcomes,
+                               .data$stat)),
       by = 'MID'
     )
 
@@ -31,14 +31,14 @@ aba_tidy <- function(model, predictors, covariates) {
   if ('lme' %in% class(model)) {
     time_var <- strsplit(as.character(model$call$random)[2],' | ',fixed=T)[[1]][1]
     broom.mixed::tidy(model, effects='fixed', conf.int=T) %>%
-      select(-c('df', 'conf.low', 'conf.high')) %>%
+      select(-c(.data$df, .data$conf.low, .data$conf.high)) %>%
       filter(
         !(.data$term %in% predictors),
         .data$term != time_var
       ) %>%
       mutate(
         term = strsplit(.data$term, ':') %>%
-          map_chr(~.[length(.)])
+          purrr::map_chr(~.[length(.)])
       )
   } else if ('gls' %in% class(model)) {
     time_var <- strsplit(as.character(model$call$weights)[2], ' | ')[[1]][3]
@@ -69,8 +69,8 @@ coefs_summary <- function(model) {
 
   # coefficients
   r <- model$results %>%
-    dplyr::mutate(
-      dplyr::across(
+    mutate(
+      across(
         names(model$spec$stats),
         ~purrr::map(
           .x,
@@ -78,28 +78,28 @@ coefs_summary <- function(model) {
         )
       )
     ) %>%
-    tidyr::pivot_longer(
-      cols = dplyr::all_of(names(model$spec$stats)),
+    pivot_longer(
+      cols = all_of(names(model$spec$stats)),
       names_to = 'stat',
       values_to = 'fit'
     ) %>%
-    tidyr::unnest(
+    unnest(
       .data$fit
     ) %>%
-    dplyr::filter(
+    filter(
       .data$term != '(Intercept)'
     ) %>%
-    dplyr::select(
+    select(
       -c(.data$predictors:.data$stats),
       -c(.data$std.error, .data$statistic)
     ) %>%
-    dplyr::mutate(
+    mutate(
       coef = as.character(glue::glue(
         coef_fmt
       ))
     ) %>%
-    dplyr::select(-c(.data$estimate, .data$p.value)) %>%
-    tidyr::pivot_wider(
+    select(-c(.data$estimate, .data$p.value)) %>%
+    pivot_wider(
       names_from = .data$term,
       values_from = .data$coef
     )
@@ -116,34 +116,34 @@ metrics_summary <- function(model) {
     'nobs'
   )
   r <- model$results %>%
-    tidyr::pivot_longer(
-      cols = dplyr::all_of(names(model$spec$stats)),
+    pivot_longer(
+      cols = all_of(names(model$spec$stats)),
       names_to = 'stat',
       values_to = 'fit'
     ) %>%
-    dplyr::group_by(
+    group_by(
       .data$groups,
       .data$outcomes,
       .data$stat
     ) %>%
-    dplyr::mutate(
+    mutate(
       # individual model metrics (tidy/custom)
       .glance = purrr::map(
         fit,
         aba_glance
       )
     ) %>%
-    tidyr::unnest(
+    unnest(
       c(.data$.glance)
     ) %>%
-    dplyr::select(
+    select(
       .data$MID,
       .data$groups,
       .data$outcomes,
       .data$stat,
-      dplyr::any_of(metric_vars)
+      any_of(metric_vars)
     ) %>%
-    dplyr::ungroup()
+    ungroup()
 
 
 
@@ -153,20 +153,20 @@ metrics_summary <- function(model) {
 #' @export
 print.abaSummary <- function(x, ...) {
   r_nested <- x$results %>%
-    dplyr::group_by(
+    group_by(
       .data$groups,
       .data$outcomes,
       .data$stat
     ) %>%
-    tidyr::nest() %>%
-    dplyr::mutate(
-      label = glue::glue('{groups} | {outcomes} | {stat}')
+    nest() %>%
+    mutate(
+      label = glue('{groups} | {outcomes} | {stat}')
     )
   r_split <- stats::setNames(
     split(r_nested, 1:nrow(r_nested)),
     r_nested$label
   ) %>%
-    purrr::map(~.$data[[1]] %>% dplyr::select(-.data$MID))
+    purrr::map(~.$data[[1]] %>% select(-.data$MID))
 
   r_split %>% purrr::iwalk(
     function(x,y) {

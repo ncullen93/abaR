@@ -69,7 +69,7 @@ compile.abaModel <- function(model) {
 
   init_df <- val_list %>% purrr::cross_df()
   init_df <- cbind(MID = stringr::str_c('M', rownames(init_df)), init_df)
-  model$results <- init_df %>% dplyr::tibble()
+  model$results <- init_df %>% tibble()
   return(model)
 }
 
@@ -80,7 +80,7 @@ parse_then_fit_abaModel <- function(
 ) {
 
   # filter original data by group
-  my_data <- data %>% dplyr::filter(
+  my_data <- data %>% filter(
     rlang::eval_tidy(rlang::parse_expr(group))
   )
 
