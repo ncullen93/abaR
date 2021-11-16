@@ -52,52 +52,75 @@ looks like this:
 
 ``` r
 library(aba)
+
 model <- adni_sample %>% aba_model() %>%
-  set_groups(
-    DX_bl == 'CU',
-    everyone()
-  ) %>%
-  set_outcomes(
-    ConvertedToAlzheimers,
-    ConvertedToDementia
-  ) %>%
+  set_groups(everyone(), DX_bl == 'MCI') %>%
+  set_outcomes(CSF_ABETA_STATUS_bl, ConvertedToAlzheimers) %>%
   set_predictors(
-    PLASMA_ABETA_bl,
-    PLASMA_PTAU181_bl,
-    PLASMA_NFL_bl,
+    PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl,
+    c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl),
+    c(PLASMA_ABETA_bl, PLASMA_NFL_bl),
+    c(PLASMA_PTAU181_bl, PLASMA_NFL_bl),
     c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
   ) %>%
-  set_covariates(
-    AGE_bl, GENDER, EDUCAT
-  ) %>%
-  set_stats(
-    'glm'
-  ) %>%
-  fit()
+  set_covariates(AGE_bl, GENDER, EDUCAT) %>%
+  set_stats('glm')
 
+model <- model %>% fit()
 model_summary <- model %>% aba_summary()
 ```
 
-## Trial planning with biomarkers
+## Clinical trial statistical analysis
+
+ABA can be used to analyze clinical trials using MMRM, linear
+mixed-effects modelling, ANCOVA, and more. You can analyze multiple
+endpoints and perform supplementary or sub-group analyses with one
+smooth workflow.
+
+The process for analyzing clinical trial data looks like this:
+
+``` r
+#model <- adni_sample %>% aba_trial() %>%
+#  set_groups(everyone()) %>%
+#  set_endpoints('NFL_change', 'CDRSB_change', 'ADL_change') %>%
+#  set_treatment('TREATMENT') %>%
+#  set_covariates(
+#    'AGE', 'SEX', 'EDU', 'MMSE_bl', 'NFL_bl',
+#    'MEMANTINE', 'ACHEI', 'EAST_WEST', 'APOE4'
+#  ) %>%
+#  set_stats(
+#    aba_mmrm(id = 'SUBJID', time = 'WEEK'),
+#    aba_lme(id = 'SUBJID', time = 'YEAR'),
+#    aba_ancova(id = 'SUBJID', time = 'WEEK')
+#  )
+#
+#model <- model %>% fit()
+```
+
+## Power analysis and biomarker-based trial planning
+
+ABA can be used to investigate how biomarkers can be used to inform a
+clinical trial screening / recruitment strategy. With ABA, you can
+leverage existing cohort or trial data to understand the statistical
+power associated with a given biomarker-based inclusion strategy.
 
 The general workflow for fitting an aba trial for planning clinical
 trials with the help of biomarker-based screening looks like this:
 
 ``` r
-library(aba)
-model <- adni_sample %>% aba_trial() %>%
-  set_groups(
-    list(DX_bl == 'MCI', AGE_bl > 55, AGE_bl < 85),
-    DX_bl == 'MCI'
-  ) %>%
-  set_outcomes(
-    MMSE, CDRSB
-  ) %>%
-  set_times(
-    VISIT == 1.5,
-    VISIT == 2.0
-  ) %>%
-  set_stats(
-    stat_power(alpha=0.05, power=0.8, delta=0.3, method='t.test')
-  )
+#model <- adni_sample %>% aba_trial() %>%
+#  set_groups(
+#    list(DX_bl == 'MCI', AGE_bl > 55, AGE_bl < 85),
+#    DX_bl == 'MCI'
+#  ) %>%
+#  set_outcomes(
+#    MMSE, CDRSB
+#  ) %>%
+#  set_times(
+#    VISIT == 1.5,
+#    VISIT == 2.0
+#  ) %>%
+#  set_stats(
+#    stat_power(alpha=0.05, power=0.8, delta=0.3, method='t.test')
+#  )
 ```

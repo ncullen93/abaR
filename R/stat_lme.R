@@ -95,7 +95,7 @@ aba_glance.lme <- function(x, ...) {
   glance_df <- broom.mixed::glance(x) %>% #select(-logLik)
     dplyr::bind_cols(
       tibble::tibble(
-        R2 = MuMIn::r.squaredGLMM(x)[1,][['R2m']]
+        R2 = suppressWarnings(MuMIn::r.squaredGLMM(x)[1,][['R2m']])
       )
     )
 

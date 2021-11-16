@@ -37,8 +37,8 @@ fit.abaModel <- function(object, ...) {
 
   # fit stats on spec
   fit_df <- model$results %>%
-    dplyr::rowwise() %>%
-    dplyr::mutate(
+    rowwise() %>%
+    mutate(
       fits = parse_then_fit_abaModel(
         data=model$data,
         group=.data$groups,
@@ -48,7 +48,7 @@ fit.abaModel <- function(object, ...) {
         stats=.data$stats
       )
     ) %>%
-    tidyr::unnest_wider(
+    unnest_wider(
       .data$fits
     )
 

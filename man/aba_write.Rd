@@ -9,9 +9,13 @@ aba_write(object, file, name = NULL, include_data = TRUE, include_fit = TRUE)
 \arguments{
 \item{object}{ABA object}
 
-\item{file}{filename}
+\item{file}{character. filename}
 
-\item{...}{other params}
+\item{name}{character. name}
+
+\item{include_data}{logical. include data}
+
+\item{include_fit}{logical. include fit}
 }
 \value{
 NA

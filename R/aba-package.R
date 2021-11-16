@@ -1,3 +1,12 @@
+#' @title Automated biomarker analysis in R
+#' @name aba
+#'
+#' @importFrom stats AIC BIC coef confint logLik na.omit
+#' @importFrom glue glue
+#' @importFrom rlang :=
+#'
+#' @import dplyr tidyr purrr
+#'
 #' @keywords internal
 "_PACKAGE"
 #' @importFrom rlang .data

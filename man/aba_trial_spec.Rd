@@ -15,11 +15,13 @@ aba_trial_spec(
 \arguments{
 \item{groups}{vector. group selection criteria to use.}
 
+\item{endpoints}{vector. endpoints}
+
+\item{treatment}{character. treatment}
+
+\item{covariates}{vector. covariates}
+
 \item{stats}{character or vector. stat to use.}
-
-\item{outcomes}{vector. outcomes to use.}
-
-\item{times}{vector. times to use.}
 }
 \value{
 A trialSpec object
@@ -34,5 +36,5 @@ A trial spec is composed of the following:
 }
 }
 \examples{
-spec <- trial_spec()
+spec <- aba_trial_spec()
 }

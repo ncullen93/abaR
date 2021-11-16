@@ -7,16 +7,17 @@
 #'   - stats
 #'
 #' @param groups vector. group selection criteria to use.
-#' @param outcomes vector. outcomes to use.
-#' @param times vector. times to use.
 #' @param stats character or vector. stat to use.
+#' @param endpoints vector. endpoints
+#' @param treatment character. treatment
+#' @param covariates vector. covariates
 #'
 #' @return A trialSpec object
 #'
 #' @export
 #'
 #' @examples
-#' spec <- trial_spec()
+#' spec <- aba_trial_spec()
 aba_trial_spec <- function(groups=NULL,
                            endpoints=NULL,
                            treatment=NULL,

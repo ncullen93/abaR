@@ -31,24 +31,24 @@ aba_tidy <- function(model, predictors, covariates) {
   if ('lme' %in% class(model)) {
     time_var <- strsplit(as.character(model$call$random)[2],' | ',fixed=T)[[1]][1]
     broom.mixed::tidy(model, effects='fixed', conf.int=T) %>%
-      select(-c(df, conf.low, conf.high)) %>%
+      select(-c('df', 'conf.low', 'conf.high')) %>%
       filter(
-        !(term %in% predictors),
-        term != time_var
+        !(.data$term %in% predictors),
+        .data$term != time_var
       ) %>%
       mutate(
-        term = strsplit(term, ':') %>%
+        term = strsplit(.data$term, ':') %>%
           map_chr(~.[length(.)])
       )
   } else if ('gls' %in% class(model)) {
     time_var <- strsplit(as.character(model$call$weights)[2], ' | ')[[1]][3]
     x <- broom.mixed::tidy(model, conf.int=T) %>%
-      select(-c(conf.low, conf.high)) %>%
+      select(-c('conf.low', 'conf.high')) %>%
       filter(
-        !(term %in% predictors)
+        !(.data$term %in% predictors)
       ) %>%
       filter(
-        !startsWith(term, time_var) | grepl('\\:', term)
+        !startsWith(.data$term, time_var) | grepl('\\:', .data$term)
       )
   } else {
     broom::tidy(model)
