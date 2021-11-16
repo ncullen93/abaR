@@ -61,6 +61,7 @@ aba_fit_mmrm <- function(formula, data, extra_params) {
          Did you accidently use a continuous time variable?')
   }
   first_visit <- unique_visits[1]
+
   data <- data %>% distinct() %>%
     filter(.data[[time]] != first_visit) %>%
     mutate({{ time }} := factor(.data[[time]]))
@@ -76,14 +77,94 @@ aba_fit_mmrm <- function(formula, data, extra_params) {
   model$call$model <- stats::formula(formula)
   model$call$correlation$form <- stats::formula(correlation_form)
   model$call$weights$form <- stats::formula(weights_form)
-  #model$call$data <- data
+  model$call$data <- data
 
   return(model)
 }
+
 
 #' @export
 aba_glance.gls <- function(x, ...) {
   glance_df <- broom.mixed::glance(x) %>% select(-logLik)
   return(glance_df)
 }
+
+
+plot_mmrm <- function(model, data, ...) {
+  model
+  em_res <- emmeans(fit_mmrm, specs = ~TREATMENT | VISIT)
+  em_test <- pairs(em_res)
+
+  em_res_df <- em_res %>% broom::tidy(conf.int=TRUE)
+  em_res_df <- em_res_df %>%
+    rbind(
+      data.frame(
+        TREATMENT= unique(em_res_df$TREATMENT),
+        VISIT=0, estimate=0, std.error=0, df=0,
+        conf.low=0, conf.high=0, statistic=0, p.value=0
+      )
+    ) %>%
+    arrange(VISIT) %>%
+    mutate(
+      TREATMENT = factor(TREATMENT)
+    )
+  em_test_df <- em_test %>% broom::tidy(conf.int=TRUE)
+
+
+  count_df <- df  %>%
+    group_by(TREATMENT, VISIT) %>% summarise(n=n()) %>%
+    mutate(
+      #n = ifelse(VISIT == 0, paste0('n = ', n), paste0(n)),
+      VISIT=factor(VISIT)
+    )
+
+  g_count <- count_df %>%
+    ggplot(aes(x=as.numeric(as.character(VISIT)), y=rev(TREATMENT), label=n, color=TREATMENT)) +
+    geom_text(size = 6, show.legend = FALSE) +
+    theme_void(base_size = 20) +
+    scale_x_continuous(breaks=as.numeric(as.character(unique(count_df$VISIT))),
+                       labels = unique(count_df$VISIT),
+                       expand = c(0.04, 0.04)) +
+    theme(
+      panel.spacing = unit(1.5, "lines"),
+      legend.title = element_blank(),
+      strip.background = element_blank(),
+      plot.margin = margin(0,0,5,0),
+      panel.border = element_rect(colour = "black", fill=NA, size=1, linetype='dashed')
+    )
+  g_count <- g_count %>% ggpubr::set_palette('jama')
+
+  g <- em_res_df %>%
+    ggplot(aes(x=as.numeric(VISIT), y=estimate, group=TREATMENT, color=TREATMENT)) +
+    geom_hline(yintercept=0, size=0.5, color='gray', linetype='solid')+
+    geom_line(position=position_dodge(0.05), size=1) +
+    geom_point(position=position_dodge(0.05), aes(shape=TREATMENT),size=3) +
+    geom_errorbar(aes(ymin=conf.low, ymax=conf.high), width=0.05, size=1,
+                  position=position_dodge(0.05)) +
+    xlab('Visit') +
+    ylab('LS means (±SE)') +
+    scale_x_continuous(breaks=as.numeric(unique(em_res_df$VISIT)),
+                       labels = unique(em_res_df$VISIT),
+                       expand = c(0.03, 0.03)) +
+    theme_classic(base_size = 20) +
+    theme(legend.position=c(0.15, 0.9),
+          legend.title = element_blank(),
+          panel.spacing = unit(1.5, "lines"),
+          strip.background = element_blank(),
+          strip.text = element_text(face = "bold", size = 22, vjust = 1.25)) +
+    theme(panel.grid.major.x = element_blank(),
+          panel.grid.major.y = element_blank())
+
+  g <- g %>% ggpubr::set_palette('jama')
+
+
+  g0 <- ggpubr::ggarrange(
+    g, g_count, ncol=1, align = 'v', heights = c(0.88, 0.12),
+    labels=c('','Sample size'), label.y = 1.1, label.x = 0, vjust=0, hjust=-0.9
+  )
+
+
+}
+
+
 
