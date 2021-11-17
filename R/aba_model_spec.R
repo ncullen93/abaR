@@ -102,15 +102,66 @@ set_covariates <- function(.model, ...) {
 #'
 #' @examples
 #' m <- aba_model() %>% set_predictors()
-set_predictors <- function(.model, ...) {
-  .model$spec$predictors <- unname(
-    parse_select_expr(..., data=.model$data) %>%
-    purrr::map_chr(~stringr::str_c(., collapse=' | '))
-  )
-  .model$spec$predictors <- c(
-    '',
-    .model$spec$predictors
-  )
+set_predictors <- function(.model, ..., is_list = FALSE) {
+  .model <-
+    tryCatch(
+      {
+        .model$spec$predictors <- unname(
+          parse_select_expr(..., data=.model$data) %>%
+            purrr::map_chr(~stringr::str_c(., collapse=' | '))
+        )
+        .model$spec$predictors <- c(
+          '',
+          .model$spec$predictors
+        )
+        return(.model)
+      },
+      error = function(cond) {
+        predictors <- list(...)[[1]]
+        .model$spec$predictors <- c('')
+        for (p in predictors) {
+          vars <- .model$data %>% select(p) %>% names()
+          vars <- stringr::str_c(vars, collapse=' | ')
+          .model$spec$predictors <- c(
+            .model$spec$predictors,
+            vars
+          )
+        }
+        return(.model)
+      }
+    )
+  .model
+}
+
+#' Add  predictors to an model spec
+#'
+#' @param .model abaModel
+#' @param ... predictors
+#'
+#' @return An abaModel object
+#'
+#' @export
+#'
+#' @examples
+#' m <- aba_model() %>% set_predictors()
+add_predictors <- function(.model, ...) {
+  vars <- .model$data %>% select(...)
+  vars <- vars %>% names()
+  vars <- stringr::str_c(vars, collapse=' | ')
+
+  current_predictors <- .model$spec$predictors
+  if (length(current_predictors) == 0) {
+    .model$spec$predictors <- c(
+      '',
+      vars
+    )
+  } else {
+    .model$spec$predictors <- c(
+      current_predictors,
+      vars
+    )
+  }
+
   .model
 }
 

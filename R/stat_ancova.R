@@ -23,16 +23,12 @@
 #' )
 aba_ancova <- function() {
   fns <- list(
-    'formula_fn' = aba_formula_ancova,
+    'formula_fn' = aba_formula_std,
     'fit_fn' = aba_fit_ancova
   )
   fns$stat_type <- 'ancova'
   class(fns) <- 'abaStat'
   return(fns)
-}
-
-aba_formula_ancova <- function(...) {
-
 }
 
 # fit a lm model
