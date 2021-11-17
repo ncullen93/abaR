@@ -40,7 +40,11 @@ Imports:
     pins,
     Matrix,
     MuMIn,
-    broom.mixed
+    broom.mixed,
+    ggplot2,
+    emmeans,
+    ggpubr,
+    pROC
 VignetteBuilder: knitr
 Depends: 
     R (>= 2.10)

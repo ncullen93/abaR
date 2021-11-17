@@ -5,7 +5,7 @@
 #' @importFrom glue glue
 #' @importFrom rlang :=
 #'
-#' @import dplyr tidyr purrr
+#' @import dplyr tidyr purrr ggplot2
 #'
 #' @keywords internal
 "_PACKAGE"

@@ -91,35 +91,35 @@ aba_glance.gls <- function(x, ...) {
 
 
 plot_mmrm <- function(model, data, ...) {
-  model
-  em_res <- emmeans(fit_mmrm, specs = ~TREATMENT | VISIT)
-  em_test <- pairs(em_res)
+  em_res <- emmeans::emmeans(model, specs = ~TREATMENT | VISIT)
+  em_test <- emmeans::contrast(em_res, method = 'pairwise')
 
   em_res_df <- em_res %>% broom::tidy(conf.int=TRUE)
   em_res_df <- em_res_df %>%
     rbind(
       data.frame(
-        TREATMENT= unique(em_res_df$TREATMENT),
-        VISIT=0, estimate=0, std.error=0, df=0,
-        conf.low=0, conf.high=0, statistic=0, p.value=0
+        'TREATMENT' = unique(em_res_df$TREATMENT),
+        'VISIT' = 0, 'estimate' = 0, 'std.error' = 0, 'df' = 0,
+        'conf.low' = 0, 'conf.high' = 0, 'statistic' = 0, 'p.value' = 0
       )
     ) %>%
-    arrange(VISIT) %>%
+    arrange(.data$VISIT) %>%
     mutate(
-      TREATMENT = factor(TREATMENT)
+      TREATMENT = factor(.data$TREATMENT)
     )
   em_test_df <- em_test %>% broom::tidy(conf.int=TRUE)
 
 
-  count_df <- df  %>%
-    group_by(TREATMENT, VISIT) %>% summarise(n=n()) %>%
+  count_df <- data  %>%
+    group_by(.data$TREATMENT, .data$VISIT) %>% summarise(n=n()) %>%
     mutate(
       #n = ifelse(VISIT == 0, paste0('n = ', n), paste0(n)),
-      VISIT=factor(VISIT)
+      VISIT=factor(.data$VISIT)
     )
 
   g_count <- count_df %>%
-    ggplot(aes(x=as.numeric(as.character(VISIT)), y=rev(TREATMENT), label=n, color=TREATMENT)) +
+    ggplot(aes(x=as.numeric(as.character(.data$VISIT)), y=rev(.data$TREATMENT),
+               label=.data$n, color=.data$TREATMENT)) +
     geom_text(size = 6, show.legend = FALSE) +
     theme_void(base_size = 20) +
     scale_x_continuous(breaks=as.numeric(as.character(unique(count_df$VISIT))),
@@ -135,14 +135,15 @@ plot_mmrm <- function(model, data, ...) {
   g_count <- g_count %>% ggpubr::set_palette('jama')
 
   g <- em_res_df %>%
-    ggplot(aes(x=as.numeric(VISIT), y=estimate, group=TREATMENT, color=TREATMENT)) +
+    ggplot(aes(x=as.numeric(.data$VISIT), y=.data$estimate,
+               group=.data$TREATMENT, color=.data$TREATMENT)) +
     geom_hline(yintercept=0, size=0.5, color='gray', linetype='solid')+
     geom_line(position=position_dodge(0.05), size=1) +
-    geom_point(position=position_dodge(0.05), aes(shape=TREATMENT),size=3) +
-    geom_errorbar(aes(ymin=conf.low, ymax=conf.high), width=0.05, size=1,
+    geom_point(position=position_dodge(0.05), aes(shape=.data$TREATMENT),size=3) +
+    geom_errorbar(aes(ymin=.data$conf.low, ymax=.data$conf.high), width=0.05, size=1,
                   position=position_dodge(0.05)) +
     xlab('Visit') +
-    ylab('LS means (±SE)') +
+    ylab('LS means (SE)') +
     scale_x_continuous(breaks=as.numeric(unique(em_res_df$VISIT)),
                        labels = unique(em_res_df$VISIT),
                        expand = c(0.03, 0.03)) +

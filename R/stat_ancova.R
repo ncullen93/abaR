@@ -9,18 +9,7 @@
 #' @export
 #'
 #' @examples
-#' my_stat <- aba_ancova()
-#'
-#' my_formula <- my_stat$formula_fn(
-#'   outcome='PLASMA_NFL',
-#'   predictors=c('PLASMA_PTAU181_bl','PLASMA_NFL_bl'),
-#'   covariates=c('AGE_bl','GENDER','EDUCAT')
-#' )
-#'
-#' my_model <- my_stat$fit_fn(
-#'   formula = my_formula,
-#'   data = adni_sample
-#' )
+#' x <- 1
 aba_ancova <- function() {
   fns <- list(
     'formula_fn' = aba_formula_std,
