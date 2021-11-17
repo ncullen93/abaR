@@ -10,9 +10,7 @@
 #' x <- 1
 aba_plot_metric <- function(model_summary, ...) {
   if (!('abaSummary' %in% class(model_summary))) {
-    stop(
-      'Input should be an aba summary, not an aba model. Use aba_summary().'
-    )
+    stop('Input should be an aba summary. Use aba_summary().')
   }
 
   plot_df <- model_summary$results
@@ -42,6 +40,40 @@ aba_plot_metric <- function(model_summary, ...) {
 }
 
 
+aba_plot_coef <- function(model_summary, ...) {
+  if (!('abaSummary' %in% class(model_summary))) {
+    stop('Input should be an aba summary. Use aba_summary().')
+  }
+
+  plot_df <- model_summary$results %>%
+    pivot_longer(cols = c(PLASMA_ABETA_NTK:PLASMA_NFL_NTK)) %>%
+    filter(!is.na(value)) %>%
+    select(PID, groups, outcomes, name, value) %>%
+    separate(col = value, into = c('Value','Pvalue'), sep=' ', convert=TRUE)
+
+  g <-
+    ggplot(plot_df, aes(x = .data$name, y = .data$Value,
+                        color = .data$PID)) +
+    geom_point(position = position_dodge(0.5), size = 2.5) +
+    facet_wrap(.data$outcomes ~ .data$groups) +
+    geom_hline(aes(yintercept=0), linetype='dashed') +
+    theme_classic(base_size = 16) +
+    theme(
+      legend.position = "top", legend.margin = margin(5, 0, 0, 0),
+      plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "lines"),
+      panel.spacing = unit(1.5, "lines"),
+      strip.background = element_blank(),
+      strip.text = element_text(face = "bold", size = 16, vjust = 1.25),
+      plot.title = element_text(hjust = 0.5),
+      legend.title = element_blank(),
+      panel.grid.major.x = element_blank(),
+      panel.grid.major.y = element_line(
+        colour = "black",
+        size = 0.2, linetype = "dotted"),
+      axis.title.x = element_blank()
+    )
+  return(g)
+}
 
 #' Plot ROC curves from an aba model
 #'
@@ -71,11 +103,11 @@ aba_plot_roc <- function(model, ...) {
       )
     )
 
-  plot <- ggpubr::ggarrange(
+  g <- ggpubr::ggarrange(
     plotlist = plot_df$plots,
     common.legend = TRUE
   )
-  return(plot)
+  return(g)
 }
 
 # models: list of model fits;
@@ -103,7 +135,7 @@ plot_roc_single <- function(models, group, outcome, data, ...) {
     }
   )
 
-  g.roc <- pROC::ggroc(roc.list, size=0.8) +
+  g <- pROC::ggroc(roc.list, size=0.8) +
     geom_segment(aes(x = 100, xend = 0, y = 0, yend = 100),
                  alpha=0.1, color="grey", linetype="solid") +
     facet_wrap(.~paste0(outcome,' | ', group)) +
@@ -124,7 +156,7 @@ plot_roc_single <- function(models, group, outcome, data, ...) {
             colour = "black",
             size = 0.2, linetype = "dotted"))
   if (length(roc.list) < 8) {
-    g.roc <- ggpubr::set_palette(g.roc, 'jama')
+    g <- ggpubr::set_palette(g.roc, 'jama')
   }
-  list(g.roc)
+  list(g)
 }
