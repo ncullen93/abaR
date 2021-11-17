@@ -9,10 +9,13 @@
 #' @examples
 #' x <- 1
 aba_plot_roc <- function(model, ...) {
+  plot_df <- model$results %>%
+    select(groups, outcomes) %>%
+    distinct()
 
 }
 
-plot_roc_single <- function(model, group, outcome) {
+plot_roc_single <- function(model, group, outcome, ...) {
   group.name <- group
   outcome.name <- outcome
 

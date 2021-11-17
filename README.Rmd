@@ -86,8 +86,7 @@ The process for analyzing clinical trial data looks like this:
 #  set_endpoints('NFL_change', 'CDRSB_change', 'ADL_change') %>%
 #  set_treatment('TREATMENT') %>%
 #  set_covariates(
-#    'AGE', 'SEX', 'EDU', 'MMSE_bl', 'NFL_bl',
-#    'MEMANTINE', 'ACHEI', 'EAST_WEST', 'APOE4'
+#    'AGE', 'SEX', 'EDU', 'MMSE_bl'
 #  ) %>%
 #  set_stats(
 #    aba_mmrm(id = 'SUBJID', time = 'WEEK'),
