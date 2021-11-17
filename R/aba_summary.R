@@ -11,14 +11,20 @@
 aba_summary <- function(model, ...) {
   coefs_df <- coefs_summary(model)
   metrics_df <- metrics_summary(model)
-  results_df <- coefs_df %>%
+  results_df <- model$results %>% select(MID, predictors)
+  results_df <- results_df %>% left_join(coefs_df, by = 'MID')
+  results_df <- results_df %>%
     left_join(
       metrics_df %>% select(-c(.data$groups,
                                .data$outcomes,
                                .data$stat)),
       by = 'MID'
     )
-
+  results_df$predictors <- paste0(
+    'P',
+    as.integer(factor(results_df$predictors, levels=unique(results_df$predictors)))
+  )
+  results_df <- results_df %>% rename('PID' = 'predictors')
   s <- list(
     model = model,
     results = results_df
