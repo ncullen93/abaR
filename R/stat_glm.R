@@ -23,10 +23,15 @@
 #'   formula = my_formula,
 #'   data = adni_sample
 #' )
-aba_glm <- function() {
+aba_glm <- function(std.beta = FALSE,
+                    complete.cases = TRUE) {
   fns <- list(
     'formula_fn' = aba_formula_std,
-    'fit_fn' = aba_fit_glm
+    'fit_fn' = aba_fit_glm,
+    'params' = list(
+      'std.beta' = std.beta,
+      'complete.cases' = complete.cases
+    )
   )
   fns$stat_type <- 'glm'
   class(fns) <- 'abaStat'
@@ -43,6 +48,8 @@ aba_fit_glm <- function(formula, data, ...) {
   model$call$formula <- stats::formula(formula)
   return(model)
 }
+
+#aba_tidy.glm <- function(x, ...) {}
 
 #' @export
 aba_glance.glm <- function(x, ...) {

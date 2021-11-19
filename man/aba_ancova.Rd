@@ -4,7 +4,7 @@
 \alias{aba_ancova}
 \title{Create an ancova stat to use for an aba model.}
 \usage{
-aba_ancova()
+aba_ancova(std.beta = FALSE, complete.cases = TRUE)
 }
 \value{
 list of the following functions:

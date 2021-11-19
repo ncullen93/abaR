@@ -10,10 +10,15 @@
 #'
 #' @examples
 #' x <- 1
-aba_ancova <- function() {
+aba_ancova <- function(std.beta = FALSE,
+                       complete.cases = TRUE) {
   fns <- list(
     'formula_fn' = aba_formula_std,
-    'fit_fn' = aba_fit_ancova
+    'fit_fn' = aba_fit_ancova,
+    'params' = list(
+      'std.beta' = std.beta,
+      'complete.cases' = complete.cases
+    )
   )
   fns$stat_type <- 'ancova'
   class(fns) <- 'abaStat'

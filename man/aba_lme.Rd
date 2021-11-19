@@ -4,7 +4,7 @@
 \alias{aba_lme}
 \title{Create a lme stat to use for an aba model.}
 \usage{
-aba_lme(id, time)
+aba_lme(id, time, std.beta = FALSE, complete.cases = TRUE)
 }
 \arguments{
 \item{id}{string or variable. id variable}

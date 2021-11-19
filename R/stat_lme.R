@@ -29,13 +29,19 @@
 #' #  data = adni_sample
 #' #)
 aba_lme <- function(id,
-                    time) {
+                    time,
+                    std.beta = FALSE,
+                    complete.cases = TRUE) {
   fns <- list(
     'formula_fn' = aba_formula_lme,
     'fit_fn' = aba_fit_lme,
     'extra_params' = list(
       'id' = id,
       'time' = time
+    ),
+    'params' = list(
+      'std.beta' = std.beta,
+      'complete.cases' = complete.cases
     )
   )
   fns$stat_type <- 'lme'

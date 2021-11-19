@@ -23,10 +23,15 @@
 #'   formula = my_formula,
 #'   data = adni_sample
 #' )
-aba_lm <- function() {
+aba_lm <- function(std.beta = FALSE,
+                   complete.cases = TRUE) {
   fns <- list(
     'formula_fn' = aba_formula_std,
-    'fit_fn' = aba_fit_lm
+    'fit_fn' = aba_fit_lm,
+    'params' = list(
+      'std.beta' = std.beta,
+      'complete.cases' = complete.cases
+    )
   )
   fns$stat_type <- 'lm'
   class(fns) <- 'abaStat'

@@ -11,20 +11,12 @@
 aba_summary <- function(model, ...) {
   coefs_df <- coefs_summary(model)
   metrics_df <- metrics_summary(model)
-  results_df <- model$results %>% select(MID, predictors)
-  results_df <- results_df %>% left_join(coefs_df, by = 'MID')
-  results_df <- results_df %>%
-    left_join(
-      metrics_df %>% select(-c(.data$groups,
-                               .data$outcomes,
-                               .data$stat)),
-      by = 'MID'
+
+  results_df <- coefs_df %>%
+    bind_cols(
+      metrics_df %>% select(-c(MID, groups, outcomes, stats))
     )
-  results_df$predictors <- paste0(
-    'P',
-    as.integer(factor(results_df$predictors, levels=unique(results_df$predictors)))
-  )
-  results_df <- results_df %>% rename('PID' = 'predictors')
+
   s <- list(
     model = model,
     results = results_df
@@ -57,7 +49,12 @@ aba_tidy <- function(model, predictors, covariates) {
         !startsWith(.data$term, time_var) | grepl('\\:', .data$term)
       )
   } else {
-    broom::tidy(model)
+    if ('glm' %in% class(model)) {
+      exp <- TRUE
+    } else {
+      exp <- FALSE
+    }
+    broom::tidy(model, exponentiate = exp)
   }
 }
 
@@ -74,30 +71,21 @@ coefs_summary <- function(model) {
   all_covariates <- model$spec$covariates
 
   # coefficients
-  r <- model$results %>%
+  r <- model$results %>% rowwise() %>%
     mutate(
-      across(
-        names(model$spec$stats),
-        ~purrr::map(
-          .x,
-          ~aba_tidy(., all_predictors, all_covariates)
-        )
+      stats_coefs = list(
+        aba_tidy(.data$stats_fit, all_predictors, all_covariates)
       )
     ) %>%
-    pivot_longer(
-      cols = all_of(names(model$spec$stats)),
-      names_to = 'stat',
-      values_to = 'fit'
-    ) %>%
     unnest(
-      .data$fit
+      .data$stats_coefs
     ) %>%
     filter(
       .data$term != '(Intercept)'
     ) %>%
     select(
-      -c(.data$predictors:.data$stats),
-      -c(.data$std.error, .data$statistic)
+      -c(.data$predictors, .data$covariates),
+      -c(.data$std.error, .data$statistic, stats_obj, stats_fit)
     ) %>%
     mutate(
       coef = as.character(glue::glue(
@@ -121,37 +109,22 @@ metrics_summary <- function(model) {
     'AIC',
     'nobs'
   )
-  r <- model$results %>%
-    pivot_longer(
-      cols = all_of(names(model$spec$stats)),
-      names_to = 'stat',
-      values_to = 'fit'
-    ) %>%
-    group_by(
-      .data$groups,
-      .data$outcomes,
-      .data$stat
-    ) %>%
+  r <- model$results %>% rowwise() %>%
     mutate(
-      # individual model metrics (tidy/custom)
-      .glance = purrr::map(
-        fit,
-        aba_glance
+      stats_metrics = list(
+        aba_glance(.data$stats_fit)
       )
     ) %>%
     unnest(
-      c(.data$.glance)
+      .data$stats_metrics
     ) %>%
     select(
       .data$MID,
       .data$groups,
       .data$outcomes,
-      .data$stat,
+      .data$stats,
       any_of(metric_vars)
-    ) %>%
-    ungroup()
-
-
+    )
 
   return(r)
 }
@@ -162,11 +135,11 @@ print.abaSummary <- function(x, ...) {
     group_by(
       .data$groups,
       .data$outcomes,
-      .data$stat
+      .data$stats
     ) %>%
     nest() %>%
     mutate(
-      label = glue('{groups} | {outcomes} | {stat}')
+      label = glue('{groups} | {outcomes} | {stats}')
     )
   r_split <- stats::setNames(
     split(r_nested, 1:nrow(r_nested)),

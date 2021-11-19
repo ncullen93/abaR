@@ -69,43 +69,36 @@ compile.abaModel <- function(model) {
 
   init_df <- val_list %>% purrr::cross_df()
   init_df <- cbind(MID = stringr::str_c('M', rownames(init_df)), init_df)
-  model$results <- init_df %>% tibble()
+  model$results <- init_df %>% tibble() %>%
+    unnest_wider(stats) %>%
+    pivot_longer(cols = names(stat_vals),
+                 names_to = 'stats', values_to = 'stats_obj')
+
   return(model)
 }
 
 # need a preprocessing function to parse
 
 parse_then_fit_abaModel <- function(
-  data, group, outcome, predictors, covariates, stats
+  data, group, outcome, predictors, covariates, stat_obj
 ) {
-
-  # filter original data by group
-  my_data <- data %>% filter(
-    rlang::eval_tidy(rlang::parse_expr(group))
-  )
 
   # parse predictors and covariates into vectors
   predictors <- unlist(strsplit(predictors,' \\| '))
   covariates <- unlist(strsplit(covariates,' \\| '))
 
-  # lookup stat objects from strings
   # fit the models
-  stat_models <- stats %>%
-    purrr::map(
-      function(stat_obj) {
-        extra_params <- stat_obj$extra_params
-        my_formula <- stat_obj$formula_fn(
-          outcome, predictors, covariates, extra_params
-        )
-        my_model <- stat_obj$fit_fn(
-          my_formula, my_data, extra_params
-        )
-        return(my_model)
-      }
-    )
+  extra_params <- stat_obj$extra_params
+  my_formula <- stat_obj$formula_fn(
+    outcome, predictors, covariates, extra_params
+  )
+
+  my_model <- stat_obj$fit_fn(
+    my_formula, data, extra_params
+  )
 
   return(
-    list(stat_models)
+    list(my_model)
   )
 }
 

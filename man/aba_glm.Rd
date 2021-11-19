@@ -4,7 +4,7 @@
 \alias{aba_glm}
 \title{Create a glm stat to use for an aba model.}
 \usage{
-aba_glm()
+aba_glm(std.beta = FALSE, complete.cases = TRUE)
 }
 \value{
 list of the following functions:

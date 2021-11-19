@@ -4,7 +4,7 @@
 \alias{aba_lm}
 \title{Create an lm stat to use for an aba model.}
 \usage{
-aba_lm()
+aba_lm(std.beta = FALSE, complete.cases = TRUE)
 }
 \value{
 list of the following functions:

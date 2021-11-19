@@ -16,6 +16,27 @@ compile <- function(model) {
   UseMethod('compile')
 }
 
+process_dataset <- function(data, group, outcome, predictors, covariates, params) {
+  std.beta <- params$std.beta
+  complete.cases <- params$complete.cases
+
+  data <- data %>% filter(rlang::eval_tidy(rlang::parse_expr(group)))
+
+  # workaround for empty predictor set
+  if (is.null(predictors)) return(list(data))
+
+  predictors <- strsplit(predictors, ' | ', fixed = TRUE) %>% unlist() %>% unique()
+
+  if (std.beta) {
+    data[,predictors] <- scale(data[,predictors])
+  }
+  if (complete.cases) {
+    data <- data[complete.cases(data[,predictors]),]
+  }
+
+  return(list(data))
+}
+
 
 #' Fit an aba model.
 #'
@@ -35,22 +56,32 @@ fit.abaModel <- function(object, ...) {
   # compile model
   model <- model %>% compile()
 
-  # fit stats on spec
+
   fit_df <- model$results %>%
+    group_by(groups,outcomes,stats) %>%
+    nest() %>% rename(info = data) %>% rowwise() %>%
+    mutate(
+      dataset = process_dataset(data = model$data,
+                                group = .data$groups,
+                                outcome = .data$outcomes,
+                                predictors = model$spec$predictors,
+                                covariates = model$spec$covariates,
+                                params = model$spec$stats[[.data$stats]]$params)
+    ) %>%
+    unnest(info) %>%
     rowwise() %>%
     mutate(
-      fits = parse_then_fit_abaModel(
-        data=model$data,
-        group=.data$groups,
-        outcome=.data$outcomes,
-        predictors=.data$predictors,
-        covariates=.data$covariates,
-        stats=.data$stats
+      stats_fit = parse_then_fit_abaModel(
+        data = .data$dataset,
+        group = .data$groups,
+        outcome = .data$outcomes,
+        predictors = .data$predictors,
+        covariates = .data$covariates,
+        stat_obj = .data$stats_obj
       )
     ) %>%
-    unnest_wider(
-      .data$fits
-    )
+    select(MID, everything(), -dataset) %>%
+    ungroup()
 
   model$results <- fit_df
   return(model)

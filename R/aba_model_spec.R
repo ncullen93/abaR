@@ -186,7 +186,10 @@ set_stats <- function(.model, ...) {
         return(x)
       }
     )
-  names(stats) <- stats %>% purrr::map_chr('stat_type')
+  names(stats) <- stats %>%
+    purrr::map_chr('stat_type') %>%
+    make.names(., unique=T)
+
   .model$spec$stats <- stats
   .model
 }

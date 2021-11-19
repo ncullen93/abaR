@@ -45,8 +45,14 @@ aba_plot_coef <- function(model_summary, ...) {
     stop('Input should be an aba summary. Use aba_summary().')
   }
 
+  all_predictors <- model_summary$model$spec$predictors %>%
+    purrr::map(~strsplit(.,' | ',fixed=T)[[1]]) %>%
+    unlist() %>% unique()
+  all_covariates <- model_summary$model$spec$covariates
+  all_variables <- c(all_covariates, all_predictors)
+
   plot_df <- model_summary$results %>%
-    pivot_longer(cols = c(PLASMA_ABETA_NTK:PLASMA_NFL_NTK)) %>%
+    pivot_longer(cols = all_of(all_variables)) %>%
     filter(!is.na(value)) %>%
     select(PID, groups, outcomes, name, value) %>%
     separate(col = value, into = c('Value','Pvalue'), sep=' ', convert=TRUE)
@@ -156,7 +162,7 @@ plot_roc_single <- function(models, group, outcome, data, ...) {
             colour = "black",
             size = 0.2, linetype = "dotted"))
   if (length(roc.list) < 8) {
-    g <- ggpubr::set_palette(g.roc, 'jama')
+    g <- ggpubr::set_palette(g, 'jama')
   }
   list(g)
 }
