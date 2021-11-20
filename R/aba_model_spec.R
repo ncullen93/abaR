@@ -165,6 +165,23 @@ add_predictors <- function(.model, ...) {
   .model
 }
 
+
+#' Get all unique predictors
+#'
+#' @param model abaModel. model to get predictors from
+#'
+#' @return character vector. all unique predictors
+#' @export
+#'
+#' @examples
+#' x <- 1
+get_predictors <- function(model) {
+  model$spec$predictors %>%
+    purrr::map(~strsplit(.,' | ',fixed=T)) %>%
+    unlist() %>% unique()
+}
+
+
 #' Set statistical model of an aba model
 #'
 #' @param .model abaModel. aba model to alter.

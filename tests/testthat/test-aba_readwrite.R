@@ -16,8 +16,13 @@ test_that("save and load works", {
 
   model_spec <- model$spec
 
-  # create temp dir to save to
+  expect_error(
+    model,
+    NA
+  )
 
+  # create temp dir to save to
+  # TODO !!
 
   #expect_error(
   #  model_spec %>% aba_write('~/desktop/myspec.rda'),

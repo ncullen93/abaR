@@ -27,7 +27,9 @@ aba_summary <- function(model, ...) {
 
 aba_tidy <- function(model, predictors, covariates) {
   if ('lme' %in% class(model)) {
-    time_var <- strsplit(as.character(model$call$random)[2],' | ',fixed=T)[[1]][1]
+    time_var <- strsplit(
+      as.character(model$call$random)[2],' | ',fixed=T
+    )[[1]][1]
     broom.mixed::tidy(model, effects='fixed', conf.int=T) %>%
       select(-c(.data$df, .data$conf.low, .data$conf.high)) %>%
       filter(
