@@ -16,7 +16,7 @@ aba_plot_metric <- function(model_summary, ...) {
   plot_df <- model_summary$results
 
   g <-
-    ggplot(plot_df, aes(x = .data$PID, y = .data$AUC, color = .data$outcomes)) +
+    ggplot(plot_df, aes(x = .data$MID, y = .data$AUC, color = .data$outcomes)) +
     geom_point(position = position_dodge(0.5), size = 2.5) +
     facet_wrap(. ~ .data$groups) +
     geom_hline(aes(yintercept=0.5), linetype='dashed') +
@@ -54,12 +54,12 @@ aba_plot_coef <- function(model_summary, ...) {
   plot_df <- model_summary$results %>%
     pivot_longer(cols = all_of(all_variables)) %>%
     filter(!is.na(value)) %>%
-    select(PID, groups, outcomes, name, value) %>%
+    select(MID, groups, outcomes, name, value) %>%
     separate(col = value, into = c('Value','Pvalue'), sep=' ', convert=TRUE)
 
   g <-
     ggplot(plot_df, aes(x = .data$name, y = .data$Value,
-                        color = .data$PID)) +
+                        color = .data$MID)) +
     geom_point(position = position_dodge(0.5), size = 2.5) +
     facet_wrap(.data$outcomes ~ .data$groups) +
     geom_hline(aes(yintercept=0), linetype='dashed') +

@@ -67,8 +67,9 @@ compile.abaModel <- function(model) {
     'stats' = list(stat_vals)
   )
 
-  init_df <- val_list %>% purrr::cross_df()
-  init_df <- cbind(MID = stringr::str_c('M', rownames(init_df)), init_df)
+  init_df <- val_list %>% purrr::cross_df() %>%
+    group_by(groups, outcomes) %>% mutate(MID = paste0('M',row_number())) %>% ungroup()
+  #init_df <- cbind(MID = stringr::str_c('M', rownames(init_df)), init_df)
   model$results <- init_df %>% tibble() %>%
     unnest_wider(stats) %>%
     pivot_longer(cols = names(stat_vals),

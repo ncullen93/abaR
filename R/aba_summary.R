@@ -11,7 +11,6 @@
 aba_summary <- function(model, ...) {
   coefs_df <- coefs_summary(model)
   metrics_df <- metrics_summary(model)
-
   results_df <- coefs_df %>%
     bind_cols(
       metrics_df %>% select(-c(MID, groups, outcomes, stats))
@@ -71,6 +70,7 @@ coefs_summary <- function(model) {
     unlist() %>% unique()
 
   all_covariates <- model$spec$covariates
+  if (is.null(all_covariates)) all_covariates <- c('')
 
   # coefficients
   r <- model$results %>% rowwise() %>%
@@ -81,10 +81,8 @@ coefs_summary <- function(model) {
     ) %>%
     unnest(
       .data$stats_coefs
-    ) %>%
-    filter(
-      .data$term != '(Intercept)'
-    ) %>%
+    )
+  r <- r %>%
     select(
       -c(.data$predictors, .data$covariates),
       -c(.data$std.error, .data$statistic, stats_obj, stats_fit)
@@ -94,11 +92,13 @@ coefs_summary <- function(model) {
         coef_fmt
       ))
     ) %>%
-    select(-c(.data$estimate, .data$p.value)) %>%
+    select(-c(.data$estimate, .data$p.value))
+  r <- r %>%
     pivot_wider(
       names_from = .data$term,
       values_from = .data$coef
-    )
+    ) %>%
+    select(-'(Intercept)')
 
   return(r)
 }
@@ -147,7 +147,7 @@ print.abaSummary <- function(x, ...) {
     split(r_nested, 1:nrow(r_nested)),
     r_nested$label
   ) %>%
-    purrr::map(~.$data[[1]] %>% select(-.data$MID))
+    purrr::map(~.$data[[1]])
 
   r_split %>% purrr::iwalk(
     function(x,y) {
