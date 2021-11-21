@@ -4,7 +4,13 @@
 \alias{aba_robust}
 \title{Create an aba robust object}
 \usage{
-aba_robust(model, variation, ntrials = 100, verbose = TRUE)
+aba_robust(
+  model,
+  variation,
+  variation_type = c("perc"),
+  ntrials = 100,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{model}{abaModel the aba model to use for the object}
@@ -12,6 +18,9 @@ aba_robust(model, variation, ntrials = 100, verbose = TRUE)
 \item{variation}{list the test-retest (or whatever) variation estimates
 for each predictor. This variability is assumed to standrd deviation of
 of a normal distribution to be simulated.}
+
+\item{variation_type}{character. what the variation values represent.
+We only support percent change ("perc") right now.}
 
 \item{ntrials}{integer number of noise simulations to run}
 }

@@ -15,6 +15,8 @@
 #' @param variation list the test-retest (or whatever) variation estimates
 #'   for each predictor. This variability is assumed to standrd deviation of
 #'   of a normal distribution to be simulated.
+#' @param variation_type character. what the variation values represent.
+#'   We only support percent change ("perc") right now.
 #' @param ntrials integer number of noise simulations to run
 #'
 #' @return An abaRobust object
@@ -25,15 +27,19 @@
 #' x <- 1
 aba_robust <- function(model,
                        variation,
+                       variation_type = c('perc'),
                        ntrials = 100,
                        verbose = TRUE) {
+
+  variation_type <- match.arg(variation_type)
 
   m <- list(
     'model' = model,
     'variation' = variation,
     'params' = list(
       'ntrials' = ntrials
-    )
+    ),
+    'verbose' = verbose
   )
   class(m) <- 'abaRobust'
   return(m)
@@ -50,8 +56,10 @@ simulate_data_noise <- function(data, variation) {
   data_noise <- data %>%
     mutate(
       across(
-        predictors,
-        ~.x * (1 + rnorm(nrow(data), 0, variation[[cur_column()]]) / 100)
+        all_of(predictors),
+        ~.x * (1 + rnorm(nrow(data),
+                         0,
+                         variation[[cur_column()]]) / 100)
       )
     )
   data_noise
@@ -76,12 +84,15 @@ fit.abaRobust <- function(object, ...) {
   model <- object$model
   data_original <- model$data
 
+  # get original model summary results
+  object$results_original <- aba_summary(model)$results
+
   # for each trial, simulate noisy data, then re-fit/re-summarise model
-  pb <- progress_bar$new(total = ntrials)
+  if (object$verbose) pb <- progress_bar$new(total = ntrials)
   noise_summary_results <- 1:ntrials %>%
     purrr::map(
       function(idx) {
-        pb$tick()
+        if (object$verbose) pb$tick()
 
         data_noise <- simulate_data_noise(
           data_original, object$variation
@@ -89,7 +100,7 @@ fit.abaRobust <- function(object, ...) {
 
         model_noise <- model %>% set_data(data_noise) %>% fit()
         model_noise_summary <- model_noise %>% aba_summary()
-        model_noise_summary$results
+        return(model_noise_summary$results)
       }
     )
   object$results <- noise_summary_results
