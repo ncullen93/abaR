@@ -4,7 +4,7 @@
 \alias{aba_robust}
 \title{Create an aba robust object}
 \usage{
-aba_robust(model, variation, ntrials = 10)
+aba_robust(model, variation, ntrials = 100, verbose = TRUE)
 }
 \arguments{
 \item{model}{abaModel the aba model to use for the object}

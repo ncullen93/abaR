@@ -25,7 +25,8 @@
 #' x <- 1
 aba_robust <- function(model,
                        variation,
-                       ntrials = 10) {
+                       ntrials = 100,
+                       verbose = TRUE) {
 
   m <- list(
     'model' = model,
@@ -49,23 +50,39 @@ simulate_data_noise <- function(data, variation) {
   data_noise <- data %>%
     mutate(
       across(
-        all_of(predictors),
-        ~.x * (1 + rnorm(nrow(data), 0, variation[[.x]] / 100))
+        predictors,
+        ~.x * (1 + rnorm(nrow(data), 0, variation[[cur_column()]]) / 100)
       )
     )
   data_noise
 }
 
-fit.abaRobust <- function(object) {
+#' Fit an aba robust object
+#'
+#' This will trigger the fitting of an aba robust object to determine the
+#' effect of simulated noise/variation/test-retest on model coefficients
+#' and preformance.
+#'
+#' @param object abaModel. The aba model whose robustness will be tested. This
+#'   aba model should already be fit itself prior to this.
+#' @param ... additional parameters.
+#'
+#' @return abaRobust
+#' @export
+#' @examples
+#' x <- 1
+fit.abaRobust <- function(object, ...) {
   ntrials <- object$params$ntrials
   model <- object$model
-  predictors <- model %>% get_predictors()
   data_original <- model$data
 
   # for each trial, simulate noisy data, then re-fit/re-summarise model
+  pb <- progress_bar$new(total = ntrials)
   noise_summary_results <- 1:ntrials %>%
     purrr::map(
-      function() {
+      function(idx) {
+        pb$tick()
+
         data_noise <- simulate_data_noise(
           data_original, object$variation
         )
