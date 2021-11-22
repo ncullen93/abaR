@@ -125,7 +125,8 @@ print.abaSummary <- function(x, ...) {
     split(r_nested, 1:nrow(r_nested)),
     r_nested$label
   ) %>%
-    purrr::map(~.$data[[1]])
+    purrr::map(~.$data[[1]]) %>%
+    purrr::map(~.[,colMeans(is.na(.)) < 1])
 
   r_split %>% purrr::iwalk(
     function(x,y) {

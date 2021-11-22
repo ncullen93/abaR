@@ -46,7 +46,8 @@ Imports:
     ggpubr,
     pROC,
     progress,
-    OptimalCutpoints
+    OptimalCutpoints,
+    tableone
 VignetteBuilder: knitr
 Depends: 
     R (>= 2.10)
