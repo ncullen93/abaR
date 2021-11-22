@@ -45,6 +45,23 @@ aba_tidy <- function(model, predictors, covariates, ...) {
   UseMethod('aba_tidy')
 }
 
+
+#' Run emmeans on a model
+#'
+#' @param model model
+#' @param treatment treatment
+#' @param stats_obj stats obj
+#' @param ... extra parameters
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' x <- 1
+aba_emmeans <- function(model, treatment, stats_obj, ...) {
+  UseMethod('aba_emmeans')
+}
+
 #' @export
 print.abaStat <- function(x, ...) {
   cat(x$stat_type)

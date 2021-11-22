@@ -58,20 +58,3 @@ set_endpoints <- function(.model, ...) {
 }
 
 
-#' Set the endpoints of an aba_trial spec
-#'
-#' @param .model abaTrial
-#' @param ... endpoints
-#'
-#' @return An abaModel object
-#'
-#' @export
-#'
-#' @examples
-#' m <- aba_model() %>% set_outcomes()
-set_treatment <- function(.model, ...) {
-  .model$spec$treatment <-
-    unname(unlist(parse_select_expr(..., data=.model$data)))
-  .model
-}
-

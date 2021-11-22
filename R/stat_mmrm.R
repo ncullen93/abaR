@@ -31,11 +31,13 @@
 #' #)
 aba_mmrm <- function(id,
                      time,
+                     treatment = NULL,
                      std.beta = FALSE,
                      complete.cases = TRUE) {
   fns <- list(
     'formula_fn' = aba_formula_lme,
     'fit_fn' = aba_fit_mmrm,
+    'treatment' = treatment,
     'extra_params' = list(
       'id' = id,
       'time' = time
@@ -68,10 +70,12 @@ aba_fit_mmrm <- function(formula, data, extra_params) {
   }
   first_visit <- unique_visits[1]
 
+  # remove the first visit from the data
   data <- data %>% distinct() %>%
     filter(.data[[time]] != first_visit) %>%
     mutate({{ time }} := factor(.data[[time]]))
 
+  # fit the model
   model <- nlme::gls(
     stats::formula(formula),
     correlation = nlme::corSymm(form = stats::formula(correlation_form)),
@@ -80,6 +84,7 @@ aba_fit_mmrm <- function(formula, data, extra_params) {
     na.action = na.omit,
     method = 'REML'
   )
+
   model$call$model <- stats::formula(formula)
   model$call$correlation$form <- stats::formula(correlation_form)
   model$call$weights$form <- stats::formula(weights_form)
@@ -109,6 +114,22 @@ aba_glance.gls <- function(x, ...) {
   return(glance_df)
 }
 
+#' @export
+aba_emmeans.gls <- function(fit, treatment, stats_obj, ...) {
+  time <- stats_obj$extra_params$time
+  id <- stats_obj$extra_params$id
+
+  emmeans_formula <- formula(glue('~ {treatment} | {time}'))
+
+  emmeans_result <- emmeans::emmeans(fit, emmeans_formula)
+  pairs_result <- pairs(emmeans_result)
+  return(
+    list(
+      'emmeans' = emmeans_result %>% broom::tidy(),
+      'pairs' = pairs_result %>% broom::tidy()
+    )
+  )
+}
 
 plot_mmrm <- function(model, data, ...) {
   em_res <- emmeans::emmeans(model, specs = ~TREATMENT | VISIT)

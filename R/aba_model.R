@@ -44,6 +44,8 @@ aba_model <- function(data = NULL,
 # compile abaModel
 #' @export
 compile.abaModel <- function(model) {
+
+
   data <- model$data
   group_vals <- model$spec$group
   outcome_vals <- model$spec$outcomes
@@ -125,8 +127,13 @@ print.abaModel <- function(x, ...) {
   cat('Outcomes:\n   ')
   cat(outcome_vals, sep='\n   ')
   cat('Covariates:\n   ', covariate_vals, '\n')
-  cat('Predictors:\n   ')
-  cat(predictor_vals, sep='\n   ')
+
+  if (!is.null(model$spec$treatment)) {
+    cat('Treatment:\n   ', model$spec$treatment, '\n')
+  } else {
+    cat('Predictors:\n   ')
+    cat(predictor_vals, sep='\n   ')
+  }
   cat('Stats:\n   ')
   stat_vals %>% purrr::walk(~cat(print(.),'\n   '))
 }
