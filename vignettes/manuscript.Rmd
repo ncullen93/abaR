@@ -1,0 +1,65 @@
+---
+title: "Automated biomarker analysis in R (abaR) with applications to clinical trials"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{manuscript}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(aba)
+```
+
+# Abstract
+
+Analyzing biomarker data is time-consuming and error-prone due to the typically large combinations of different diagnostic groups, clinical outcomes, and predictor/covariate combinations which need to be tested. The abaR package contains functionality to easily analyze clinical biomarker data across these different factors, with support for fitting the most commonly used models for diagnosis (ROC analysis, cut-point identification), diagnosis/prognosis (regression, mixed-effects modelling, MMRM, etc.) and clinical trial analysis (screening, enrichment). The abaR package also facilitates the creation of publication-ready tables and figures which display key modelling results. The abaR package is therefore a step towards increasing reproducibility of biomarker studies and expanding access to complex statistical tools for non-statistical researchers. In this article, we describe and demonstrate some of the core abaR functionality on biomarker data in Alzheimer's disease patients. The abaR package is available at https://github.com/ncullen93/abaR for all to use.
+
+## 1. Introduction
+
+- Biomarkers are important and widely used within clinical AD research
+- Performing biomarker studies is difficult and error-prone from a practical standpoint
+- The abaR provides a solution to this difficulty
+- This article demonstrates core functionality of abaR in the ADNI study.
+
+
+## 2. An illustrative example
+
+- Describe the dataset
+
+```{r}
+data <- adnimerge
+print(head(data))
+```
+
+
+### 2.1. Modelling cross-sectional outcomes
+
+- Amyloid PET (continuous and binary status) from CSF biomarkers
+
+### 2.2. Modelling longitudinal outcomes
+
+- Longitudinal cognition
+- Risk of AD dementia
+
+### 2.3. Planning and analyzing a clinical trial
+
+- Pre-screening using CSF biomarkers
+- Enrichment using PET
+- Power analysis from longitudinal cognition models 
+- Trial analysis using MMRM/LME/ANCOVA
+
+
+## 3. Conclusion
+
+- Biomarker studies are important but difficult to perform
+- abaR solves this problem by providing high-level statistics and plotting
+
+
