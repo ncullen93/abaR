@@ -56,17 +56,22 @@ fit.abaModel <- function(object, ...) {
   # compile model
   model <- model %>% compile()
 
+  # progress bar
+  pb <- NULL
+  if (model$verbose) pb <- progress::progress_bar$new(total = nrow(model$results))
 
   fit_df <- model$results %>%
     group_by(groups,outcomes,stats) %>%
     nest() %>% rename(info = data) %>% rowwise() %>%
     mutate(
-      dataset = process_dataset(data = model$data,
-                                group = .data$groups,
-                                outcome = .data$outcomes,
-                                predictors = model$spec$predictors,
-                                covariates = model$spec$covariates,
-                                params = model$spec$stats[[.data$stats]]$params)
+      dataset = process_dataset(
+        data = model$data,
+        group = .data$groups,
+        outcome = .data$outcomes,
+        predictors = model$spec$predictors,
+        covariates = model$spec$covariates,
+        params = model$spec$stats[[.data$stats]]$params
+      )
     ) %>%
     unnest(info) %>%
     rowwise() %>%
@@ -77,7 +82,8 @@ fit.abaModel <- function(object, ...) {
         outcome = .data$outcomes,
         predictors = .data$predictors,
         covariates = .data$covariates,
-        stat_obj = .data$stats_obj
+        stat_obj = .data$stats_obj,
+        pb = pb
       )
     ) %>%
     select(MID, everything(), -dataset) %>%

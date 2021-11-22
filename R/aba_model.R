@@ -24,12 +24,14 @@
 #' m <- aba_model()
 aba_model <- function(data = NULL,
                       spec = aba_model_spec(),
-                      results = list()) {
+                      results = list(),
+                      verbose = FALSE) {
 
   m <- list(
     'data' = data,
     'spec' = spec,
-    'results' = results
+    'results' = results,
+    'verbose' = verbose
   )
 
   class(m) <- 'abaModel'
@@ -81,8 +83,12 @@ compile.abaModel <- function(model) {
 # need a preprocessing function to parse
 
 parse_then_fit_abaModel <- function(
-  data, group, outcome, predictors, covariates, stat_obj
+  data, group, outcome, predictors, covariates, stat_obj, pb
 ) {
+
+  if (!is.null(pb)) {
+    pb$tick()
+  }
 
   # parse predictors and covariates into vectors
   predictors <- unlist(strsplit(predictors,' \\| '))

@@ -4,7 +4,12 @@
 \alias{aba_model}
 \title{Create an aba model}
 \usage{
-aba_model(data = NULL, spec = aba_model_spec(), results = list())
+aba_model(
+  data = NULL,
+  spec = aba_model_spec(),
+  results = list(),
+  verbose = FALSE
+)
 }
 \arguments{
 \item{data}{data.frame the data to use for the object}

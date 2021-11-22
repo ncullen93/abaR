@@ -90,6 +90,7 @@ fit.abaRobust <- function(object, ...) {
 
   # for each trial, simulate noisy data, then re-fit/re-summarise model
   if (object$verbose) pb <- progress::progress_bar$new(total = ntrials)
+
   noise_summary_results <- 1:ntrials %>%
     purrr::map(
       function(idx) {
