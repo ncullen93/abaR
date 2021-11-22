@@ -109,9 +109,9 @@ fit.abaRobust <- function(object, ...) {
 
   # summarise
   compare_res <- function(res, res_orig) {
-    res[,c('AUC','AIC')] <- 100*(
-      (res[,c('AUC','AIC')] - res_orig[,c('AUC','AIC')]) /
-        res_orig[,c('AUC','AIC')])
+    res[,c('AUC', 'AIC')] <- 100*(
+      (res[,c('AUC', 'AIC')] - res_orig[,c('AUC', 'AIC')]) /
+        res_orig[,c('AUC', 'AIC')])
     res
   }
 
@@ -121,13 +121,17 @@ fit.abaRobust <- function(object, ...) {
   res_sum <- res_diff %>% group_by(MID, groups, outcomes, stats) %>%
     summarise(
       dAUC_mean = mean(AUC),
-      dAUC_sd = sd(AUC),
-      dAUC_lowci = quantile(AUC, 0.025),
-      dAUC_highci = quantile(AUC, 0.975),
+      dAUC_lo = quantile(AUC, 0.025),
+      dAUC_hi = quantile(AUC, 0.975),
       dAIC_mean = mean(AIC),
-      dAIC_sd = sd(AIC),
+      dAIC_lo = quantile(AIC, 0.025),
+      dAIC_hi = quantile(AIC, 0.975),
+      Cut_mean = mean(Cut),
+      Cut_lo = quantile(Cut, 0.025),
+      Cut_hi = quantile(Cut, 0.975)
     )
 
+  object$results <- object$results %>% bind_rows()
   object$results_difference <- res_diff
   object$results_summary <- res_sum
 

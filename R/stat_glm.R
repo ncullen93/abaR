@@ -24,10 +24,12 @@
 #'   data = adni_sample
 #' )
 aba_glm <- function(std.beta = FALSE,
-                    complete.cases = TRUE) {
+                    complete.cases = TRUE,
+                    extra.metrics = NULL) {
   fns <- list(
     'formula_fn' = aba_formula_std,
     'fit_fn' = aba_fit_glm,
+    'extra.metrics' = extra.metrics,
     'params' = list(
       'std.beta' = std.beta,
       'complete.cases' = complete.cases
@@ -77,11 +79,20 @@ aba_glance.glm <- function(x, ...) {
   # add other metrics here... sens, spec, ppv, npv, etc..
   # ...
 
+  # Optimal Cutoff
+  cut_model <- OptimalCutpoints::optimal.cutpoints(
+    .Predicted ~ .Truth,
+    data = data %>% data.frame(),
+    tag.healthy=0, direction='<', methods='Youden'
+  )
+  cut_val <- cut_model$Youden$Global$optimal.cutoff$cutoff
+
   # combine broom::glance with extra metrics
   glance_df <- glance_df %>%
     dplyr::bind_cols(
       tibble::tibble(
-        AUC = auc_val
+        AUC = auc_val,
+        Cut = cut_val
       )
     )
   return(glance_df)

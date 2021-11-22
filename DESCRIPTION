@@ -45,7 +45,8 @@ Imports:
     emmeans,
     ggpubr,
     pROC,
-    progress
+    progress,
+    OptimalCutpoints
 VignetteBuilder: knitr
 Depends: 
     R (>= 2.10)

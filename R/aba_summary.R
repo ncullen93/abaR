@@ -108,6 +108,7 @@ metrics_summary <- function(model) {
     'adj.r.squared',
     'R2',
     'AUC',
+    'Cut',
     'AIC',
     'nobs'
   )
