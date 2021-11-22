@@ -1,5 +1,7 @@
 ## code to prepare `adnimerge` dataset goes here
 
+library(tidyverse)
+
 # read data
 adnimerge <- read.csv('/Users/ni5875cu/Desktop/Biofinder/_random/ADNIMERGE.csv')
 adnimerge <- adnimerge %>% dplyr::tibble()
@@ -42,6 +44,21 @@ adnimerge <- adnimerge %>%
       'MCI' = 'EMCI',
       'MCI' = 'LMCI'
     )
+  ) %>%
+  mutate(
+    PET_ABETA_STATUS_bl = as.integer(AV45_bl > 1.11),
+    APOE4 = as.integer(APOE4 >= 1),
+    PTGENDER = as.integer(PTGENDER == 'Male')
+  ) %>%
+  rename(
+    PET_ABETA_bl = AV45_bl,
+    CSF_ABETA_bl = ABETA_bl,
+    CSF_PTAU_bl = PTAU_bl,
+    CSF_TAU_bl = TAU_bl,
+    GENDER = PTGENDER,
+    EDUCATION = PTEDUCAT,
+    YEARS_bl = Years_bl,
+    MRI_HIPP_bl = Hippocampus_bl
   )
 
 usethis::use_data(adnimerge, overwrite = TRUE)

@@ -154,7 +154,7 @@ aba_plot_metric.abaRobust <- function(object) {
                  geom = "errorbar") +
     geom_hline(yintercept=0, linetype='dashed') +
     facet_wrap(groups ~ outcomes) +
-    ylab('ΔAUC (%)') +
+    ylab('\u0394AUC (%)') +
     theme_classic(base_size = 18) +
     theme(legend.position='none',
           legend.title = element_blank(),
