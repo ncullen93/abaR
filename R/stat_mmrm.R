@@ -89,6 +89,20 @@ aba_fit_mmrm <- function(formula, data, extra_params) {
 }
 
 
+aba_tidy.gls <- function(model, predictors, covariates, ...) {
+
+  time_var <- strsplit(as.character(model$call$weights)[2], ' | ')[[1]][3]
+  tidy_df <- broom.mixed::tidy(model, conf.int=T) %>%
+    select(-c('conf.low', 'conf.high')) %>%
+    filter(
+      !(.data$term %in% predictors)
+    ) %>%
+    filter(
+      !startsWith(.data$term, time_var) | grepl('\\:', .data$term)
+    )
+  return(tidy_df)
+}
+
 #' @export
 aba_glance.gls <- function(x, ...) {
   glance_df <- broom.mixed::glance(x) %>% select(-logLik)

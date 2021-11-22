@@ -51,7 +51,11 @@ aba_fit_glm <- function(formula, data, ...) {
   return(model)
 }
 
-#aba_tidy.glm <- function(x, ...) {}
+#' @export
+aba_tidy.glm <- function(model, predictors, covariates, ...) {
+  broom::tidy(model, exponentiate = TRUE)
+}
+
 
 #' @export
 aba_glance.glm <- function(x, x0, ...) {

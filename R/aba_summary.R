@@ -24,41 +24,6 @@ aba_summary <- function(model, ...) {
   return(s)
 }
 
-aba_tidy <- function(model, predictors, covariates) {
-  if ('lme' %in% class(model)) {
-    time_var <- strsplit(
-      as.character(model$call$random)[2],' | ',fixed=T
-    )[[1]][1]
-    broom.mixed::tidy(model, effects='fixed', conf.int=T) %>%
-      select(-c(.data$df, .data$conf.low, .data$conf.high)) %>%
-      filter(
-        !(.data$term %in% predictors),
-        .data$term != time_var
-      ) %>%
-      mutate(
-        term = strsplit(.data$term, ':') %>%
-          purrr::map_chr(~.[length(.)])
-      )
-  } else if ('gls' %in% class(model)) {
-    time_var <- strsplit(as.character(model$call$weights)[2], ' | ')[[1]][3]
-    x <- broom.mixed::tidy(model, conf.int=T) %>%
-      select(-c('conf.low', 'conf.high')) %>%
-      filter(
-        !(.data$term %in% predictors)
-      ) %>%
-      filter(
-        !startsWith(.data$term, time_var) | grepl('\\:', .data$term)
-      )
-  } else {
-    if ('glm' %in% class(model)) {
-      exp <- TRUE
-    } else {
-      exp <- FALSE
-    }
-    broom::tidy(model, exponentiate = exp)
-  }
-}
-
 coefs_summary <- function(model) {
   coef_fmt <- paste(
     '{sprintf("%.2f", estimate)}',

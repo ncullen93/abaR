@@ -33,6 +33,18 @@ aba_glance <- function(x, ...) {
   UseMethod('aba_glance')
 }
 
+#' aba tidy generic
+#'
+#' @param model model
+#' @param predictors predictors
+#' @param covariates covariates
+#' @param ... extra parameters
+#'
+#' @export
+aba_tidy <- function(model, predictors, covariates, ...) {
+  UseMethod('aba_tidy')
+}
+
 #' @export
 print.abaStat <- function(x, ...) {
   cat(x$stat_type)

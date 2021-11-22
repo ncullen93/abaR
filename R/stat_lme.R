@@ -96,6 +96,27 @@ aba_fit_lme <- function(formula, data, extra_params) {
 }
 
 #' @export
+aba_tidy.lme <- function(model, predictors, covariates, ...) {
+
+  time_var <- strsplit(
+    as.character(model$call$random)[2],' | ',fixed=T
+  )[[1]][1]
+  tidy_df <- broom.mixed::tidy(model, effects='fixed', conf.int=T) %>%
+    select(-c(.data$df, .data$conf.low, .data$conf.high)) %>%
+    filter(
+      !(.data$term %in% predictors),
+      .data$term != time_var
+    ) %>%
+    mutate(
+      term = strsplit(.data$term, ':') %>%
+        purrr::map_chr(~.[length(.)])
+    )
+
+  return(tidy_df)
+}
+
+
+#' @export
 aba_glance.lme <- function(x, ...) {
 
   glance_df <- broom.mixed::glance(x) %>% #select(-logLik)

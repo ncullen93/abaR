@@ -46,6 +46,11 @@ aba_fit_lm <- function(formula, data, ...) {
 }
 
 #' @export
+aba_tidy.lm <- function(model, predictors, covariates, ...) {
+  broom::tidy(model)
+}
+
+#' @export
 aba_glance.lm <- function(x, x0, ...) {
 
   # tidy glance
