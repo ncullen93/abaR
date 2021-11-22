@@ -12,11 +12,11 @@
 #'   - fits: the fitted statistical models once `fit()` is called
 #'
 #' @param model abaModel the aba model to use for the object
+#' @param bias list the test-retest (or whatever) bias estimates
+#'   for each predictor. This bias is assumed to be runif from 0 - bias value.
 #' @param variation list the test-retest (or whatever) variation estimates
-#'   for each predictor. This variability is assumed to standrd deviation of
+#'   for each predictor. This variability is assumed to be standrd deviation of
 #'   of a normal distribution to be simulated.
-#' @param variation_type character. what the variation values represent.
-#'   We only support percent change ("perc") right now.
 #' @param ntrials integer number of noise simulations to run
 #'
 #' @return An abaRobust object
@@ -26,15 +26,16 @@
 #' @examples
 #' x <- 1
 aba_robust <- function(model,
-                       variation,
-                       variation_type = c('perc'),
+                       bias = NULL,
+                       variation = NULL,
                        ntrials = 100,
                        verbose = TRUE) {
 
-  variation_type <- match.arg(variation_type)
+  if (is.null(bias) & is.null(variation)) stop('Must give bias or variation.')
 
   m <- list(
     'model' = model,
+    'bias' = bias,
     'variation' = variation,
     'params' = list(
       'ntrials' = ntrials
@@ -104,9 +105,68 @@ fit.abaRobust <- function(object, ...) {
       }
     )
   object$results <- noise_summary_results
+
+  # summarise
+  compare_res <- function(res, res_orig) {
+    res[,c('AUC','AIC')] <- 100*(
+      (res[,c('AUC','AIC')] - res_orig[,c('AUC','AIC')]) /
+        res_orig[,c('AUC','AIC')])
+    res
+  }
+
+  res_orig <- object$results_original
+  res <- object$results
+  res_diff <- res %>% purrr::map(~compare_res(., res_orig)) %>% bind_rows()
+  res_sum <- res_diff %>% group_by(MID, groups, outcomes, stats) %>%
+    summarise(
+      dAUC_mean = mean(AUC),
+      dAUC_sd = sd(AUC),
+      dAUC_lowci = quantile(AUC, 0.025),
+      dAUC_highci = quantile(AUC, 0.975),
+      dAIC_mean = mean(AIC),
+      dAIC_sd = sd(AIC),
+    )
+
+  object$results_difference <- res_diff
+  object$results_summary <- res_sum
+
   return(object)
 }
 
 
+#' Plot AUC difference of aba robust object
+#'
+#' @param object abaRobust. object to plot results from
+#'
+#' @return ggplot
+#' @export
+#'
+#' @examples
+#' x <- 1
+aba_plot_metric.abaRobust <- function(object) {
+  ggplot(object$results_difference, aes(x=MID, y=AUC)) +
+    geom_jitter(width=0.1, alpha=0.1, size=1) +
+    stat_summary(fun = mean, geom = "crossbar",
+                 size=0.5, width=0.75) +
+    stat_summary(fun.min = function(z) {mean(z)-sd(z)},
+                 fun.max = function(z) {mean(z)+sd(z)},
+                 size = 1, width=0.5,
+                 geom = "errorbar") +
+    geom_hline(yintercept=0, linetype='dashed') +
+    facet_wrap(groups ~ outcomes) +
+    ylab('ΔAUC (%)') +
+    theme_classic(base_size = 18) +
+    theme(legend.position='none',
+          legend.title = element_blank(),
+          axis.title.x = element_blank(),
+          #plot.margin = unit(c(1, 1,0.5,0.5), "lines"),
+          panel.spacing = unit(1.5, "lines"),
+          strip.background = element_blank(),
+          strip.text = element_text(face = "bold", size = 18, vjust = 1.25)) +
+    theme(panel.grid.major.x = element_blank(),
+          panel.grid.major.y = element_line(
+            colour = "black",
+            size = 0.2, linetype = "dotted"))
+}
 
 

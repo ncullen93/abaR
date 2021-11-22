@@ -1,3 +1,17 @@
+#' Generic plot metric method
+#'
+#' @param object aba model
+#' @param ... additional parameters
+#'
+#' @return ggplot
+#' @export
+#'
+#' @examples
+#' x <- 1
+aba_plot_metric <- function(object, ...) {
+  UseMethod('aba_plot_metric')
+}
+
 #' Plot performance metrics from an aba model
 #'
 #' @param model abaModel. Fitted aba model to plot.
@@ -8,11 +22,7 @@
 #'
 #' @examples
 #' x <- 1
-aba_plot_metric <- function(model_summary, ...) {
-  if (!('abaSummary' %in% class(model_summary))) {
-    stop('Input should be an aba summary. Use aba_summary().')
-  }
-
+aba_plot_metric.abaSummary <- function(model_summary, ...) {
   plot_df <- model_summary$results
 
   g <-

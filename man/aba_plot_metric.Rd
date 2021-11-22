@@ -2,20 +2,20 @@
 % Please edit documentation in R/aba_plot.R
 \name{aba_plot_metric}
 \alias{aba_plot_metric}
-\title{Plot performance metrics from an aba model}
+\title{Generic plot metric method}
 \usage{
-aba_plot_metric(model_summary, ...)
+aba_plot_metric(object, ...)
 }
 \arguments{
-\item{...}{other plotting parameters}
+\item{object}{aba model}
 
-\item{model}{abaModel. Fitted aba model to plot.}
+\item{...}{additional parameters}
 }
 \value{
-ggplot or list of ggplots
+ggplot
 }
 \description{
-Plot performance metrics from an aba model
+Generic plot metric method
 }
 \examples{
 x <- 1
