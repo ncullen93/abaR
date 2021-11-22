@@ -46,9 +46,21 @@ aba_fit_lm <- function(formula, data, ...) {
 }
 
 #' @export
-aba_glance.lm <- function(x, ...) {
+aba_glance.lm <- function(x, x0, ...) {
+
   # tidy glance
   glance_df <- broom::glance(x)
+
+  # add comparison to null model
+  if (!is.null(x0)) {
+    s <- stats::anova(x, x0)
+    null_pval <- s$`Pr(>F)`[2]
+    glance_df <- glance_df %>%
+      bind_cols(
+        tibble::tibble(Pval = null_pval)
+      )
+  }
+
   return(glance_df)
 }
 

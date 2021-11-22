@@ -110,12 +110,24 @@ metrics_summary <- function(model) {
     'AUC',
     'Cut',
     'AIC',
+    'Pval',
     'nobs'
   )
-  r <- model$results %>% rowwise() %>%
+
+  # add null model
+  model_results <- model$results %>%
+    group_by(groups, outcomes, stats) %>%
+    mutate(
+      stats_fit_null = list(.data$stats_fit[.data$MID=='M1'])[[1]]
+    ) %>% ungroup()
+
+  r <- model_results %>% rowwise() %>%
     mutate(
       stats_metrics = list(
-        aba_glance(.data$stats_fit)
+        aba_glance(
+          x = .data$stats_fit,
+          x0 = .data$stats_fit_null
+        )
       )
     ) %>%
     unnest(
