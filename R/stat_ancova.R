@@ -33,8 +33,13 @@ aba_fit_ancova <- function(formula, data, ...) {
 }
 
 #' @export
-aba_glance.ancova <- function(x, ...) {
-  # tidy glance
+aba_tidy.ancova <- function(model, predictors, covariates) {
+  tidy_df <- broom::glance(model)
+  return(tidy_df)
+}
+
+#' @export
+aba_glance.ancova <- function(x, x0, ...) {
   glance_df <- broom::glance(x)
   return(glance_df)
 }
