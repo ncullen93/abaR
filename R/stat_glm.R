@@ -54,12 +54,13 @@ aba_fit_glm <- function(formula, data, ...) {
 #aba_tidy.glm <- function(x, ...) {}
 
 #' @export
-aba_glance.glm <- function(x, ...) {
+aba_glance.glm <- function(x, x0, ...) {
   # tidy glance
   glance_df <- broom::glance(x)
 
   # custom glance
   fit <- x
+  fit0 <- x0
   data <- stats::model.frame(fit) %>% tibble::tibble()
   outcome <- colnames(data)[1]
 
@@ -87,12 +88,17 @@ aba_glance.glm <- function(x, ...) {
   )
   cut_val <- cut_model$Youden$Global$optimal.cutoff$cutoff
 
+  # compare current model to null model
+  s <- stats::anova(fit, fit0)
+  null_pval <- 1 - stats::pchisq(abs(s$Deviance[2]), abs(s$Df[2]))
+
   # combine broom::glance with extra metrics
   glance_df <- glance_df %>%
     dplyr::bind_cols(
       tibble::tibble(
         AUC = auc_val,
-        Cut = cut_val
+        Cut = cut_val,
+        Pval = null_pval
       )
     )
   return(glance_df)
