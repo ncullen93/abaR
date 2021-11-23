@@ -62,9 +62,13 @@ fit.abaScreen <- function(object, ...) {
       by = 'MID'
     )
 
+  if (object$verbose) pb <- progress::progress_bar$new(total = ntrials)
+
   screen_results <- 1:ntrials %>%
     purrr::map(
       function(idx) {
+        if (object$verbose) pb$tick()
+
         model_results %>%
           rowwise() %>%
           mutate(
