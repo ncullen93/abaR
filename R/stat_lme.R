@@ -102,7 +102,7 @@ aba_tidy.lme <- function(model, predictors, covariates, ...) {
     as.character(model$call$random)[2],' | ',fixed=T
   )[[1]][1]
   tidy_df <- broom.mixed::tidy(model, effects='fixed', conf.int=T) %>%
-    select(-c(.data$df, .data$conf.low, .data$conf.high)) %>%
+    select(-c(.data$df)) %>%
     filter(
       !(.data$term %in% predictors),
       .data$term != time_var
