@@ -50,33 +50,47 @@ aba_plot_metric.abaSummary <- function(object, ...) {
   # separate main metric into estimate and confidence interval
   plot_df <- plot_df %>%
     mutate(
-      {{ main_metric }} := str_replace_all(.data[[main_metric]], c('\\['='', '\\]'='', ','=''))
-    ) %>%
-    separate(
-      .data[[main_metric]],
-      c(main_metric, glue('{main_metric}_lo'), glue('{main_metric}_hi')),
-      sep = ' ',
-      convert = TRUE
+      {{main_metric}} := str_replace_all(.data[[main_metric]], c('\\['='', '\\]'='', ','=''))
     )
 
-  g <- ggplot(plot_df, aes(x = .data$MID,
-                           y = .data[[main_metric]],
-                           color = .data$outcomes)) +
+  has_ci <- length(strsplit(plot_df[[main_metric]][1], ' ', fixed=T)[[1]]) > 1
+  if (has_ci) {
+    has_ci <- T
+    plot_df <- plot_df %>%
+      separate(
+        .data[[main_metric]],
+        c(main_metric, glue('{main_metric}_lo'), glue('{main_metric}_hi')),
+        sep = ' ',
+        convert = TRUE
+      )
+  } else {
+    plot_df[[main_metric]] <- as.numeric(plot_df[[main_metric]])
+  }
+
+  g <- ggplot(plot_df,
+              aes(x = .data$MID,
+                  y = .data[[main_metric]],
+                  color = .data$outcomes)) +
     geom_point(position = position_dodge(0.5), size = 2.5)
 
   # confidence interval
-  g <- g + geom_errorbar(
-    aes(ymin = .data[[glue('{main_metric}_lo')]],
-        ymax = .data[[ glue('{main_metric}_hi')]]),
-    position=position_dodge(0.5), size=0.5,
-    width = 0.2
-  )
+  if (has_ci) {
+    g <- g + geom_errorbar(
+      aes(ymin = .data[[glue('{main_metric}_lo')]],
+          ymax = .data[[ glue('{main_metric}_hi')]]),
+      position=position_dodge(0.5), size=0.5,
+      width = 0.2
+    )
+  }
+
+  if (main_metric == 'AUC') {
+    g <- g + ylim(c(0.5, 1))
+    g <- g + geom_hline(aes(yintercept=0.5), linetype='dashed')
+  }
 
   g <- g +
     facet_wrap(. ~ .data$groups) +
-    geom_hline(aes(yintercept=0.5), linetype='dashed') +
     theme_classic(base_size = 16) +
-    ylim(c(0.5, 1)) +
     theme(
       legend.position = "top", legend.margin = margin(5, 0, 0, 0),
       plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "lines"),
@@ -91,6 +105,7 @@ aba_plot_metric.abaSummary <- function(object, ...) {
         size = 0.2, linetype = "dotted"),
       axis.title.x = element_blank()
     )
+
   return(g)
 }
 
