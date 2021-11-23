@@ -163,21 +163,18 @@ metrics_summary <- function(model) {
       -c(.data$predictors, .data$covariates),
       -c(.data$stats_obj, .data$stats_fit, .data$stats_fit_null)
     )
-  #print(r %>% filter(term == 'AUC'))
+
   r <- r %>% rowwise() %>%
     mutate(
       metric = as.character(metric_fmt(
         .data$estimate, .data$conf.low, .data$conf.high
       ))
-    )
-
-  r <- r %>%
+    ) %>%
     select(-c(.data$estimate, .data$conf.low, .data$conf.high)) %>%
     pivot_wider(
       names_from = .data$term,
       values_from = .data$metric
-    )
-  r <- r %>%
+    ) %>%
     select(
       .data$MID,
       .data$groups,

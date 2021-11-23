@@ -88,7 +88,7 @@ aba_glance.glm <- function(x, x0, ...) {
     data = data %>% data.frame(),
     tag.healthy=0, direction='<', methods='Youden'
   )
-  cut_val <- cut_model$Youden$Global$optimal.cutoff$cutoff
+  cut_val <- cut_model$Youden$Global$optimal.cutoff$cutoff[1]
 
   # compare current model to null model
   s <- stats::anova(fit, fit0)
