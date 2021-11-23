@@ -126,6 +126,18 @@ aba_glance.lme <- function(x, ...) {
       )
     )
 
+  # pivot longer to be like coefficients
+  glance_df <- glance_df %>%
+    pivot_longer(cols = everything()) %>%
+    rename(term = name, estimate = value)
+
+  # add confidence interval
+  glance_df <- glance_df %>%
+    mutate(
+      conf.low = NA,
+      conf.high = NA
+    )
+
   return(glance_df)
 }
 

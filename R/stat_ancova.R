@@ -41,6 +41,19 @@ aba_tidy.ancova <- function(model, predictors, covariates) {
 #' @export
 aba_glance.ancova <- function(x, x0, ...) {
   glance_df <- broom::glance(x)
+
+  # pivot longer to be like coefficients
+  glance_df <- glance_df %>%
+    pivot_longer(cols = everything()) %>%
+    rename(term = name, estimate = value)
+
+  # add confidence interval
+  glance_df <- glance_df %>%
+    mutate(
+      conf.low = NA,
+      conf.high = NA
+    )
+
   return(glance_df)
 }
 

@@ -70,10 +70,17 @@ treatment_summary <- function(model) {
 
 
 coefs_summary <- function(model) {
-  coef_fmt <- paste(
-    '{sprintf("%.2f", estimate)}',
-    '(P={sprintf("%.4f", p.value)})'
-  )
+
+  coef_fmt <- function(estimate, conf.low, conf.high, p.value) {
+    coef <- glue('{sprintf("%.2f", estimate)}')
+    if (!is.na(conf.low)) {
+      coef <- glue('{coef} [{sprintf("%.2f", conf.low)}, {sprintf("%.2f", conf.high)}]')
+    }
+    if (!is.na(p.value)) {
+      coef <- glue('{coef} (P={sprintf("%.4f", p.value)})')
+    }
+    coef
+  }
 
   all_predictors <- model$spec$predictors %>%
     purrr::map(~strsplit(.,' | ',fixed=T)) %>%
@@ -95,13 +102,17 @@ coefs_summary <- function(model) {
     select(
       -c(.data$predictors, .data$covariates),
       -c(.data$std.error, .data$statistic, stats_obj, stats_fit)
-    ) %>%
+    )
+
+  r <- r %>% rowwise() %>%
     mutate(
-      coef = as.character(glue::glue(
-        coef_fmt
+      coef = as.character(coef_fmt(
+        .data$estimate, .data$conf.low, .data$conf.high, .data$p.value
       ))
-    ) %>%
-    select(-c(.data$estimate, .data$p.value)) %>%
+    )
+
+  r <- r %>%
+    select(-c(.data$estimate, .data$conf.low, .data$conf.high, .data$p.value)) %>%
     pivot_wider(
       names_from = .data$term,
       values_from = .data$coef
@@ -121,6 +132,13 @@ metrics_summary <- function(model) {
     'Pval',
     'nobs'
   )
+  metric_fmt <- function(estimate, conf.low, conf.high) {
+    metric <- glue('{sprintf("%.2f", estimate)}')
+    if (!is.na(conf.low)) {
+      metric <- glue('{metric} [{sprintf("%.2f", conf.low)}, {sprintf("%.2f", conf.high)}]')
+    }
+    metric
+  }
 
   # add null model
   model_results <- model$results %>%
@@ -141,6 +159,25 @@ metrics_summary <- function(model) {
     unnest(
       .data$stats_metrics
     ) %>%
+    select(
+      -c(.data$predictors, .data$covariates),
+      -c(.data$stats_obj, .data$stats_fit, .data$stats_fit_null)
+    )
+  #print(r %>% filter(term == 'AUC'))
+  r <- r %>% rowwise() %>%
+    mutate(
+      metric = as.character(metric_fmt(
+        .data$estimate, .data$conf.low, .data$conf.high
+      ))
+    )
+
+  r <- r %>%
+    select(-c(.data$estimate, .data$conf.low, .data$conf.high)) %>%
+    pivot_wider(
+      names_from = .data$term,
+      values_from = .data$metric
+    )
+  r <- r %>%
     select(
       .data$MID,
       .data$groups,
@@ -166,7 +203,7 @@ print.abaSummary <- function(x, ...) {
       label = glue('{groups} | {outcomes} | {stats}')
     )
 
-  if (!is.na(x$model$spec$treatment)) {
+  if (!is.null(x$model$spec$treatment)) {
     r2_nested <- x$results_treatment$emmeans %>%
       group_by(groups, outcomes, stats) %>% nest() %>%
       rename(emmeans = data)

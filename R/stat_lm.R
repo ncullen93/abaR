@@ -47,7 +47,7 @@ aba_fit_lm <- function(formula, data, ...) {
 
 #' @export
 aba_tidy.lm <- function(model, predictors, covariates, ...) {
-  broom::tidy(model)
+  broom::tidy(model, conf.int = TRUE)
 }
 
 #' @export
@@ -65,6 +65,18 @@ aba_glance.lm <- function(x, x0, ...) {
         tibble::tibble(Pval = null_pval)
       )
   }
+
+  # pivot longer to be like coefficients
+  glance_df <- glance_df %>%
+    pivot_longer(cols = everything()) %>%
+    rename(term = name, estimate = value)
+
+  # add confidence interval
+  glance_df <- glance_df %>%
+    mutate(
+      conf.low = NA,
+      conf.high = NA
+    )
 
   return(glance_df)
 }

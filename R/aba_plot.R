@@ -1,6 +1,6 @@
 #' Generic plot metric method
 #'
-#' @param object aba model
+#' @param object aba model summary
 #' @param ... additional parameters
 #'
 #' @return ggplot
@@ -12,6 +12,21 @@ aba_plot_metric <- function(object, ...) {
   UseMethod('aba_plot_metric')
 }
 
+#' Generic plot coef method
+#'
+#' @param object aba model summary
+#' @param ... additional parameters
+#'
+#' @return ggplot
+#' @export
+#'
+#' @examples
+#' x <- 1
+aba_plot_coef <- function(object, ...) {
+  UseMethod('aba_plot_coef')
+}
+
+
 #' Plot performance metrics from an aba model
 #'
 #' @param model abaModel. Fitted aba model to plot.
@@ -22,12 +37,42 @@ aba_plot_metric <- function(object, ...) {
 #'
 #' @examples
 #' x <- 1
-aba_plot_metric.abaSummary <- function(model_summary, ...) {
-  plot_df <- model_summary$results
+aba_plot_metric.abaSummary <- function(object, ...) {
+  plot_df <- object$results
 
-  g <-
-    ggplot(plot_df, aes(x = .data$MID, y = .data$AUC, color = .data$outcomes)) +
-    geom_point(position = position_dodge(0.5), size = 2.5) +
+  # find main metric - directly after predictors
+  if ('AUC' %in% colnames(plot_df)) {
+    main_metric <- 'AUC'
+  } else {
+    main_metric <- 'adj.r.squared'
+  }
+
+  # separate main metric into estimate and confidence interval
+  plot_df <- plot_df %>%
+    mutate(
+      {{ main_metric }} := str_replace_all(.data[[main_metric]], c('\\['='', '\\]'='', ','=''))
+    ) %>%
+    separate(
+      .data[[main_metric]],
+      c(main_metric, glue('{main_metric}_lo'), glue('{main_metric}_hi')),
+      sep = ' ',
+      convert = TRUE
+    )
+
+  g <- ggplot(plot_df, aes(x = .data$MID,
+                           y = .data[[main_metric]],
+                           color = .data$outcomes)) +
+    geom_point(position = position_dodge(0.5), size = 2.5)
+
+  # confidence interval
+  g <- g + geom_errorbar(
+    aes(ymin = .data[[glue('{main_metric}_lo')]],
+        ymax = .data[[ glue('{main_metric}_hi')]]),
+    position=position_dodge(0.5), size=0.5,
+    width = 0.2
+  )
+
+  g <- g +
     facet_wrap(. ~ .data$groups) +
     geom_hline(aes(yintercept=0.5), linetype='dashed') +
     theme_classic(base_size = 16) +
@@ -49,15 +94,20 @@ aba_plot_metric.abaSummary <- function(model_summary, ...) {
   return(g)
 }
 
+#' aba summary plot coef method
+#'
+#' @param object aba model summary
+#' @param ... additional parameters
+#'
+#' @return ggplot
+#' @export
+#'
+#' @examples
+#' x <- 1
+aba_plot_coef.abaSummary <- function(model_summary, ...) {
 
-aba_plot_coef <- function(model_summary, ...) {
-  if (!('abaSummary' %in% class(model_summary))) {
-    stop('Input should be an aba summary. Use aba_summary().')
-  }
-
-  all_predictors <- model_summary$model$spec$predictors %>%
-    purrr::map(~strsplit(.,' | ',fixed=T)[[1]]) %>%
-    unlist() %>% unique()
+  model <- model_summary$model
+  all_predictors <- model %>% get_predictors()
   all_covariates <- model_summary$model$spec$covariates
   all_variables <- c(all_covariates, all_predictors)
 
@@ -65,14 +115,32 @@ aba_plot_coef <- function(model_summary, ...) {
     pivot_longer(cols = all_of(all_variables)) %>%
     filter(!is.na(value)) %>%
     select(MID, groups, outcomes, name, value) %>%
-    separate(col = value, into = c('Value','Pvalue'), sep=' ', convert=TRUE)
+    mutate(
+      value = str_replace_all(
+        value, c('\\['='', '\\]'='', ','='', '\\(P='='', '\\)'='')
+      )
+    ) %>%
+    separate(
+      col = value,
+      into = c('coef','coef_lo', 'coef_hi', 'coef_pval'),
+      sep=' ', convert=TRUE
+    )
 
-  g <-
-    ggplot(plot_df, aes(x = .data$name, y = .data$Value,
+  g <- ggplot(plot_df, aes(x = .data$name, y = .data$coef,
                         color = .data$MID)) +
-    geom_point(position = position_dodge(0.5), size = 2.5) +
+    geom_point(position = position_dodge(0.5), size = 2.5)
+
+  # confidence interval
+  g <- g + geom_errorbar(
+    aes(ymin = .data$coef_lo,
+        ymax = .data$coef_hi),
+    position=position_dodge(0.5), size=0.5,
+    width = 0.2
+  )
+
+  g <- g +
     facet_wrap(.data$outcomes ~ .data$groups) +
-    geom_hline(aes(yintercept=0), linetype='dashed') +
+    geom_hline(aes(yintercept=1), linetype='dashed') +
     theme_classic(base_size = 16) +
     theme(
       legend.position = "top", legend.margin = margin(5, 0, 0, 0),
@@ -88,6 +156,9 @@ aba_plot_coef <- function(model_summary, ...) {
         size = 0.2, linetype = "dotted"),
       axis.title.x = element_blank()
     )
+
+  g <- g + coord_flip()
+
   return(g)
 }
 
@@ -101,10 +172,11 @@ aba_plot_coef <- function(model_summary, ...) {
 #'
 #' @examples
 #' x <- 1
-aba_plot_roc <- function(model, ...) {
+aba_plot_roc <- function(model_summary, ...) {
+  model <- model_summary$model
   # nest data by distinct group - outcome pairs
   plot_df <- model$results %>%
-    group_by(.data$groups, .data$outcomes) %>%
+    group_by(.data$groups, .data$outcomes, .data$stats) %>%
     nest()
 
   # create a plot for each group - outcome pair
@@ -112,7 +184,8 @@ aba_plot_roc <- function(model, ...) {
     rowwise() %>%
     mutate(
       plots = plot_roc_single(
-        models = .data$data$glm,
+        models = .data$data$stats_fit,
+        stat = .data$data$stats,
         group = .data$groups,
         outcome = .data$outcomes,
         data = model$data
@@ -130,7 +203,7 @@ aba_plot_roc <- function(model, ...) {
 # group: string
 # outcome: string
 # data: tibble
-plot_roc_single <- function(models, group, outcome, data, ...) {
+plot_roc_single <- function(models, stat, group, outcome, data, ...) {
   group.name <- group
   outcome.name <- outcome
   tmp.models <- models

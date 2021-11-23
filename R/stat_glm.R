@@ -53,7 +53,7 @@ aba_fit_glm <- function(formula, data, ...) {
 
 #' @export
 aba_tidy.glm <- function(model, predictors, covariates, ...) {
-  broom::tidy(model, exponentiate = TRUE)
+  broom::tidy(model, exponentiate = TRUE, conf.int = TRUE)
 }
 
 
@@ -74,12 +74,10 @@ aba_glance.glm <- function(x, x0, ...) {
       .Truth = factor(.data[[outcome]]) # probably should do this before fitting
     )
 
-  auc_val <- yardstick::roc_auc(
-    data,
-    '.Truth',
-    '.Predicted',
-    event_level = 'second'
-  )[['.estimate']]
+  roc_obj <- pROC::roc(data, .Truth, .Predicted, ci = T, quiet = T)
+  auc_val <- roc_obj$auc[1]
+  auc_val_lo <- roc_obj$ci[1]
+  auc_val_hi <- roc_obj$ci[3]
 
   # add other metrics here... sens, spec, ppv, npv, etc..
   # ...
@@ -105,6 +103,23 @@ aba_glance.glm <- function(x, x0, ...) {
         Pval = null_pval
       )
     )
+
+  # pivot longer to be like coefficients
+  glance_df <- glance_df %>%
+    pivot_longer(cols = everything()) %>%
+    rename(term = name, estimate = value)
+
+  # add confidence intervals
+  glance_df <- glance_df %>%
+    left_join(
+      tibble::tibble(
+        term = c('AUC'),
+        conf.low = c(auc_val_lo),
+        conf.high = c(auc_val_hi)
+      ),
+      by = 'term'
+    )
+
   return(glance_df)
 }
 

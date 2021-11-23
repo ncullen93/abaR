@@ -107,33 +107,33 @@ fit.abaRobust <- function(object, ...) {
     )
   object$results <- noise_summary_results
 
-  # summarise
-  compare_res <- function(res, res_orig) {
-    res[,c('AUC', 'AIC')] <- 100*(
-      (res[,c('AUC', 'AIC')] - res_orig[,c('AUC', 'AIC')]) /
-        res_orig[,c('AUC', 'AIC')])
-    res
-  }
-
-  res_orig <- object$results_original
-  res <- object$results
-  res_diff <- res %>% purrr::map(~compare_res(., res_orig)) %>% bind_rows()
-  res_sum <- res_diff %>% group_by(MID, groups, outcomes, stats) %>%
-    summarise(
-      dAUC_mean = mean(AUC),
-      dAUC_lo = quantile(AUC, 0.025),
-      dAUC_hi = quantile(AUC, 0.975),
-      dAIC_mean = mean(AIC),
-      dAIC_lo = quantile(AIC, 0.025),
-      dAIC_hi = quantile(AIC, 0.975),
-      Cut_mean = mean(Cut),
-      Cut_lo = quantile(Cut, 0.025),
-      Cut_hi = quantile(Cut, 0.975)
-    )
-
+  ## summarise
+  #compare_res <- function(res, res_orig) {
+  #  res[,c('AUC', 'AIC')] <- 100*(
+  #    (res[,c('AUC', 'AIC')] - res_orig[,c('AUC', 'AIC')]) /
+  #      res_orig[,c('AUC', 'AIC')])
+  #  res
+  #}
+#
+  #res_orig <- object$results_original
+  #res <- object$results
+  #res_diff <- res %>% purrr::map(~compare_res(., res_orig)) %>% bind_rows()
+  #res_sum <- res_diff %>% group_by(MID, groups, outcomes, stats) %>%
+  #  summarise(
+  #    dAUC_mean = mean(AUC),
+  #    dAUC_lo = quantile(AUC, 0.025),
+  #    dAUC_hi = quantile(AUC, 0.975),
+  #    dAIC_mean = mean(AIC),
+  #    dAIC_lo = quantile(AIC, 0.025),
+  #    dAIC_hi = quantile(AIC, 0.975),
+  #    Cut_mean = mean(Cut),
+  #    Cut_lo = quantile(Cut, 0.025),
+  #    Cut_hi = quantile(Cut, 0.975)
+  #  )
+#
   object$results <- object$results %>% bind_rows()
-  object$results_difference <- res_diff
-  object$results_summary <- res_sum
+  #object$results_difference <- res_diff
+  #object$results_summary <- res_sum
 
   return(object)
 }

@@ -4,12 +4,12 @@
 \alias{aba_plot_roc}
 \title{Plot ROC curves from an aba model}
 \usage{
-aba_plot_roc(model, ...)
+aba_plot_roc(model_summary, ...)
 }
 \arguments{
-\item{model}{abaModel. Fitted aba model to plot.}
-
 \item{...}{other plotting parameters}
+
+\item{model}{abaModel. Fitted aba model to plot.}
 }
 \value{
 gpglot or list of ggplots

@@ -111,6 +111,19 @@ aba_tidy.gls <- function(model, predictors, covariates, ...) {
 #' @export
 aba_glance.gls <- function(x, ...) {
   glance_df <- broom.mixed::glance(x) %>% select(-logLik)
+
+  # pivot longer to be like coefficients
+  glance_df <- glance_df %>%
+    pivot_longer(cols = everything()) %>%
+    rename(term = name, estimate = value)
+
+  # add confidence interval
+  glance_df <- glance_df %>%
+    mutate(
+      conf.low = NA,
+      conf.high = NA
+    )
+
   return(glance_df)
 }
 
