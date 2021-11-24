@@ -8,7 +8,7 @@
 #'
 #' @examples
 #' x <- 1
-aba_plot_metric <- function(object, metric = NULL, ...) {
+aba_plot_metric <- function(object, metric = NULL, model_labels = NULL, ...) {
   UseMethod('aba_plot_metric')
 }
 
@@ -37,7 +37,10 @@ aba_plot_coef <- function(object, ...) {
 #'
 #' @examples
 #' x <- 1
-aba_plot_metric.abaSummary <- function(object, metric = NULL, ...) {
+aba_plot_metric.abaSummary <- function(object,
+                                       metric = NULL,
+                                       model_labels = NULL,
+                                       ...) {
   # find main metric - directly after predictors
   if ('AUC' %in% (object$results %>% pull(term) %>% unique())) {
     metric <- 'AUC'
@@ -50,6 +53,11 @@ aba_plot_metric.abaSummary <- function(object, metric = NULL, ...) {
       form == 'metric',
       term == metric
     )
+
+  if (!is.null(model_labels)) {
+    plot_df <- plot_df %>%
+      mutate(MID = factor(MID, labels=model_labels))
+  }
 
   g <- ggplot(plot_df,
               aes(x = .data$MID,

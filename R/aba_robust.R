@@ -56,13 +56,13 @@ simulate_data_noise <- function(data, bias, variation) {
   # add bias
   if (!is.null(bias)) {
     b_predictors <- names(bias)
-    data_noise <- data %>%
+    data <- data %>%
       mutate(
         across(
-          all_of(predictors),
+          all_of(b_predictors),
           ~.x * (1 + runif(n = nrow(data),
                            min = 0,
-                           max = bias[[cur_column()]]) / 100)
+                           max = 2*bias[[cur_column()]]) / 100)
         )
       )
 
@@ -71,7 +71,7 @@ simulate_data_noise <- function(data, bias, variation) {
   # add variance
   if (!is.null(variation)) {
     v_predictors <- names(variation)
-    data_noise <- data %>%
+    data <- data %>%
       mutate(
         across(
           all_of(v_predictors),
@@ -82,7 +82,7 @@ simulate_data_noise <- function(data, bias, variation) {
       )
   }
 
-  data_noise
+  data
 }
 
 #' Fit an aba robust object
@@ -170,12 +170,36 @@ fit.abaRobust <- function(object, ...) {
 #'
 #' @examples
 #' x <- 1
-aba_plot_metric.abaRobust <- function(object, metric = NULL, ...) {
+aba_plot_metric.abaRobust <- function(object,
+                                      metric = NULL,
+                                      model_labels = NULL,
+                                      group_labels = NULL,
+                                      outcome_labels = NULL,
+                                      ...) {
   params <- list(...)
   metric <- 'AUC'
   if ('metric' %in% names(params)) metric <- params$metric
 
-  object$results %>%
+  plot_df <- object$results
+
+  if (!is.null(model_labels)) {
+    plot_df <- plot_df %>%
+      mutate(MID = factor(MID, labels=model_labels))
+  }
+  if (!is.null(group_labels)) {
+    plot_df <- plot_df %>%
+      mutate(groups = factor(groups,
+                             levels=names(group_labels),
+                             labels=unname(unlist(group_labels))))
+  }
+  if (!is.null(outcome_labels)) {
+    plot_df <- plot_df %>%
+      mutate(outcomes = factor(outcomes,
+                             levels=names(outcome_labels),
+                             labels=unname(unlist(outcome_labels))))
+  }
+
+  plot_df %>%
     filter(term == metric) %>%
     ggplot(aes(x=MID, y=est_diff, color=MID)) +
     geom_jitter(width=0.1, alpha=0.1, size=1) +
@@ -186,7 +210,7 @@ aba_plot_metric.abaRobust <- function(object, metric = NULL, ...) {
                  size = 1, width=0.5,
                  geom = "errorbar") +
     geom_hline(yintercept=0, linetype='dashed') +
-    facet_wrap(.~paste0(outcomes,' | ', groups)) +
+    facet_wrap(.~paste0(.data$outcomes,' | ', .data$groups)) +
     ylab(glue('Δ{metric} (%)')) +
     theme_classic(base_size = 16) +
     theme(legend.position='none',
