@@ -100,17 +100,19 @@ simulate_data_noise <- function(data, bias, variation) {
 #' @examples
 #' x <- 1
 fit.abaRobust <- function(object, ...) {
+
   ntrials <- object$params$ntrials
   model <- object$model
   data_original <- model$data
 
   # get original model summary results
-  object$results_original <- aba_summary(model)$results
+  results_original <- aba_summary(model)$results %>%
+    select(-c(lo, hi, pval))
 
   # for each trial, simulate noisy data, then re-fit/re-summarise model
   if (object$verbose) pb <- progress::progress_bar$new(total = ntrials)
 
-  noise_summary_results <- 1:ntrials %>%
+  results <- 1:ntrials %>%
     purrr::map(
       function(idx) {
         if (object$verbose) pb$tick()
@@ -126,36 +128,34 @@ fit.abaRobust <- function(object, ...) {
             mutate(trial = idx)
         )
       }
-    )
-  object$results <- noise_summary_results
+    ) %>%
+    bind_rows()
 
-  ## summarise
-  #compare_res <- function(res, res_orig) {
-  #  res[,c('AUC', 'AIC')] <- 100*(
-  #    (res[,c('AUC', 'AIC')] - res_orig[,c('AUC', 'AIC')]) /
-  #      res_orig[,c('AUC', 'AIC')])
-  #  res
-  #}
-#
-  #res_orig <- object$results_original
-  #res <- object$results
-  #res_diff <- res %>% purrr::map(~compare_res(., res_orig)) %>% bind_rows()
-  #res_sum <- res_diff %>% group_by(MID, groups, outcomes, stats) %>%
-  #  summarise(
-  #    dAUC_mean = mean(AUC),
-  #    dAUC_lo = quantile(AUC, 0.025),
-  #    dAUC_hi = quantile(AUC, 0.975),
-  #    dAIC_mean = mean(AIC),
-  #    dAIC_lo = quantile(AIC, 0.025),
-  #    dAIC_hi = quantile(AIC, 0.975),
-  #    Cut_mean = mean(Cut),
-  #    Cut_lo = quantile(Cut, 0.025),
-  #    Cut_hi = quantile(Cut, 0.975)
-  #  )
-#
-  object$results <- object$results %>% bind_rows()
-  #object$results_difference <- res_diff
-  #object$results_summary <- res_sum
+  results <- results %>%
+    left_join(
+      results_original %>% rename(est_orig = est),
+      by = c('MID','groups','outcomes','stats','term','form')
+    ) %>%
+    mutate(
+      est_diff = 100 * (est - est_orig) / (est_orig)
+    )
+
+
+  results_summary <- results %>%
+    group_by(MID, groups, outcomes, stats, term, form) %>%
+    summarise(
+      est = mean(est),
+      lo = quantile(est, 0.025),
+      hi = quantile(est, 0.975),
+      est_diff = mean(est_diff, na.rm=T),
+      lo_diff = quantile(est_diff, 0.025, na.rm=T),
+      hi_diff = quantile(est_diff, 0.975, na.rm=T),
+      .groups='keep'
+    )
+
+  object$results_original <- results_original
+  object$results <- results
+  object$results_summary <- results_summary
 
   return(object)
 }
@@ -170,8 +170,14 @@ fit.abaRobust <- function(object, ...) {
 #'
 #' @examples
 #' x <- 1
-aba_plot_metric.abaRobust <- function(object) {
-  ggplot(object$results_difference, aes(x=MID, y=AUC)) +
+aba_plot_metric.abaRobust <- function(object, ...) {
+  params <- list(...)
+  metric <- 'AUC'
+  if ('metric' %in% names(params)) metric <- params$metric
+
+  object$results %>%
+    filter(term == metric) %>%
+    ggplot(aes(x=MID, y=est_diff)) +
     geom_jitter(width=0.1, alpha=0.1, size=1) +
     stat_summary(fun = mean, geom = "crossbar",
                  size=0.5, width=0.75) +
@@ -181,7 +187,7 @@ aba_plot_metric.abaRobust <- function(object) {
                  geom = "errorbar") +
     geom_hline(yintercept=0, linetype='dashed') +
     facet_wrap(groups ~ outcomes) +
-    ylab('\u0394AUC (%)') +
+    ylab(glue('Δ{metric} (%)')) +
     theme_classic(base_size = 18) +
     theme(legend.position='none',
           legend.title = element_blank(),

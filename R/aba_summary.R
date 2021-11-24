@@ -11,11 +11,10 @@
 aba_summary <- function(model, ...) {
 
   # coefficients and model metrics
-  coefs_df <- coefs_summary(model)
-  metrics_df <- metrics_summary(model)
-
-  results_df <- coefs_df %>%
-    bind_cols(metrics_df %>% select(-c(MID, groups, outcomes, stats)))
+  coefs_df <- coefs_summary(model) %>% mutate(form = 'coef')
+  metrics_df <- metrics_summary(model) %>% mutate(form = 'metric')
+  results_df <- coefs_df %>% bind_rows(metrics_df) %>%
+    select(MID:term, form, everything())
 
   s <- list(
     model = model,
@@ -25,7 +24,7 @@ aba_summary <- function(model, ...) {
   # run emmeans and pairs  if there is a treatment
   if (!is.null(model$spec$treatment)) {
     treatment_dfs <- treatment_summary(model)
-    s$results_treatment <- treatment_dfs
+    s$results_treatments <- treatment_dfs
   }
 
   class(s) <- 'abaSummary'
@@ -72,17 +71,6 @@ treatment_summary <- function(model) {
 
 coefs_summary <- function(model) {
 
-  coef_fmt <- function(est, lo, hi, pval) {
-    coef <- glue('{sprintf("%.2f", est)}')
-    if (!is.na(lo)) {
-      coef <- glue('{coef} [{sprintf("%.2f", lo)}, {sprintf("%.2f", hi)}]')
-    }
-    if (!is.na(p.value)) {
-      coef <- glue('{coef} (P={sprintf("%.4f", pval)})')
-    }
-    coef
-  }
-
   all_predictors <- model$spec$predictors %>%
     purrr::map(~strsplit(.,' | ',fixed=T)) %>%
     unlist() %>% unique()
@@ -90,7 +78,7 @@ coefs_summary <- function(model) {
   all_covariates <- model$spec$covariates
   if (is.null(all_covariates)) all_covariates <- c('')
 
-  all_variables <- c(all_covariates, all_predictors)
+  all_vars <- c(all_covariates, all_predictors)
 
   # coefficients
   r <- model$results %>% rowwise() %>%
@@ -114,23 +102,35 @@ coefs_summary <- function(model) {
       hi = conf.high,
       pval = p.value
     ) %>%
-    pivot_wider(
-      names_from = .data$term,
-      values_from = c(.data$est, .data$lo, .data$hi, .data$pval),
-      names_glue = '{term}_{.value}'
-    ) %>%
-    rename_with(
-      ~stringr::str_replace(., '_est',''),
-      ends_with('_est')
-    ) %>%
-    select(
-      MID:stats,
-      any_of(
-        c(outer(c('','_lo','_hi', '_pval'), all_variables, FUN=function(x,y) paste0(y,x)))
-      )
-    )
+    select(-pval, everything())
+
+  #r <- coef_pivot_wider(r)
 
   return(r)
+}
+
+coef_fmt <- function(est, lo, hi, pval) {
+  coef <- glue('{sprintf("%.2f", est)}')
+  if (!is.na(lo)) {
+    coef <- glue('{coef} [{sprintf("%.2f", lo)}, {sprintf("%.2f", hi)}]')
+  }
+  if (!is.na(pval)) {
+    coef <- glue('{coef} (P={sprintf("%.4f", pval)})')
+  }
+  coef
+}
+
+coef_pivot_wider <- function(r) {
+  r %>% rowwise() %>%
+    mutate(
+      est = as.character(coef_fmt(.data$est, .data$lo, .data$hi, .data$pval))
+    ) %>%
+    select(-c(pval, lo, hi)) %>%
+    ungroup() %>%
+  pivot_wider(
+    names_from = .data$term,
+    values_from = .data$est
+  )
 }
 
 metrics_summary <- function(model) {
@@ -143,13 +143,6 @@ metrics_summary <- function(model) {
     'Pval',
     'nobs'
   )
-  metric_fmt <- function(est, lo, hi) {
-    metric <- glue('{sprintf("%.2f", est)}')
-    if (!is.na(lo)) {
-      metric <- glue('{metric} [{sprintf("%.2f", lo)}, {sprintf("%.2f", hi)}]')
-    }
-    metric
-  }
 
   # add null model
   model_results <- model$results %>%
@@ -183,33 +176,55 @@ metrics_summary <- function(model) {
       est = estimate,
       lo = conf.low,
       hi = conf.high
-    ) %>%
-    pivot_wider(
-      names_from = .data$term,
-      values_from = c(.data$est, .data$lo, .data$hi),
-      names_glue = '{term}_{.value}'
-    ) %>%
-    select(
-      where(~sum(!is.na(.))>0)
-    ) %>%
-    rename_with(
-      ~stringr::str_replace(., '_est',''),
-      ends_with('_est')
-    ) %>%
-    select(
-      MID:stats,
-      any_of(
-        c(outer(c('','_lo','_hi'), metric_vars, FUN=function(x,y) paste0(y,x)))
-      )
     )
+
+  #r <- metric_pivot_wider(r)
 
   return(r)
 }
 
+metric_fmt <- function(est, lo, hi) {
+  metric <- glue('{sprintf("%.2f", est)}')
+  if (!is.na(lo)) {
+    metric <- glue('{metric} [{sprintf("%.2f", lo)}, {sprintf("%.2f", hi)}]')
+  }
+  metric
+}
+
+# convert to wide
+metric_pivot_wider <- function(r) {
+  r %>% rowwise() %>%
+    mutate(
+      est = as.character(metric_fmt(.data$est, .data$lo, .data$hi))
+    ) %>%
+    select(-c(lo, hi)) %>%
+    ungroup() %>%
+    pivot_wider(
+      names_from = .data$term,
+      values_from = .data$est
+    )
+}
+
+
 #' @export
 print.abaSummary <- function(x, ...) {
 
-  r_nested <- x$results %>%
+  r_coef <- coef_pivot_wider(
+    x$results %>%
+      filter(form == 'coef') %>%
+      select(-c('form'))
+  ) %>% select(-c('(Intercept)'))
+  r_metric <- metric_pivot_wider(
+    x$results %>%
+      filter(form == 'metric') %>%
+      select(-c('form'))
+  )
+  r_results <- r_coef %>%
+    bind_cols(
+      r_metric %>% select(-c(MID, groups, outcomes, stats))
+    )
+
+  r_nested <- r_results %>%
     group_by(
       .data$groups,
       .data$outcomes,
