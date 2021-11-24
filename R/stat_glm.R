@@ -45,7 +45,8 @@ aba_fit_glm <- function(formula, data, ...) {
   model <- stats::glm(
     stats::formula(formula),
     family = 'binomial',
-    data = data
+    data = data,
+    na.action = na.omit
   )
   model$call$formula <- stats::formula(formula)
   return(model)

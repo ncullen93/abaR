@@ -170,14 +170,14 @@ fit.abaRobust <- function(object, ...) {
 #'
 #' @examples
 #' x <- 1
-aba_plot_metric.abaRobust <- function(object, ...) {
+aba_plot_metric.abaRobust <- function(object, metric = NULL, ...) {
   params <- list(...)
   metric <- 'AUC'
   if ('metric' %in% names(params)) metric <- params$metric
 
   object$results %>%
     filter(term == metric) %>%
-    ggplot(aes(x=MID, y=est_diff)) +
+    ggplot(aes(x=MID, y=est_diff, color=MID)) +
     geom_jitter(width=0.1, alpha=0.1, size=1) +
     stat_summary(fun = mean, geom = "crossbar",
                  size=0.5, width=0.75) +
@@ -186,9 +186,9 @@ aba_plot_metric.abaRobust <- function(object, ...) {
                  size = 1, width=0.5,
                  geom = "errorbar") +
     geom_hline(yintercept=0, linetype='dashed') +
-    facet_wrap(groups ~ outcomes) +
+    facet_wrap(.~paste0(outcomes,' | ', groups)) +
     ylab(glue('Δ{metric} (%)')) +
-    theme_classic(base_size = 18) +
+    theme_classic(base_size = 16) +
     theme(legend.position='none',
           legend.title = element_blank(),
           axis.title.x = element_blank(),

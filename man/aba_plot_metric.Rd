@@ -4,7 +4,7 @@
 \alias{aba_plot_metric}
 \title{Generic plot metric method}
 \usage{
-aba_plot_metric(object, ...)
+aba_plot_metric(object, metric = NULL, ...)
 }
 \arguments{
 \item{object}{aba model summary}

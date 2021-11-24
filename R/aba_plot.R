@@ -8,7 +8,7 @@
 #'
 #' @examples
 #' x <- 1
-aba_plot_metric <- function(object, ...) {
+aba_plot_metric <- function(object, metric = NULL, ...) {
   UseMethod('aba_plot_metric')
 }
 
@@ -37,53 +37,34 @@ aba_plot_coef <- function(object, ...) {
 #'
 #' @examples
 #' x <- 1
-aba_plot_metric.abaSummary <- function(object, ...) {
-  plot_df <- object$results
-
+aba_plot_metric.abaSummary <- function(object, metric = NULL, ...) {
   # find main metric - directly after predictors
-  if ('AUC' %in% colnames(plot_df)) {
-    main_metric <- 'AUC'
+  if ('AUC' %in% (object$results %>% pull(term) %>% unique())) {
+    metric <- 'AUC'
   } else {
-    main_metric <- 'adj.r.squared'
+    metric <- 'adj.r.squared'
   }
 
-  # separate main metric into estimate and confidence interval
-  plot_df <- plot_df %>%
-    mutate(
-      {{main_metric}} := str_replace_all(.data[[main_metric]], c('\\['='', '\\]'='', ','=''))
+  plot_df <- object$results %>%
+    filter(
+      form == 'metric',
+      term == metric
     )
-
-  has_ci <- length(strsplit(plot_df[[main_metric]][1], ' ', fixed=T)[[1]]) > 1
-  if (has_ci) {
-    has_ci <- T
-    plot_df <- plot_df %>%
-      separate(
-        .data[[main_metric]],
-        c(main_metric, glue('{main_metric}_lo'), glue('{main_metric}_hi')),
-        sep = ' ',
-        convert = TRUE
-      )
-  } else {
-    plot_df[[main_metric]] <- as.numeric(plot_df[[main_metric]])
-  }
 
   g <- ggplot(plot_df,
               aes(x = .data$MID,
-                  y = .data[[main_metric]],
+                  y = .data$est,
                   color = .data$outcomes)) +
-    geom_point(position = position_dodge(0.5), size = 2.5)
-
-  # confidence interval
-  if (has_ci) {
-    g <- g + geom_errorbar(
-      aes(ymin = .data[[glue('{main_metric}_lo')]],
-          ymax = .data[[ glue('{main_metric}_hi')]]),
+    geom_point(position = position_dodge(0.5), size = 2.5) +
+    geom_errorbar(
+      aes(ymin = .data$lo,
+          ymax = .data$hi),
       position=position_dodge(0.5), size=0.5,
       width = 0.2
-    )
-  }
+    ) +
+    ylab(metric)
 
-  if (main_metric == 'AUC') {
+  if (metric == 'AUC') {
     g <- g + ylim(c(0.5, 1))
     g <- g + geom_hline(aes(yintercept=0.5), linetype='dashed')
   }
@@ -121,41 +102,43 @@ aba_plot_metric.abaSummary <- function(object, ...) {
 #' x <- 1
 aba_plot_coef.abaSummary <- function(model_summary, ...) {
 
+  model_type <- NA
+  if ('AUC' %in% (model_summary$results %>% pull(term) %>% unique())) {
+    model_type <- 'glm'
+  } else {
+    model_type <- 'lm'
+  }
+
   model <- model_summary$model
   all_predictors <- model %>% get_predictors()
   all_covariates <- model_summary$model$spec$covariates
   all_variables <- c(all_covariates, all_predictors)
 
   plot_df <- model_summary$results %>%
-    pivot_longer(cols = all_of(all_variables)) %>%
-    filter(!is.na(value)) %>%
-    select(MID, groups, outcomes, name, value) %>%
-    mutate(
-      value = str_replace_all(
-        value, c('\\['='', '\\]'='', ','='', '\\(P='='', '\\)'='')
-      )
-    ) %>%
-    separate(
-      col = value,
-      into = c('coef','coef_lo', 'coef_hi', 'coef_pval'),
-      sep=' ', convert=TRUE
+    filter(
+      form == 'coef',
+      term != '(Intercept)'
     )
 
-  g <- ggplot(plot_df, aes(x = .data$name, y = .data$coef,
-                        color = .data$MID)) +
-    geom_point(position = position_dodge(0.5), size = 2.5)
+  g <- ggplot(plot_df, aes(x = .data$term,
+                           y = .data$est,
+                           color = .data$MID)) +
+    geom_point(position = position_dodge(0.5), size = 2.5) +
+    geom_errorbar(
+      aes(ymin = .data$lo,
+          ymax = .data$hi),
+      position=position_dodge(0.5), size=0.5,
+      width = 0.2
+    )
 
-  # confidence interval
-  g <- g + geom_errorbar(
-    aes(ymin = .data$coef_lo,
-        ymax = .data$coef_hi),
-    position=position_dodge(0.5), size=0.5,
-    width = 0.2
-  )
+  if (model_type == 'glm') {
+    g <- g + geom_hline(aes(yintercept=1), linetype='dashed')
+  } else if (model == 'lm') {
+    g <- g + geom_hline(aes(yintercept=0), linetype='dashed')
+  }
 
   g <- g +
-    facet_wrap(.data$outcomes ~ .data$groups) +
-    geom_hline(aes(yintercept=1), linetype='dashed') +
+    facet_wrap(.~paste0(.data$outcomes,' | ', .data$groups)) +
     theme_classic(base_size = 16) +
     theme(
       legend.position = "top", legend.margin = margin(5, 0, 0, 0),
@@ -223,12 +206,10 @@ plot_roc_single <- function(models, stat, group, outcome, data, ...) {
   outcome.name <- outcome
   tmp.models <- models
 
-  data <- data %>%
-    filter(rlang::eval_tidy(rlang::parse_expr(group.name))) %>%
-    data.frame()
-
   roc.list <- tmp.models %>% purrr::map(
     function(tmp.model) {
+      # get dataset from model
+      data <- stats::model.frame(tmp.model)
 
       data$tmp.outcome <- data[,as.character(tmp.model$formula)[2]]
       data$tmp.outcome.pred <- stats::predict(tmp.model, type = "response")
