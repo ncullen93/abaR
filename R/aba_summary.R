@@ -163,25 +163,52 @@ metrics_summary <- function(model) {
       -c(.data$predictors, .data$covariates),
       -c(.data$stats_obj, .data$stats_fit, .data$stats_fit_null)
     )
-
-  r <- r %>% rowwise() %>%
-    mutate(
-      metric = as.character(metric_fmt(
-        .data$estimate, .data$conf.low, .data$conf.high
-      ))
+  r <- r %>%
+    filter(
+      term %in% metric_vars
     ) %>%
-    select(-c(.data$estimate, .data$conf.low, .data$conf.high)) %>%
+    rename(
+      est = estimate,
+      lo = conf.low,
+      hi = conf.high
+    ) %>%
     pivot_wider(
       names_from = .data$term,
-      values_from = .data$metric
+      values_from = c(.data$est, .data$lo, .data$hi),
+      names_glue = '{term}_{.value}'
     ) %>%
     select(
-      .data$MID,
-      .data$groups,
-      .data$outcomes,
-      .data$stats,
-      any_of(metric_vars)
+      where(~sum(!is.na(.))>0)
+    ) %>%
+    rename_with(
+      ~stringr::str_replace(., '_est',''),
+      ends_with('_est')
+    ) %>%
+    select(
+      MID:stats,
+      any_of(
+        c(outer(c('','_lo','_hi'), metric_vars, FUN=function(x,y) paste0(y,x)))
+      )
     )
+
+  #r <- r %>% rowwise() %>%
+  #  mutate(
+  #    metric = as.character(metric_fmt(
+  #      .data$estimate, .data$conf.low, .data$conf.high
+  #    ))
+  #  ) %>%
+  #  select(-c(.data$estimate, .data$conf.low, .data$conf.high)) %>%
+  #  pivot_wider(
+  #    names_from = .data$term,
+  #    values_from = .data$metric
+  #  ) %>%
+  #  select(
+  #    .data$MID,
+  #    .data$groups,
+  #    .data$outcomes,
+  #    .data$stats,
+  #    any_of(metric_vars)
+  #  )
 
   return(r)
 }
@@ -233,10 +260,19 @@ print.abaSummary <- function(x, ...) {
       if ('emmeans' %in% colnames(x)) {
         cat('\nTreatment effects:\n\n')
         print(
-          x$emmeans[[1]]
-        )
-        print(
-          x$pairs[[1]]
+          x$pairs[[1]] %>%
+            select(-c(predictors, covariates, term, null.value, df, statistic)) %>%
+            rename(Comparison = contrast) %>%
+            select(MID, Comparison, everything()) %>%
+            rowwise() %>%
+            mutate(
+              estimate = as.character(
+                glue('{sprintf("%.2f",estimate)} [{sprintf("%.2f",std.error)}] (P={sprintf("%.4f",p.value)})')
+                )
+            ) %>%
+            select(-c(std.error, p.value, Comparison)) %>%
+            pivot_wider(names_from = WEEK, values_from = estimate,
+                        names_prefix = 'Estimate_Time_')
         )
       }
     }

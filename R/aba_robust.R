@@ -49,20 +49,39 @@ aba_robust <- function(model,
 # simulate noise on data
 # example:
 # df <- adni_sample
-# variation <- list('PLASMA_ABETA_bl'=3.4, 'PLASMA_PTAU181_bl'=9.3)
+# bias <- list('PLASMA_ABETA_bl' = 4.1, 'PLASMA_PTAU181_bl' = 8.3)
+# variation <- list('PLASMA_ABETA_bl' = 3.4, 'PLASMA_PTAU181_bl' = 9.3)
 # df_noise <- simulate_data_noise(df, variation)
-simulate_data_noise <- function(data, variation) {
-  predictors <- names(variation)
-
-  data_noise <- data %>%
-    mutate(
-      across(
-        all_of(predictors),
-        ~.x * (1 + rnorm(nrow(data),
-                         0,
-                         variation[[cur_column()]]) / 100)
+simulate_data_noise <- function(data, bias, variation) {
+  # add bias
+  if (!is.null(bias)) {
+    b_predictors <- names(bias)
+    data_noise <- data %>%
+      mutate(
+        across(
+          all_of(predictors),
+          ~.x * (1 + runif(n = nrow(data),
+                           min = 0,
+                           max = bias[[cur_column()]]) / 100)
+        )
       )
-    )
+
+  }
+
+  # add variance
+  if (!is.null(variation)) {
+    v_predictors <- names(variation)
+    data_noise <- data %>%
+      mutate(
+        across(
+          all_of(v_predictors),
+          ~.x * (1 + rnorm(n = nrow(data),
+                           mean = 0,
+                           sd = variation[[cur_column()]]) / 100)
+        )
+      )
+  }
+
   data_noise
 }
 
@@ -97,12 +116,15 @@ fit.abaRobust <- function(object, ...) {
         if (object$verbose) pb$tick()
 
         data_noise <- simulate_data_noise(
-          data_original, object$variation
+          data_original, object$bias, object$variation
         )
 
         model_noise <- model %>% set_data(data_noise) %>% fit()
         model_noise_summary <- model_noise %>% aba_summary()
-        return(model_noise_summary$results)
+        return(
+          model_noise_summary$results %>%
+            mutate(trial = idx)
+        )
       }
     )
   object$results <- noise_summary_results
