@@ -127,10 +127,10 @@ coef_pivot_wider <- function(r) {
     ) %>%
     select(-c(pval, lo, hi)) %>%
     ungroup() %>%
-  pivot_wider(
-    names_from = .data$term,
-    values_from = .data$est
-  )
+    pivot_wider(
+      names_from = .data$term,
+      values_from = .data$est
+    )
 }
 
 metrics_summary <- function(model) {
@@ -205,17 +205,35 @@ metric_pivot_wider <- function(r) {
     )
 }
 
-
 #' @export
 print.abaSummary <- function(x, ...) {
+  args <- list(...)
+  nprint <- 5
+  if ('n' %in% names(args)) nprint <- args$n
+  if (nprint == -1) nprint <- 1000
+
+  x_res <- x$results %>%
+    group_by(
+      .data$groups,
+      .data$outcomes,
+      .data$stats
+    ) %>%
+    nest()
+
+  r_length_orig <- x_res %>% nrow()
+
+  x_res <- x_res %>%
+    ungroup() %>%
+    slice(1:nprint) %>%
+    unnest(cols=c(.data$data))
 
   r_coef <- coef_pivot_wider(
-    x$results %>%
+    x_res %>%
       filter(form == 'coef') %>%
       select(-c('form'))
   ) %>% select(-c('(Intercept)'))
   r_metric <- metric_pivot_wider(
-    x$results %>%
+    x_res %>%
       filter(form == 'metric') %>%
       select(-c('form'))
   )
@@ -253,6 +271,7 @@ print.abaSummary <- function(x, ...) {
     r_nested$label
   )
 
+  r_length <- length(r_split)
 
   r_split %>% purrr::iwalk(
     function(x,y) {
@@ -276,7 +295,7 @@ print.abaSummary <- function(x, ...) {
             mutate(
               estimate = as.character(
                 glue('{sprintf("%.2f",estimate)} [{sprintf("%.2f",std.error)}] (P={sprintf("%.4f",p.value)})')
-                )
+              )
             ) %>%
             select(-c(std.error, p.value, Comparison)) %>%
             pivot_wider(names_from = WEEK, values_from = estimate,
@@ -285,4 +304,10 @@ print.abaSummary <- function(x, ...) {
       }
     }
   )
+
+  if (r_length < r_length_orig) {
+    cat(glue('\n\n ... {r_length_orig - r_length} of',
+    ' {r_length_orig} tables not printed ...'))
+  }
+
 }
