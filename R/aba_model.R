@@ -102,7 +102,6 @@ parse_then_fit_abaModel <- function(
   my_formula <- stat_obj$formula_fn(
     outcome, predictors, covariates, extra_params
   )
-  print(my_formula)
 
   my_model <- stat_obj$fit_fn(
     my_formula, data, extra_params

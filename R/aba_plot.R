@@ -8,7 +8,11 @@
 #'
 #' @examples
 #' x <- 1
-aba_plot_metric <- function(object, metric = NULL, model_labels = NULL, ...) {
+aba_plot_metric <- function(object,
+                            metric = NULL,
+                            model_labels = NULL,
+                            plotly = FALSE,
+                            ...) {
   UseMethod('aba_plot_metric')
 }
 
@@ -40,6 +44,7 @@ aba_plot_coef <- function(object, ...) {
 aba_plot_metric.abaSummary <- function(object,
                                        metric = NULL,
                                        model_labels = NULL,
+                                       plotly = FALSE,
                                        ...) {
   # find main metric - directly after predictors
   if ('AUC' %in% (object$results %>% pull(term) %>% unique())) {
@@ -94,6 +99,10 @@ aba_plot_metric.abaSummary <- function(object,
         size = 0.2, linetype = "dotted"),
       axis.title.x = element_blank()
     )
+
+  if (plotly) {
+    g <- plotly::ggplotly(g)
+  }
 
   return(g)
 }
