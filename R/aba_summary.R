@@ -8,7 +8,9 @@
 #'
 #' @examples
 #' m <- aba_model()
-aba_summary <- function(model, ...) {
+aba_summary <- function(model,
+                        verbose = FALSE,
+                        ...) {
 
   # coefficients and model metrics
   coefs_df <- coefs_summary(model) %>% mutate(form = 'coef')
@@ -307,7 +309,7 @@ print.abaSummary <- function(x, ...) {
 
   if (r_length < r_length_orig) {
     cat(glue('\n\n ... {r_length_orig - r_length} of',
-    ' {r_length_orig} tables not printed ...'))
+    ' {r_length_orig} tables not printed ...\n\n\n'))
   }
 
 }

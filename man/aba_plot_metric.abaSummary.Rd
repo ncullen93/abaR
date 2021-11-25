@@ -4,7 +4,7 @@
 \alias{aba_plot_metric.abaSummary}
 \title{Plot performance metrics from an aba model}
 \usage{
-\method{aba_plot_metric}{abaSummary}(object, metric = NULL, ...)
+\method{aba_plot_metric}{abaSummary}(object, metric = NULL, model_labels = NULL, ...)
 }
 \arguments{
 \item{...}{other plotting parameters}

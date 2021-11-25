@@ -106,6 +106,7 @@ set_predictors <- function(.model, ...) {
   .model <-
     tryCatch(
       {
+        # expect not a list input
         .model$spec$predictors <- unname(
           parse_select_expr(..., data=.model$data) %>%
             purrr::map_chr(~stringr::str_c(., collapse=' | '))
@@ -117,6 +118,7 @@ set_predictors <- function(.model, ...) {
         return(.model)
       },
       error = function(cond) {
+        # try with expectation of list input
         predictors <- list(...)[[1]]
         .model$spec$predictors <- c('')
         for (p in predictors) {

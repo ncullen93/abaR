@@ -4,7 +4,14 @@
 \alias{aba_plot_metric.abaRobust}
 \title{Plot AUC difference of aba robust object}
 \usage{
-\method{aba_plot_metric}{abaRobust}(object, metric = NULL, ...)
+\method{aba_plot_metric}{abaRobust}(
+  object,
+  metric = NULL,
+  model_labels = NULL,
+  group_labels = NULL,
+  outcome_labels = NULL,
+  ...
+)
 }
 \arguments{
 \item{object}{abaRobust. object to plot results from}

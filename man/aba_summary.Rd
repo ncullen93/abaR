@@ -4,7 +4,7 @@
 \alias{aba_summary}
 \title{Create a summary of an aba model.}
 \usage{
-aba_summary(model, ...)
+aba_summary(model, verbose = FALSE, ...)
 }
 \arguments{
 \item{model}{abaModel. the model to create a summary from}

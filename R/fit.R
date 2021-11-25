@@ -25,7 +25,8 @@ process_dataset <- function(data, group, outcome, predictors, covariates, params
   # workaround for empty predictor set
   if (is.null(predictors)) return(list(data))
 
-  predictors <- strsplit(predictors, ' | ', fixed = TRUE) %>% unlist() %>% unique()
+  predictors <- stringr::str_split(predictors, ' (\\*|\\|) ') %>%
+    unlist() %>% unique() %>% subset(. != '')
 
   if (std.beta) {
     data[,predictors] <- scale(data[,predictors])

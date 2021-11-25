@@ -102,6 +102,7 @@ parse_then_fit_abaModel <- function(
   my_formula <- stat_obj$formula_fn(
     outcome, predictors, covariates, extra_params
   )
+  print(my_formula)
 
   my_model <- stat_obj$fit_fn(
     my_formula, data, extra_params
@@ -122,19 +123,20 @@ print.abaModel <- function(x, ...) {
   predictor_vals <- model$spec$predictors[-1]
   stat_vals <- model$spec$stats
 
+  cat('\n')
   cat('Groups:\n   ')
   cat(group_vals, sep='\n   ')
-  cat('Outcomes:\n   ')
+  cat('\nOutcomes:\n   ')
   cat(outcome_vals, sep='\n   ')
-  cat('Covariates:\n   ', covariate_vals, '\n')
+  cat('\nCovariates:\n   ', covariate_vals, '\n')
 
   if (!is.null(model$spec$treatment)) {
-    cat('Treatment:\n   ', model$spec$treatment, '\n')
+    cat('\nTreatment:\n   ', model$spec$treatment, '\n')
   } else {
-    cat('Predictors:\n   ')
+    cat('\nPredictors:\n   ')
     cat(predictor_vals, sep='\n   ')
   }
-  cat('Stats:\n   ')
+  cat('\nStats:\n   ')
   stat_vals %>% purrr::walk(~cat(print(.),'\n   '))
 }
 

@@ -4,8 +4,10 @@ parse_select_expr <- function(..., data) {
     function(xx) {
       if (is.null(data)) {
         if (is.character(xx)) {
+          print(paste('here', xx))
           return(eval(xx))
         } else if (is.call(xx)) {
+          print(paste('here2', xx))
           xx <- tryCatch(
             {
               eval(xx, envir=new.env(parent=baseenv()))
@@ -18,7 +20,18 @@ parse_select_expr <- function(..., data) {
           stop('You must set data if you are using tidy evaluation.')
         }
       }
-      names(tidyselect::eval_select(xx, data))
+      # check for interaction term
+      n_star <- 0
+      if (is.character(xx)) {
+        xx <- stringr::str_split(xx, '\\*')[[1]]
+        n_star <- length(xx)
+      }
+      n <- names(tidyselect::eval_select(xx, data))
+
+      if (n_star > 1) {
+        n <- paste(n, collapse = ' * ')
+      }
+      n
     }
   )
 }
