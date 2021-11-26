@@ -21,7 +21,7 @@
 #'   data = adni_sample
 #' )
 aba_roc <- function(direction = '>',
-                    methods = 'Youden',
+                    method = 'Youden',
                     tag.healthy = 0,
                     std.beta = FALSE,
                     complete.cases = TRUE,
@@ -36,9 +36,12 @@ aba_roc <- function(direction = '>',
       'complete.cases' = complete.cases,
       'include.basic' = FALSE
     ),
-    'direction' = direction,
-    'methods' = methods,
-    'tag.healthy' = tag.healthy
+    'extra_params' = list(
+      'direction' = direction,
+      'method' = method,
+      'tag.healthy' = tag.healthy
+    )
+
   )
   fns$stat_type <- 'roc'
   class(fns) <- 'abaStat'
@@ -53,13 +56,14 @@ aba_formula_roc <- function(outcome, predictors, covariates, ...) {
 }
 
 # fit a glm model
-aba_fit_roc <- function(formula, data, ...) {
+aba_fit_roc <- function(formula, data, extra_params) {
+
   model <- OptimalCutpoints::optimal.cutpoints(
     stats::formula(formula),
     data = data.frame(data),
-    tag.healthy=0,
-    direction='>',
-    methods='Youden'
+    tag.healthy=extra_params$tag.healthy,
+    direction=extra_params$direction,
+    methods=extra_params$method
   )
   model$call$X <- stats::formula(formula)
   class(model) <- c('roc', class(model))
@@ -70,7 +74,7 @@ aba_fit_roc <- function(formula, data, ...) {
 aba_tidy.roc <- function(model, predictors, covariates, ...) {
   # coefficient is the cutoff value
 
-  cut_val <- model$Youden$Global$optimal.cutoff$cutoff[1]
+  cut_val <- model[[model$methods[1]]]$Global$optimal.cutoff$cutoff[1]
   predictor <- as.character(model$call$X)[2]
   cut_vals <- ifelse(predictors==predictor, cut_val, NA)
   x <- tibble::tibble(
@@ -89,7 +93,7 @@ aba_tidy.roc <- function(model, predictors, covariates, ...) {
 
 #' @export
 aba_glance.roc <- function(x, x0, ...) {
-  auc <- x$Youden$Global$measures.acc$AUC
+  auc <- x[[x$methods[1]]]$Global$measures.acc$AUC
   nobs <- nrow(x$data)
 
   # create initial glance df

@@ -6,7 +6,7 @@
 \usage{
 aba_roc(
   direction = ">",
-  methods = "Youden",
+  method = "Youden",
   tag.healthy = 0,
   std.beta = FALSE,
   complete.cases = TRUE,

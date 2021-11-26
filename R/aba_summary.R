@@ -81,7 +81,6 @@ coefs_summary <- function(model) {
   all_covariates <- model$spec$covariates
   if (is.null(all_covariates)) all_covariates <- c('')
 
-
   all_vars <- c(all_covariates, all_predictors)
 
   # coefficients
