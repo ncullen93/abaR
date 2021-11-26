@@ -80,6 +80,7 @@ coefs_summary <- function(model) {
   all_covariates <- model$spec$covariates
   if (is.null(all_covariates)) all_covariates <- c('')
 
+
   all_vars <- c(all_covariates, all_predictors)
 
   # coefficients
@@ -88,7 +89,9 @@ coefs_summary <- function(model) {
       stats_coefs = list(
         aba_tidy(.data$stats_fit, all_predictors, all_covariates)
       )
-    ) %>%
+    )
+
+  r <- r %>%
     unnest(
       .data$stats_coefs
     ) %>%
@@ -150,8 +153,11 @@ metrics_summary <- function(model) {
   model_results <- model$results %>%
     group_by(groups, outcomes, stats) %>%
     mutate(
-      stats_fit_null = list(.data$stats_fit[.data$MID=='M1'])[[1]]
-    ) %>% ungroup()
+      stats_fit_null = list(
+        ifelse('M1' %in% .data$MID, .data$stats_fit[.data$MID=='M1'], NA)
+      )[[1]]
+    ) %>%
+    ungroup()
 
   r <- model_results %>% rowwise() %>%
     mutate(
@@ -233,12 +239,13 @@ print.abaSummary <- function(x, ...) {
     x_res %>%
       filter(form == 'coef') %>%
       select(-c('form'))
-  ) %>% select(-c('(Intercept)'))
+  ) %>% select(-any_of(c('(Intercept)')))
   r_metric <- metric_pivot_wider(
     x_res %>%
       filter(form == 'metric') %>%
       select(-c('form'))
   )
+  print(r_metric)
   r_results <- r_coef %>%
     bind_cols(
       r_metric %>% select(-c(MID, groups, outcomes, stats))

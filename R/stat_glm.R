@@ -25,6 +25,7 @@
 #' )
 aba_glm <- function(std.beta = FALSE,
                     complete.cases = TRUE,
+                    include.basic = TRUE,
                     extra.metrics = NULL) {
   fns <- list(
     'formula_fn' = aba_formula_std,
@@ -32,7 +33,8 @@ aba_glm <- function(std.beta = FALSE,
     'extra.metrics' = extra.metrics,
     'params' = list(
       'std.beta' = std.beta,
-      'complete.cases' = complete.cases
+      'complete.cases' = complete.cases,
+      'include.basic' = include.basic
     )
   )
   fns$stat_type <- 'glm'

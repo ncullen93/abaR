@@ -4,10 +4,8 @@ parse_select_expr <- function(..., data) {
     function(xx) {
       if (is.null(data)) {
         if (is.character(xx)) {
-          print(paste('here', xx))
           return(eval(xx))
         } else if (is.call(xx)) {
-          print(paste('here2', xx))
           xx <- tryCatch(
             {
               eval(xx, envir=new.env(parent=baseenv()))
