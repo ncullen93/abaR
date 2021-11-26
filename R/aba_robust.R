@@ -137,23 +137,28 @@ fit.abaRobust <- function(object, ...) {
       by = c('MID','groups','outcomes','stats','term','form')
     ) %>%
     mutate(
-      est_diff = 100 * (est - est_orig) / (est_orig)
+      #est_diff = 100 * (est - est_orig) / (est_orig)
+      est_diff = est - est_orig
     )
 
 
   results_summary <- results %>%
     group_by(MID, groups, outcomes, stats, term, form) %>%
     summarise(
-      est = mean(est),
       lo = quantile(est, 0.025),
       hi = quantile(est, 0.975),
-      est_diff = mean(est_diff, na.rm=T),
+      est = mean(est),
       lo_diff = quantile(est_diff, 0.025, na.rm=T),
       hi_diff = quantile(est_diff, 0.975, na.rm=T),
+      est_diff = mean(est_diff, na.rm=T),
       .groups='keep'
-    )
+    ) %>%
+    select(MID:form, est, lo, hi, est_diff, lo_diff, hi_diff) %>%
+    ungroup() %>%
+    arrange(MID, groups, outcomes, stats, form, term)
 
-  object$results_original <- results_original
+  object$results_original <- results_original %>%
+    arrange(MID, groups, outcomes, stats, form, term)
   object$results <- results
   object$results_summary <- results_summary
 

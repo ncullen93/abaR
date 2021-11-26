@@ -16,7 +16,8 @@ aba_summary <- function(model,
   coefs_df <- coefs_summary(model) %>% mutate(form = 'coef')
   metrics_df <- metrics_summary(model) %>% mutate(form = 'metric')
   results_df <- coefs_df %>% bind_rows(metrics_df) %>%
-    select(MID:term, form, everything())
+    select(MID:term, form, everything()) %>%
+    filter(!is.na(est))
 
   s <- list(
     model = model,
@@ -245,7 +246,6 @@ print.abaSummary <- function(x, ...) {
       filter(form == 'metric') %>%
       select(-c('form'))
   )
-  print(r_metric)
   r_results <- r_coef %>%
     bind_cols(
       r_metric %>% select(-c(MID, groups, outcomes, stats))

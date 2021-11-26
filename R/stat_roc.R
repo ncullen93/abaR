@@ -62,7 +62,6 @@ aba_fit_roc <- function(formula, data, ...) {
     methods='Youden'
   )
   model$call$X <- stats::formula(formula)
-  print(model)
   class(model) <- c('roc', class(model))
   return(model)
 }
@@ -70,16 +69,20 @@ aba_fit_roc <- function(formula, data, ...) {
 #' @export
 aba_tidy.roc <- function(model, predictors, covariates, ...) {
   # coefficient is the cutoff value
+
   cut_val <- model$Youden$Global$optimal.cutoff$cutoff[1]
+  predictor <- as.character(model$call$X)[2]
+  cut_vals <- ifelse(predictors==predictor, cut_val, NA)
   x <- tibble::tibble(
     term = predictors,
-    estimate = cut_val,
+    estimate = cut_vals,
     std.error = NA,
     statistic = NA,
     p.value = NA,
     conf.low = NA,
     conf.high = NA
   )
+
  return(x)
 }
 
