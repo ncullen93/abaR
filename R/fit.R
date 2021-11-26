@@ -26,6 +26,7 @@ compile.abaModel <- function(model) {
   outcome_vals <- model$spec$outcomes
   covariate_vals <- model$spec$covariates
   predictor_vals <- model$spec$predictors
+  predictor_labels <- names(model$spec$predictors)
   stat_vals <- model$spec$stats
 
   if (is.null(predictor_vals)) predictor_vals <- ""
@@ -47,8 +48,21 @@ compile.abaModel <- function(model) {
   )
 
   init_df <- val_list %>% purrr::cross_df() %>%
-    group_by(groups, outcomes) %>%
-    mutate(MID = paste0('M',row_number())) %>% ungroup()
+    group_by(groups, outcomes)
+
+  # add model names
+  if (!is.null(predictor_labels)) {
+    init_df <- init_df %>%
+      mutate(
+        MID = predictor_labels
+      ) %>%
+      ungroup() %>%
+      select(MID, everything())
+  } else {
+    init_df <- init_df %>%
+      mutate(MID = paste0('M',row_number())) %>% ungroup() %>%
+      select(MID, everything())
+  }
 
   model$results <- init_df %>% tibble() %>%
     unnest_wider(stats) %>%

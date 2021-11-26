@@ -102,7 +102,7 @@ set_covariates <- function(.model, ...) {
 #'
 #' @examples
 #' m <- aba_model() %>% set_predictors()
-set_predictors <- function(.model, ...) {
+set_predictors <- function(.model, ..., labels = NULL) {
   .model <-
     tryCatch(
       {
@@ -115,11 +115,16 @@ set_predictors <- function(.model, ...) {
           '',
           .model$spec$predictors
         )
+        if (!is.null(labels)) {
+          names(.model$spec$predictors) <- c('Basic', labels)
+        }
         return(.model)
       },
       error = function(cond) {
         # try with expectation of list input
         predictors <- list(...)[[1]]
+        predictor_labels <- names(predictors)
+
         .model$spec$predictors <- c('')
         for (p in predictors) {
           vars <- .model$data %>% select(p) %>% names()
@@ -128,6 +133,12 @@ set_predictors <- function(.model, ...) {
             .model$spec$predictors,
             vars
           )
+        }
+        if (!is.null(predictor_labels)) {
+          names(.model$spec$predictors) <- c('Basic', predictor_labels)
+        }
+        if (!is.null(labels)) {
+          names(.model$spec$predictors) <- c('Basic', labels)
         }
         return(.model)
       }

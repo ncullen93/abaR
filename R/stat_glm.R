@@ -56,7 +56,8 @@ aba_fit_glm <- function(formula, data, ...) {
 
 #' @export
 aba_tidy.glm <- function(model, predictors, covariates, ...) {
-  broom::tidy(model, exponentiate = TRUE, conf.int = TRUE)
+  x <- broom::tidy(model, exponentiate = TRUE, conf.int = TRUE)
+  x
 }
 
 

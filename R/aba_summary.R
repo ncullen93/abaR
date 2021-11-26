@@ -84,13 +84,13 @@ coefs_summary <- function(model) {
   all_vars <- c(all_covariates, all_predictors)
 
   # coefficients
-  r <- model$results %>% rowwise() %>%
+  r <- model$results %>%
+    rowwise() %>%
     mutate(
       stats_coefs = list(
         aba_tidy(.data$stats_fit, all_predictors, all_covariates)
       )
     )
-
   r <- r %>%
     unnest(
       .data$stats_coefs

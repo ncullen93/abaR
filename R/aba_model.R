@@ -49,7 +49,9 @@ print.abaModel <- function(x, ...) {
   outcome_vals <- model$spec$outcomes
   covariate_vals <- model$spec$covariates
   predictor_vals <- model$spec$predictors[-1]
+  predictor_labels <- names(model$spec$predictors[-1])
   stat_vals <- model$spec$stats
+
 
   cat('\n')
   cat('Groups:\n   ')
@@ -62,7 +64,17 @@ print.abaModel <- function(x, ...) {
     cat('\nTreatment:\n   ', model$spec$treatment, '\n')
   } else {
     cat('\nPredictors:\n   ')
-    cat(predictor_vals, sep='\n   ')
+    if (!is.null(predictor_labels)) {
+      cat(
+        paste0(predictor_labels, ': ', predictor_vals),
+        sep='\n   '
+      )
+    } else {
+      cat(
+        predictor_vals,
+        sep='\n   '
+      )
+    }
   }
   cat('\nStats:\n   ')
   stat_vals %>% purrr::walk(~cat(print(.),'\n   '))

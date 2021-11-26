@@ -4,7 +4,7 @@
 \alias{set_predictors}
 \title{Set the predictors of an model spec}
 \usage{
-set_predictors(.model, ...)
+set_predictors(.model, ..., labels = NULL)
 }
 \arguments{
 \item{.model}{abaModel}
