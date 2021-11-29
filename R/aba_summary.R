@@ -139,7 +139,7 @@ metrics_summary <- function(model) {
     'adj.r.squared',
     'R2',
     'AUC',
-    'Cut',
+    #'Cut',
     'AIC',
     'Pval',
     'nobs'
@@ -180,9 +180,10 @@ metrics_summary <- function(model) {
       est = estimate,
       lo = conf.low,
       hi = conf.high
+    ) %>%
+    arrange(
+      match(term, metric_vars)
     )
-
-  #r <- metric_pivot_wider(r)
 
   return(r)
 }
