@@ -69,14 +69,11 @@ aba_glance.glm <- function(x, x0, ...) {
   # custom glance
   fit <- x
   fit0 <- x0
-  data <- stats::model.frame(fit) %>% tibble::tibble()
+  data <- stats::model.frame(fit)
   outcome <- colnames(data)[1]
 
-  data <- data %>%
-    dplyr::mutate(
-      .Predicted = stats::predict(fit, type='response'),
-      .Truth = factor(.data[[outcome]]) # probably should do this before fitting
-    )
+  data$.Predicted <- stats::predict(fit, type='response')
+  data$.Truth <- factor(data[[outcome]])
 
   roc_obj <- pROC::roc(data, .Truth, .Predicted, ci = T, quiet = T)
   auc_val <- roc_obj$auc[1]
@@ -89,7 +86,7 @@ aba_glance.glm <- function(x, x0, ...) {
   # Optimal Cutoff
   cut_model <- OptimalCutpoints::optimal.cutpoints(
     .Predicted ~ .Truth,
-    data = data %>% data.frame(),
+    data = data,
     tag.healthy=0, direction='<', methods='Youden'
   )
   cut_val <- cut_model$Youden$Global$optimal.cutoff$cutoff[1]
