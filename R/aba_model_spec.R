@@ -117,7 +117,9 @@ set_covariates <- function(.model, ...) {
 #'
 #' @examples
 #' m <- aba_model() %>% set_predictors()
-set_predictors <- function(.model, ..., labels = NULL) {
+set_predictors <- function(.model,
+                           ...,
+                           labels = NULL) {
   .model <-
     tryCatch(
       {
