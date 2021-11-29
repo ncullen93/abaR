@@ -44,6 +44,7 @@ aba_model_spec <- function(groups='everyone()',
 #'
 #' @param .model abaModel
 #' @param ... groups
+#' @param labels vector optional labels for spec parameter - printing/plotting.
 #'
 #' @return An abaModel object
 #'
@@ -51,9 +52,15 @@ aba_model_spec <- function(groups='everyone()',
 #'
 #' @examples
 #' m <- aba_model() %>% set_groups()
-set_groups <- function(.model, ...) {
+set_groups <- function(.model, ..., labels = NULL) {
   .model$spec$groups <-
     unname(unlist(parse_filter_expr(..., data=.model$data)))
+
+  # set labels
+  if (!is.null(labels)) {
+    names(.model$spec$groups) <- labels
+  }
+
   .model
 }
 
@@ -61,6 +68,7 @@ set_groups <- function(.model, ...) {
 #'
 #' @param .model abaModel
 #' @param ... outcomes
+#' @param labels vector optional labels for spec parameter - printing/plotting.
 #'
 #' @return An abaModel object
 #'
@@ -68,9 +76,15 @@ set_groups <- function(.model, ...) {
 #'
 #' @examples
 #' m <- aba_model() %>% set_outcomes()
-set_outcomes <- function(.model, ...) {
+set_outcomes <- function(.model, ..., labels = NULL) {
   .model$spec$outcomes <-
     unname(unlist(parse_select_expr(..., data=.model$data)))
+
+  # set labels
+  if (!is.null(labels)) {
+    names(.model$spec$outcomes) <- labels
+  }
+
   .model
 }
 
@@ -95,6 +109,7 @@ set_covariates <- function(.model, ...) {
 #'
 #' @param .model abaModel
 #' @param ... predictors
+#' @param labels vector optional labels for spec parameter - printing/plotting.
 #'
 #' @return An abaModel object
 #'
@@ -199,6 +214,7 @@ get_predictors <- function(model) {
 #'
 #' @param .model abaModel. aba model to alter.
 #' @param ... vector. Which statistical models to use.
+#' @param labels vector optional labels for spec parameter - printing/plotting.
 #'
 #' @return An abaModel object
 #' @export
@@ -208,7 +224,7 @@ get_predictors <- function(model) {
 #' m <- aba_model() %>% set_stats('glm')
 #' # create a stat object with - useful w/ extra params
 #' m <- aba_model() %>% set_stats(aba_glm())
-set_stats <- function(.model, ...) {
+set_stats <- function(.model, ..., labels = NULL) {
   stats <- list(...) %>%
     purrr::map(
       function(x) {
@@ -216,9 +232,15 @@ set_stats <- function(.model, ...) {
         return(x)
       }
     )
-  names(stats) <- stats %>%
-    purrr::map_chr('stat_type') %>%
-    make.names(., unique=T)
+
+  # set labels
+  if (!is.null(labels)) {
+    names(stats) <- labels
+  } else {
+    names(stats) <- stats %>%
+      purrr::map_chr('stat_type') %>%
+      make.names(., unique=T)
+  }
 
   .model$spec$stats <- stats
   .model

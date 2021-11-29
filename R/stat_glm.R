@@ -121,6 +121,8 @@ aba_glance.glm <- function(x, x0, ...) {
       by = 'term'
     )
 
+  #print(glance_df)
+
   return(glance_df)
 }
 

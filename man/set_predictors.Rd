@@ -10,6 +10,8 @@ set_predictors(.model, ..., labels = NULL)
 \item{.model}{abaModel}
 
 \item{...}{predictors}
+
+\item{labels}{vector optional labels for spec parameter - printing/plotting.}
 }
 \value{
 An abaModel object

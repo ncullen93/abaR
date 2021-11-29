@@ -85,22 +85,18 @@ coefs_summary <- function(model) {
 
   # coefficients
   r <- model$results %>%
-    rowwise() %>%
     mutate(
-      stats_coefs = list(
-        aba_tidy(.data$stats_fit, all_predictors, all_covariates)
+      stats_coefs = purrr::map(
+        .data$stats_fit, ~aba_tidy(.x, all_predictors, all_covariates)
       )
-    )
-  r <- r %>%
+    ) %>%
     unnest(
       .data$stats_coefs
     ) %>%
     select(
       -c(.data$predictors, .data$covariates),
       -c(.data$std.error, .data$statistic, stats_obj, stats_fit)
-    )
-
-  r <- r %>%
+    ) %>%
     rename(
       est = estimate,
       lo = conf.low,
@@ -249,6 +245,24 @@ print.abaSummary <- function(x, ...) {
     bind_cols(
       r_metric %>% select(-c(MID, groups, outcomes, stats))
     )
+
+  # replace group names for printing if they exist
+  if (!is.null(names(x$model$spec$groups))) {
+    r_results$groups <- factor(
+      r_results$groups,
+      levels = x$model$spec$groups,
+      labels = names(x$model$spec$groups)
+    )
+  }
+
+  # replace outcome names for printing if they exist
+  if (!is.null(names(x$model$spec$outcomes))) {
+    r_results$outcomes <- factor(
+      r_results$outcomes,
+      levels = x$model$spec$outcomes,
+      labels = names(x$model$spec$outcomes)
+    )
+  }
 
   r_nested <- r_results %>%
     group_by(

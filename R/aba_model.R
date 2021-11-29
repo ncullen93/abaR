@@ -47,6 +47,7 @@ print.abaModel <- function(x, ...) {
 
   group_vals <- model$spec$group
   outcome_vals <- model$spec$outcomes
+  outcome_labels <- names(model$spec$outcomes)
   covariate_vals <- model$spec$covariates
   predictor_vals <- model$spec$predictors[-1]
   predictor_labels <- names(model$spec$predictors[-1])
@@ -56,24 +57,27 @@ print.abaModel <- function(x, ...) {
   cat('\n')
   cat('Groups:\n   ')
   cat(group_vals, sep='\n   ')
+
+  # OUTCOMES #
   cat('\nOutcomes:\n   ')
-  cat(outcome_vals, sep='\n   ')
+  if (!is.null(outcome_labels)) {
+    cat(paste0(outcome_labels, ' (', outcome_vals, ')'), sep='\n   ')
+  } else {
+    cat(outcome_vals, sep='\n   ')
+  }
+
+  # COVARIATES #
   cat('\nCovariates:\n   ', covariate_vals, '\n')
 
+  # PREDICTORS #
   if (!is.null(model$spec$treatment)) {
     cat('\nTreatment:\n   ', model$spec$treatment, '\n')
   } else {
     cat('\nPredictors:\n   ')
     if (!is.null(predictor_labels)) {
-      cat(
-        paste0(predictor_labels, ': ', predictor_vals),
-        sep='\n   '
-      )
+      cat(paste0(predictor_labels, ': ', predictor_vals), sep='\n   ')
     } else {
-      cat(
-        predictor_vals,
-        sep='\n   '
-      )
+      cat(predictor_vals, sep='\n   ')
     }
   }
   cat('\nStats:\n   ')

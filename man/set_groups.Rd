@@ -4,12 +4,14 @@
 \alias{set_groups}
 \title{Set the groups of an model spec}
 \usage{
-set_groups(.model, ...)
+set_groups(.model, ..., labels = NULL)
 }
 \arguments{
 \item{.model}{abaModel}
 
 \item{...}{groups}
+
+\item{labels}{vector optional labels for spec parameter - printing/plotting.}
 }
 \value{
 An abaModel object

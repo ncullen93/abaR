@@ -4,12 +4,14 @@
 \alias{set_outcomes}
 \title{Set the outcomes of an model spec}
 \usage{
-set_outcomes(.model, ...)
+set_outcomes(.model, ..., labels = NULL)
 }
 \arguments{
 \item{.model}{abaModel}
 
 \item{...}{outcomes}
+
+\item{labels}{vector optional labels for spec parameter - printing/plotting.}
 }
 \value{
 An abaModel object
