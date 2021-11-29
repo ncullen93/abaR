@@ -40,6 +40,7 @@ parse_filter_expr <- function(..., data) {
   rlang::enexprs(...) %>% purrr::map(
     function(x) {
       if (is.character(x)) {
+        if (x == 'everyone()') x <- 'TRUE'
         x <- str2lang(x)
         if (is.null(data)) return(deparse(x))
       } else {

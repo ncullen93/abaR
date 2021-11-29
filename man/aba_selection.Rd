@@ -9,7 +9,7 @@ aba_selection(
   method = c("forward", "backward"),
   criteria = c("aic", "pval"),
   threshold = NULL,
-  verbose = TRUE
+  verbose = FALSE
 )
 }
 \arguments{

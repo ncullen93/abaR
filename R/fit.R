@@ -124,9 +124,10 @@ process_dataset <- function(data, group, outcome, predictors, covariates, params
 
   if (std.beta) {
     data[,predictors] <- scale(data[,predictors])
+    data[,covariates] <- scale(data[,covariates])
   }
   if (complete.cases) {
-    data <- data[complete.cases(data[,predictors]),]
+    data <- data[complete.cases(data[,c(covariates,predictors)]),]
   }
 
   return(list(data))
