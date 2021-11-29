@@ -4,18 +4,18 @@
 \alias{aba_write}
 \title{Write an ABA object to file}
 \usage{
-aba_write(object, file, name = NULL, include_data = TRUE, include_fit = TRUE)
+aba_write(object, filename, ...)
 }
 \arguments{
 \item{object}{ABA object}
-
-\item{file}{character. filename}
 
 \item{name}{character. name}
 
 \item{include_data}{logical. include data}
 
 \item{include_fit}{logical. include fit}
+
+\item{file}{character. filename}
 }
 \value{
 NA
