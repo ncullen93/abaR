@@ -9,11 +9,12 @@
 #' @examples
 #' m <- aba_model()
 aba_summary <- function(model,
+                        control = aba_control(),
                         verbose = FALSE,
                         ...) {
 
   # coefficients and model metrics
-  coefs_df <- coefs_summary(model) %>% mutate(form = 'coef')
+  coefs_df <- coefs_summary(model, control) %>% mutate(form = 'coef')
   metrics_df <- metrics_summary(model) %>% mutate(form = 'metric')
   results_df <- coefs_df %>% bind_rows(metrics_df) %>%
     select(MID:term, form, everything()) %>%
@@ -72,7 +73,7 @@ treatment_summary <- function(model) {
 }
 
 
-coefs_summary <- function(model) {
+coefs_summary <- function(model, control) {
 
   all_predictors <- model$spec$predictors %>%
     purrr::map(~strsplit(.,' | ',fixed=T)) %>%
@@ -80,8 +81,6 @@ coefs_summary <- function(model) {
 
   all_covariates <- model$spec$covariates
   if (is.null(all_covariates)) all_covariates <- c('')
-
-  all_vars <- c(all_covariates, all_predictors)
 
   # coefficients
   r <- model$results %>%
@@ -105,7 +104,13 @@ coefs_summary <- function(model) {
     ) %>%
     select(-pval, everything())
 
-  #r <- coef_pivot_wider(r)
+  # remove covariates if specified in control
+  if (!control$include_covariates) {
+    r <- r %>%
+      filter(
+        !(term %in% c(all_covariates))
+      )
+  }
 
   return(r)
 }
