@@ -16,11 +16,10 @@ aba_selection <- function(model,
                           threshold = NULL,
                           verbose = FALSE) {
 
-  criteria_map <- list('aic'='AIC','pval'='Pval')
-  criteria <- match.arg(criteria)
-  criteria <- criteria_map[[criteria]]
-
   method <- match.arg(method)
+
+  criteria_map <- list('aic'='AIC', 'pval'='Pval')
+  criteria <- criteria_map[[match.arg(criteria)]]
 
   if ((criteria == 'AIC') & is.null(threshold)) threshold <- -2
   if ((criteria == 'Pval') & is.null(threshold)) threshold <- 0.1
@@ -104,6 +103,7 @@ fit.abaSelection <- function(object,
   }
 
   results <- results %>%
+    select(-model0_est) %>%
     ungroup() %>%
     pivot_longer(contains('model_')) %>%
     rowwise() %>%
@@ -155,9 +155,7 @@ find_next_model <- function(object, baseline_value, criteria, threshold, verbose
           term == 'Pval' ~ est
         )
       ) %>%
-      slice_min(est_diff,
-                n = 1,
-                with_ties = FALSE) %>%
+      slice_min(est_diff, n = 1, with_ties = FALSE) %>%
       ungroup() %>%
       select(-c(lo:pval))
 

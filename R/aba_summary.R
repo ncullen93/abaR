@@ -155,7 +155,9 @@ metrics_summary <- function(model) {
     group_by(groups, outcomes, stats) %>%
     mutate(
       stats_fit_null = list(
-        ifelse('M1' %in% .data$MID, .data$stats_fit[.data$MID=='M1'], NA)
+        ifelse(sum(c('M1','Basic') %in% .data$MID)>0,
+               .data$stats_fit[.data$MID %in% c('M1','Basic')],
+               NA)
       )[[1]]
     ) %>%
     ungroup()
