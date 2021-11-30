@@ -16,11 +16,14 @@ aba_selection <- function(model,
                           threshold = NULL,
                           verbose = FALSE) {
 
-  method <- match.arg(method)
+  criteria_map <- list('aic'='AIC','pval'='Pval')
   criteria <- match.arg(criteria)
+  criteria <- criteria_map[[criteria]]
 
-  if ((criteria == 'aic') & is.null(threshold)) threshold <- 2
-  if ((criteria == 'pval') & is.null(threshold)) threshold <- 0.1
+  method <- match.arg(method)
+
+  if ((criteria == 'AIC') & is.null(threshold)) threshold <- -2
+  if ((criteria == 'Pval') & is.null(threshold)) threshold <- 0.1
 
   m <- list(
     'model' = model,
@@ -65,8 +68,9 @@ fit.abaSelection <- function(object,
         )
       )
     )
+  n_predictors <- length(model$spec$predictors) - 1
 
-  for (idx in 1:10) {
+  for (idx in 1:n_predictors) {
     if (object$verbose) cat('Round: ', idx, '\n')
     models_to_test <- results[[glue('model_{idx-1}')]] %>%
       map_lgl(~'abaModel' %in% class(.)) %>%
@@ -77,6 +81,8 @@ fit.abaSelection <- function(object,
         mutate(
           'model_{idx}' := list(
             find_next_model(.data[[glue::glue('model_{idx-1}')]],
+                            criteria = object$criteria,
+                            threshold = object$threshold,
                             verbose = object$verbose)
           )
         )
@@ -121,14 +127,14 @@ create_new_model <- function(model, group, outcome, stat) {
   model %>% fit()
 }
 
-find_next_model <- function(object, verbose) {
+find_next_model <- function(object, criteria, threshold, verbose) {
   if ('abaModel' %in% class(object)) {
     # summarise
     object_summary <- object %>% aba_summary()
 
     # get best model
     best_model <- object_summary$results %>%
-      filter(term == 'AIC') %>%
+      filter(term == criteria) %>%
       group_by(groups, outcomes, stats) %>%
       mutate(
         est_diff = est - first(est)
@@ -137,7 +143,7 @@ find_next_model <- function(object, verbose) {
       ungroup() %>%
       select(-c(lo:pval))
 
-    if (best_model$est_diff <= -2) {
+    if (best_model$est_diff <= threshold) {
 
       # best predictors
       new_covariates <- object$results %>%
