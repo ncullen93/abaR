@@ -4,7 +4,13 @@
 \alias{aba_summary}
 \title{Create a summary of an aba model.}
 \usage{
-aba_summary(model, control = aba_control(), verbose = FALSE, ...)
+aba_summary(
+  model,
+  control = aba_control(),
+  p.adjust = c("none", "bonferroni", "fdr", "hochberg", "holm", "hommel", "BH", "BY"),
+  verbose = FALSE,
+  ...
+)
 }
 \arguments{
 \item{model}{abaModel. the model to create a summary from}

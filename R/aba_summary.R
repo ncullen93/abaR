@@ -10,8 +10,12 @@
 #' m <- aba_model()
 aba_summary <- function(model,
                         control = aba_control(),
+                        p.adjust = c("none", "bonferroni", "fdr", "hochberg",
+                                     "holm", "hommel", "BH", "BY"),
                         verbose = FALSE,
                         ...) {
+
+  p_adjust_method <- match.arg(p.adjust)
 
   # coefficients and model metrics
   coefs_df <- coefs_summary(model, control) %>% mutate(form = 'coef')
@@ -31,9 +35,50 @@ aba_summary <- function(model,
     s$results_treatments <- treatment_dfs
   }
 
+  # adjust p values
+  if (p_adjust_method != 'none') {
+    pval_df <- adjust_pvals(s$results, p_adjust_method)
+    s$results <- s$results %>%
+      bind_rows(
+        pval_df
+      )
+  }
+
   class(s) <- 'abaSummary'
   return(s)
 }
+
+adjust_pvals <- function(r, p_adjust_method) {
+  r %>%
+    filter(term == 'Pval') %>%
+    group_by(
+      groups, outcomes, stats
+    ) %>%
+    nest() %>%
+    mutate(
+      pvals_adj = purrr::map(
+        .data$data,
+        function(x) {
+          stats::p.adjust(
+            x$est,
+            method = p_adjust_method
+          )
+        }
+      )
+    ) %>%
+    unnest(cols = c(data, pvals_adj)) %>%
+    ungroup() %>%
+    select(-est) %>%
+    rename(
+      est = pvals_adj
+    ) %>%
+    select(groups:form, est, everything()) %>%
+    mutate(
+      term = 'Pval_adj'
+    )
+
+}
+
 
 treatment_summary <- function(model) {
   all_covariates <- model$spec$covariates
@@ -248,7 +293,9 @@ print.abaSummary <- function(x, ...) {
     x_res %>%
       filter(form == 'metric') %>%
       select(-c('form'))
-  )
+  ) %>%
+    select(-nobs, everything())
+
   r_results <- r_coef %>%
     bind_cols(
       r_metric %>% select(-c(MID, groups, outcomes, stats))
