@@ -72,6 +72,7 @@ fit.abaSelection <- function(object,
 
   for (idx in 1:n_predictors) {
     if (object$verbose) cat('Round: ', idx, '\n')
+
     models_to_test <- results[[glue('model_{idx-1}')]] %>%
       map_lgl(~'abaModel' %in% class(.)) %>%
       sum()
@@ -86,6 +87,7 @@ fit.abaSelection <- function(object,
                             verbose = object$verbose)
           )
         )
+
     } else {
       break
     }
@@ -128,6 +130,7 @@ create_new_model <- function(model, group, outcome, stat) {
 }
 
 find_next_model <- function(object, criteria, threshold, verbose) {
+
   if ('abaModel' %in% class(object)) {
     # summarise
     object_summary <- object %>% aba_summary()
@@ -137,9 +140,14 @@ find_next_model <- function(object, criteria, threshold, verbose) {
       filter(term == criteria) %>%
       group_by(groups, outcomes, stats) %>%
       mutate(
-        est_diff = est - first(est)
+        est_diff = case_when(
+          term == 'AIC' ~ est - first(est),
+          term == 'Pval' ~ est
+        )
       ) %>%
-      slice_min(est_diff) %>%
+      slice_min(est_diff,
+                n = 1,
+                with_ties = FALSE) %>%
       ungroup() %>%
       select(-c(lo:pval))
 
@@ -168,7 +176,7 @@ find_next_model <- function(object, criteria, threshold, verbose) {
       return(NA)
     }
   } else {
-    if (object$verbose) cat('Found NA - skippingv')
+    if (verbose) cat('Found NA - skippingv')
     return(NA)
   }
 }
