@@ -68,6 +68,15 @@ fit.abaSelection <- function(object,
         )
       )
     )
+  results$model0_est <- results %>% ungroup() %>% pull(model_0) %>%
+    purrr::map_dbl(
+      function(m) {
+        s <- aba_summary(m)$results %>%
+          filter(MID == 'M1', term == object$criteria)
+        s$est
+      }
+    )
+
   n_predictors <- length(model$spec$predictors) - 1
 
   for (idx in 1:n_predictors) {
@@ -82,6 +91,7 @@ fit.abaSelection <- function(object,
         mutate(
           'model_{idx}' := list(
             find_next_model(.data[[glue::glue('model_{idx-1}')]],
+                            baseline_value = .data$model0_est,
                             criteria = object$criteria,
                             threshold = object$threshold,
                             verbose = object$verbose)
@@ -129,7 +139,7 @@ create_new_model <- function(model, group, outcome, stat) {
   model %>% fit()
 }
 
-find_next_model <- function(object, criteria, threshold, verbose) {
+find_next_model <- function(object, baseline_value, criteria, threshold, verbose) {
 
   if ('abaModel' %in% class(object)) {
     # summarise
@@ -141,7 +151,7 @@ find_next_model <- function(object, criteria, threshold, verbose) {
       group_by(groups, outcomes, stats) %>%
       mutate(
         est_diff = case_when(
-          term == 'AIC' ~ est - first(est),
+          term == 'AIC' ~ est - min(baseline_value, first(est)),
           term == 'Pval' ~ est
         )
       ) %>%
@@ -176,7 +186,7 @@ find_next_model <- function(object, criteria, threshold, verbose) {
       return(NA)
     }
   } else {
-    if (verbose) cat('Found NA - skippingv')
+    if (verbose) cat('Found NA - skipping\n')
     return(NA)
   }
 }
