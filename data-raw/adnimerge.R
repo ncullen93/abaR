@@ -61,4 +61,23 @@ adnimerge <- adnimerge %>%
     MRI_HIPP_bl = Hippocampus_bl
   )
 
+# add plasma and conversion info
+df2 <- read.csv(
+  '~/desktop/Biofinder/_done/ADNI_BioFINDER_plasma/data/ADNI_ALL_PROCESSED.csv'
+  ) %>%
+  tibble()
+
+adnimerge <- adnimerge %>%
+  left_join(
+    df2 %>%
+      filter(VISIT == 0) %>%
+      group_by(SUBJECT_ID) %>% filter(row_number() == 1L) %>% ungroup() %>%
+      select(SUBJECT_ID,
+             PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl,
+             CSF_ABETA_STATUS_bl,
+             ConvertedToDementia, ConvertedToAlzheimers, TimeUnderRiskDementia,
+             ),
+    by = c('RID' = 'SUBJECT_ID')
+  )
+
 usethis::use_data(adnimerge, overwrite = TRUE)
