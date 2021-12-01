@@ -33,8 +33,8 @@ aba_lme <- function(id,
                     std.beta = FALSE,
                     complete.cases = TRUE) {
   fns <- list(
-    'formula_fn' = aba_formula_lme,
-    'fit_fn' = aba_fit_lme,
+    'formula_fn' = formula_lme,
+    'fit_fn' = fit_lme,
     'extra_params' = list(
       'id' = id,
       'time' = time
@@ -50,7 +50,7 @@ aba_lme <- function(id,
   return(fns)
 }
 
-aba_formula_lme <- function(outcome, predictors, covariates, extra_params) {
+formula_lme <- function(outcome, predictors, covariates, extra_params) {
   time <- extra_params$time
   id <- extra_params$id
   #interaction_vars <- extra_params$interaction_vars
@@ -74,7 +74,7 @@ aba_formula_lme <- function(outcome, predictors, covariates, extra_params) {
 }
 
 # fit a lme model
-aba_fit_lme <- function(formula, data, extra_params) {
+fit_lme <- function(formula, data, extra_params) {
   time <- extra_params$time
   id <- extra_params$id
   random_formula <- glue::glue('~ {time} | {id}')

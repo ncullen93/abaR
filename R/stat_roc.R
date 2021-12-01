@@ -28,8 +28,8 @@ aba_roc <- function(direction = '>',
                     extra.metrics = NULL) {
 
   fns <- list(
-    'formula_fn' = aba_formula_roc,
-    'fit_fn' = aba_fit_roc,
+    'formula_fn' = formula_roc,
+    'fit_fn' = fit_roc,
     'extra.metrics' = extra.metrics,
     'params' = list(
       'std.beta' = std.beta,
@@ -48,7 +48,7 @@ aba_roc <- function(direction = '>',
   return(fns)
 }
 
-aba_formula_roc <- function(outcome, predictors, covariates, ...) {
+formula_roc <- function(outcome, predictors, covariates, ...) {
   if (length(predictors) > 1) stop('ROC predictors should only be length == 1.')
   predictor <- predictors[1]
   f <- as.character(glue('{predictor} ~ {outcome}'))
@@ -56,7 +56,7 @@ aba_formula_roc <- function(outcome, predictors, covariates, ...) {
 }
 
 # fit a glm model
-aba_fit_roc <- function(formula, data, extra_params) {
+fit_roc <- function(formula, data, extra_params) {
 
   model <- OptimalCutpoints::optimal.cutpoints(
     stats::formula(formula),

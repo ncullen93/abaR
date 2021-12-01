@@ -26,8 +26,8 @@
 aba_lm <- function(std.beta = FALSE,
                    complete.cases = TRUE) {
   fns <- list(
-    'formula_fn' = aba_formula_std,
-    'fit_fn' = aba_fit_lm,
+    'formula_fn' = formula_std,
+    'fit_fn' = fit_lm,
     'params' = list(
       'std.beta' = std.beta,
       'complete.cases' = complete.cases
@@ -39,7 +39,7 @@ aba_lm <- function(std.beta = FALSE,
 }
 
 # fit a lm model
-aba_fit_lm <- function(formula, data, ...) {
+fit_lm <- function(formula, data, ...) {
   model <- stats::lm(stats::formula(formula), data = data)
   model$call$formula <- stats::formula(formula)
   return(model)

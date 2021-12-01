@@ -35,8 +35,8 @@ aba_mmrm <- function(id,
                      std.beta = FALSE,
                      complete.cases = TRUE) {
   fns <- list(
-    'formula_fn' = aba_formula_lme,
-    'fit_fn' = aba_fit_mmrm,
+    'formula_fn' = formula_lme,
+    'fit_fn' = fit_mmrm,
     'treatment' = treatment,
     'extra_params' = list(
       'id' = id,
@@ -54,7 +54,7 @@ aba_mmrm <- function(id,
 }
 
 # fit a mmrm model
-aba_fit_mmrm <- function(formula, data, extra_params) {
+fit_mmrm <- function(formula, data, extra_params) {
   time <- extra_params$time
   id <- extra_params$id
   correlation_form <- glue::glue('~ 1 | {id}')

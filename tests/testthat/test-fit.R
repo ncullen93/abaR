@@ -16,12 +16,12 @@ test_that("fit with string inputs works", {
         c('PLASMA_ABETA_bl', 'PLASMA_PTAU181_bl', 'PLASMA_NFL_bl')
       ) %>%
       set_covariates(
-        'AGE_bl', 'GENDER', 'EDUCAT'
+        'AGE', 'GENDER', 'EDUCATION'
       ) %>%
       set_stats(
         'glm'
       ) %>%
-      set_data(adni_sample) %>%
+      set_data(adnimerge) %>%
       fit(),
     NA
   )
@@ -29,7 +29,7 @@ test_that("fit with string inputs works", {
 
 test_that("fit with tidy eval inputs works", {
   expect_error(
-    adni_sample %>%
+    adnimerge %>%
       aba_model() %>%
       set_groups(
         DX_bl == 'CU',
@@ -46,7 +46,7 @@ test_that("fit with tidy eval inputs works", {
         c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl),
       ) %>%
       set_covariates(
-        AGE_bl, GENDER, EDUCAT
+        AGE, GENDER, EDUCATION
       ) %>%
       set_stats('glm') %>%
       fit(),
@@ -73,7 +73,7 @@ test_that("tidy eval before setting data gives error", {
         c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
       ) %>%
       set_covariates(
-        AGE_bl, GENDER, EDUCAT
+        AGE, GENDER, EDUCATION
       ) %>%
       set_stats(
         'glm'
@@ -99,12 +99,12 @@ test_that("tidy eval before setting data gives error", {
         c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
       ) %>%
       set_covariates(
-        AGE_bl, GENDER, EDUCAT
+        AGE, GENDER, EDUCATION
       ) %>%
       set_stats(
         'glm'
       ) %>%
-      set_data(adni_sample) %>%
+      set_data(adnimerge) %>%
       fit()
   )
 })
@@ -114,10 +114,10 @@ test_that("fit with only one value for each spec param works", {
 
   # no group & no predictors - should still work
   expect_error(
-    m <- adni_sample %>%
+    m <- adnimerge %>%
       aba_model() %>%
       set_outcomes(MMSE) %>%
-      set_covariates(AGE_bl) %>%
+      set_covariates(AGE) %>%
       set_stats('lm') %>%
       fit(),
     NA
@@ -125,10 +125,10 @@ test_that("fit with only one value for each spec param works", {
 
   # no group & no covariates - should still work
   expect_error(
-    m <- adni_sample %>%
+    m <- adnimerge %>%
       aba_model() %>%
       set_outcomes(MMSE) %>%
-      set_covariates(AGE_bl) %>%
+      set_covariates(AGE) %>%
       set_stats('lm') %>%
       fit(),
     NA
@@ -139,7 +139,7 @@ test_that("fit with stat objects instead of strings works", {
 
   # one aba stat object
   expect_error(
-    m <- adni_sample %>%
+    m <- adnimerge %>%
       aba_model() %>%
       set_groups(
         DX_bl == 'CU',
@@ -156,7 +156,7 @@ test_that("fit with stat objects instead of strings works", {
         c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
       ) %>%
       set_covariates(
-        AGE_bl, GENDER, EDUCAT
+        AGE, GENDER, EDUCATION
       ) %>%
       set_stats(
         aba_glm()
@@ -167,7 +167,7 @@ test_that("fit with stat objects instead of strings works", {
 
   # two aba stat objects
   expect_error(
-    m <- adni_sample %>%
+    m <- adnimerge %>%
       aba_model() %>%
       set_groups(
         DX_bl == 'CU',
@@ -184,7 +184,7 @@ test_that("fit with stat objects instead of strings works", {
         c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
       ) %>%
       set_covariates(
-        AGE_bl, GENDER, EDUCAT
+        AGE, GENDER, EDUCATION
       ) %>%
       set_stats(
         aba_glm(),
@@ -196,7 +196,7 @@ test_that("fit with stat objects instead of strings works", {
 
   # one aba stat object and one string
   expect_error(
-    m <- adni_sample %>%
+    m <- adnimerge %>%
       aba_model() %>%
       set_groups(
         DX_bl == 'CU',
@@ -213,7 +213,7 @@ test_that("fit with stat objects instead of strings works", {
         c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
       ) %>%
       set_covariates(
-        AGE_bl, GENDER, EDUCAT
+        AGE, GENDER, EDUCATION
       ) %>%
       set_stats(
         aba_glm(),

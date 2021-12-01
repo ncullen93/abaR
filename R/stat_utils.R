@@ -1,6 +1,6 @@
 
 # function to make a standard formula using by glm, lm, etc
-aba_formula_std <- function(outcome, predictors, covariates, ...) {
+formula_std <- function(outcome, predictors, covariates, ...) {
   f <- paste0(outcome, " ~ ")
   if (length(covariates) > 0) {
     f <- paste0(f, paste(covariates, collapse = " + "))

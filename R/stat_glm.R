@@ -28,8 +28,8 @@ aba_glm <- function(std.beta = FALSE,
                     include.basic = TRUE,
                     extra.metrics = NULL) {
   fns <- list(
-    'formula_fn' = aba_formula_std,
-    'fit_fn' = aba_fit_glm,
+    'formula_fn' = formula_std,
+    'fit_fn' = fit_glm,
     'extra.metrics' = extra.metrics,
     'params' = list(
       'std.beta' = std.beta,
@@ -43,7 +43,7 @@ aba_glm <- function(std.beta = FALSE,
 }
 
 # fit a glm model
-aba_fit_glm <- function(formula, data, ...) {
+fit_glm <- function(formula, data, ...) {
   model <- stats::glm(
     stats::formula(formula),
     family = 'binomial',

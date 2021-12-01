@@ -13,8 +13,8 @@
 aba_ancova <- function(std.beta = FALSE,
                        complete.cases = TRUE) {
   fns <- list(
-    'formula_fn' = aba_formula_std,
-    'fit_fn' = aba_fit_ancova,
+    'formula_fn' = formula_std,
+    'fit_fn' = fit_ancova,
     'params' = list(
       'std.beta' = std.beta,
       'complete.cases' = complete.cases
@@ -26,7 +26,7 @@ aba_ancova <- function(std.beta = FALSE,
 }
 
 # fit a lm model
-aba_fit_ancova <- function(formula, data, ...) {
+fit_ancova <- function(formula, data, ...) {
   model <- stats::lm(stats::formula(formula), data = data)
   model$call$formula <- stats::formula(formula)
   return(model)

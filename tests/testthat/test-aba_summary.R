@@ -1,6 +1,6 @@
 test_that("standard summary works", {
   expect_error(
-    m <- adni_sample %>% aba_model() %>%
+    m <- adnimerge %>% aba_model() %>%
       set_groups(
         DX_bl == 'CU',
         everyone()
@@ -16,7 +16,7 @@ test_that("standard summary works", {
         c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
       ) %>%
       set_covariates(
-        AGE_bl, GENDER, EDUCAT
+        AGE, GENDER, EDUCATION
       ) %>%
       set_stats(
         'glm'

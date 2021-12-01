@@ -1,9 +1,9 @@
 test_that("save and load works", {
-  df <- adni_sample %>% filter(VISIT==0)
+  df <- adnimerge %>% filter(VISCODE=='bl')
 
   model <- df %>% aba_model() %>%
     set_groups("DX_bl == 'MCI'", everyone()) %>%
-    set_covariates(AGE_bl, GENDER, EDUCAT) %>%
+    set_covariates(AGE, GENDER, EDUCATION) %>%
     set_predictors(
       PLASMA_ABETA_bl,
       PLASMA_PTAU181_bl,

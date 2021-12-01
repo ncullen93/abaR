@@ -10,17 +10,17 @@ test_that('set_groups works', {
 
 test_that('set_groups from list works', {
   expect_error(
-    m <- adni_sample %>% aba_model() %>%
+    m <- adnimerge %>% aba_model() %>%
       set_groups(
-        list(DX_bl == 'MCI', AGE_bl < 85)
+        list(DX_bl == 'MCI', AGE < 85)
       ),
     NA
   )
 
   expect_error(
-    m <- adni_sample %>% aba_model() %>%
+    m <- adnimerge %>% aba_model() %>%
       set_groups(
-        list(DX_bl == 'MCI', AGE_bl < 85),
+        list(DX_bl == 'MCI', AGE < 85),
         list(DX_bl == 'CU', GENDER == "1")
       ),
     NA
@@ -53,11 +53,11 @@ test_that("set_covariates with strings", {
   )
   # string / data -> should throw error if variable(s) doesnt exist
   expect_error(
-    m %>% set_data(adni_sample) %>% set_covariates('a','b','c')
+    m %>% set_data(adnimerge) %>% set_covariates('a','b','c')
   )
   # should work if variable(s) all exist
   expect_error(
-    m2 <- m %>% set_data(adni_sample) %>% set_covariates('AGE_bl','GENDER','EDUCAT'),
+    m2 <- m %>% set_data(adnimerge) %>% set_covariates('AGE','GENDER','EDUCATION'),
     NA
   )
 })
