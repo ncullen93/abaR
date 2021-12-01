@@ -4,7 +4,7 @@
 \alias{aba_control}
 \title{Create an aba control which determines how an aba summary will be printed.}
 \usage{
-aba_control(include_covariates = TRUE)
+aba_control(include_covariates = TRUE, include_intercept = FALSE)
 }
 \arguments{
 \item{covars}{boolean. Whether to include covariates summary.}

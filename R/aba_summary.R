@@ -14,6 +14,9 @@ aba_summary <- function(model,
                         verbose = FALSE,
                         ...) {
 
+  # handle arguments
+  if (is.character(adjust)) adjust <- aba_adjust(method = adjust)
+
   # coefficients and model metrics
   coefs_df <- coefs_summary(model, control) %>% mutate(form = 'coef')
   metrics_df <- metrics_summary(model) %>% mutate(form = 'metric')
@@ -34,7 +37,7 @@ aba_summary <- function(model,
 
   # adjust p values
   if (adjust$method != 'none') {
-    s$results <- adjust_pvals(adjust, s$results)
+    s$results <- adjust_pvals(s$results, adjust)
   }
 
   class(s) <- 'abaSummary'
@@ -259,8 +262,6 @@ print.abaSummary <- function(x, ...) {
     select(
       -c(any_of('(Intercept)'))
     )
-
-  print(r_coef)
 
   r_metric <- metric_pivot_wider(
     x_res %>%

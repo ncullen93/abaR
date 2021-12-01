@@ -7,7 +7,7 @@
 aba_summary(
   model,
   control = aba_control(),
-  p.adjust = c("none", "bonferroni", "fdr", "hochberg", "holm", "hommel", "BH", "BY"),
+  adjust = aba_adjust(),
   verbose = FALSE,
   ...
 )

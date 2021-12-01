@@ -1,8 +1,8 @@
 #' Create aba adjust object for p-value adjustment
 #'
-#' @param method
-#' @param by
-#' @param form
+#' @param method method
+#' @param by by
+#' @param form form
 #'
 #' @return
 #' @export
@@ -26,38 +26,67 @@ aba_adjust <- function(method = c("none", "bonferroni", "fdr", "hochberg",
   s
 }
 
-adjust_pvals <- function(adjust, results) {
+adjust_pvals <- function(results, adjust) {
 
-  method <- adjust$method
-  by <- adjust$by
-  form <- adjust$form
+  # adjust metric
+  if ('metric' %in% adjust$form) {
+    r_adj <- results %>%
+      filter(term == 'Pval') %>%
+      group_by(
+        across(all_of(adjust$by))
+      ) %>%
+      nest() %>%
+      mutate(
+        estimate_adj = purrr::map(
+          .data$data,
+          function(x) stats::p.adjust(x$estimate, method = adjust$method)
+        )
+      ) %>%
+      unnest(cols = c(data, estimate_adj)) %>%
+      ungroup() %>%
+      select(-estimate) %>%
+      rename(
+        estimate = estimate_adj
+      ) %>%
+      select(group:form, estimate, everything())
 
-  r %>%
-    filter(term == 'Pval') %>%
-    group_by(
-      groups, outcomes, stats
-    ) %>%
-    nest() %>%
-    mutate(
-      pvals_adj = purrr::map(
-        .data$data,
-        function(x) {
-          stats::p.adjust(
-            x$est,
-            method = p_adjust_method
-          )
-        }
+    results <- results %>%
+      filter(term != 'Pval') %>%
+      bind_rows(r_adj)
+  }
+
+  if ('coef' %in% adjust$form) {
+    r_adj <- results %>%
+      filter(form == 'coef') %>%
+      group_by(
+        across(all_of(adjust$by))
+      ) %>%
+      nest() %>%
+      mutate(
+        pval_adj = purrr::map(
+          .data$data,
+          function(x) {
+            # dont include intercept in pval adjustment
+            xx <- x$pval
+            is_intercept <- x$term == '(Intercept)'
+            xx[!is_intercept] <-
+              stats::p.adjust(xx[!is_intercept], method = adjust$method)
+            xx
+          }
+        )
+      ) %>%
+      unnest(cols = c(data, pval_adj)) %>%
+      ungroup() %>%
+      select(-pval) %>%
+      rename(
+        pval = pval_adj
       )
-    ) %>%
-    unnest(cols = c(data, pvals_adj)) %>%
-    ungroup() %>%
-    select(-est) %>%
-    rename(
-      est = pvals_adj
-    ) %>%
-    select(groups:form, est, everything()) %>%
-    mutate(
-      term = 'Pval_adj'
-    )
 
+    results <- r_adj %>%
+      bind_rows(
+        results %>% filter(form != 'coef')
+      )
+  }
+
+  return(results)
 }
