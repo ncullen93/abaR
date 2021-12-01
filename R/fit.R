@@ -43,7 +43,7 @@ compile.abaModel <- function(model) {
     'groups' = group_vals,
     'outcomes' = as.vector(outcome_vals),
     'predictors' = as.vector(predictor_vals),
-    'covariates' = stringr::str_c(covariate_vals, collapse=' | '),
+    'covariates' = stringr::str_c(covariate_vals, collapse=' + '),
     'stats' = list(stat_vals)
   )
 
@@ -79,7 +79,20 @@ compile.abaModel <- function(model) {
     filter((include_basic==TRUE) | (include_basic == FALSE & predictors != '')) %>%
     select(-include_basic)
 
+  mr <- mr %>%
+    rename(
+      predictor_set = MID,
+      group = groups,
+      outcome = outcomes,
+      predictor = predictors,
+      covariate = covariates,
+      stat = stats,
+      stat_obj = stats_obj
+    )
+
   model$results <- mr
+
+
   return(model)
 }
 
@@ -94,8 +107,8 @@ parse_then_fit_abaModel <- function(
   }
 
   # parse predictors and covariates into vectors
-  predictors <- unlist(strsplit(predictors,' \\| '))
-  covariates <- unlist(strsplit(covariates,' \\| '))
+  predictors <- unlist(strsplit(predictors,' \\+ '))
+  covariates <- unlist(strsplit(covariates,' \\+ '))
 
   # fit the models
   extra_params <- stat_obj$extra_params
@@ -119,7 +132,7 @@ process_dataset <- function(data, group, outcome, predictors, covariates, params
   # workaround for empty predictor set
   if (is.null(predictors)) return(list(data))
 
-  predictors <- stringr::str_split(predictors, ' (\\*|\\|) ') %>%
+  predictors <- stringr::str_split(predictors, ' (\\*|\\+) ') %>%
     unlist() %>% unique() %>% subset(. != '')
 
   if (std.beta) {
@@ -157,32 +170,35 @@ fit.abaModel <- function(object, ...) {
   if (model$verbose) pb <- progress::progress_bar$new(total = nrow(model$results))
 
   fit_df <- model$results %>%
-    group_by(groups,outcomes,stats) %>%
-    nest() %>% rename(info = data) %>% rowwise() %>%
+    group_by(group, outcome, stat) %>%
+    nest() %>%
+    rename(info = data) %>%
+    rowwise() %>%
     mutate(
-      dataset = process_dataset(
+      data_proc = process_dataset(
         data = model$data,
-        group = .data$groups,
-        outcome = .data$outcomes,
+        group = .data$group,
+        outcome = .data$outcome,
         predictors = model$spec$predictors,
         covariates = model$spec$covariates,
-        params = model$spec$stats[[.data$stats]]$params
+        params = model$spec$stats[[.data$stat]]$params
       )
     ) %>%
     unnest(info) %>%
     rowwise() %>%
     mutate(
-      stats_fit = parse_then_fit_abaModel(
-        data = .data$dataset,
-        group = .data$groups,
-        outcome = .data$outcomes,
-        predictors = .data$predictors,
-        covariates = .data$covariates,
-        stat_obj = .data$stats_obj,
+      stat_fit = parse_then_fit_abaModel(
+        data = .data$data_proc,
+        group = .data$group,
+        outcome = .data$outcome,
+        predictors = .data$predictor,
+        covariates = .data$covariate,
+        stat_obj = .data$stat_obj,
         pb = pb
       )
     ) %>%
-    select(MID, everything(), -dataset) %>%
+    select(group, outcome, stat, predictor_set, predictor,
+           covariate, stat_obj, stat_fit) %>%
     ungroup()
 
   model$results <- fit_df

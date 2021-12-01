@@ -126,7 +126,7 @@ set_predictors <- function(.model,
         # expect not a list input
         .model$spec$predictors <- unname(
           parse_select_expr(..., data=.model$data) %>%
-            purrr::map_chr(~stringr::str_c(., collapse=' | '))
+            purrr::map_chr(~stringr::str_c(., collapse=' + '))
         )
         .model$spec$predictors <- c(
           '',
@@ -145,7 +145,7 @@ set_predictors <- function(.model,
         .model$spec$predictors <- c('')
         for (p in predictors) {
           vars <- .model$data %>% select(p) %>% names()
-          vars <- stringr::str_c(vars, collapse=' | ')
+          vars <- stringr::str_c(vars, collapse=' + ')
           .model$spec$predictors <- c(
             .model$spec$predictors,
             vars

@@ -7,10 +7,12 @@
 #'
 #' @examples
 #' ctrl <- aba_control()
-aba_control <- function(include_covariates = TRUE) {
+aba_control <- function(include_covariates = TRUE,
+                        include_intercept = FALSE) {
 
   ctrl <- list(
-    include_covariates = include_covariates
+    include_covariates = include_covariates,
+    include_intercept = include_intercept
   )
 
   return(ctrl)
