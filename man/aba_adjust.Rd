@@ -5,7 +5,8 @@
 \title{Create aba adjust object for p-value adjustment}
 \usage{
 aba_adjust(
-  method = c("none", "bonferroni", "fdr", "hochberg", "holm", "hommel", "BH", "BY"),
+  model_summary,
+  method = c("bonferroni", "fdr", "hochberg", "holm", "hommel", "BH", "BY"),
   by = c("group", "outcome", "stat"),
   form = c("metric", "coef")
 )

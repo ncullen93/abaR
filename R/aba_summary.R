@@ -10,12 +10,8 @@
 #' m <- aba_model()
 aba_summary <- function(model,
                         control = aba_control(),
-                        adjust = aba_adjust(),
                         verbose = FALSE,
                         ...) {
-
-  # handle arguments
-  if (is.character(adjust)) adjust <- aba_adjust(method = adjust)
 
   # coefficients and model metrics
   coefs_df <- coefs_summary(model, control) %>% mutate(form = 'coef')
@@ -33,11 +29,6 @@ aba_summary <- function(model,
   if (!is.null(model$spec$treatment)) {
     treatment_dfs <- treatment_summary(model)
     s$results_treatments <- treatment_dfs
-  }
-
-  # adjust p values
-  if (adjust$method != 'none') {
-    s$results <- adjust_pvals(s$results, adjust)
   }
 
   class(s) <- 'abaSummary'
