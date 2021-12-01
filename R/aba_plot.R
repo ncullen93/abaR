@@ -10,7 +10,12 @@
 #' x <- 1
 aba_plot_metric <- function(object,
                             metric = NULL,
-                            model_labels = NULL,
+                            x = 'predictor_set',
+                            group = 'outcome',
+                            facet = 'group',
+                            coord_flip = FALSE,
+                            palette = 'jama',
+                            labels = NULL,
                             plotly = FALSE,
                             ...) {
   UseMethod('aba_plot_metric')
@@ -26,7 +31,15 @@ aba_plot_metric <- function(object,
 #'
 #' @examples
 #' x <- 1
-aba_plot_coef <- function(object, ...) {
+aba_plot_coef <- function(object,
+                          x = 'predictor',
+                          group = 'predictor_set',
+                          facet = c('outcome', 'group'),
+                          coord_flip = FALSE,
+                          palette = 'jama',
+                          labels = NULL,
+                          plotly = FALSE,
+                          ...) {
   UseMethod('aba_plot_coef')
 }
 
@@ -43,9 +56,15 @@ aba_plot_coef <- function(object, ...) {
 #' x <- 1
 aba_plot_metric.abaSummary <- function(object,
                                        metric = NULL,
-                                       model_labels = NULL,
+                                       x = 'predictor_set',
+                                       group = 'outcome',
+                                       facet = 'group',
+                                       coord_flip = FALSE,
+                                       palette = 'jama',
+                                       labels = NULL,
                                        plotly = FALSE,
                                        ...) {
+
   # find main metric - directly after predictors
   if ('AUC' %in% (object$results %>% pull(term) %>% unique())) {
     metric <- 'AUC'
@@ -57,33 +76,32 @@ aba_plot_metric.abaSummary <- function(object,
     filter(
       form == 'metric',
       term == metric
+    ) %>%
+    rename(
+      'x' = {{ x }},
+      'group' = {{ group }},
+      'facet' = {{ facet }}
     )
 
-  if (!is.null(model_labels)) {
-    plot_df <- plot_df %>%
-      mutate(MID = factor(MID, labels=model_labels))
-  }
-
   g <- ggplot(plot_df,
-              aes(x = .data$MID,
-                  y = .data$est,
-                  color = .data$outcomes)) +
+              aes(x = .data$x,
+                  y = .data$estimate,
+                  color = .data$group)) +
     geom_point(position = position_dodge(0.5), size = 2.5) +
     geom_errorbar(
-      aes(ymin = .data$lo,
-          ymax = .data$hi),
+      aes(ymin = .data$conf_low,
+          ymax = .data$conf_high),
       position=position_dodge(0.5), size=0.5,
       width = 0.2
     ) +
     ylab(metric)
 
   if (metric == 'AUC') {
-    g <- g + ylim(c(0.5, 1))
+    g <- g + ylim(c(min(0.5, plot_df$conf_low), 1))
     g <- g + geom_hline(aes(yintercept=0.5), linetype='dashed')
   }
 
   g <- g +
-    facet_wrap(. ~ .data$groups) +
     theme_classic(base_size = 16) +
     theme(
       legend.position = "top", legend.margin = margin(5, 0, 0, 0),
@@ -100,8 +118,14 @@ aba_plot_metric.abaSummary <- function(object,
       axis.title.x = element_blank()
     )
 
+  if (coord_flip) g <- g + coord_flip()
+
   if (plotly) {
     g <- plotly::ggplotly(g)
+  }
+
+  if (!is.null(palette) & !is.na(palette)) {
+    g <- ggpubr::set_palette(g, palette)
   }
 
   return(g)
@@ -117,36 +141,57 @@ aba_plot_metric.abaSummary <- function(object,
 #'
 #' @examples
 #' x <- 1
-aba_plot_coef.abaSummary <- function(model_summary, ...) {
+aba_plot_coef.abaSummary <- function(object,
+                                     x = 'predictor',
+                                     group = 'predictor_set',
+                                     facet = c('outcome', 'group'),
+                                     coord_flip = FALSE,
+                                     palette = 'jama',
+                                     labels = NULL,
+                                     plotly = FALSE,
+                                     ...) {
 
   model_type <- NA
-  if ('AUC' %in% (model_summary$results %>% pull(term) %>% unique())) {
+  if ('AUC' %in% (object$results %>% pull(term) %>% unique())) {
     model_type <- 'glm'
   } else {
     model_type <- 'lm'
   }
 
-  model <- model_summary$model
-  all_predictors <- model %>% get_predictors()
-  all_covariates <- model_summary$model$spec$covariates
-  all_variables <- c(all_covariates, all_predictors)
+  facet_x <- facet[1]
+  facet_y <- facet[2]
 
-  plot_df <- model_summary$results %>%
+  plot_df <- object$results %>%
+    rename(predictor = term) %>%
     filter(
       form == 'coef',
-      term != '(Intercept)'
+      predictor != '(Intercept)'
+    ) %>%
+    rename(
+      'x' = {{ x }},
+      'group' = {{ group }},
+      'facet_x' = {{ facet_x }},
+      'facet_y' = {{ facet_y }}
     )
 
-  g <- ggplot(plot_df, aes(x = .data$term,
-                           y = .data$est,
-                           color = .data$MID)) +
+  model <- object$model
+  all_predictors <- model %>% get_predictors()
+  all_covariates <- model$spec$covariates
+  all_variables <- c(all_covariates, all_predictors)
+
+  g <- ggplot(plot_df,
+              aes(x = .data$x,
+                  y = .data$estimate,
+                  color = .data$group)) +
     geom_point(position = position_dodge(0.5), size = 2.5) +
     geom_errorbar(
-      aes(ymin = .data$lo,
-          ymax = .data$hi),
+      aes(ymin = .data$conf_low,
+          ymax = .data$conf_high),
       position=position_dodge(0.5), size=0.5,
       width = 0.2
-    )
+    ) +
+    facet_wrap(.data$facet_x ~ .data$facet_y)
+    #facet_wrap(.~paste0(.data$facet_x,' | ', .data$facet_y))
 
   if (model_type == 'glm') {
     g <- g + geom_hline(aes(yintercept=1), linetype='dashed')
@@ -155,7 +200,6 @@ aba_plot_coef.abaSummary <- function(model_summary, ...) {
   }
 
   g <- g +
-    facet_wrap(.~paste0(.data$outcomes,' | ', .data$groups)) +
     theme_classic(base_size = 16) +
     theme(
       legend.position = "top", legend.margin = margin(5, 0, 0, 0),
@@ -172,7 +216,7 @@ aba_plot_coef.abaSummary <- function(model_summary, ...) {
       axis.title.x = element_blank()
     )
 
-  g <- g + coord_flip()
+  if (coord_flip) g <- g + coord_flip()
 
   return(g)
 }

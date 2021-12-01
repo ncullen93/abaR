@@ -1,7 +1,7 @@
 #' Create aba adjust object for p-value adjustment
 #'
 #' @param method method
-#' @param by by
+#' @param by vector. Possible choices: group, outcome, stat, predictor_set
 #' @param form form
 #'
 #' @return

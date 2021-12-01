@@ -99,7 +99,6 @@ coefs_summary <- function(model, control) {
          .data$stat_obj, .data$stat_fit)
     ) %>%
     rename(
-      term = term,
       conf_low = conf.low,
       conf_high = conf.high,
       pval = p.value
@@ -268,8 +267,8 @@ print.abaSummary <- function(x, ...) {
 
   # replace group names for printing if they exist
   if (!is.null(names(x$model$spec$groups))) {
-    r_results$groups <- factor(
-      r_results$groups,
+    r_results$group <- factor(
+      r_results$group,
       levels = x$model$spec$groups,
       labels = names(x$model$spec$groups)
     )
@@ -277,8 +276,8 @@ print.abaSummary <- function(x, ...) {
 
   # replace outcome names for printing if they exist
   if (!is.null(names(x$model$spec$outcomes))) {
-    r_results$outcomes <- factor(
-      r_results$outcomes,
+    r_results$outcome <- factor(
+      r_results$outcome,
       levels = x$model$spec$outcomes,
       labels = names(x$model$spec$outcomes)
     )

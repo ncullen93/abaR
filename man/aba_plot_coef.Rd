@@ -4,7 +4,17 @@
 \alias{aba_plot_coef}
 \title{Generic plot coef method}
 \usage{
-aba_plot_coef(object, ...)
+aba_plot_coef(
+  object,
+  x = "predictor",
+  group = "predictor_set",
+  facet = c("outcome", "group"),
+  coord_flip = FALSE,
+  palette = "jama",
+  labels = NULL,
+  plotly = FALSE,
+  ...
+)
 }
 \arguments{
 \item{object}{aba model summary}

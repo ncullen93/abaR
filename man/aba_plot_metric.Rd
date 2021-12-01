@@ -7,7 +7,12 @@
 aba_plot_metric(
   object,
   metric = NULL,
-  model_labels = NULL,
+  x = "predictor_set",
+  group = "outcome",
+  facet = "group",
+  coord_flip = FALSE,
+  palette = "jama",
+  labels = NULL,
   plotly = FALSE,
   ...
 )

@@ -14,7 +14,7 @@ aba_adjust(
 \arguments{
 \item{method}{method}
 
-\item{by}{by}
+\item{by}{vector. Possible choices: group, outcome, stat, predictor_set}
 
 \item{form}{form}
 }

@@ -4,12 +4,22 @@
 \alias{aba_plot_coef.abaSummary}
 \title{aba summary plot coef method}
 \usage{
-\method{aba_plot_coef}{abaSummary}(model_summary, ...)
+\method{aba_plot_coef}{abaSummary}(
+  object,
+  x = "predictor",
+  group = "predictor_set",
+  facet = c("outcome", "group"),
+  coord_flip = FALSE,
+  palette = "jama",
+  labels = NULL,
+  plotly = FALSE,
+  ...
+)
 }
 \arguments{
-\item{...}{additional parameters}
-
 \item{object}{aba model summary}
+
+\item{...}{additional parameters}
 }
 \value{
 ggplot
