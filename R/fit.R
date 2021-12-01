@@ -136,8 +136,30 @@ process_dataset <- function(data, group, outcome, predictors, covariates, params
     unlist() %>% unique() %>% subset(. != '')
 
   if (std.beta) {
-    data[,predictors] <- scale(data[,predictors])
-    data[,covariates] <- scale(data[,covariates])
+
+    # scale all continuous predictors
+    scale_predictors <- predictors[
+      predictors %>%
+        purrr::map_lgl(~class(data[[.x]]) %in% c('integer','numeric'))
+    ]
+    if (length(scale_predictors) > 0) {
+      data[,scale_predictors] <- scale(data[,scale_predictors])
+    }
+
+    # scale all continuous covariates
+    scale_covariates <- covariates[
+      covariates %>%
+        purrr::map_lgl(~class(data[[.x]]) %in% c('integer','numeric'))
+    ]
+    if (length(scale_covariates) > 0) {
+      data[,scale_covariates] <- scale(data[,scale_covariates])
+    }
+
+    # scale all continuous outcomes
+    if (class(data[[outcome]]) %in% c('integer', 'numeric')) {
+      data[,outcome] <- scale(data[,outcome])
+    }
+
   }
   if (complete.cases) {
     data <- data[complete.cases(data[,c(covariates,predictors)]),]

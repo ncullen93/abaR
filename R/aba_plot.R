@@ -161,6 +161,11 @@ aba_plot_coef.abaSummary <- function(object,
     model_type <- 'lm'
   }
 
+  model <- object$model
+  all_predictors <- model %>% get_predictors()
+  all_covariates <- model$spec$covariates
+  all_variables <- c(all_covariates, all_predictors)
+
   facet_x <- facet[1]
   facet_y <- facet[2]
 
@@ -168,7 +173,8 @@ aba_plot_coef.abaSummary <- function(object,
     rename(predictor = term) %>%
     filter(
       form == 'coef',
-      predictor != '(Intercept)'
+      predictor != '(Intercept)',
+      !(predictor %in% all_covariates)
     ) %>%
     rename(
       'x' = {{ x }},
@@ -176,11 +182,6 @@ aba_plot_coef.abaSummary <- function(object,
       'facet_x' = {{ facet_x }},
       'facet_y' = {{ facet_y }}
     )
-
-  model <- object$model
-  all_predictors <- model %>% get_predictors()
-  all_covariates <- model$spec$covariates
-  all_variables <- c(all_covariates, all_predictors)
 
   g <- ggplot(plot_df,
               aes(x = .data$x,
@@ -196,30 +197,46 @@ aba_plot_coef.abaSummary <- function(object,
     facet_wrap(.data$facet_x ~ .data$facet_y)
     #facet_wrap(.~paste0(.data$facet_x,' | ', .data$facet_y))
 
+
   if (model_type == 'glm') {
     g <- g + geom_hline(aes(yintercept=1), linetype='dashed')
-  } else if (model == 'lm') {
+  } else if (model_type == 'lm') {
     g <- g + geom_hline(aes(yintercept=0), linetype='dashed')
   }
 
   g <- g +
-    theme_classic(base_size = 16) +
+    theme_classic(base_size = 14) +
     theme(
       legend.position = "top", legend.margin = margin(5, 0, 0, 0),
       plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "lines"),
       panel.spacing = unit(1.5, "lines"),
       strip.background = element_blank(),
-      strip.text = element_text(face = "bold", size = 16, vjust = 1.25),
+      strip.text = element_text(face = "bold", size = 14, vjust = 1.25),
       plot.title = element_text(hjust = 0.5),
-      legend.title = element_blank(),
-      panel.grid.major.x = element_blank(),
-      panel.grid.major.y = element_line(
-        colour = "black",
-        size = 0.2, linetype = "dotted"),
-      axis.title.x = element_blank()
+      legend.title = element_blank()
     )
 
-  if (coord_flip) g <- g + coord_flip()
+
+  if (coord_flip) {
+    g <- g +
+      coord_flip() +
+      theme(
+        panel.grid.major.y = element_blank(),
+        panel.grid.major.x = element_line(
+          colour = "black",
+          size = 0.2, linetype = "dotted"),
+        axis.title.x = element_blank()
+      )
+  } else {
+    g <- g +
+      theme(
+        panel.grid.major.x = element_blank(),
+        panel.grid.major.y = element_line(
+          colour = "black",
+          size = 0.2, linetype = "dotted"),
+        axis.title.x = element_blank()
+      )
+  }
 
   return(g)
 }
