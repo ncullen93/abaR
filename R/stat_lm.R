@@ -56,6 +56,14 @@ aba_glance.lm <- function(x, x0, ...) {
   # tidy glance
   glance_df <- broom::glance(x)
 
+  # r squared confidence interval
+  ci_rsq <- psychometric::CI.Rsqlm(x)
+
+  # adjust the confidence interval because we use adj.r.squared
+  rsq_diff <- glance_df$r.squared - glance_df$adj.r.squared
+  ci_rsq$LCL <- ci_rsq$LCL - rsq_diff
+  ci_rsq$UCL <- ci_rsq$UCL - rsq_diff
+
   # add comparison to null model
   if (!is.null(x0)) {
     s <- stats::anova(x, x0)
@@ -71,11 +79,16 @@ aba_glance.lm <- function(x, x0, ...) {
     pivot_longer(cols = everything()) %>%
     rename(term = name, estimate = value)
 
-  # add confidence interval
+
+  ## add confidence intervals
   glance_df <- glance_df %>%
-    mutate(
-      conf.low = NA,
-      conf.high = NA
+    left_join(
+      tibble::tibble(
+        term = c('adj.r.squared'),
+        conf.low = c(ci_rsq$LCL),
+        conf.high = c(ci_rsq$UCL)
+      ),
+      by = 'term'
     )
 
   return(glance_df)

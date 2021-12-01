@@ -174,10 +174,14 @@ metrics_summary <- function(model) {
           x0 = .data$stat_fit_null
         )
       )
-    ) %>%
+    )
+
+  r <- r %>%
     unnest(
       .data$stat_metrics
-    ) %>%
+    )
+
+  r <- r %>%
     select(
       -c(.data$predictor, .data$covariate),
       -c(.data$stat_obj, .data$stat_fit, .data$stat_fit_null)

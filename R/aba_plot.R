@@ -83,6 +83,8 @@ aba_plot_metric.abaSummary <- function(object,
       'facet' = {{ facet }}
     )
 
+
+
   g <- ggplot(plot_df,
               aes(x = .data$x,
                   y = .data$estimate,
@@ -94,6 +96,7 @@ aba_plot_metric.abaSummary <- function(object,
       position=position_dodge(0.5), size=0.5,
       width = 0.2
     ) +
+    facet_wrap(. ~ .data$facet) +
     ylab(metric)
 
   if (metric == 'AUC') {
