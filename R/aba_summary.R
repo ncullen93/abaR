@@ -93,28 +93,28 @@ coefs_summary <- function(model, control) {
 
   # coefficients
   r <- model$results %>%
+    rowwise() %>%
     mutate(
-      stat_coefs = purrr::map(
-        .data$stat_fit, ~aba_tidy(.x, all_predictors, all_covariates)
-      )
+      stat_coefs = list(aba_tidy(.data$stat_fit, all_predictors, all_covariates))
     ) %>%
+    ungroup() %>%
     unnest(
-      .data$stat_coefs
+      .data$stat_coefs,
+      names_repair = 'unique'
     ) %>%
     select(
-      -c(.data$predictor, .data$covariate),
-      -c(.data$std.error, .data$statistic, stat_obj, stat_fit)
+      -c(.data$predictor, .data$covariate,
+         .data$std.error, .data$statistic,
+         .data$stat_obj, .data$stat_fit)
     ) %>%
     rename(
       term = term,
-      estimate = estimate,
       conf_low = conf.low,
       conf_high = conf.high,
       pval = p.value
     ) %>%
     select(-pval, everything())
 
-  #print(r)
   ## remove intercept if specified in control
   #if (!control$include_intercept) {
   #  r <- r %>% filter(term != c('(Intercept)'))
