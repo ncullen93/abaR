@@ -88,16 +88,21 @@ coefs_summary <- function(model, control) {
     mutate(
       stat_coefs = list(aba_tidy(.data$stat_fit, all_predictors, all_covariates))
     ) %>%
-    ungroup() %>%
+    ungroup()
+
+  r <- r %>%
     unnest(
-      .data$stat_coefs,
-      names_repair = 'unique'
-    ) %>%
+      .data$stat_coefs
+    )
+
+  r <- r %>%
     select(
       -c(.data$predictor, .data$covariate,
          .data$std.error, .data$statistic,
          .data$stat_obj, .data$stat_fit)
-    ) %>%
+    )
+
+  r <- r %>%
     rename(
       conf_low = conf.low,
       conf_high = conf.high,
@@ -328,8 +333,9 @@ print.abaSummary <- function(x, ...) {
       cat(y)
       cat('\n'); cat(rep('-', nchar_label), sep=''); cat('\n')
 
-      cat('\n')
-      cat('Coefficients & Metrics:\n\n')
+      #cat('\n')
+      #cat('Coefficients & Metrics:\n\n')
+
       # coefficients
       print(
         x$data[[1]][,colMeans(is.na(x$data[[1]])) < 1]
