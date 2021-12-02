@@ -66,11 +66,7 @@ aba_plot_metric.abaSummary <- function(object,
                                        ...) {
 
   # find main metric - directly after predictors
-  if ('AUC' %in% (object$results %>% pull(term) %>% unique())) {
-    metric <- 'AUC'
-  } else {
-    metric <- 'adj.r.squared'
-  }
+  metric <- filter(object$results, form == 'metric')$term[1]
 
   plot_df <- object$results %>%
     filter(
@@ -82,8 +78,6 @@ aba_plot_metric.abaSummary <- function(object,
       'group' = {{ group }},
       'facet' = {{ facet }}
     )
-
-
 
   g <- ggplot(plot_df,
               aes(x = .data$x,
@@ -154,12 +148,7 @@ aba_plot_coef.abaSummary <- function(object,
                                      plotly = FALSE,
                                      ...) {
 
-  model_type <- NA
-  if ('AUC' %in% (object$results %>% pull(term) %>% unique())) {
-    model_type <- 'glm'
-  } else {
-    model_type <- 'lm'
-  }
+  model_type <- object$results$stat[1]
 
   model <- object$model
   all_predictors <- model %>% get_predictors()
@@ -182,6 +171,8 @@ aba_plot_coef.abaSummary <- function(object,
       'facet_x' = {{ facet_x }},
       'facet_y' = {{ facet_y }}
     )
+
+  if (nrow(plot_df) == 0) stop('There are no predictors to plot.')
 
   g <- ggplot(plot_df,
               aes(x = .data$x,

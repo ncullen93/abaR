@@ -151,7 +151,8 @@ metrics_summary <- function(model) {
     #'Cut',
     'AIC',
     'Pval',
-    'nobs'
+    'nobs',
+    'nsub'
   )
 
   # add null model
@@ -261,7 +262,9 @@ print.abaSummary <- function(x, ...) {
     x_res %>%
       filter(form == 'metric') %>%
       select(-c('form'))
-  ) %>%
+  )
+
+  r_metric <- r_metric %>%
     select(-nobs, everything())
 
   r_results <- r_coef %>%

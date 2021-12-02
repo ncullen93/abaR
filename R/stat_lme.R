@@ -126,6 +126,14 @@ aba_glance.lme <- function(x, ...) {
       )
     )
 
+  glance_df <- glance_df %>%
+    bind_cols(
+      tibble::tibble(
+        nobs = x$dims$N,
+        nsub = unname(x$dims$ngrps[1])
+      )
+    )
+
   # pivot longer to be like coefficients
   glance_df <- glance_df %>%
     pivot_longer(cols = everything()) %>%
