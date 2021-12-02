@@ -18,24 +18,67 @@ aba_write <- function(object,
   UseMethod('aba_write')
 }
 
+save_helper <- function(results, filename, sheets) {
+  file_ext <- stringr::str_split(filename, '\\.')[[1]] %>% tail(1)
+
+  if (file_ext == 'csv') {
+    results %>%
+      utils::write.csv(
+        filename,
+        row.names = F
+      )
+  } else if (file_ext %in% c('xls', 'xlsx')) {
+    if (!sheets) {
+      results %>%
+        writexl::write_xlsx(filename)
+    } else {
+      # group and set label
+      results <- results %>%
+        group_by(
+          .data$group,
+          .data$outcome,
+          .data$stat
+        ) %>%
+        nest() %>%
+        mutate(
+          label = glue('{group} | {outcome} | {stat}')
+        )
+
+      # split into separate tables
+      results <- split(results, 1:nrow(results)) %>%
+        set_names(unique(results$label))
+
+      results <- results %>% purrr::map(~.x[['data']][[1]])
+
+      # save to file
+      results %>%
+        writexl::write_xlsx(filename)
+    }
+  }
+}
+
 #' Write an aba summary object to file
 #' @export
 aba_write.abaSummary <- function(object,
                                  filename,
                                  format = c('table', 'raw', 'object'),
+                                 sheets = FALSE,
                                  ...) {
-  r <- object$results
-  if (endsWith(filename, '.csv')) {
-    r %>%
-      write.csv(
-        filename,
-        row.names=F
-      )
-  } else if (endsWith(filename, '.xlsx')) {
-    r %>%
-      writexl::write_xlsx(filename)
-  } else {
-    stop('Filename must end in .csv or .xlsx')
+  format <- match.arg(format)
+
+  if (format == 'table') {
+    results <- object %>% as_table()
+    save_helper(results, filename, sheets)
+
+  } else if (format == 'raw') {
+    results <- object$results
+    save_helper(results, filename, sheets)
+
+  } else if (format == 'object') {
+    saveRDS(
+      object = object,
+      file = filename
+    )
   }
 }
 

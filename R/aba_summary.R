@@ -224,13 +224,71 @@ metric_pivot_wider <- function(r) {
       estimate = as.character(metric_fmt(.data$estimate, .data$conf_low,
                                     .data$conf_high))
     ) %>%
-    select(-c(conf_low, conf_high)) %>%
+    select(-c(conf_low, conf_high, pval)) %>%
     ungroup() %>%
     pivot_wider(
       names_from = .data$term,
       values_from = .data$estimate
     )
 }
+
+#' @export
+as_table <- function(x, ...) {
+  x_res <- x$results %>%
+    group_by(
+      .data$group,
+      .data$outcome,
+      .data$stat
+    ) %>%
+    nest()
+
+  x_res <- x_res %>%
+    ungroup() %>%
+    unnest(cols=c(.data$data))
+
+  r_coef <- coef_pivot_wider(
+    x_res %>%
+      filter(form == 'coef') %>%
+      select(-c('form'))
+  ) %>%
+    select(
+      -c(any_of('(Intercept)'))
+    )
+
+  r_metric <- metric_pivot_wider(
+    x_res %>%
+      filter(form == 'metric') %>%
+      select(-c('form'))
+  )
+
+  r_metric <- r_metric %>%
+    select(-nobs, everything())
+
+  r_results <- r_coef %>%
+    bind_cols(
+      r_metric %>% select(-c(predictor_set, group, outcome, stat))
+    )
+
+  # replace group names for printing if they exist
+  if (!is.null(names(x$model$spec$groups))) {
+    r_results$group <- factor(
+      r_results$group,
+      levels = x$model$spec$groups,
+      labels = names(x$model$spec$groups)
+    )
+  }
+
+  # replace outcome names for printing if they exist
+  if (!is.null(names(x$model$spec$outcomes))) {
+    r_results$outcome <- factor(
+      r_results$outcome,
+      levels = x$model$spec$outcomes,
+      labels = names(x$model$spec$outcomes)
+    )
+  }
+  r_results
+}
+
 
 #' @export
 print.abaSummary <- function(x, ...) {
