@@ -33,9 +33,9 @@ aba_longpower <- function(object,
     t_length = t_length,
     t_freq = t_freq,
     n = n,
-    pct_change = as.vector(pct.change),
+    pct_change = as.vector(pct_change),
     power = power,
-    sig_level = as.vector(sig.level)
+    sig_level = as.vector(sig_level)
   ) %>%
     purrr::cross_df()
 
@@ -134,9 +134,10 @@ print.abaPower <- function(object, ...) {
 
  results_split %>% purrr::iwalk(
    function(info, label) {
-     cat('\n--------------------------------------------------\n')
+     nchar_label <- nchar(label)
+     cat('\n'); cat(rep('-', nchar_label), sep=''); cat('\n')
      cat(label)
-     cat('\n--------------------------------------------------\n')
+     cat('\n'); cat(rep('-', nchar_label), sep=''); cat('\n')
      print(info$data[[1]])
    }
  )

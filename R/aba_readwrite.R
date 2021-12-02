@@ -13,6 +13,7 @@
 #' x <- 1
 aba_write <- function(object,
                       filename,
+                      format = c('table', 'raw', 'object'),
                       ...) {
   UseMethod('aba_write')
 }
@@ -21,6 +22,7 @@ aba_write <- function(object,
 #' @export
 aba_write.abaSummary <- function(object,
                                  filename,
+                                 format = c('table', 'raw', 'object'),
                                  ...) {
   r <- object$results
   if (endsWith(filename, '.csv')) {
@@ -41,6 +43,7 @@ aba_write.abaSummary <- function(object,
 #' @export
 aba_write.TableOne <- function(object,
                                filename,
+                               format = c('table', 'raw', 'object'),
                                ...) {
   r <- object
 

@@ -4,7 +4,7 @@
 \alias{aba_write}
 \title{Write an ABA object to file}
 \usage{
-aba_write(object, filename, ...)
+aba_write(object, filename, format = c("table", "raw", "object"), ...)
 }
 \arguments{
 \item{object}{ABA object}

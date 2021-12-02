@@ -4,7 +4,7 @@
 \alias{aba_write.abaSummary}
 \title{Write an aba summary object to file}
 \usage{
-\method{aba_write}{abaSummary}(object, filename, ...)
+\method{aba_write}{abaSummary}(object, filename, format = c("table", "raw", "object"), ...)
 }
 \description{
 Write an aba summary object to file

@@ -4,7 +4,7 @@
 \alias{aba_write.TableOne}
 \title{Write an aba demo table (TableOne) to file}
 \usage{
-\method{aba_write}{TableOne}(object, filename, ...)
+\method{aba_write}{TableOne}(object, filename, format = c("table", "raw", "object"), ...)
 }
 \description{
 Write an aba demo table (TableOne) to file

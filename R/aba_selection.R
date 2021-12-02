@@ -209,9 +209,14 @@ print.abaSelection <- function(object, ...) {
 
   results_split %>% purrr::iwalk(
     function(info, label) {
-      cat('\n--------------------------------------------------\n')
+      nchar_label <- nchar(label)
+      cat('\n')
+      cat(rep('-', nchar_label), sep='')
+      cat('\n')
       cat(label)
-      cat('\n--------------------------------------------------\n')
+      cat('\n')
+      cat(rep('-', nchar_label), sep='')
+      cat('\n')
 
       # reorder based on selection order
       info_data <- info$data[[1]]

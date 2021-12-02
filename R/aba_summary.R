@@ -323,9 +323,11 @@ print.abaSummary <- function(x, ...) {
 
   r_split %>% purrr::iwalk(
     function(x,y) {
-      cat('\n------------------------------------\n')
+      nchar_label <- nchar(y)
+      cat('\n'); cat(rep('-', nchar_label), sep=''); cat('\n')
       cat(y)
-      cat('\n------------------------------------\n')
+      cat('\n'); cat(rep('-', nchar_label), sep=''); cat('\n')
+
       cat('\n')
       cat('Coefficients & Metrics:\n\n')
       # coefficients
