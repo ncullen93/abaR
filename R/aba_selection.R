@@ -32,6 +32,8 @@ aba_selection <- function(model,
     'verbose' = verbose
   )
   class(m) <- 'abaSelection'
+
+  m <- run_selection(m)
   return(m)
 }
 
@@ -46,24 +48,24 @@ aba_selection <- function(model,
 #'
 #' @examples
 #' x <- 1
-fit.abaSelection <- function(object,
+run_selection <- function(object,
                              ...) {
 
   model <- object$model
   # round 0 - best models are the basic models
   results <- model$results %>%
-    group_by(groups, outcomes, stats) %>%
+    group_by(group, outcome, stat) %>%
     filter(row_number() == 1L) %>%
     ungroup() %>%
-    select(groups:stats) %>%
+    select(group:stat) %>%
     rowwise() %>%
     mutate(
       model_0 = list(
         create_new_model(
           model,
-          .data$groups,
-          .data$outcomes,
-          .data$stats
+          .data$group,
+          .data$outcome,
+          .data$stat
         )
       )
     )
@@ -71,8 +73,8 @@ fit.abaSelection <- function(object,
     purrr::map_dbl(
       function(m) {
         s <- aba_summary(m)$results %>%
-          filter(MID == 'M1', term == object$criteria)
-        s$est
+          filter(predictor_set == 'M1', term == object$criteria)
+        s$estimate
       }
     )
 
@@ -115,11 +117,11 @@ fit.abaSelection <- function(object,
     mutate(
       value_summary = list(aba_summary(.data$value)),
       coef_summary = list(.data$value_summary$results %>% filter(form=='coef') %>%
-                            coef_pivot_wider() %>% filter(MID=='M1') %>%
-                            select(-c(MID:form))),
+                            coef_pivot_wider() %>% filter(predictor_set=='M1') %>%
+                            select(-c(group:form))),
       metric_summary = list(.data$value_summary$results %>% filter(form=='metric') %>%
-                              metric_pivot_wider() %>% filter(MID=='M1') %>%
-                              select(-c(MID:form, Pval, nobs)))
+                              metric_pivot_wider() %>% filter(predictor_set=='M1') %>%
+                              select(-c(group:form, pval, nobs)))
     )
 
   results <- results %>%
@@ -148,23 +150,23 @@ find_next_model <- function(object, baseline_value, criteria, threshold, verbose
     # get best model
     best_model <- object_summary$results %>%
       filter(term == criteria) %>%
-      group_by(groups, outcomes, stats) %>%
+      group_by(group, outcome, stat) %>%
       mutate(
         est_diff = case_when(
-          term == 'AIC' ~ est - min(baseline_value, first(est)),
-          term == 'Pval' ~ est
+          term == 'AIC' ~ estimate - min(baseline_value, first(estimate)),
+          term == 'Pval' ~ estimate
         )
       ) %>%
       slice_min(est_diff, n = 1, with_ties = FALSE) %>%
       ungroup() %>%
-      select(-c(lo:pval))
+      select(-c(conf_low:pval))
 
     if (best_model$est_diff <= threshold) {
 
       # best predictors
       new_covariates <- object$results %>%
-        filter(MID == best_model$MID) %>%
-        pull(predictors)
+        filter(predictor_set == best_model$predictor_set) %>%
+        pull(predictor)
 
       if (verbose) cat('Improvement: ', new_covariates, '\n')
 
@@ -188,3 +190,46 @@ find_next_model <- function(object, baseline_value, criteria, threshold, verbose
     return(NA)
   }
 }
+
+
+#' @export
+print.abaSelection <- function(object, ...) {
+  results <- object$results
+  results <- results %>%
+    group_by(group, outcome, stat) %>%
+    nest() %>%
+    mutate(
+      label = glue('{group} | {outcome} | {stat}')
+    )
+
+  results_split <- stats::setNames(
+    split(results, 1:nrow(results)),
+    results$label
+  )
+
+  results_split %>% purrr::iwalk(
+    function(info, label) {
+      cat('\n--------------------------------------------------\n')
+      cat(label)
+      cat('\n--------------------------------------------------\n')
+
+      # reorder based on selection order
+      info_data <- info$data[[1]]
+      predictors <- colnames(info_data)[is.na(info_data[1,])]
+      old_order <- purrr::map_int(predictors, ~sum(is.na(info_data[[.x]])))
+      new_order <- sort(old_order, index.return=T)$ix
+      predictors_new <- predictors[new_order]
+      info_data[,predictors] <- info_data[,predictors_new]
+      colnames(info_data)[colnames(info_data) %in% predictors] <- predictors_new
+
+      print(info_data)
+    }
+  )
+}
+
+
+
+
+
+
+

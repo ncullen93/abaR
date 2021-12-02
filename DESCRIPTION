@@ -48,7 +48,8 @@ Imports:
     pROC,
     progress,
     OptimalCutpoints,
-    tableone
+    tableone,
+    longpower
 VignetteBuilder: knitr
 Depends: 
     R (>= 2.10)

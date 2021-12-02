@@ -140,7 +140,6 @@ print.abaPower <- function(object, ...) {
      print(info$data[[1]])
    }
  )
-
 }
 
 

@@ -123,7 +123,7 @@ parse_then_fit_abaModel <- function(
   )
 }
 
-process_dataset <- function(data, group, outcome, predictors, covariates, params) {
+process_dataset <- function(data, group, outcome, stat, predictors, covariates, params) {
   std.beta <- params$std.beta
   complete.cases <- params$complete.cases
 
@@ -155,9 +155,9 @@ process_dataset <- function(data, group, outcome, predictors, covariates, params
       data[,scale_covariates] <- scale(data[,scale_covariates])
     }
 
-    # scale all continuous outcomes
+    ## scale all continuous outcomes
     if (class(data[[outcome]]) %in% c('integer', 'numeric')) {
-      data[,outcome] <- scale(data[,outcome])
+      if (!(stat %in% c('glm'))) data[,outcome] <- scale(data[,outcome])
     }
 
   }
@@ -201,6 +201,7 @@ fit.abaModel <- function(object, ...) {
         data = model$data,
         group = .data$group,
         outcome = .data$outcome,
+        stat = .data$stat,
         predictors = model$spec$predictors,
         covariates = model$spec$covariates,
         params = model$spec$stats[[.data$stat]]$params
