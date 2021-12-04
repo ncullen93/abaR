@@ -265,24 +265,3 @@ set_data <- function(model, data) {
   model
 }
 
-#' Set the endpoints of an aba_trial spec
-#'
-#' @param .model abaTrial
-#' @param ... endpoints
-#'
-#' @return An abaModel object
-#'
-#' @export
-#'
-#' @examples
-#'x <- 1
-set_treatment <- function(.model, ...) {
-  .model$spec$treatment <-
-    unname(unlist(parse_select_expr(..., data=.model$data)))
-
-  if (!is.null(.model$spec$predictors)) {
-    stop('Must set one of treatment of predictors')
-  }
-  .model <- .model %>% set_predictors(.model$spec$treatment)
-  .model
-}

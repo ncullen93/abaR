@@ -4,7 +4,14 @@
 \alias{aba_mmrm}
 \title{Create a mmrm stat to use for an aba model.}
 \usage{
-aba_mmrm(id, time, treatment = NULL, std.beta = FALSE, complete.cases = TRUE)
+aba_mmrm(
+  id,
+  time,
+  treatment = NULL,
+  add_baseline = TRUE,
+  std.beta = FALSE,
+  complete.cases = TRUE
+)
 }
 \arguments{
 \item{id}{string. id variable}

@@ -32,6 +32,7 @@
 aba_mmrm <- function(id,
                      time,
                      treatment = NULL,
+                     add_baseline = TRUE,
                      std.beta = FALSE,
                      complete.cases = TRUE) {
   fns <- list(
@@ -40,7 +41,9 @@ aba_mmrm <- function(id,
     'treatment' = treatment,
     'extra_params' = list(
       'id' = id,
-      'time' = time
+      'time' = time,
+      'treatment' = treatment,
+      'add_baseline' = add_baseline
     ),
     'params' = list(
       'std.beta' = std.beta,
@@ -57,6 +60,20 @@ aba_mmrm <- function(id,
 fit_mmrm <- function(formula, data, extra_params) {
   time <- extra_params$time
   id <- extra_params$id
+
+  # add treatment variable if specified
+  treatment <- extra_params$treatment
+  if (!is.null(treatment)) {
+    formula <- glue('{formula} + {treatment}*{time}')
+  }
+
+  # add baseline variable if specified
+  if (extra_params$add_baseline) {
+    bl_suffix = '_bl'
+    outcome <- formula %>% strsplit(' ~ ') %>% unlist() %>% head(1)
+    formula <- glue('{formula} + {outcome}{bl_suffix}*{time}')
+  }
+
   correlation_form <- glue::glue('~ 1 | {id}')
   weights_form <- glue::glue('~ 1 | {time}')
 
@@ -88,7 +105,7 @@ fit_mmrm <- function(formula, data, extra_params) {
   model$call$model <- stats::formula(formula)
   model$call$correlation$form <- stats::formula(correlation_form)
   model$call$weights$form <- stats::formula(weights_form)
-  model$call$data <- data
+  #model$call$data <- data
 
   return(model)
 }
@@ -110,6 +127,15 @@ aba_tidy.gls <- function(model, predictors, covariates, ...) {
 #' @export
 aba_glance.gls <- function(x, ...) {
   glance_df <- broom.mixed::glance(x) %>% select(-logLik)
+
+  # add sample size info
+  glance_df <- glance_df %>%
+    bind_cols(
+      tibble::tibble(
+        nobs = x$dims$N,
+        nsub = length(levels(x$groups))
+      )
+    )
 
   # pivot longer to be like coefficients
   glance_df <- glance_df %>%
