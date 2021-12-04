@@ -58,8 +58,8 @@ aba_tidy <- function(model, predictors, covariates, ...) {
 #'
 #' @examples
 #' x <- 1
-aba_emmeans <- function(model, treatment, stats_obj, ...) {
-  UseMethod('aba_emmeans')
+run_emmeans <- function(fit, extra_params) {
+  UseMethod('run_emmeans')
 }
 
 #' @export

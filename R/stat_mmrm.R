@@ -105,7 +105,7 @@ fit_mmrm <- function(formula, data, extra_params) {
   model$call$model <- stats::formula(formula)
   model$call$correlation$form <- stats::formula(correlation_form)
   model$call$weights$form <- stats::formula(weights_form)
-  #model$call$data <- data
+  model$call$data <- data
 
   return(model)
 }
@@ -153,14 +153,16 @@ aba_glance.gls <- function(x, ...) {
 }
 
 #' @export
-aba_emmeans.gls <- function(fit, treatment, stats_obj, ...) {
-  time <- stats_obj$extra_params$time
-  id <- stats_obj$extra_params$id
+run_emmeans.gls <- function(fit, extra_params) {
+  time <- extra_params$time
+  id <- extra_params$id
+  treatment <- extra_params$treatment
 
   emmeans_formula <- formula(glue('~ {treatment} | {time}'))
 
   emmeans_result <- emmeans::emmeans(fit, emmeans_formula)
   pairs_result <- pairs(emmeans_result)
+
   return(
     list(
       'emmeans' = emmeans_result %>% broom::tidy(),

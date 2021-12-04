@@ -25,53 +25,9 @@ aba_summary <- function(model,
     results = results_df
   )
 
-  # run emmeans and pairs  if there is a treatment
-  if (!is.null(model$spec$treatment)) {
-    treatment_dfs <- treatment_summary(model)
-    s$results_treatments <- treatment_dfs
-  }
-
   class(s) <- 'abaSummary'
   return(s)
 }
-
-treatment_summary <- function(model) {
-  all_covariates <- model$spec$covariates
-  if (is.null(all_covariates)) all_covariates <- c('')
-
-  treatment_var <- model$spec$treatment
-
-  r <- model$results %>%
-    filter(predictors != '') %>%
-    rowwise() %>%
-    mutate(
-      stats_emmeans = list(
-        aba_emmeans(
-          fit = .data$stat_fit,
-          treatment = .data$predictors,
-          stat_obj = .data$stat_obj
-        )
-      )
-    ) %>%
-    unnest_wider(stats_emmeans)
-
-  # separate into two different dfs
-  emmeans_df <- r %>%
-    select(predictor_set:covariates, emmeans) %>%
-    unnest(emmeans)
-
-  pairs_df <- r %>%
-    select(predictor_set:covariates, pairs) %>%
-    unnest(pairs)
-
-  return(
-    list(
-      'emmeans' = emmeans_df,
-      'pairs' = pairs_df
-    )
-  )
-}
-
 
 coefs_summary <- function(model, control) {
 
