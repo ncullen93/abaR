@@ -74,6 +74,7 @@ fit_mmrm <- function(formula, data, extra_params) {
     formula <- glue('{formula} + {outcome}{bl_suffix}*{time}')
   }
 
+  # make correlation and weights form
   correlation_form <- glue::glue('~ 1 | {id}')
   weights_form <- glue::glue('~ 1 | {time}')
 
@@ -82,13 +83,15 @@ fit_mmrm <- function(formula, data, extra_params) {
   # - first visit should be removed
   unique_visits <- levels(factor(data[[time]]))
   if (length(unique_visits) > 10) {
-    stop('10+ unique visits detected... MMRM requires discrete time points!
+    stop('10+ unique time points detected... MMRM requires discrete time points.
          Did you accidently use a continuous time variable?')
   }
   first_visit <- unique_visits[1]
 
   # remove the first visit from the data
-  data <- data %>% distinct() %>%
+  data_original <- data %>% distinct()
+
+  data <- data_original %>%
     filter(.data[[time]] != first_visit) %>%
     mutate({{ time }} := factor(.data[[time]]))
 
@@ -106,6 +109,7 @@ fit_mmrm <- function(formula, data, extra_params) {
   model$call$correlation$form <- stats::formula(correlation_form)
   model$call$weights$form <- stats::formula(weights_form)
   model$call$data <- data
+  model$data_original <- data_original
 
   return(model)
 }
@@ -160,13 +164,29 @@ run_emmeans.gls <- function(fit, extra_params) {
 
   emmeans_formula <- formula(glue('~ {treatment} | {time}'))
 
-  emmeans_result <- emmeans::emmeans(fit, emmeans_formula)
+  emmeans_result <- purrr::quietly(emmeans::emmeans)(fit, emmeans_formula)$result
   pairs_result <- pairs(emmeans_result)
+
+  emmeans_df <- emmeans_result %>%
+    broom::tidy(conf.int = TRUE) %>%
+    rename(
+      treatment = {{ treatment }},
+      time = {{ time }},
+      pval = p.value
+    )
+
+  pairs_df <- pairs_result %>%
+    broom::tidy(conf.int = TRUE) %>%
+    rename(
+      time = {{ time }},
+      treatment = contrast,
+      pval = p.value
+    )
 
   return(
     list(
-      'emmeans' = emmeans_result %>% broom::tidy(),
-      'pairs' = pairs_result %>% broom::tidy()
+      'emmeans' = emmeans_df,
+      'pairs' = pairs_df
     )
   )
 }
