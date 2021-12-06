@@ -121,7 +121,7 @@ run_selection <- function(object,
                             select(-c(group:form))),
       metric_summary = list(.data$value_summary$results %>% filter(form=='metric') %>%
                               metric_pivot_wider() %>% filter(predictor_set=='M1') %>%
-                              select(-c(group:form, pval, nobs)))
+                              select(-c(group:form, Pval, nobs)))
     )
 
   results <- results %>%
@@ -176,10 +176,11 @@ find_next_model <- function(object, baseline_value, criteria, threshold, verbose
 
       object$spec$covariates <- c(
         object$spec$covariates,
-        strsplit(new_covariates, ' | ', fixed=T)[[1]]
+        strsplit(new_covariates, ' + ', fixed=T)[[1]]
       )
 
       object <- object %>% fit()
+
       return(object)
     } else {
       if (verbose) cat('No improvement - stopping\n')
