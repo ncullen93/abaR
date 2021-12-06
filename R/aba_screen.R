@@ -50,7 +50,7 @@ fit.abaScreen <- function(object, ...) {
 
   # expand by threshold / cost_multiplier / include_n
   param_list <- list(
-    'MID' = unique(model_results$MID),
+    'predictor_set' = unique(model_results$predictor_set),
     'threshold' = object$threshold,
     'cost_multiplier' = object$cost_multiplier,
     'include_n' = object$include_n
@@ -59,7 +59,7 @@ fit.abaScreen <- function(object, ...) {
   model_results <- model_results %>%
     right_join(
       param_list %>% purrr::cross_df(),
-      by = 'MID'
+      by = 'predictor_set'
     )
 
   if (object$verbose) pb <- progress::progress_bar$new(total = ntrials)
@@ -74,8 +74,8 @@ fit.abaScreen <- function(object, ...) {
           mutate(
             screen_results = list(
               run_screen_model(
-                fit = .data$stats_fit,
-                outcome = .data$outcomes,
+                fit = .data$stat_fit,
+                outcome = .data$outcome,
                 threshold = .data$threshold,
                 cost_multiplier = .data$cost_multiplier,
                 include_n = .data$include_n,
@@ -85,16 +85,16 @@ fit.abaScreen <- function(object, ...) {
           ) %>%
           unnest(screen_results) %>%
           select(
-            -c(stats_obj, stats_fit)
+            -c(stat_obj, stat_fit)
           ) %>%
           mutate(trial = idx)
       }
     ) %>%
     bind_rows() %>%
-    arrange(MID, groups, outcomes)
+    arrange(predictor_set, group, outcome)
 
   all_metrics <- screen_results %>%
-    select(-c(MID:include_n,
+    select(-c(group:include_n,
               trial)) %>%
     colnames()
 
@@ -103,8 +103,8 @@ fit.abaScreen <- function(object, ...) {
     left_join(
       screen_results %>% filter(trial != 1) %>%
         group_by(
-          MID, groups, outcomes,
-          predictors, covariates, stats,
+          predictor_set, group, outcome,
+          predictor, covariate, stat,
           threshold, cost_multiplier, include_n
         ) %>%
         summarise(
@@ -116,16 +116,16 @@ fit.abaScreen <- function(object, ...) {
           .groups = 'keep'
         ) %>%
         ungroup(),
-      by = c("MID", "groups", "outcomes",
-             "stats", "predictors", "covariates",
+      by = c("predictor_set", "group", "outcome",
+             "stat", "predictor", "covariate",
              "threshold", "cost_multiplier", "include_n")
     ) %>%
-    arrange(groups, outcomes, MID)
+    arrange(group, outcome, predictor_set)
 
   object$results <- screen_results
   object$results_summary <- screen_results_summary %>%
     select(
-      MID:include_n,
+      predictor_set:include_n,
       all_of(
         apply(expand.grid(c('','_conf_lo','_conf_hi'), all_metrics),
               1, function(x) paste0(x[2],x[1]))
