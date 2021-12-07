@@ -4,12 +4,7 @@
 \alias{aba_model}
 \title{Create an aba model}
 \usage{
-aba_model(
-  data = NULL,
-  spec = aba_model_spec(),
-  results = list(),
-  verbose = FALSE
-)
+aba_model(data = NULL, spec = aba_model_spec(), verbose = FALSE)
 }
 \arguments{
 \item{data}{data.frame the data to use for the object}
@@ -35,7 +30,7 @@ every single model that is fit
 \item predictors: which variables to use as independent variables, but never
 together in the same model
 }
-\item fits: the fitted statistical models once \code{fit()} is called
+\item fits: the fitted statistical models once \code{aba_fit()} is called
 }
 }
 \examples{

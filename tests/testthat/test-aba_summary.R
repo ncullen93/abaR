@@ -21,7 +21,7 @@ test_that("standard summary works", {
       set_stats(
         'glm'
       ) %>%
-      fit() %>%
+      aba_fit() %>%
       aba_summary(),
     NA
   )

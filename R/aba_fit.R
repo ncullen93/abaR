@@ -1,7 +1,83 @@
+#' Generic fit method
+#'
+#' @param model aba-type model
+#'
+#' @return aba-type model
+#' @export
+#'
+#' @examples
+#' 1 == 1
+aba_fit <- function(object, ...) {
+  UseMethod('aba_fit')
+}
+
 #' @importFrom generics fit
 #' @export
 generics::fit
 
+#' @export
+fit.abaModel <- function(object, ...) {
+  object %>% aba_fit(...)
+}
+
+#' Fit an aba model.
+#'
+#' This will trigger the fitting of all statistical models
+#' (`stats`) on the different parameter combinations (`spec`).
+#'
+#' @param object abaModel. The aba model to be fitted.
+#' @param ... additional parameters.
+#'
+#' @return abaModel
+#' @export
+#' @examples
+#' m <- aba_model()
+aba_fit.abaModel <- function(object, ...) {
+  model <- object
+
+  # compile model
+  model <- model %>% aba_compile()
+
+  # progress bar
+  pb <- NULL
+  if (model$verbose) pb <- progress::progress_bar$new(total = nrow(model$results))
+
+  fit_df <- model$results %>%
+    group_by(group, outcome, stat) %>%
+    nest() %>%
+    rename(info = data) %>%
+    rowwise() %>%
+    mutate(
+      data_proc = process_dataset(
+        data = model$data,
+        group = .data$group,
+        outcome = .data$outcome,
+        stat = .data$stat,
+        predictors = model$spec$predictors,
+        covariates = model$spec$covariates,
+        params = model$spec$stats[[.data$stat]]$params
+      )
+    ) %>%
+    unnest(info) %>%
+    rowwise() %>%
+    mutate(
+      stat_fit = parse_then_fit(
+        data = .data$data_proc,
+        group = .data$group,
+        outcome = .data$outcome,
+        predictors = .data$predictor,
+        covariates = .data$covariate,
+        stat_obj = .data$stat_obj,
+        pb = pb
+      )
+    ) %>%
+    select(group, outcome, stat, predictor_set, predictor,
+           covariate, stat_obj, stat_fit) %>%
+    ungroup()
+
+  model$results <- fit_df
+  return(model)
+}
 
 #' Generic compile method
 #'
@@ -12,13 +88,13 @@ generics::fit
 #'
 #' @examples
 #' 1 == 1
-compile <- function(model) {
-  UseMethod('compile')
+aba_compile <- function(model) {
+  UseMethod('aba_compile')
 }
 
 # compile abaModel
 #' @export
-compile.abaModel <- function(model) {
+aba_compile.abaModel <- function(model) {
 
 
   data <- model$data
@@ -96,9 +172,8 @@ compile.abaModel <- function(model) {
   return(model)
 }
 
-# need a preprocessing function to parse
-
-parse_then_fit_abaModel <- function(
+# parse then fit
+parse_then_fit <- function(
   data, group, outcome, predictors, covariates, stat_obj, pb
 ) {
 
@@ -123,6 +198,7 @@ parse_then_fit_abaModel <- function(
   )
 }
 
+# process dataset
 process_dataset <- function(data, group, outcome, stat, predictors, covariates, params) {
   std.beta <- params$std.beta
   complete.cases <- params$complete.cases
@@ -166,66 +242,6 @@ process_dataset <- function(data, group, outcome, stat, predictors, covariates, 
   }
 
   return(list(data))
-}
-
-
-#' Fit an aba model.
-#'
-#' This will trigger the fitting of all statistical models
-#' (`stats`) on the different parameter combinations (`spec`).
-#'
-#' @param object abaModel. The aba model to be fitted.
-#' @param ... additional parameters.
-#'
-#' @return abaModel
-#' @export
-#' @examples
-#' m <- aba_model()
-fit.abaModel <- function(object, ...) {
-  model <- object
-
-  # compile model
-  model <- model %>% compile()
-
-  # progress bar
-  pb <- NULL
-  if (model$verbose) pb <- progress::progress_bar$new(total = nrow(model$results))
-
-  fit_df <- model$results %>%
-    group_by(group, outcome, stat) %>%
-    nest() %>%
-    rename(info = data) %>%
-    rowwise() %>%
-    mutate(
-      data_proc = process_dataset(
-        data = model$data,
-        group = .data$group,
-        outcome = .data$outcome,
-        stat = .data$stat,
-        predictors = model$spec$predictors,
-        covariates = model$spec$covariates,
-        params = model$spec$stats[[.data$stat]]$params
-      )
-    ) %>%
-    unnest(info) %>%
-    rowwise() %>%
-    mutate(
-      stat_fit = parse_then_fit_abaModel(
-        data = .data$data_proc,
-        group = .data$group,
-        outcome = .data$outcome,
-        predictors = .data$predictor,
-        covariates = .data$covariate,
-        stat_obj = .data$stat_obj,
-        pb = pb
-      )
-    ) %>%
-    select(group, outcome, stat, predictor_set, predictor,
-           covariate, stat_obj, stat_fit) %>%
-    ungroup()
-
-  model$results <- fit_df
-  return(model)
 }
 
 

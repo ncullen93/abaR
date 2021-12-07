@@ -138,7 +138,7 @@ create_new_model <- function(model, group, outcome, stat) {
   model$spec$groups <- group
   model$spec$outcomes <- outcome
   model$spec$stats <- list(model$spec$stats[[stat]]) %>% set_names(stat)
-  model %>% fit()
+  model %>% aba_fit()
 }
 
 find_next_model <- function(object, baseline_value, criteria, threshold, verbose) {
@@ -179,7 +179,7 @@ find_next_model <- function(object, baseline_value, criteria, threshold, verbose
         strsplit(new_covariates, ' + ', fixed=T)[[1]]
       )
 
-      object <- object %>% fit()
+      object <- object %>% aba_fit()
 
       return(object)
     } else {

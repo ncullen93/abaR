@@ -10,7 +10,7 @@
 #'
 #' @examples
 #' x <- 1
-aba_demo <- function(model,
+aba_demographics <- function(model,
                      strata = NULL,
                      include_predictors = TRUE,
                      include_covariates = TRUE,
@@ -18,11 +18,11 @@ aba_demo <- function(model,
                      add_vars = NULL,
                      data_filter = NULL,
                      ...) {
-  UseMethod('aba_demo')
+  UseMethod('aba_demographics')
 }
 
 #' @export
-aba_demo.abaSummary <- function(model,
+aba_demographics.abaSummary <- function(model,
                                 strata = NULL,
                                 include_predictors = TRUE,
                                 include_covariates = TRUE,
@@ -42,7 +42,7 @@ aba_demo.abaSummary <- function(model,
 }
 
 #' @export
-aba_demo.abaModel <- function(model,
+aba_demographics.abaModel <- function(model,
                               strata = NULL,
                               include_predictors = TRUE,
                               include_covariates = TRUE,

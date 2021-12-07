@@ -34,7 +34,7 @@ every single model that is fit
 \item predictors: which variables to use as independent variables, but never
 together in the same model
 }
-\item fits: the fitted statistical models once \code{fit()} is called
+\item fits: the fitted statistical models once \code{aba_fit()} is called
 }
 }
 \examples{

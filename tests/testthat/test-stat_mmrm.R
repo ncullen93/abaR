@@ -19,7 +19,7 @@ test_that("standard mmrm works", {
       set_stats(
         aba_mmrm(id='RID', time='VISCODE')
       ) %>%
-      fit() %>%
+      aba_fit() %>%
       aba_summary(),
     NA
   )

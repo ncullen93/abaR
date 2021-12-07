@@ -9,7 +9,7 @@
 #'         every single model that is fit
 #'     - predictors: which variables to use as independent variables, but never
 #'         together in the same model
-#'   - fits: the fitted statistical models once `fit()` is called
+#'   - fits: the fitted statistical models once `aba_fit()` is called
 #'
 #' @param model abaModel the aba model to use for the object
 #' @param bias list the test-retest (or whatever) bias estimates
@@ -43,6 +43,9 @@ aba_robust <- function(model,
     'verbose' = verbose
   )
   class(m) <- 'abaRobust'
+
+  m <- fit_robust(m)
+
   return(m)
 }
 
@@ -85,21 +88,8 @@ simulate_data_noise <- function(data, bias, variation) {
   data
 }
 
-#' Fit an aba robust object
-#'
-#' This will trigger the fitting of an aba robust object to determine the
-#' effect of simulated noise/variation/test-retest on model coefficients
-#' and preformance.
-#'
-#' @param object abaModel. The aba model whose robustness will be tested. This
-#'   aba model should already be fit itself prior to this.
-#' @param ... additional parameters.
-#'
-#' @return abaRobust
-#' @export
-#' @examples
-#' x <- 1
-fit.abaRobust <- function(object, ...) {
+
+fit_robust <- function(object, ...) {
 
   ntrials <- object$params$ntrials
   model <- object$model
@@ -121,7 +111,7 @@ fit.abaRobust <- function(object, ...) {
           data_original, object$bias, object$variation
         )
 
-        model_noise <- model %>% set_data(data_noise) %>% fit()
+        model_noise <- model %>% set_data(data_noise) %>% aba_fit()
         model_noise_summary <- model_noise %>% aba_summary()
         return(
           model_noise_summary$results %>%

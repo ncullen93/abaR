@@ -13,7 +13,7 @@ test_that("standard lme works", {
       set_stats(
         aba_lme(id='RID', time='YEARS_bl')
       ) %>%
-      fit(),
+      aba_fit(),
     NA
   )
 
@@ -31,7 +31,7 @@ test_that("standard lme works", {
       set_stats(
         aba_lme(id='RID', time='YEARS_bl')
       ) %>%
-      fit() %>%
+      aba_fit() %>%
       aba_summary(),
     NA
   )
@@ -52,17 +52,17 @@ test_that("forgetting parameters throws error", {
   expect_error(
     model %>%
       set_stats(aba_lme(id='RID')) %>%
-      fit()
+      aba_fit()
   )
   expect_error(
     model %>%
       set_stats(aba_lme(time='YEARS_bl')) %>%
-      fit()
+      aba_fit()
   )
   expect_error(
     model %>%
       set_stats(aba_lme()) %>%
-      fit()
+      aba_fit()
   )
 
 })

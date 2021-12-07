@@ -22,7 +22,7 @@ test_that("fit with string inputs works", {
         'glm'
       ) %>%
       set_data(adnimerge) %>%
-      fit(),
+      aba_fit(),
     NA
   )
 })
@@ -49,7 +49,7 @@ test_that("fit with tidy eval inputs works", {
         AGE, GENDER, EDUCATION
       ) %>%
       set_stats('glm') %>%
-      fit(),
+      aba_fit(),
     NA
   )
 })
@@ -78,7 +78,7 @@ test_that("tidy eval before setting data gives error", {
       set_stats(
         'glm'
       ) %>%
-      fit()
+      aba_fit()
   )
 
   # setting data after spec parameters
@@ -105,7 +105,7 @@ test_that("tidy eval before setting data gives error", {
         'glm'
       ) %>%
       set_data(adnimerge) %>%
-      fit()
+      aba_fit()
   )
 })
 
@@ -119,7 +119,7 @@ test_that("fit with only one value for each spec param works", {
       set_outcomes(MMSE) %>%
       set_covariates(AGE) %>%
       set_stats('lm') %>%
-      fit(),
+      aba_fit(),
     NA
   )
 
@@ -130,7 +130,7 @@ test_that("fit with only one value for each spec param works", {
       set_outcomes(MMSE) %>%
       set_covariates(AGE) %>%
       set_stats('lm') %>%
-      fit(),
+      aba_fit(),
     NA
   )
 })
@@ -161,7 +161,7 @@ test_that("fit with stat objects instead of strings works", {
       set_stats(
         aba_glm()
       ) %>%
-      fit(),
+      aba_fit(),
     NA
   )
 
@@ -190,7 +190,7 @@ test_that("fit with stat objects instead of strings works", {
         aba_glm(),
         aba_lm()
       ) %>%
-      fit(),
+      aba_fit(),
     NA
   )
 
@@ -219,7 +219,7 @@ test_that("fit with stat objects instead of strings works", {
         aba_glm(),
         'lm'
       ) %>%
-      fit(),
+      aba_fit(),
     NA
   )
 

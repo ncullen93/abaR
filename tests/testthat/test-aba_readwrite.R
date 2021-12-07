@@ -12,7 +12,7 @@ test_that("save and load works", {
     ) %>%
     set_outcomes(CSF_ABETA_STATUS_bl, ConvertedToAlzheimers) %>%
     set_stats('glm') %>%
-    fit()
+    aba_fit()
 
   model_spec <- model$spec
 
@@ -35,7 +35,7 @@ test_that("save and load works", {
   #  NA
   #)
   #model_spec2 <- aba_read('~/desktop/myspec.rda')
-  #model2 <- df %>% aba_model(spec=model_spec2) %>% fit()
+  #model2 <- df %>% aba_model(spec=model_spec2) %>% aba_fit()
 
   ## save model
   #expect_error(
@@ -50,6 +50,6 @@ test_that("save and load works", {
   #  NA
   #)
   #model3 <- aba_read('~/desktop/mymodel.rda')
-  #model3 <- model3 %>% set_data(df) %>% fit()
+  #model3 <- model3 %>% set_data(df) %>% aba_fit()
 
 })

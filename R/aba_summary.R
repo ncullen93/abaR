@@ -29,6 +29,15 @@ aba_summary <- function(model,
   return(s)
 }
 
+#' @export
+summary.abaModel <- function(object,
+                             control = aba_control(),
+                             verbose = FALSE,
+                             ...) {
+  object %>% aba_summary(control=control, verbose = verbose, ...)
+}
+
+
 coefs_summary <- function(model, control) {
 
   all_predictors <- model$spec$predictors %>%

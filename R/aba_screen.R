@@ -29,21 +29,14 @@ aba_screen <- function(model,
     'verbose' = verbose
   )
   class(m) <- 'abaScreen'
+
+  m <- fit_screen(m)
+
   return(m)
 }
 
 
-#' Fit an aba screen object
-#'
-#' @param object aba screen object to fit
-#' @param ... additional parameters
-#'
-#' @return abaScreen object
-#' @export
-#'
-#' @examples
-#' x <- 1
-fit.abaScreen <- function(object, ...) {
+fit_screen <- function(object, ...) {
   model <- object$model
   model_results <- model$results
   ntrials <- object$params$ntrials

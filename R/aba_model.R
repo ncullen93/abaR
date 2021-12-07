@@ -9,7 +9,7 @@
 #'         every single model that is fit
 #'     - predictors: which variables to use as independent variables, but never
 #'         together in the same model
-#'   - fits: the fitted statistical models once `fit()` is called
+#'   - fits: the fitted statistical models once `aba_fit()` is called
 #'
 #' @param data data.frame the data to use for the object
 #' @param spec abaModelSpec the spec to use for the model. Can be created with
@@ -24,13 +24,12 @@
 #' m <- aba_model()
 aba_model <- function(data = NULL,
                       spec = aba_model_spec(),
-                      results = list(),
                       verbose = FALSE) {
 
   m <- list(
     'data' = data,
     'spec' = spec,
-    'results' = results,
+    'results' = list(),
     'verbose' = verbose
   )
 
