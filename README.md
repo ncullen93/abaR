@@ -53,19 +53,21 @@ looks like this:
 ``` r
 library(aba)
 
-model <- adni_sample %>% aba_model() %>%
-  set_groups(everyone(), DX_bl == 'MCI') %>%
-  set_outcomes(CSF_ABETA_STATUS_bl, ConvertedToAlzheimers) %>%
+df <- aba::adnimerge %>% filter(VISCODE == 'bl')
+
+model_spec <- df %>% aba_model() %>%
+  set_groups(everyone()) %>%
+  set_outcomes(ConvertedToAlzheimers, CSF_ABETA_STATUS_bl) %>%
   set_predictors(
-    PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl,
-    c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl),
-    c(PLASMA_ABETA_bl, PLASMA_NFL_bl),
-    c(PLASMA_PTAU181_bl, PLASMA_NFL_bl),
+    PLASMA_ABETA_bl,
+    PLASMA_PTAU181_bl,
+    PLASMA_NFL_bl,
     c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
   ) %>%
-  set_covariates(AGE_bl, GENDER, EDUCAT) %>%
-  set_stats('glm')
+  set_stats(
+    aba_glm(std.beta=T)
+  )
 
-model <- model %>% fit()
-model_summary <- model %>% summary()
+model_fit <- model_spec %>% fit()
+model_summary <- model_fit %>% summary()
 ```
