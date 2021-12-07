@@ -18,7 +18,8 @@
 #'
 #' my_model <- my_stat$fit_fn(
 #'   formula = my_formula,
-#'   data = adni_sample
+#'   data = aba::adnimerge %>% dplyr::filter(VISCODE == 'bl'),
+#'   extra_params = my_stat$extra_params
 #' )
 aba_roc <- function(direction = '>',
                     method = 'Youden',

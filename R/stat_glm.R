@@ -16,12 +16,12 @@
 #' my_formula <- my_stat$formula_fn(
 #'   outcome='ConvertedToAlzheimers',
 #'   predictors=c('PLASMA_PTAU181_bl','PLASMA_NFL_bl'),
-#'   covariates=c('AGE_bl','GENDER','EDUCAT')
+#'   covariates=c('AGE','GENDER','EDUCATION')
 #' )
 #'
 #' my_model <- my_stat$fit_fn(
 #'   formula = my_formula,
-#'   data = adni_sample
+#'   data = aba::adnimerge %>% dplyr::filter(VISCODE == 'bl')
 #' )
 aba_glm <- function(std.beta = FALSE,
                     complete.cases = TRUE,

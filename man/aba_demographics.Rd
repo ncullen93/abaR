@@ -2,30 +2,63 @@
 % Please edit documentation in R/aba_demographics.R
 \name{aba_demographics}
 \alias{aba_demographics}
-\title{Create a demographics table from a fitted aba object}
+\title{Create a demographics table from a fitted aba model.}
 \usage{
 aba_demographics(
-  model,
+  object,
   strata = NULL,
   include_predictors = TRUE,
   include_covariates = TRUE,
   include_outcomes = TRUE,
   add_vars = NULL,
-  data_filter = NULL,
-  ...
+  data_filter = NULL
 )
 }
 \arguments{
-\item{...}{additional parameters}
+\item{object}{abaModel. The fitted aba model to create demographics table from.}
 
-\item{object}{aba object}
+\item{strata}{string (optional). How to stratify the demographics table.}
+
+\item{include_predictors}{boolean. Whether to include predictors in table.}
+
+\item{include_covariates}{boolean. Whether to include covariates in table.}
+
+\item{include_outcomes}{boolean. Whether to include outcomes in table.}
+
+\item{add_vars}{character vector (optional). Any additional variables to
+add to the demographics table. These variables should be present in the
+data from the aba model.}
+
+\item{data_filter}{logical expression (optional). If this is specified, the
+data from the aba model will be further filtered before the table is made.}
 }
 \value{
-
+a TableOne object (see \code{tableone} package).
 }
 \description{
-Create a demographics table from a fitted aba object
+This function allows you to automatically create a demographics table from a
+fitted aba model. The variables in the table will be inferred from the
+spec of the model (predictors, covariates, outcomes, etc.), although this
+can be customized.
+}
+\details{
+Note that support is weaker for longitudinal data right now.
 }
 \examples{
-x <- 1
+
+model <- aba_model() \%>\%
+  set_data(adnimerge \%>\% dplyr::filter(VISCODE == 'bl')) \%>\%
+  set_groups(everyone()) \%>\%
+  set_outcomes(ConvertedToAlzheimers, CSF_ABETA_STATUS_bl) \%>\%
+  set_predictors(
+    PLASMA_PTAU181_bl, PLASMA_NFL_bl,
+    c(PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+  ) \%>\%
+  set_covariates(AGE, GENDER, EDUCATION) \%>\%
+  set_stats('glm') \%>\%
+  aba_fit()
+
+my_table <- model \%>\% aba_demographics(strata = 'DX_bl')
+print(my_table)
+
 }

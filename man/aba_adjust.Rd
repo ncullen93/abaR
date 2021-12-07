@@ -2,28 +2,56 @@
 % Please edit documentation in R/aba_adjust.R
 \name{aba_adjust}
 \alias{aba_adjust}
-\title{Create aba adjust object for p-value adjustment}
+\title{Create an aba_adjust object.}
 \usage{
 aba_adjust(
-  model_summary,
+  object,
   method = c("bonferroni", "fdr", "hochberg", "holm", "hommel", "BH", "BY"),
   by = c("group", "outcome", "stat"),
   form = c("metric", "coef")
 )
 }
 \arguments{
-\item{method}{method}
+\item{object}{abaSummary. The aba summary whose p-values will be adjusted.}
 
-\item{by}{vector. Possible choices: group, outcome, stat, predictor_set}
+\item{method}{string. The method to adjust with. See \code{p.adjust}.}
 
-\item{form}{form}
+\item{by}{vector. The groupings to use for adjustment.
+Possible choices: group, outcome, stat, predictor_set}
+
+\item{form}{vector. Whether to adjust both metrics and coefs, or just one.}
 }
 \value{
-
+an abaSummary object. The abaSummary passed to aba_adjust but with
+p-values changed according to how the user specified.
 }
 \description{
-Create aba adjust object for p-value adjustment
+Adjust the p-values (model and/or coefficients) of an abaSummary object.
 }
 \examples{
-x <- 1
+
+df <- adnimerge \%>\% dplyr::filter(VISCODE == 'bl')
+
+model <- df \%>\% aba_model() \%>\%
+  set_groups(everyone()) \%>\%
+  set_outcomes(ConvertedToAlzheimers, CSF_ABETA_STATUS_bl) \%>\%
+  set_predictors(
+    PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl,
+    c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+  ) \%>\%
+  set_stats('glm') \%>\%
+  aba_fit()
+
+model_summary <- model \%>\% aba_summary()
+
+# default - correct within group, outcome, and stat (x4 comparisons)
+model_summary_adj <- model_summary \%>\% aba_adjust(method='bonferroni')
+
+# correct within group but across outcomes (x8 comparisons)
+model_summary_adj2 <- model_summary \%>\%
+  aba_adjust(method='bonferroni', by = c('group'))
+
+# correct only model P-values, not coefficient P-values
+model_summary_adj3 <- model_summary \%>\% aba_adjust(form = c('metric'))
+
 }

@@ -1,25 +1,54 @@
-#' Create aba adjust object for p-value adjustment
+#' Create an aba_adjust object.
 #'
-#' @param method method
-#' @param by vector. Possible choices: group, outcome, stat, predictor_set
-#' @param form form
+#' Adjust the p-values (model and/or coefficients) of an abaSummary object.
 #'
-#' @return
+#' @param object abaSummary. The aba summary whose p-values will be adjusted.
+#' @param method string. The method to adjust with. See `p.adjust`.
+#' @param by vector. The groupings to use for adjustment.
+#'   Possible choices: group, outcome, stat, predictor_set
+#' @param form vector. Whether to adjust both metrics and coefs, or just one.
+#'
+#' @return an abaSummary object. The abaSummary passed to aba_adjust but with
+#' p-values changed according to how the user specified.
 #' @export
 #'
 #' @examples
-#' x <- 1
-aba_adjust <- function(model_summary,
-                       method = c("bonferroni", "fdr", "hochberg",
-                                  "holm", "hommel", "BH", "BY"),
-                       by = c('group', 'outcome', 'stat'),
-                       form = c('metric', 'coef')) {
+#'
+#' df <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
+#'
+#' model <- df %>% aba_model() %>%
+#'   set_groups(everyone()) %>%
+#'   set_outcomes(ConvertedToAlzheimers, CSF_ABETA_STATUS_bl) %>%
+#'   set_predictors(
+#'     PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl,
+#'     c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+#'   ) %>%
+#'   set_stats('glm') %>%
+#'   aba_fit()
+#'
+#' model_summary <- model %>% aba_summary()
+#'
+#' # default - correct within group, outcome, and stat (x4 comparisons)
+#' model_summary_adj <- model_summary %>% aba_adjust(method='bonferroni')
+#'
+#' # correct within group but across outcomes (x8 comparisons)
+#' model_summary_adj2 <- model_summary %>%
+#'   aba_adjust(method='bonferroni', by = c('group'))
+#'
+#' # correct only model P-values, not coefficient P-values
+#' model_summary_adj3 <- model_summary %>% aba_adjust(form = c('metric'))
+#'
+aba_adjust<- function(object,
+                      method = c("bonferroni", "fdr", "hochberg",
+                                 "holm", "hommel", "BH", "BY"),
+                      by = c('group', 'outcome', 'stat'),
+                      form = c('metric', 'coef')) {
 
   method <- match.arg(method)
-  model_summary$results <- adjust_pvals(
-    model_summary$results, method, by, form
+  object$results <- adjust_pvals(
+    object$results, method, by, form
   )
-  model_summary
+  object
 }
 
 adjust_pvals <- function(results, method_, by_, form_) {

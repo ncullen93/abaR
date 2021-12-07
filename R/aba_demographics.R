@@ -1,68 +1,63 @@
-
-
-#' Create a demographics table from a fitted aba object
+#' Create a demographics table from a fitted aba model.
 #'
-#' @param object aba object
-#' @param ... additional parameters
+#' This function allows you to automatically create a demographics table from a
+#' fitted aba model. The variables in the table will be inferred from the
+#' spec of the model (predictors, covariates, outcomes, etc.), although this
+#' can be customized.
 #'
-#' @return
+#' Note that support is weaker for longitudinal data right now.
+#'
+#' @param object abaModel. The fitted aba model to create demographics table from.
+#' @param strata string (optional). How to stratify the demographics table.
+#' @param include_predictors boolean. Whether to include predictors in table.
+#' @param include_covariates boolean. Whether to include covariates in table.
+#' @param include_outcomes boolean. Whether to include outcomes in table.
+#' @param add_vars character vector (optional). Any additional variables to
+#'   add to the demographics table. These variables should be present in the
+#'   data from the aba model.
+#' @param data_filter logical expression (optional). If this is specified, the
+#'   data from the aba model will be further filtered before the table is made.
+#'
+#' @return a TableOne object (see `tableone` package).
 #' @export
 #'
 #' @examples
-#' x <- 1
-aba_demographics <- function(model,
-                     strata = NULL,
-                     include_predictors = TRUE,
-                     include_covariates = TRUE,
-                     include_outcomes = TRUE,
-                     add_vars = NULL,
-                     data_filter = NULL,
-                     ...) {
-  UseMethod('aba_demographics')
-}
-
-#' @export
-aba_demographics.abaSummary <- function(model,
-                                strata = NULL,
-                                include_predictors = TRUE,
-                                include_covariates = TRUE,
-                                include_outcomes = TRUE,
-                                add_vars = NULL,
-                                data_filter = NULL,
-                                ...) {
-  model$model %>% aba_demo(
-    strata = strata,
-    include_predictors = include_predictors,
-    include_covariates = include_covariates,
-    include_outcomes = include_outcomes,
-    add_vars = add_vars,
-    data_filter = data_filter,
-    ...
-  )
-}
-
-#' @export
-aba_demographics.abaModel <- function(model,
-                              strata = NULL,
-                              include_predictors = TRUE,
-                              include_covariates = TRUE,
-                              include_outcomes = TRUE,
-                              add_vars = NULL,
-                              data_filter = NULL,
-                              ...) {
-  data <- model$data
+#'
+#' model <- aba_model() %>%
+#'   set_data(adnimerge %>% dplyr::filter(VISCODE == 'bl')) %>%
+#'   set_groups(everyone()) %>%
+#'   set_outcomes(ConvertedToAlzheimers, CSF_ABETA_STATUS_bl) %>%
+#'   set_predictors(
+#'     PLASMA_PTAU181_bl, PLASMA_NFL_bl,
+#'     c(PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+#'   ) %>%
+#'   set_covariates(AGE, GENDER, EDUCATION) %>%
+#'   set_stats('glm') %>%
+#'   aba_fit()
+#'
+#' my_table <- model %>% aba_demographics(strata = 'DX_bl')
+#' print(my_table)
+#'
+aba_demographics <- function(object,
+                             strata = NULL,
+                             include_predictors = TRUE,
+                             include_covariates = TRUE,
+                             include_outcomes = TRUE,
+                             add_vars = NULL,
+                             data_filter = NULL) {
+  data <- object$data
   if (!is.null(data_filter)){
     data <- data %>% filter(rlang::eval_tidy(rlang::parse_expr(data_filter)))
   }
 
-  predictors <- model %>% get_predictors()
-  covariates <- model$spec$covariates
-  outcomes <- model$spec$outcomes
+  predictors <- object %>% get_predictors()
+  covariates <- object$spec$covariates
+  outcomes <- object$spec$outcomes
 
   all_vars <- c()
+  if (include_covariates) all_vars <- c(all_vars, covariates)
   if (include_outcomes) all_vars <- c(all_vars, outcomes)
   if (include_predictors) all_vars <- c(all_vars, predictors)
-  if (include_covariates) all_vars <- c(all_vars, covariates)
 
   if (!is.null(add_vars)) all_vars <- c(all_vars, add_vars)
 
@@ -74,6 +69,7 @@ aba_demographics.abaModel <- function(model,
   # check if time variable is present in any stats
   # describe only baseline if longitudinal data is used
 
+  withr::local_options(.new = list(warn = -1))
   if (is.null(strata)) {
     tbl <- tableone::CreateTableOne(
       vars = all_vars,
@@ -82,6 +78,7 @@ aba_demographics.abaModel <- function(model,
       test = T, includeNA = T, addOverall = T
     )
   } else {
+
     tbl <- tableone::CreateTableOne(
       vars = all_vars,
       factorVars = factor_vars,

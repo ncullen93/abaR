@@ -207,7 +207,7 @@ add_predictors <- function(.model, ...) {
 #' x <- 1
 get_predictors <- function(model) {
   model$spec$predictors %>%
-    purrr::map(~strsplit(.,' | ',fixed=T)) %>%
+    purrr::map(~strsplit(.,' + ',fixed=T)) %>%
     unlist() %>% unique()
 }
 

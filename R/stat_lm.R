@@ -14,14 +14,14 @@
 #' my_stat <- aba_lm()
 #'
 #' my_formula <- my_stat$formula_fn(
-#'   outcome='ConvertedToAlzheimers',
+#'   outcome='CDRSB_bl',
 #'   predictors=c('PLASMA_PTAU181_bl','PLASMA_NFL_bl'),
-#'   covariates=c('AGE_bl','GENDER','EDUCAT')
+#'   covariates=c('AGE','GENDER','EDUCATION')
 #' )
 #'
 #' my_model <- my_stat$fit_fn(
 #'   formula = my_formula,
-#'   data = adni_sample
+#'   data = aba::adnimerge %>% dplyr::filter(VISCODE == 'bl')
 #' )
 aba_lm <- function(std.beta = FALSE,
                    complete.cases = TRUE) {
