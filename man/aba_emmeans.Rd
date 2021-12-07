@@ -2,25 +2,57 @@
 % Please edit documentation in R/aba_emmeans.R
 \name{aba_emmeans}
 \alias{aba_emmeans}
-\title{Calculate estimated marginal / least-square means and treatment effects
-for mmrm, lme, etc}
+\title{Calculated estimated marginal means.}
 \usage{
-aba_emmeans(model, ...)
+aba_emmeans(model)
 }
 \arguments{
-\item{model}{abaModel}
-
-\item{...}{additional parameters}
-
-\item{pairs}{logical}
+\item{model}{abaModel. The fitted aba model to run emmeans on.}
 }
 \value{
-
+an abaEmmeans object. This object contains the emmeans, the paired
+comparisons (i.e., treatment effect), and the sample size at each visit.
 }
 \description{
-Calculate estimated marginal / least-square means and treatment effects
-for mmrm, lme, etc
+This function estimates the estimated marginal means (also known as
+least-square means) and, if relevant, the treatment effects for mmrm, lme,
+and ancova models.
+}
+\details{
+This function is based on the \code{emmeans::emmeans} function. This function will
+only be run for the stats which are supported by emmeans.
 }
 \examples{
-x <- 1
+
+# process data: take first 4 visits, only MCI, use CSF abeta as "treatment",
+# and create endpoint as change from baseline in cognition at each visit
+df <- adnimerge \%>\%
+  dplyr::filter(
+    VISCODE \%in\% c('bl','m06','m12','m24'),
+    !is.na(CSF_ABETA_STATUS_bl),
+    DX_bl \%in\% c('MCI')
+  ) \%>\%
+  dplyr::mutate(
+    TREATMENT = factor(CSF_ABETA_STATUS_bl, levels=c(0,1),
+                       labels=c('Placebo','Treatment')),
+    ADAS13 = ADAS13 - ADAS13_bl,
+    CDRSB = CDRSB - CDRSB_bl,
+    MMSE = MMSE - MMSE_bl
+  )
+
+# fit mmrm model for different endpoints, adjusted for covariates
+model <- df \%>\% aba_model() \%>\%
+  set_outcomes(CDRSB, ADAS13, MMSE) \%>\%
+  set_covariates(
+    AGE, GENDER, EDUCATION
+  ) \%>\%
+  set_stats(
+    aba_mmrm(id = 'RID', time = 'VISCODE', treatment = 'TREATMENT')
+  ) \%>\%
+  aba_fit()
+
+# run emmeans
+model_emmeans <- model \%>\% aba_emmeans()
+print(model_emmeans)
+
 }

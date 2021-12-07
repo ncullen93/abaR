@@ -141,10 +141,10 @@ set_predictors <- function(.model,
         # try with expectation of list input
         predictors <- list(...)[[1]]
         predictor_labels <- names(predictors)
-
         .model$spec$predictors <- c('')
+
         for (p in predictors) {
-          vars <- .model$data %>% select(p) %>% names()
+          vars <- .model$data %>% select(all_of(p)) %>% names()
           vars <- stringr::str_c(vars, collapse=' + ')
           .model$spec$predictors <- c(
             .model$spec$predictors,

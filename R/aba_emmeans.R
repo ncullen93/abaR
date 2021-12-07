@@ -1,23 +1,58 @@
-
-#' Calculate estimated marginal / least-square means and treatment effects
-#' for mmrm, lme, etc
+#' Calculated estimated marginal means.
 #'
-#' @param model abaModel
-#' @param pairs logical
-#' @param ... additional parameters
+#' This function estimates the estimated marginal means (also known as
+#' least-square means) and, if relevant, the treatment effects for mmrm, lme,
+#' and ancova models.
 #'
-#' @return
+#' This function is based on the `emmeans::emmeans` function. This function will
+#' only be run for the stats which are supported by emmeans.
+#'
+#' @param model abaModel. The fitted aba model to run emmeans on.
+#'
+#' @return an abaEmmeans object. This object contains the emmeans, the paired
+#'   comparisons (i.e., treatment effect), and the sample size at each visit.
 #' @export
 #'
 #' @examples
-#' x <- 1
-aba_emmeans <- function(model,
-                        ...) {
+#'
+#' # process data: take first 4 visits, only MCI, use CSF abeta as "treatment",
+#' # and create endpoint as change from baseline in cognition at each visit
+#' df <- adnimerge %>%
+#'   dplyr::filter(
+#'     VISCODE %in% c('bl','m06','m12','m24'),
+#'     !is.na(CSF_ABETA_STATUS_bl),
+#'     DX_bl %in% c('MCI')
+#'   ) %>%
+#'   dplyr::mutate(
+#'     TREATMENT = factor(CSF_ABETA_STATUS_bl, levels=c(0,1),
+#'                        labels=c('Placebo','Treatment')),
+#'     ADAS13 = ADAS13 - ADAS13_bl,
+#'     CDRSB = CDRSB - CDRSB_bl,
+#'     MMSE = MMSE - MMSE_bl
+#'   )
+#'
+#' # fit mmrm model for different endpoints, adjusted for covariates
+#' model <- df %>% aba_model() %>%
+#'   set_outcomes(CDRSB, ADAS13, MMSE) %>%
+#'   set_covariates(
+#'     AGE, GENDER, EDUCATION
+#'   ) %>%
+#'   set_stats(
+#'     aba_mmrm(id = 'RID', time = 'VISCODE', treatment = 'TREATMENT')
+#'   ) %>%
+#'   aba_fit()
+#'
+#' # run emmeans
+#' model_emmeans <- model %>% aba_emmeans()
+#' print(model_emmeans)
+#'
+aba_emmeans <- function(model) {
 
   # count df
   count_df <- model$results %>%
-    filter(predictor != '') %>%
+    #filter(predictor != '') %>%
     group_by(group, outcome, stat, predictor_set) %>%
+    filter(row_number() == 1L) %>%
     rowwise() %>%
     mutate(
       count_data = list(extract_counts(.data$stat_fit, .data$stat_obj$extra_params))
@@ -31,7 +66,7 @@ aba_emmeans <- function(model,
     arrange(treatment, time)
 
   r <- model$results %>%
-    filter(predictor != '') %>%
+    #filter(predictor != '') %>%
     rowwise() %>%
     mutate(
       stat_emmeans = list(
@@ -138,6 +173,15 @@ aba_plot.abaEmmeans <- function(object,
   plot_df
 }
 
+guess_numeric <- function(x) {
+  withr::local_options(.new = list(warn = -1))
+  x[tolower(x) %in% c('bl','baseline')] <- 0
+  x_num <- readr::parse_number(x)
+  x_num[is.na(x_num)] <- 0
+  x_num <- as.numeric(x_num)
+  x_num
+}
+
 plot_emmeans_helper <- function(group, outcome, stat, predictor_set, object) {
   group <- group
   outcome <- outcome
@@ -190,12 +234,12 @@ plot_emmeans_helper <- function(group, outcome, stat, predictor_set, object) {
     unnest(data) %>%
     ungroup() %>%
     mutate(
-      time = as.numeric(as.character(time))
+      time = guess_numeric(as.character(time))
     )
 
   # add y value height to p-value table
   df2 <- df2 %>%
-    mutate(time=as.numeric(as.character(time))) %>%
+    mutate(time=guess_numeric(as.character(time))) %>%
     left_join(
       df1 %>%
         filter(time!=0) %>%
@@ -249,7 +293,7 @@ plot_emmeans_helper <- function(group, outcome, stat, predictor_set, object) {
   g <- ggpubr::set_palette(g, 'jama')
 
   df3 <- df3 %>%
-    mutate(time = as.numeric(as.character(time)))
+    mutate(time = guess_numeric(as.character(time)))
 
   g_count <- df3 %>%
     ggplot(aes(x=time, y=rev(treatment),
