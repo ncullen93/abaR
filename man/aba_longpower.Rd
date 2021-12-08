@@ -12,7 +12,7 @@ aba_longpower(
   t_length = NULL,
   t_freq = NULL,
   sig_level = 0.05,
-  nboot = 0
+  dropout = 0
 )
 }
 \arguments{

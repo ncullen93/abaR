@@ -34,7 +34,7 @@ adnimerge <- adnimerge %>%
 
 # filter
 adnimerge <- adnimerge %>%
-  filter(complete.cases(.)) %>%
+  #filter(complete.cases(.)) %>%
   arrange(RID, Years_bl) %>%
   mutate(
     DX_bl = fct_recode(
