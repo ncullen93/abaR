@@ -1,16 +1,93 @@
-#' Cfreate an aba selection object
+#' Run model selection on an aba model.
 #'
-#' @param model model
-#' @param method method
-#' @param criteria criteria
-#' @param verbose verbose
+#' This function allows you to run model selection on a fitted aba model. The
+#' function supports both forward and backward selection algorithms, both AIC
+#' and p-value as selection criteria, and arbitrary thresholds.
 #'
-#' @return
+#' Forward selection starts from covariates-only and tests the addition of all
+#' predictor sets individually, then adds the predictor set which improves the
+#' model criteria the most. Backward selection starts from the inclusion of
+#' all covariates + predictor sets and tests the removal of all predictor sets
+#' individually, then removes the predictor set which improves the model criteria
+#' the most. If there are no predictor sets whose addition/removal results in
+#' an improvement in the selected criteria by a value at least as good as the
+#' selected threshold, then the selection stops and the current model is frozen.
+#' Also, note that the model selection procedure is run separately for each
+#' group - outcome - stat combination.
+#'
+#' @param object abaModel. The fitted aba model to run selection on.
+#' @param method string. The selection algorithm to use (forward or backward).
+#' @param criteria string. Which metric to use when selecting the next
+#'   model (aic or pval).
+#' @param threshold numeric. Which threshold to use for the selected metric
+#'   (defaults to -2 for aic; defaults to 0.1 for pval).
+#' @param verbose logical. Whether to print out results of each selection round.
+#'
+#' @return an abaSelection object which contains model summary information such
+#'  as coefficients and metrics for each selection round across the different
+#'  groups/outcomes/stats.
 #' @export
 #'
 #' @examples
-#' x <- 1
-aba_selection <- function(model,
+#'
+#' df <- aba::adnimerge %>% dplyr::filter(VISCODE == 'bl')
+#'
+#' # standard model selection
+#' model <- df %>% aba_model() %>%
+#'   set_outcomes(ConvertedToAlzheimers) %>%
+#'   set_predictors(
+#'     CDRSB_bl, ADAS13_bl, MMSE_bl,
+#'     CSF_ABETA_bl, CSF_PTAU_bl, CSF_TAU_bl,
+#'     PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl,
+#'     MRI_HIPP_bl,
+#'     PET_ABETA_bl
+#'   ) %>%
+#'   set_covariates(AGE, GENDER, EDUCATION) %>%
+#'   set_stats('glm') %>%
+#'   aba_fit()
+#'
+#' model_summary <- model %>% aba_summary()
+#'
+#' # default selection - forward selection by AIC with threshold = -2
+#' model_selection <- model %>% aba_selection(verbose=T)
+#'
+#' # selection with p-value and threshold = 0.1
+#' model_selection <- model %>%
+#'   aba_selection(criteria = 'pval', threshold=0.1, verbose=T)
+#'
+#' # selection by group
+#' model2 <- model %>%
+#'   set_predictors(
+#'     c(CDRSB_bl,ADAS13_bl,MMSE_bl),
+#'     c(CSF_ABETA_bl,CSF_PTAU_bl,CSF_TAU_bl),
+#'     c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl),
+#'     c(MRI_HIPP_bl),
+#'     c(PET_ABETA_bl)
+#'   ) %>%
+#'   aba_fit()
+#'
+#' model_summary2 <- model2 %>% aba_summary()
+#'
+#' model_selection2 <- model2 %>%
+#'   aba_selection(criteria='pval', threshold=0.1, verbose=T)
+#'
+#' # add more outcomes
+#' model3 <- model2 %>%
+#'   set_outcomes(ConvertedToAlzheimers, ConvertedToDementia) %>%
+#'   aba_fit()
+#'
+#' model_selection3 <- model3 %>%
+#'   aba_selection(criteria='pval', threshold=0.1, verbose=T)
+#'
+#' # add more groups
+#' model4 <- model3 %>%
+#'   set_groups(everyone(), DX_bl %in% c('MCI','AD')) %>%
+#'   aba_fit()
+#'
+#' model_selection4 <- model4 %>%
+#'   aba_selection(criteria='pval', threshold=0.1, verbose=T)
+#'
+aba_selection <- function(object,
                           method = c('forward', 'backward'),
                           criteria = c('aic', 'pval'),
                           threshold = NULL,
@@ -25,7 +102,7 @@ aba_selection <- function(model,
   if ((criteria == 'Pval') & is.null(threshold)) threshold <- 0.1
 
   m <- list(
-    'model' = model,
+    'model' = object,
     'method' = method,
     'criteria' = criteria,
     'threshold' = threshold,
