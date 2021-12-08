@@ -45,19 +45,20 @@ parse_filter_expr <- function(..., data) {
         if (is.null(data)) return(deparse(x))
       } else {
         # parse list of statements: e.g. list(DX_bl == 'CU', AGE_bl < 85)
-        if (stringr::str_starts(deparse(x), 'list\\(')) {
+        if (stringr::str_starts(deparse(x, width.cutoff=500L), 'list\\(')) {
           x <- stringr::str_replace_all(
-            deparse(x),
+            deparse(x,  width.cutoff=500L),
             c('list\\(' = '', '\\)' = '', ',' = ' &')
           )
           x <- str2lang(x)
         }
+
         if (is.null(data)) stop('You must set data if you are using tidy evaluation.')
       }
       # check that filter works
       data_tmp <- data %>% dplyr::filter(!!x)
       # return string version of filter
-      deparse(x)
+      deparse(x, width.cutoff=500L)
     }
   )
 }
