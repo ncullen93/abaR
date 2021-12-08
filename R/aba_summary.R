@@ -41,7 +41,7 @@ summary.abaModel <- function(object,
 coefs_summary <- function(model, control) {
 
   all_predictors <- model$spec$predictors %>%
-    purrr::map(~strsplit(.,' | ',fixed=T)) %>%
+    purrr::map(~strsplit(.,' + ',fixed=T)) %>%
     unlist() %>% unique()
 
   all_covariates <- model$spec$covariates

@@ -99,7 +99,7 @@ fit_lme <- function(formula, data, extra_params) {
 aba_tidy.lme <- function(model, predictors, covariates, ...) {
 
   # include time in predictors
-  time_var <- as.character(m$call$random)[2] %>%
+  time_var <- as.character(model$call$random)[2] %>%
     strsplit(' | ', fixed=T) %>% unlist() %>% head(1)
 
   tidy_df <- broom.mixed::tidy(model, effects='fixed', conf.int=T)
