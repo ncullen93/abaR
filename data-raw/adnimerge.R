@@ -80,4 +80,22 @@ adnimerge <- adnimerge %>%
     by = c('RID' = 'SUBJECT_ID')
   )
 
+
+# add cdr global score
+df_cdr <- read.csv(
+  '~/desktop/Biofinder/_random/CDR.csv'
+) %>% tibble() %>%
+  filter(VISCODE2 %in% c('sc', 'f', 'm06')) %>%
+  select(RID, CDGLOBAL) %>%
+  group_by(RID) %>%
+  filter(row_number() == 1L) %>%
+  ungroup() %>%
+  rename(
+    CDR_bl = CDGLOBAL
+  )
+adnimerge <- adnimerge %>%
+  left_join(
+    df_cdr, by='RID'
+  )
+
 usethis::use_data(adnimerge, overwrite = TRUE)

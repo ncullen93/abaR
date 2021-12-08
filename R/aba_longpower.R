@@ -59,6 +59,21 @@ aba_longpower <- function(object,
     ) %>%
     unnest(power_fit)
 
+  if (!is.null(names(object$spec$groups))) {
+    res_df <- res_df %>%
+      mutate(
+        group = factor(group, levels=object$spec$groups, labels=names(object$spec$groups))
+      )
+  }
+
+  if (!is.null(names(object$spec$outcomes))) {
+    res_df <- res_df %>%
+      mutate(
+        outcome = factor(outcome, levels=object$spec$outcomes,
+                         labels=names(object$spec$outcomes))
+      )
+  }
+
   struct <- list(
     object = object,
     params = list(

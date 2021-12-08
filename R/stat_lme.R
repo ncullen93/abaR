@@ -98,14 +98,17 @@ fit_lme <- function(formula, data, extra_params) {
 #' @export
 aba_tidy.lme <- function(model, predictors, covariates, ...) {
 
-  time_var <- strsplit(
-    as.character(model$call$random)[2],' | ',fixed=T
-  )[[1]][1]
-  tidy_df <- broom.mixed::tidy(model, effects='fixed', conf.int=T) %>%
+  # include time in predictors
+  time_var <- as.character(m$call$random)[2] %>%
+    strsplit(' | ', fixed=T) %>% unlist() %>% head(1)
+
+  tidy_df <- broom.mixed::tidy(model, effects='fixed', conf.int=T)
+
+  tidy_df <- tidy_df %>%
     select(-c(.data$df)) %>%
     filter(
-      !(.data$term %in% predictors),
-      .data$term != time_var
+      !(.data$term %in% predictors)#,
+      #.data$term != time_var
     ) %>%
     mutate(
       term = strsplit(.data$term, ':') %>%
