@@ -182,6 +182,9 @@ save_helper <- function(results, filename, separate) {
 #'   set_stats('glm') %>%
 #'   fit()
 #'
+#' # create a model summary
+#' model_summary <- model %>% aba_summary()
+#'
 #' # save model summary as an object which can be loaded back into memory
 #' model_summary %>% aba_write(tmp_filename_rda, format = 'object')
 #'
