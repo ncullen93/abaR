@@ -65,7 +65,7 @@ model_spec <- df %>% aba_model() %>%
     c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
   ) %>%
   set_stats(
-    aba_glm(std.beta=T)
+    stat_glm(std.beta=T)
   )
 
 model_fit <- model_spec %>% fit()

@@ -4,7 +4,7 @@
 \alias{aba_plot_metric.abaRobust}
 \title{Plot AUC difference of aba robust object}
 \usage{
-\method{aba_plot_metric}{abaRobust}(
+aba_plot_metric.abaRobust(
   object,
   metric = NULL,
   model_labels = NULL,

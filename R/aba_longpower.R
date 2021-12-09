@@ -1,17 +1,104 @@
-#' Run power analysis on longitudinal data
+#' Run power analysis on a longitudinal-based aba model.
 #'
-#' @param object object
-#' @param n n
-#' @param t t
-#' @param pct_change pct_change
-#' @param power power
-#' @param sig_level sig_level
+#' This function allows users to calculate power, required sample size, or
+#' percent change (i.e., treatment effect) on a fitted aba model that uses
+#' longitudinal stats such as `stat_lme`. Whichever argument is left as NULL
+#' will be the argument for which this function solves. Users can specify a
+#' range of values for any function arguments to test different assumptions.
 #'
-#' @return
+#' Power is calculated using the `lmmpower` function from the `longpower`
+#' package in R. Please see documentation there to get a better understanding
+#' of the actual formulas involved.
+#'
+#' @param object aba model. The fitted aba model on which to calculate power.
+#'   This model should feature a longitudinal aba stat (e.g., `stat_lme`)
+#' @param n integer. The total minimum required sample size.
+#' @param pct_change double between 0 - 1. The expected treatment effect which
+#'   means the percent by which the slope will decrease in the treatment group.
+#'   Note that "absolute" treatment effects are not currently supported.
+#' @param power double between 0 - 1. The expected power to detect the
+#'   treatment effect.
+#' @param t_length double. The expected duration of the clinical trial. Note
+#'   that this value should be on the same scale as the `time` argument used
+#'   to fit the longitudinal aba stat. A longer trial will generally result
+#'   in smaller sample size or higher power.
+#' @param t_freq double. The expected frequency of endpoint sampling during
+#'   the trial. This value should be less than `t_length`. Note that this
+#'   value should also be on the same scale as the `time` argument used to fit
+#'   the longitudinal aba stat.
+#' @param sig_level double between 0 - 1. The required alpha level. There is
+#'   usually little reason to change this from the default of 0.05.
+#' @param dropout double between 0 - 1. The expected overall drop-out rate
+#'   during the trial. Note that we handle dropout in a fairly crude way by
+#'   simply multiplying the sample size by (1 + dropout) instead of, say,
+#'   sampling dropout from some distribution at each visit.
+#'
+#' @return An aba longpower object which can be plotted and printed in special
+#'   ways and which contains all the resulting calculations.
+#'
 #' @export
 #'
 #' @examples
-#' x <- 1
+#'
+#' # use only two year follow-up data; filter by some basic AD trial criteria
+#' data <- adnimerge %>%
+#'   dplyr::filter(
+#'     VISCODE %in% c('bl', 'm06', 'm12', 'm24'),
+#'     DX_bl %in% c('MCI','AD'),
+#'     CDR_bl %in% c(0.5, 1),
+#'     MMSE_bl >= 20, MMSE_bl <= 28
+#'   )
+#'
+#' # fit an aba model with an lme stat to get a longitudinal model
+#' model <- data %>% aba_model() %>%
+#'   set_outcomes(CDRSB, ADAS13) %>%
+#'   set_covariates(AGE, GENDER, EDUCATION) %>%
+#'   set_stats(stat_lme(id = 'RID', time = 'YEARS_bl')) %>%
+#'   fit()
+#'
+#' # summarize aba model - not necessary here but good to see results
+#' model_summary <- model %>% summary()
+#'
+#' # run power analysis on the fitted aba model with various assumptions
+#' # e.g., treatment effect between 25 - 35%; power between 80 - 90%
+#' pwr <- model %>%
+#'   aba_longpower(
+#'     n = NULL,
+#'     pct_change = c(0.25, 0.30, 0.35),
+#'     power = c(0.8, 0.85, 0.9),
+#'     t_length = 2,
+#'     t_freq = 0.25,
+#'     dropout = 0.2
+#'   )
+#'
+#' # generate a standard results figure from the power results
+#' fig <- pwr %>% aba_plot()
+#'
+#' # add better inclusion criteria (CSF & CSF+MRI) to the aba model and refit.
+#' model2 <- model %>%
+#'   set_groups(
+#'     everyone(),
+#'     (CSF_ABETA_bl < 880) & (CSF_PTAU_bl > 24),
+#'     (CSF_ABETA_bl < 880) & (CSF_PTAU_bl > 24) & (MRI_HIPP_bl < 6000),
+#'     labels = c('DX + COG', 'DX + COG + CSF', 'DX + COG + CSF + MRI')
+#'   ) %>%
+#'   fit()
+#'
+#' # summarise model fit - again, not necessary but good to see slopes
+#' model2_summary <- model2 %>% summary()
+#'
+#' pwr2 <- model2 %>%
+#'   aba_longpower(
+#'     n = NULL,
+#'     pct_change = c(0.25, 0.3, 0.35),
+#'     power = c(0.8, 0.85, 0.9),
+#'     t_length = 2,
+#'     t_freq = 0.25,
+#'     dropout = 0.2
+#'   )
+#'
+#' fig2 <- pwr2 %>% aba_plot()
+#'
 aba_longpower <- function(object,
                           n = NULL,
                           pct_change = NULL,
@@ -53,15 +140,12 @@ aba_longpower <- function(object,
       ))
     )
 
-
   # unnest
   res_df <- res_df %>%
     select(
       group:predictor_set, power_fit
     ) %>%
     unnest(power_fit)
-
-
 
   if (!is.null(names(object$spec$groups))) {
     res_df <- res_df %>%

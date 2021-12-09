@@ -47,7 +47,7 @@ model <- df \%>\% aba_model() \%>\%
     AGE, GENDER, EDUCATION
   ) \%>\%
   set_stats(
-    aba_mmrm(id = 'RID', time = 'VISCODE', treatment = 'TREATMENT')
+    stat_mmrm(id = 'RID', time = 'VISCODE', treatment = 'TREATMENT')
   ) \%>\%
   aba_fit()
 

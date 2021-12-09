@@ -77,11 +77,11 @@ formula_std <- function(outcome, predictors, covariates, ...) {
 }
 
 # lookup abaStat object/function from a string supplied by user
-# e.g. aba_stat_lookup('glm') is equivalent to aba_glm()
+# e.g. aba_stat_lookup('glm') is equivalent to stat_glm()
 # but this function happens behind the scenes
 aba_stat_lookup <- function(stat) {
   if (is.character(stat)) {
-    stat_fn <- methods::getFunction(glue::glue('aba_{stat}'))
+    stat_fn <- methods::getFunction(glue::glue('stat_{stat}'))
     stat <- stat_fn()
   }
   return(stat)

@@ -17,7 +17,7 @@ test_that("standard mmrm works", {
       ) %>%
       set_covariates(AGE, GENDER, EDUCATION) %>%
       set_stats(
-        aba_mmrm(id='RID', time='VISCODE')
+        stat_mmrm(id='RID', time='VISCODE')
       ) %>%
       aba_fit() %>%
       aba_summary(),

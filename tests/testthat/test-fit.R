@@ -159,7 +159,7 @@ test_that("fit with stat objects instead of strings works", {
         AGE, GENDER, EDUCATION
       ) %>%
       set_stats(
-        aba_glm()
+        stat_glm()
       ) %>%
       aba_fit(),
     NA
@@ -187,8 +187,8 @@ test_that("fit with stat objects instead of strings works", {
         AGE, GENDER, EDUCATION
       ) %>%
       set_stats(
-        aba_glm(),
-        aba_lm()
+        stat_glm(),
+        stat_lm()
       ) %>%
       aba_fit(),
     NA
@@ -216,7 +216,7 @@ test_that("fit with stat objects instead of strings works", {
         AGE, GENDER, EDUCATION
       ) %>%
       set_stats(
-        aba_glm(),
+        stat_glm(),
         'lm'
       ) %>%
       aba_fit(),

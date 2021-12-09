@@ -15,7 +15,7 @@
 #' @export
 #'
 #' @examples
-#' my_stat <- aba_mmrm(id='SUBJECT_ID',
+#' my_stat <- stat_mmrm(id='SUBJECT_ID',
 #'                     time='Years_bl')
 #'
 #' #my_formula <- my_stat$formula_fn(
@@ -29,7 +29,7 @@
 #' #  formula = my_formula,
 #' #  data = adni_sample
 #' #)
-aba_mmrm <- function(id,
+stat_mmrm <- function(id,
                      time,
                      treatment = NULL,
                      add_baseline = TRUE,

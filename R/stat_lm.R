@@ -11,7 +11,7 @@
 #' @export
 #'
 #' @examples
-#' my_stat <- aba_lm()
+#' my_stat <- stat_lm()
 #'
 #' my_formula <- my_stat$formula_fn(
 #'   outcome='CDRSB_bl',
@@ -23,7 +23,7 @@
 #'   formula = my_formula,
 #'   data = aba::adnimerge %>% dplyr::filter(VISCODE == 'bl')
 #' )
-aba_lm <- function(std.beta = FALSE,
+stat_lm <- function(std.beta = FALSE,
                    complete.cases = TRUE) {
   fns <- list(
     'formula_fn' = formula_std,

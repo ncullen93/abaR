@@ -10,7 +10,7 @@
 #'
 #' @examples
 #' x <- 1
-aba_ancova <- function(std.beta = FALSE,
+stat_ancova <- function(std.beta = FALSE,
                        complete.cases = TRUE) {
   fns <- list(
     'formula_fn' = formula_std,

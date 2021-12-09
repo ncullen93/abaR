@@ -9,7 +9,7 @@
 #' @export
 #'
 #' @examples
-#' my_stat <- aba_roc()
+#' my_stat <- stat_roc()
 #'
 #' my_formula <- my_stat$formula_fn(
 #'   outcome = 'ConvertedToAlzheimers',
@@ -21,7 +21,7 @@
 #'   data = aba::adnimerge %>% dplyr::filter(VISCODE == 'bl'),
 #'   extra_params = my_stat$extra_params
 #' )
-aba_roc <- function(direction = '>',
+stat_roc <- function(direction = '>',
                     method = 'Youden',
                     tag.healthy = 0,
                     std.beta = FALSE,

@@ -38,7 +38,7 @@
 #'     AGE, GENDER, EDUCATION
 #'   ) %>%
 #'   set_stats(
-#'     aba_mmrm(id = 'RID', time = 'VISCODE', treatment = 'TREATMENT')
+#'     stat_mmrm(id = 'RID', time = 'VISCODE', treatment = 'TREATMENT')
 #'   ) %>%
 #'   aba_fit()
 #'
@@ -149,11 +149,6 @@ extract_counts <- function(fit, extra_params) {
   count_df
 }
 
-#' @export
-aba_plot <- function(object,
-                     ...) {
-  UseMethod('aba_plot')
-}
 
 #' @export
 aba_plot.abaEmmeans <- function(object,

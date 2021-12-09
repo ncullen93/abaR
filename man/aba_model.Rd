@@ -2,9 +2,9 @@
 % Please edit documentation in R/aba_model.R
 \name{aba_model}
 \alias{aba_model}
-\title{Create an aba model}
+\title{Create an aba model.}
 \usage{
-aba_model(data = NULL, spec = aba_model_spec(), verbose = FALSE)
+aba_model(data = NULL, spec = aba_spec(), verbose = FALSE)
 }
 \arguments{
 \item{data}{data.frame the data to use for the object}
@@ -12,27 +12,77 @@ aba_model(data = NULL, spec = aba_model_spec(), verbose = FALSE)
 \item{spec}{abaModelSpec the spec to use for the model. Can be created with
 model_spec().}
 
-\item{results}{list the fitted statistical models}
+\item{verbose}{logical. Whether to give a progress bar during model fitting.
+This can be useful if the fitting procedure is going to take a long time.}
 }
 \value{
-An abaModel object
+An aba model which can be fitted using the \code{aba_fit()} function and
+which can be modified in any manner.
 }
 \description{
-An aba model is composed of the following:
+An aba model is the foundational object in the aba package. It is composed
+of the following:
 \itemize{
 \item data: a data.frame to be used to fit the statistical models
 \item spec: the specification for the aba model composed of the following:
 \itemize{
-\item groups: which parts of the data to fit separate models on
-\item outcomes: which variables to use as dependent variables
-\item covariates: which variables to use as fixed independent variables in
-every single model that is fit
-\item predictors: which variables to use as independent variables, but never
-together in the same model
+\item groups: subsets of the data
+\item outcomes: dependent variables in statistical fits.
+\item covariates: independent variables which should always be included in
+statistical fits.
+\item predictors: independent variables which will vary across different
+statistical fits.
 }
-\item fits: the fitted statistical models once \code{aba_fit()} is called
+\item results: the resulting fitted statistics.
 }
 }
 \examples{
-m <- aba_model()
+
+# use built-in data and only take the baseline visit
+data <- adnimerge \%>\% dplyr::filter(VISCODE == 'bl')
+
+# Create aba model w/ data, groups, outcomes, covariates, predictors, stats.
+# Note that we start with piping the data into the aba_model... This is
+# possible because `data` is the first argument of the `aba_model()` function
+# and is useful because it gives auto-completion of variables names in Rstudio.
+model <- data \%>\% aba_model() \%>\%
+  set_groups(everyone(), DX_bl \%in\% c('MCI','AD')) \%>\%
+  set_outcomes(ConvertedToAlzheimers, CSF_ABETA_STATUS_bl) \%>\%
+  set_covariates(AGE, GENDER, EDUCATION) \%>\%
+  set_predictors(
+    PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl,
+    c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+  ) \%>\%
+  set_stats('glm')
+
+# get a useful view of the model spec:
+print(model)
+
+# model specs can be modified to build on one another and save time when
+# doing sensitivity analyses. Here, we create the same model as before but
+# just add APOE4 as covariate.
+model2 <- model \%>\%
+  set_covariates(AGE, GENDER, EDUCATION, APOE4)
+
+# see this change in the model print
+print(model2)
+
+# Calling the `fit()` function actually triggers fitting of statistics.
+model <- model \%>\% fit()
+model2 <- model2 \%>\% fit()
+
+# Access the raw results in case you care about that:
+print(model$results)
+
+# Calling the `summary()` function summarises covariates and metrics in
+# a useful manner
+model_summary <- model \%>\% summary()
+model2_summary <- model2 \%>\% summary()
+
+# see a nicely formatted print out of the summary
+print(model_summary)
+
+# or access the raw summary results:
+print(model_summary$results)
+
 }

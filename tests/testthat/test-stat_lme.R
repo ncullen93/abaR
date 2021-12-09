@@ -11,7 +11,7 @@ test_that("standard lme works", {
       ) %>%
       set_covariates(AGE, GENDER, EDUCATION) %>%
       set_stats(
-        aba_lme(id='RID', time='YEARS_bl')
+        stat_lme(id='RID', time='YEARS_bl')
       ) %>%
       aba_fit(),
     NA
@@ -29,7 +29,7 @@ test_that("standard lme works", {
       ) %>%
       set_covariates(AGE, GENDER, EDUCATION) %>%
       set_stats(
-        aba_lme(id='RID', time='YEARS_bl')
+        stat_lme(id='RID', time='YEARS_bl')
       ) %>%
       aba_fit() %>%
       aba_summary(),
@@ -51,17 +51,17 @@ test_that("forgetting parameters throws error", {
 
   expect_error(
     model %>%
-      set_stats(aba_lme(id='RID')) %>%
+      set_stats(stat_lme(id='RID')) %>%
       aba_fit()
   )
   expect_error(
     model %>%
-      set_stats(aba_lme(time='YEARS_bl')) %>%
+      set_stats(stat_lme(time='YEARS_bl')) %>%
       aba_fit()
   )
   expect_error(
     model %>%
-      set_stats(aba_lme()) %>%
+      set_stats(stat_lme()) %>%
       aba_fit()
   )
 

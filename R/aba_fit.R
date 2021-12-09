@@ -1,38 +1,72 @@
-#' Generic fit method
-#'
-#' @param model aba-type model
-#'
-#' @return aba-type model
-#' @export
-#'
-#' @examples
-#' 1 == 1
-aba_fit <- function(object, ...) {
-  UseMethod('aba_fit')
-}
+
 
 #' @importFrom generics fit
 #' @export
 generics::fit
 
+#' Fit an aba model.
+#'
+#' Calling `fit` will trigger the fitting of all statistical models which
+#' have been specified for the model. This will result in fits for each
+#' group - outcome - stat combination.
+#'
+#' Note that this function is identical to the generic `aba_fit()` function.
+#'
+#' @param object aba model The aba model to be fitted.
+#' @param ... additional parameters.
+#'
+#' @return abaModel
 #' @export
+#' @examples
+#'
+#' data <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
+#'
+#' model_spec <- data %>% aba_model() %>%
+#'   set_groups(everyone()) %>%
+#'   set_outcomes(ConvertedToAlzheimers, CSF_ABETA_STATUS_bl) %>%
+#'   set_predictors(
+#'     PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl,
+#'     c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+#'   ) %>%
+#'   set_stats('glm')
+#'
+#' model <- model_spec %>% aba_fit()
+#'
 fit.abaModel <- function(object, ...) {
   object %>% aba_fit(...)
 }
 
 #' Fit an aba model.
 #'
-#' This will trigger the fitting of all statistical models
-#' (`stats`) on the different parameter combinations (`spec`).
+#' Calling `aba_fit` will trigger the fitting of all statistical models which
+#' have been specified for the model. This will result in fits for each
+#' group - outcome - stat combination.
 #'
-#' @param object abaModel. The aba model to be fitted.
+#' Note that this function is identical to the generic `fit()` function which
+#' is also provided for compatability with the greater R ecosystem.
+#'
+#' @param object aba model The aba model to be fitted.
 #' @param ... additional parameters.
 #'
 #' @return abaModel
 #' @export
 #' @examples
-#' m <- aba_model()
-aba_fit.abaModel <- function(object, ...) {
+#'
+#' data <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
+#'
+#' model_spec <- aba_model() %>%
+#'   set_data(data) %>%
+#'   set_groups(everyone()) %>%
+#'   set_outcomes(ConvertedToAlzheimers, CSF_ABETA_STATUS_bl) %>%
+#'   set_predictors(
+#'     PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl,
+#'     c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+#'   ) %>%
+#'   set_stats('glm')
+#'
+#' model <- model_spec %>% aba_fit()
+#'
+aba_fit <- function(object, ...) {
   model <- object
 
   # compile model
@@ -79,23 +113,9 @@ aba_fit.abaModel <- function(object, ...) {
   return(model)
 }
 
-#' Generic compile method
-#'
-#' @param model aba-type model
-#'
-#' @return aba-type model
-#' @export
-#'
-#' @examples
-#' 1 == 1
-aba_compile <- function(model) {
-  UseMethod('aba_compile')
-}
-
-# compile abaModel
-#' @export
-aba_compile.abaModel <- function(model) {
-
+# Generates the dataframe with all parameter combinations from a model spec.
+aba_compile <- function(object, ...) {
+  model <- object
 
   data <- model$data
   group_vals <- model$spec$group
@@ -172,7 +192,7 @@ aba_compile.abaModel <- function(model) {
   return(model)
 }
 
-# parse then fit
+# Makes a formula and fits the statsitical model from the given parameters.
 parse_then_fit <- function(
   data, group, outcome, predictors, covariates, stat_obj, pb
 ) {
@@ -198,8 +218,11 @@ parse_then_fit <- function(
   )
 }
 
-# process dataset
-process_dataset <- function(data, group, outcome, stat, predictors, covariates, params) {
+# Processes the raw data from the model spec based on given parameters
+process_dataset <- function(
+  data, group, outcome, stat, predictors, covariates, params
+) {
+
   std.beta <- params$std.beta
   complete.cases <- params$complete.cases
 

@@ -14,7 +14,7 @@
 #' @export
 #'
 #' @examples
-#' my_stat <- aba_lme(id='SUBJECT_ID',
+#' my_stat <- stat_lme(id='SUBJECT_ID',
 #'                    time='Years_bl')
 #'
 #' #my_formula <- my_stat$formula_fn(
@@ -28,7 +28,7 @@
 #' #  formula = my_formula,
 #' #  data = adni_sample
 #' #)
-aba_lme <- function(id,
+stat_lme <- function(id,
                     time,
                     std.beta = FALSE,
                     complete.cases = TRUE) {

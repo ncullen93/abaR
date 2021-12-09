@@ -2,7 +2,7 @@
 % Please edit documentation in R/aba_plot.R
 \name{aba_plot_metric}
 \alias{aba_plot_metric}
-\title{Generic plot metric method}
+\title{Plot metrics of an aba model summary}
 \usage{
 aba_plot_metric(
   object,
@@ -12,22 +12,67 @@ aba_plot_metric(
   facet = "group",
   coord_flip = FALSE,
   palette = "jama",
-  labels = NULL,
-  plotly = FALSE,
-  ...
+  plotly = FALSE
 )
 }
 \arguments{
-\item{object}{aba model summary}
+\item{object}{an aba model summary. The object to plot - this should be the
+result of an \code{aba_summary()} call.}
 
-\item{...}{additional parameters}
+\item{metric}{string. The performance metric to plot (e.g., \code{AIC}, \code{AUC},
+\code{adj.r.squared})}
+
+\item{x}{string. The model spec factor to use as the x axis. Defaults to
+predictor sets.}
+
+\item{group}{string. The model spec factor to use as the group variable in
+ggplot - this corresponding to "group", "fill", and "color" in ggplot.
+Defaults to outcome.}
+
+\item{facet}{string. The model spec factor to use as the group variable in
+ggplot - this corresponding to "facet_wrap" in ggplot. Defaults to group.}
+
+\item{coord_flip}{logical. Whether to flip the x and y axes. This can be
+useful when there are a large amount of predictor sets and you want to
+view metrics vertically.}
+
+\item{palette}{string. Which ggpubr palette to use. See \code{ggpubr::set_palette}.}
+
+\item{plotly}{logical. Whether to use plot.ly instead of standard ggplot.
+Defaults to false. Using ggplotly can be useful if you want interactivity
+on web pages.}
 }
 \value{
-ggplot
+a ggplot of the specified aba model summary metric.
 }
 \description{
-Generic plot metric method
+Plot metrics of an aba model summary
 }
 \examples{
-x <- 1
+
+# fit aba model
+model <- aba_model() \%>\%
+  set_data(adnimerge \%>\% dplyr::filter(VISCODE == 'bl')) \%>\%
+  set_groups(everyone()) \%>\%
+  set_outcomes(ConvertedToAlzheimers, CSF_ABETA_STATUS_bl) \%>\%
+  set_predictors(
+    PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl,
+    c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+  ) \%>\%
+  set_stats('glm') \%>\%
+  fit()
+
+# summarise aba model to calculate metrics
+model_summary <- model \%>\% aba_summary()
+
+# plot the metrics using default (defaults to AUC)
+metric_plot <- model_summary \%>\% aba_plot_metric()
+
+# coord flip
+metric_plot2 <- model_summary \%>\% aba_plot_metric(coord_flip=T)
+
+# compare predictor sets within each outcome instead of the opposite
+metric_plot3 <- model_summary \%>\%
+  aba_plot_metric(x = 'outcome', group='predictor_set')
+
 }
