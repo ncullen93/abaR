@@ -1,30 +1,67 @@
-#' Create an aba robust object
+
+#' Evaluate the robustness of an aba model to systematic and random error.
 #'
-#' An aba robust object is composed of the following:
-#'   - data: a data.frame to be used to fit the statistical models
-#'   - spec: the specification for the aba model composed of the following:
-#'     - groups: which parts of the data to fit separate models on
-#'     - outcomes: which variables to use as dependent variables
-#'     - covariates: which variables to use as fixed independent variables in
-#'         every single model that is fit
-#'     - predictors: which variables to use as independent variables, but never
-#'         together in the same model
-#'   - fits: the fitted statistical models once `aba_fit()` is called
+#' This function allows you to test how adding bias to predictor values or how
+#' adding random error to predictor values affects the model coefficients and
+#' performance metrics (e.g., AUC, R2, etc) as a result. This function is useful
+#' when you have test-retest estimates of biomarkers and want to test what
+#' effect this has on diagnostic or prognostic modelling.
 #'
-#' @param model abaModel the aba model to use for the object
-#' @param bias list the test-retest (or whatever) bias estimates
-#'   for each predictor. This bias is assumed to be runif from 0 - bias value.
-#' @param variation list the test-retest (or whatever) variation estimates
-#'   for each predictor. This variability is assumed to be standrd deviation of
-#'   of a normal distribution to be simulated.
-#' @param ntrials integer number of noise simulations to run
+#' @param model an aba model. The fitted aba model to perform robustness
+#'   analysis on.
+#' @param bias double or list of doubles. If one value is given, this is the
+#'   percent value added or subtracted to all predictor values at each trial. If
+#'   this is a list, the names of the list should be the predictors to apply
+#'   bias to and the values should be the bias to apply to each predictor.
+#' @param variation double or list of doubles. This is the percent value which
+#'   represents the standard deviation of a normal distribution. The random
+#'   error values will be randomly sampled from this normal distribution for
+#'   each data row (participant) at each trial.
+#' @param ntrials integer. Number of trials to run. A trial represents a
+#'   different random sampling of the variation distribution. This does not
+#'   have any effect for bias because the bias value is always the same.
+#' @param verbose logical. Whether to include a progress bar to track trials.
 #'
-#' @return An abaRobust object
-#'
+#' @return an abaRobust object which contains results from the robustness
+#'   analysis that displays how model coefficients and metrics changed when
+#'   bias and variation was injected into the predictors.
 #' @export
 #'
 #' @examples
-#' x <- 1
+#'
+#' # read and process data
+#' df <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
+#'
+#' # fit a standard model to predict a binary outcome
+#' model <- df %>% aba_model() %>%
+#'   set_groups(everyone()) %>%
+#'   set_outcomes(CSF_ABETA_STATUS_bl) %>%
+#'   set_predictors(PLASMA_PTAU181_bl, PLASMA_NFL_bl) %>%
+#'   set_stats(stat_roc(method='Youden', direction = '<')) %>%
+#'   aba_fit()
+#'
+#' # summarise model (these are the original results)
+#' model_summary <- model %>% aba_summary()
+#'
+#' # specify test-retest variation for predictors (defined as percent change)
+#' # this can be theoretical values (e.g. 5, 10, 15, 20) or derived from
+#' # test-retest studies where you measured the biomarkers twice
+#' variation <- list(
+#'   'PLASMA_PTAU181_bl' = 9.5,
+#'   'PLASMA_NFL_bl' = 20.2
+#' )
+#'
+#' # test robustness of the fitted aba model to this robustness
+#' model_robust <- model %>%
+#'   aba_robust(
+#'     variation = variation,
+#'     ntrials = 10,
+#'     verbose = T
+#'   )
+#'
+#' # plot results using the generic plot function
+#' fig <- model_robust %>% aba_plot()
+#'
 aba_robust <- function(model,
                        bias = NULL,
                        variation = NULL,
@@ -49,46 +86,8 @@ aba_robust <- function(model,
   return(m)
 }
 
-# simulate noise on data
-# example:
-# df <- adni_sample
-# bias <- list('PLASMA_ABETA_bl' = 4.1, 'PLASMA_PTAU181_bl' = 8.3)
-# variation <- list('PLASMA_ABETA_bl' = 3.4, 'PLASMA_PTAU181_bl' = 9.3)
-# df_noise <- simulate_data_noise(df, variation)
-simulate_data_noise <- function(data, bias, variation) {
-  # add bias
-  if (!is.null(bias)) {
-    b_predictors <- names(bias)
-    data <- data %>%
-      mutate(
-        across(
-          all_of(b_predictors),
-          ~.x * (1 + runif(n = nrow(data),
-                           min = 0,
-                           max = 2*bias[[cur_column()]]) / 100)
-        )
-      )
 
-  }
-
-  # add variance
-  if (!is.null(variation)) {
-    v_predictors <- names(variation)
-    data <- data %>%
-      mutate(
-        across(
-          all_of(v_predictors),
-          ~.x * (1 + rnorm(n = nrow(data),
-                           mean = 0,
-                           sd = variation[[cur_column()]]) / 100)
-        )
-      )
-  }
-
-  data
-}
-
-
+# helper function to run the robustness analysis
 fit_robust <- function(object, ...) {
 
   ntrials <- object$params$ntrials
@@ -97,7 +96,7 @@ fit_robust <- function(object, ...) {
 
   # get original model summary results
   results_original <- aba_summary(model)$results %>%
-    select(-c(lo, hi, pval))
+    select(-c(conf_low, conf_high, pval))
 
   # for each trial, simulate noisy data, then re-fit/re-summarise model
   if (object$verbose) pb <- progress::progress_bar$new(total = ntrials)
@@ -123,80 +122,85 @@ fit_robust <- function(object, ...) {
 
   results <- results %>%
     left_join(
-      results_original %>% rename(est_orig = est),
-      by = c('MID','groups','outcomes','stats','term','form')
+      results_original %>% rename(estimate_original = estimate),
+      by = c('predictor_set','group','outcome','stat','term','form')
     ) %>%
     mutate(
-      #est_diff = 100 * (est - est_orig) / (est_orig)
-      est_diff = est - est_orig
+      estimate_diff = estimate - estimate_original
     )
 
 
   results_summary <- results %>%
-    group_by(MID, groups, outcomes, stats, term, form) %>%
+    group_by(predictor_set, group, outcome, stat, term, form) %>%
     summarise(
-      lo = quantile(est, 0.025),
-      hi = quantile(est, 0.975),
-      est = mean(est),
-      lo_diff = quantile(est_diff, 0.025, na.rm=T),
-      hi_diff = quantile(est_diff, 0.975, na.rm=T),
-      est_diff = mean(est_diff, na.rm=T),
+      conf_low = quantile(estimate, 0.025),
+      conf_high = quantile(estimate, 0.975),
+      estimate = mean(estimate),
+      conf_low_diff = quantile(estimate_diff, 0.025, na.rm=T),
+      conf_high_diff = quantile(estimate_diff, 0.975, na.rm=T),
+      estimate_diff = mean(estimate_diff, na.rm=T),
       .groups='keep'
     ) %>%
-    select(MID:form, est, lo, hi, est_diff, lo_diff, hi_diff) %>%
+    select(predictor_set:form,
+           estimate, conf_low, conf_high,
+           estimate_diff, conf_low_diff, conf_high_diff) %>%
     ungroup() %>%
-    arrange(MID, groups, outcomes, stats, form, term)
+    arrange(predictor_set, group, outcome, stat, form, term)
 
   object$results_original <- results_original %>%
-    arrange(MID, groups, outcomes, stats, form, term)
+    arrange(predictor_set, group, outcome, stat, form, term)
   object$results <- results
   object$results_summary <- results_summary
 
   return(object)
 }
 
+# helper function to add bias and variation to data
+simulate_data_noise <- function(data, bias, variation) {
+  # add bias
+  if (!is.null(bias)) {
+    b_predictors <- names(bias)
+    data <- data %>%
+      mutate(
+        across(
+          all_of(b_predictors),
+          ~.x * (1 + bias)
+        )
+      )
 
-#' Plot AUC difference of aba robust object
+  }
+
+  # add variance
+  if (!is.null(variation)) {
+    v_predictors <- names(variation)
+    data <- data %>%
+      mutate(
+        across(
+          all_of(v_predictors),
+          ~.x * (1 + rnorm(n = nrow(data),
+                           mean = 0,
+                           sd = variation[[cur_column()]]) / 100)
+        )
+      )
+  }
+
+  data
+}
+
+#' Plot results of an aba robust object
 #'
-#' @param object abaRobust. object to plot results from
+#' @param object an aba robust object. The object whose results will be plotted.
 #'
-#' @return ggplot
+#' @return a ggplot
 #' @export
-#'
-#' @examples
-#' x <- 1
-aba_plot_metric.abaRobust <- function(object,
-                                      metric = NULL,
-                                      model_labels = NULL,
-                                      group_labels = NULL,
-                                      outcome_labels = NULL,
-                                      ...) {
-  params <- list(...)
-  metric <- 'AUC'
-  if ('metric' %in% names(params)) metric <- params$metric
+aba_plot.abaRobust <- function(object, ...) {
 
+  metric <- 'AUC'
   plot_df <- object$results
 
-  if (!is.null(model_labels)) {
-    plot_df <- plot_df %>%
-      mutate(MID = factor(MID, labels=model_labels))
-  }
-  if (!is.null(group_labels)) {
-    plot_df <- plot_df %>%
-      mutate(groups = factor(groups,
-                             levels=names(group_labels),
-                             labels=unname(unlist(group_labels))))
-  }
-  if (!is.null(outcome_labels)) {
-    plot_df <- plot_df %>%
-      mutate(outcomes = factor(outcomes,
-                             levels=names(outcome_labels),
-                             labels=unname(unlist(outcome_labels))))
-  }
-
-  plot_df %>%
+  g <- plot_df %>%
     filter(term == metric) %>%
-    ggplot(aes(x=MID, y=est_diff, color=MID)) +
+    ggplot(aes(x=predictor_set, y=estimate_diff, color=predictor_set)) +
     geom_jitter(width=0.1, alpha=0.1, size=1) +
     stat_summary(fun = mean, geom = "crossbar",
                  size=0.5, width=0.75) +
@@ -205,7 +209,7 @@ aba_plot_metric.abaRobust <- function(object,
                  size = 1, width=0.5,
                  geom = "errorbar") +
     geom_hline(yintercept=0, linetype='dashed') +
-    facet_wrap(.~paste0(.data$outcomes,' | ', .data$groups)) +
+    facet_wrap(.~paste0(.data$outcome,' | ', .data$group)) +
     ylab(glue('Δ{metric} (%)')) +
     theme_classic(base_size = 16) +
     theme(legend.position='none',
@@ -219,6 +223,8 @@ aba_plot_metric.abaRobust <- function(object,
           panel.grid.major.y = element_line(
             colour = "black",
             size = 0.2, linetype = "dotted"))
+
+  g
 }
 
 
