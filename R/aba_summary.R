@@ -1,27 +1,62 @@
-#' Create a summary of an aba model.
+
+#' Summarise a fitted aba model.
 #'
-#' @param model abaModel. the model to create a summary from
-#' @param ... other params
+#' This function concisely summarises coefficients and metrics for the stat fits
+#' from the different group - outcome - stat combinations. This is the primary
+#' function to use if you want to see the results of a fitted aba model. It is
+#' also the way to generate publication-ready tables of model results.
 #'
-#' @return abaSummary object
+#' @param object abaModel. The fitted aba model which you want to summarise.
+#' @param control abaControl. An aba control object which allows users to
+#'   customize the summary process -- e.g., whether to include covariates in
+#'   the table.
+#' @param verbose logical. Whether to provide a progress bar to track status.
+#'
+#' @return an abaSummary object which contains coefficients and metrics from
+#'   the different statistical fits summarised into publication-ready tables.
 #' @export
 #'
 #' @examples
-#' m <- aba_model()
-aba_summary <- function(model,
+#'
+#' # use built-in data
+#' data <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
+#'
+#' # fit an aba model
+#' model <- data %>% aba_model() %>%
+#'   set_groups(everyone()) %>%
+#'   set_outcomes(PET_ABETA_STATUS_bl) %>%
+#'   set_predictors(
+#'     PLASMA_PTAU181_bl,
+#'     PLASMA_NFL_bl,
+#'     c(PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+#'   ) %>%
+#'   set_covariates(AGE, GENDER, EDUCATION) %>%
+#'   set_stats('glm') %>%
+#'   fit()
+#'
+#' # default aba summary
+#' model_summary <- model %>% aba_summary()
+#'
+#' # create an aba control object to customize the summary
+#' my_control <- aba_control(include_covariates = F)
+#'
+#' # summarise model with th custom aba control - notice covariates
+#' # wont be included in the tables when you print the summary to console
+#' model_summary2 <- model %>% aba_summary(control = my_control)
+#'
+aba_summary <- function(object,
                         control = aba_control(),
-                        verbose = FALSE,
-                        ...) {
+                        verbose = FALSE) {
 
   # coefficients and model metrics
-  coefs_df <- coefs_summary(model, control) %>% mutate(form = 'coef')
-  metrics_df <- metrics_summary(model) %>% mutate(form = 'metric')
+  coefs_df <- coefs_summary(object, control) %>% mutate(form = 'coef')
+  metrics_df <- metrics_summary(object) %>% mutate(form = 'metric')
   results_df <- coefs_df %>% bind_rows(metrics_df) %>%
     select(group, outcome, stat, predictor_set, term, form, estimate:pval) %>%
     filter(!is.na(estimate))
 
   s <- list(
-    model = model,
+    model = object,
     results = results_df
   )
 
@@ -32,12 +67,11 @@ aba_summary <- function(model,
 #' @export
 summary.abaModel <- function(object,
                              control = aba_control(),
-                             verbose = FALSE,
-                             ...) {
-  object %>% aba_summary(control=control, verbose = verbose, ...)
+                             verbose = FALSE) {
+  object %>% aba_summary(control=control, verbose = verbose)
 }
 
-
+# helper function for aba summary
 coefs_summary <- function(model, control) {
 
   all_predictors <- model$spec$predictors %>%
@@ -88,6 +122,7 @@ coefs_summary <- function(model, control) {
   return(r)
 }
 
+# helper function for aba summary
 coef_fmt <- function(est, lo, hi, pval) {
   coef <- glue('{sprintf("%.2f", est)}')
   if (!is.na(lo)) {
@@ -99,6 +134,7 @@ coef_fmt <- function(est, lo, hi, pval) {
   coef
 }
 
+# helper function for aba summary
 coef_pivot_wider <- function(r) {
   r %>% rowwise() %>%
     mutate(
@@ -113,6 +149,7 @@ coef_pivot_wider <- function(r) {
     )
 }
 
+# helper function for aba summary
 metrics_summary <- function(model) {
   metric_vars <- c(
     'adj.r.squared',
@@ -174,6 +211,7 @@ metrics_summary <- function(model) {
   return(r)
 }
 
+# helper function for aba summary
 metric_fmt <- function(est, lo, hi) {
   metric <- glue('{sprintf("%.2f", est)}')
   if (!is.na(lo)) {
@@ -182,7 +220,7 @@ metric_fmt <- function(est, lo, hi) {
   metric
 }
 
-# convert to wide
+# helper function for aba summary
 metric_pivot_wider <- function(r) {
   r %>% rowwise() %>%
     mutate(
@@ -197,8 +235,46 @@ metric_pivot_wider <- function(r) {
     )
 }
 
+
+#' Convert an aba summary to a nicely formatted table
+#'
+#' This function allows you to format an aba summary in the same way
+#' which it is printed to the console using the `print` function. However,
+#' only one dataframe will result (i.e., the tables will not be split by
+#' group - outcome - stat combinations).
+#'
+#' @param object abaSummary. The aba summary to format as a table.
+#'
+#' @return a tibble
 #' @export
-as_table <- function(x, ...) {
+#'
+#' @examples
+#'
+#' # use built-in data
+#' data <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
+#'
+#' # fit an aba model
+#' model <- data %>% aba_model() %>%
+#'   set_groups(everyone()) %>%
+#'   set_outcomes(PET_ABETA_STATUS_bl) %>%
+#'   set_predictors(
+#'     PLASMA_PTAU181_bl,
+#'     PLASMA_NFL_bl,
+#'     c(PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+#'   ) %>%
+#'   set_covariates(AGE, GENDER, EDUCATION) %>%
+#'   set_stats('glm') %>%
+#'   fit()
+#'
+#' # default aba summary
+#' model_summary <- model %>% aba_summary()
+#'
+#' # convert summary to table
+#' my_table <- model_summary %>% as_table()
+#'
+as_table <- function(object) {
+  x <- object
+
   x_res <- x$results %>%
     group_by(
       .data$group,

@@ -2,21 +2,55 @@
 % Please edit documentation in R/aba_summary.R
 \name{aba_summary}
 \alias{aba_summary}
-\title{Create a summary of an aba model.}
+\title{Summarise a fitted aba model.}
 \usage{
-aba_summary(model, control = aba_control(), verbose = FALSE, ...)
+aba_summary(object, control = aba_control(), verbose = FALSE)
 }
 \arguments{
-\item{model}{abaModel. the model to create a summary from}
+\item{object}{abaModel. The fitted aba model which you want to summarise.}
 
-\item{...}{other params}
+\item{control}{abaControl. An aba control object which allows users to
+customize the summary process -- e.g., whether to include covariates in
+the table.}
+
+\item{verbose}{logical. Whether to provide a progress bar to track status.}
 }
 \value{
-abaSummary object
+an abaSummary object which contains coefficients and metrics from
+the different statistical fits summarised into publication-ready tables.
 }
 \description{
-Create a summary of an aba model.
+This function concisely summarises coefficients and metrics for the stat fits
+from the different group - outcome - stat combinations. This is the primary
+function to use if you want to see the results of a fitted aba model. It is
+also the way to generate publication-ready tables of model results.
 }
 \examples{
-m <- aba_model()
+
+# use built-in data
+data <- adnimerge \%>\% dplyr::filter(VISCODE == 'bl')
+
+# fit an aba model
+model <- data \%>\% aba_model() \%>\%
+  set_groups(everyone()) \%>\%
+  set_outcomes(PET_ABETA_STATUS_bl) \%>\%
+  set_predictors(
+    PLASMA_PTAU181_bl,
+    PLASMA_NFL_bl,
+    c(PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+  ) \%>\%
+  set_covariates(AGE, GENDER, EDUCATION) \%>\%
+  set_stats('glm') \%>\%
+  fit()
+
+# default aba summary
+model_summary <- model \%>\% aba_summary()
+
+# create an aba control object to customize the summary
+my_control <- aba_control(include_covariates = F)
+
+# summarise model with th custom aba control - notice covariates
+# wont be included in the tables when you print the summary to console
+model_summary2 <- model \%>\% aba_summary(control = my_control)
+
 }
