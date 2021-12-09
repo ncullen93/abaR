@@ -114,17 +114,7 @@ aba_selection <- function(object,
   return(m)
 }
 
-
-#' Fit an aba selection object
-#'
-#' @param object object
-#' @param ... additional parameters
-#'
-#' @return
-#' @export
-#'
-#' @examples
-#' x <- 1
+# helper function for aba selection
 run_selection <- function(object,
                              ...) {
 
@@ -211,6 +201,7 @@ run_selection <- function(object,
   return(object)
 }
 
+# helper function for aba selection
 create_new_model <- function(model, group, outcome, stat) {
   model$spec$groups <- group
   model$spec$outcomes <- outcome
@@ -218,6 +209,7 @@ create_new_model <- function(model, group, outcome, stat) {
   model %>% aba_fit()
 }
 
+# helper function for aba selection
 find_next_model <- function(object, baseline_value, criteria, threshold, verbose) {
 
   if ('abaModel' %in% class(object)) {
@@ -309,10 +301,4 @@ print.abaSelection <- function(object, ...) {
     }
   )
 }
-
-
-
-
-
-
 
