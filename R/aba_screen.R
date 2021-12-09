@@ -1,17 +1,79 @@
-#' aba (pre-)screening model
+
+#' Create an aba screen object.
 #'
-#' @param model aba model. should be fitted, only glm supported now.
-#' @param threshold value or vector of values. between 0 and 1. Relative cutoff
-#'   from glm model to use as theoretical screening inclusion cutoff
-#' @param ntrials integer. number of bootstrap trials.
-#' @param verbose logical. whether to print updates.
+#' This function runs a clinical trial screening analysis based on a fitted aba
+#' model with glm stats. You can supply different inclusion thresholds which
+#' represent predicted probabilities from the glm stats, and you can also
+#' supply cost multipliers and the required sample size in order to perform a
+#' cost-benefit analysis. This analysis uses bootstrap sampling to generate
+#' confidence intervals.
 #'
-#' @return
+#' @param object an aba model. The fitted aba model which you want to use as
+#'   the screening algorithm.
+#' @param threshold double or vector of doubles between 0 and 1. The threshold
+#'   represents the percentage of individuals who will be invited to take the
+#'   inclusion test. Note that the threshold value is calculated in a relative
+#'   manner based on the values in the data population, not based on an absolute
+#'   risk value.
+#' @param cost_multiplier double or vector of doubles. The cost multiplier
+#'   represents how much more expensive it is to perform the main inclusion
+#'   test versus the screening test. Larger values mean that the main inclusion
+#'   test/biomarker is much more expensive than the screening test and will
+#'   therefore result in larger cost savings by using the screening model to
+#'   identify individuals who are at low risk to be positive on the main
+#'   inclusion test.
+#' @param include_n integer. The number of participants who you expect
+#'   to be included in the clinical trial. This is therefore the number of
+#'   individuals who must pass the screening test and who then must pass the
+#'   main inclusion test
+#' @param ntrials integer. The number of bootstrap trials to run in order to
+#'   generate the confidence interval
+#' @param verbose logical. Whether to show a progress bar for each trial.
+#'
+#' @return an abaScreen object
 #' @export
 #'
 #' @examples
-#' x <- 1
-aba_screen <- function(model,
+#'
+#' # use built-in data
+#' df <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
+#'
+#' # first, fit an aba model to predict amyloid PET status from plasma markers
+#' # In this scenario, PET is the "inclusion" marker and plasma is the
+#' # "screening" marker. PET is expensive and plasma is cheap, so we want to
+#' # use plasma markers to decide who should undergo PET scans in order to
+#' # minimize the risk of negative (i.e., wasted) PET scans.
+#' model <- df %>% aba_model() %>%
+#'   set_groups(everyone()) %>%
+#'   set_outcomes(PET_ABETA_STATUS_bl) %>%
+#'   set_predictors(
+#'     PLASMA_PTAU181_bl,
+#'     PLASMA_NFL_bl,
+#'     c(PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+#'   ) %>%
+#'   set_covariates(AGE, GENDER, EDUCATION) %>%
+#'   set_stats('glm') %>%
+#'   fit()
+#'
+#' # summarise the model just to show the plasma biomarkers do in fact
+#' # provide some predictive value for amyloid PET status
+#' model_summary <- model %>% aba_summary()
+#'
+#' # Run the screening analysis while varying the inclusion threshold from
+#' # 25% to 75% (this is the percent of individuals who will be invited for
+#' # the PET scan) and varying the cost multiplier from 4 to 16 (this is how
+#' # much more PET costs compared to plasma) and assuming we want to recruit
+#' # 1000 amyloid PET positive subjects.
+#' model_screen <- model %>%
+#'   aba_screen(
+#'     threshold = seq(0.25, 0.75, by = 0.1),
+#'     cost_multiplier = c(4, 8, 16),
+#'     include_n = 1000,
+#'     ntrials = 10,
+#'     verbose = T
+#'   )
+#'
+aba_screen <- function(object,
                        threshold,
                        cost_multiplier,
                        include_n,
@@ -19,7 +81,7 @@ aba_screen <- function(model,
                        verbose = TRUE) {
 
   m <- list(
-    'model' = model,
+    'model' = object,
     'threshold' = threshold,
     'cost_multiplier' = cost_multiplier,
     'include_n' = include_n,
@@ -35,7 +97,7 @@ aba_screen <- function(model,
   return(m)
 }
 
-
+# helper function for running the screening analysis
 fit_screen <- function(object, ...) {
   model <- object$model
   model_results <- model$results
@@ -128,7 +190,7 @@ fit_screen <- function(object, ...) {
   return(object)
 }
 
-
+# helper function for running the screening analysis
 run_screen_model <- function(fit,
                              outcome,
                              threshold,
