@@ -5,7 +5,7 @@
 \alias{adnimerge}
 \title{A sample of ADNI data in long format}
 \format{
-A data frame with 15,598 rows and 116 variables.
+A data frame with 15,598 rows and 28 variables.
 }
 \source{
 \url{adni.loni.usc.edu}

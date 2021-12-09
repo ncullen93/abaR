@@ -1,17 +1,23 @@
-#' Create an ancova stat to use for an aba model.
+#' Create an ancova stat object.
 #'
-#' @return
-#' list of the following functions:
-#'   * `formula_fn`: create a formula
-#'   * `fit_fn`: fit a model
-#'   * `evaluate_fn`: evaluate a model
+#' This function creates an ancova stat object which can be passed as input
+#' to the `set_stats()` function when building an aba model. This stat performs
+#' a traditional ancova analysis using the `lm` function.
 #'
+#' @param std.beta logical. Whether to standardize model predictors and
+#'   covariates prior to analysis.
+#' @param complete.cases  logical. Whether to only include the subset of data
+#'   with no missing data for any of the outcomes, predictors, or covariates.
+#'   Note that complete cases are considering within each group - outcome
+#'   combination but across all predictor sets.
+#'
+#' @return An abaStat object with `ancova` stat type.
 #' @export
 #'
 #' @examples
 #' x <- 1
 stat_ancova <- function(std.beta = FALSE,
-                       complete.cases = TRUE) {
+                        complete.cases = TRUE) {
   fns <- list(
     'formula_fn' = formula_std,
     'fit_fn' = fit_ancova,
@@ -25,20 +31,20 @@ stat_ancova <- function(std.beta = FALSE,
   return(fns)
 }
 
-# fit a lm model
+# helper function for ancova
 fit_ancova <- function(formula, data, ...) {
   model <- stats::lm(stats::formula(formula), data = data)
   model$call$formula <- stats::formula(formula)
   return(model)
 }
 
-#' @export
+# helper function for ancova
 aba_tidy.ancova <- function(model, predictors, covariates) {
   tidy_df <- broom::glance(model)
   return(tidy_df)
 }
 
-#' @export
+# helper function for ancova
 aba_glance.ancova <- function(x, x0, ...) {
   glance_df <- broom::glance(x)
 

@@ -42,7 +42,7 @@ stat_glm <- function(std.beta = FALSE,
   return(fns)
 }
 
-# fit a glm model
+# helper function for glm
 fit_glm <- function(formula, data, ...) {
   model <- stats::glm(
     stats::formula(formula),
@@ -54,7 +54,7 @@ fit_glm <- function(formula, data, ...) {
   return(model)
 }
 
-#' @export
+# helper function for glm
 aba_tidy.glm <- function(model, predictors, covariates, ...) {
   # using conf.int = T with broom::tidy gives warning if no covariates present
   withr::local_options(.new = list(warn = -1))
@@ -63,8 +63,7 @@ aba_tidy.glm <- function(model, predictors, covariates, ...) {
   x
 }
 
-
-#' @export
+# helper function for glm
 aba_glance.glm <- function(x, x0, ...) {
   # tidy glance
   glance_df <- broom::glance(x)

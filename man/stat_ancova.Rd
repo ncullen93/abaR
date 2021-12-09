@@ -2,20 +2,26 @@
 % Please edit documentation in R/stat_ancova.R
 \name{stat_ancova}
 \alias{stat_ancova}
-\title{Create an ancova stat to use for an aba model.}
+\title{Create an ancova stat object.}
 \usage{
 stat_ancova(std.beta = FALSE, complete.cases = TRUE)
 }
-\value{
-list of the following functions:
-\itemize{
-\item \code{formula_fn}: create a formula
-\item \code{fit_fn}: fit a model
-\item \code{evaluate_fn}: evaluate a model
+\arguments{
+\item{std.beta}{logical. Whether to standardize model predictors and
+covariates prior to analysis.}
+
+\item{complete.cases}{logical. Whether to only include the subset of data
+with no missing data for any of the outcomes, predictors, or covariates.
+Note that complete cases are considering within each group - outcome
+combination but across all predictor sets.}
 }
+\value{
+An abaStat object with \code{ancova} stat type.
 }
 \description{
-Create an ancova stat to use for an aba model.
+This function creates an ancova stat object which can be passed as input
+to the \code{set_stats()} function when building an aba model. This stat performs
+a traditional ancova analysis using the \code{lm} function.
 }
 \examples{
 x <- 1

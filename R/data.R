@@ -8,7 +8,7 @@
 #' all-cause dementia. There is also binarized biomarker status for
 #' many of the variables.
 #'
-#' @format A data frame with 15,598 rows and 116 variables.
+#' @format A data frame with 15,598 rows and 28 variables.
 #'
 #' @source \url{adni.loni.usc.edu}
 "adnimerge"

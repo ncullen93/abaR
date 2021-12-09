@@ -38,19 +38,19 @@ stat_lm <- function(std.beta = FALSE,
   return(fns)
 }
 
-# fit a lm model
+# helper function for lm
 fit_lm <- function(formula, data, ...) {
   model <- stats::lm(stats::formula(formula), data = data)
   model$call$formula <- stats::formula(formula)
   return(model)
 }
 
-#' @export
+# helper function for lm
 aba_tidy.lm <- function(model, predictors, covariates, ...) {
   broom::tidy(model, conf.int = TRUE)
 }
 
-#' @export
+# helper function for lm
 aba_glance.lm <- function(x, x0, ...) {
 
   # tidy glance
