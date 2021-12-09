@@ -24,9 +24,9 @@
 #'     c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
 #'   ) %>%
 #'   set_stats('glm') %>%
-#'   aba_fit()
+#'   fit()
 #'
-#' model_summary <- model %>% aba_summary()
+#' model_summary <- model %>% summary()
 #'
 #' # default - correct within group, outcome, and stat (x4 comparisons)
 #' model_summary_adj <- model_summary %>% aba_adjust(method='bonferroni')

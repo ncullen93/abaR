@@ -2,27 +2,77 @@
 % Please edit documentation in R/aba_readwrite.R
 \name{aba_write}
 \alias{aba_write}
-\title{Write an ABA object to file}
+\title{Write an aba object to file.}
 \usage{
-aba_write(object, filename, format = c("table", "raw", "object"), ...)
+aba_write(
+  object,
+  filename,
+  format = c("table", "raw", "object"),
+  separate = FALSE
+)
 }
 \arguments{
-\item{object}{ABA object}
+\item{object}{an aba object. The object to save to file.}
 
-\item{name}{character. name}
+\item{filename}{string. The filename to save to. Supported extensions include
+"csv", "xls", and "xlsx".}
 
-\item{include_data}{logical. include data}
+\item{format}{string. How to save the object to file. Options include
+"table" (formatted results like you see when you print the object to the
+console), "raw" (long-form results like what you see when you call
+\code{object$results}), or "object" (the actual aba object which can be later
+be loaded into memory and used again).}
 
-\item{include_fit}{logical. include fit}
-
-\item{file}{character. filename}
+\item{separate}{logical. Whether to save the results in separate files (for
+csv) or separate sheets (for excel) based on group - outcome - stat
+combinations. This argument is ignored if format == "object".}
 }
 \value{
-NA
+N/A
 }
 \description{
-Write an ABA object to file
+This is a generic function for writing an aba object to file. Objects can
+be written to file as a "table" (formatted), as "raw" (long-form results),
+or as an "object" (actual aba object).
 }
 \examples{
-x <- 1
+
+# create temp files to save to
+tmp_filename_csv <- tempfile(fileext = '.csv')
+tmp_filename_rda <- tempfile(fileext = '.Rda')
+
+# grab built-in data
+data <- adnimerge \%>\% dplyr::filter(VISCODE == 'bl')
+
+# fit model
+model <- data \%>\% aba_model() \%>\%
+  set_groups(everyone()) \%>\%
+  set_outcomes(ConvertedToAlzheimers, CSF_ABETA_STATUS_bl) \%>\%
+  set_predictors(
+    PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl,
+    c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+  ) \%>\%
+  set_stats('glm') \%>\%
+  fit()
+
+# summarise model
+model_summary <- model \%>\% summary()
+
+# save model summary to file as table
+model_summary \%>\% aba_write(tmp_filename_csv)
+
+# save model summary to file as raw long-form results
+model_summary \%>\% aba_write(tmp_filename_csv, format = 'raw')
+
+# save model summary as an object which can be loaded back into memory
+model_summary \%>\% aba_write(tmp_filename_rda, format = 'object')
+
+# load summary back to file to show it works
+model_summary2 <- aba_read(tmp_filename_rda)
+print(model_summary2)
+
+# delete temp files
+removed <- file.remove(tmp_filename_csv)
+removed <- file.remove(tmp_filename_rda)
+
 }

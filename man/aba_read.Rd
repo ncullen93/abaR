@@ -2,23 +2,47 @@
 % Please edit documentation in R/aba_readwrite.R
 \name{aba_read}
 \alias{aba_read}
-\title{Read an ABA object from file}
+\title{Read an aba object from file}
 \usage{
-aba_read(file, name = NULL, ...)
+aba_read(filename)
 }
 \arguments{
-\item{file}{ABA object}
-
-\item{name}{filename}
-
-\item{...}{other}
+\item{filename}{string. The filename where the aba object is saved.}
 }
 \value{
-NA
+an aba object
 }
 \description{
-Read an ABA object from file
+This function allows you to read back into memory an aba object which was
+previously saved. This function is not relevant for loading results tables
+as you can just use \code{read.csv} or \code{read_excel} and the like. Note that this
+function essential just wraps \code{readRDS} for reading an Rda object.
 }
 \examples{
-x <- 1
+# create temp files to save to
+tmp_filename_rda <- tempfile(fileext = '.Rda')
+
+# grab built-in data
+data <- adnimerge \%>\% dplyr::filter(VISCODE == 'bl')
+
+# fit a standard aba model
+model <- data \%>\% aba_model() \%>\%
+  set_groups(everyone()) \%>\%
+  set_outcomes(ConvertedToAlzheimers, CSF_ABETA_STATUS_bl) \%>\%
+  set_predictors(
+    PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl,
+    c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+  ) \%>\%
+  set_stats('glm') \%>\%
+  fit()
+
+# save model summary as an object which can be loaded back into memory
+model_summary \%>\% aba_write(tmp_filename_rda, format = 'object')
+
+# load summary back to file to show it works
+model_summary2 <- aba_read(tmp_filename_rda)
+
+# delete temp files
+removed <- file.remove(tmp_filename_rda)
+
 }

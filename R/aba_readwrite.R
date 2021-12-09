@@ -1,24 +1,118 @@
-#' Write an ABA object to file
+
+#' Write an aba object to file.
 #'
-#' @param object ABA object
-#' @param name character. name
-#' @param include_data logical. include data
-#' @param include_fit logical. include fit
-#' @param file character. filename
+#' This is a generic function for writing an aba object to file. Objects can
+#' be written to file as a "table" (formatted), as "raw" (long-form results),
+#' or as an "object" (actual aba object).
 #'
-#' @return NA
+#' @param object an aba object. The object to save to file.
+#' @param filename string. The filename to save to. Supported extensions include
+#'   "csv", "xls", and "xlsx".
+#' @param format string. How to save the object to file. Options include
+#'   "table" (formatted results like you see when you print the object to the
+#'   console), "raw" (long-form results like what you see when you call
+#'   `object$results`), or "object" (the actual aba object which can be later
+#'   be loaded into memory and used again).
+#' @param separate logical. Whether to save the results in separate files (for
+#' csv) or separate sheets (for excel) based on group - outcome - stat
+#' combinations. This argument is ignored if format == "object".
+#'
+#' @return N/A
 #' @export
 #'
 #' @examples
-#' x <- 1
+#'
+#' # create temp files to save to
+#' tmp_filename_csv <- tempfile(fileext = '.csv')
+#' tmp_filename_rda <- tempfile(fileext = '.Rda')
+#'
+#' # grab built-in data
+#' data <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
+#'
+#' # fit model
+#' model <- data %>% aba_model() %>%
+#'   set_groups(everyone()) %>%
+#'   set_outcomes(ConvertedToAlzheimers, CSF_ABETA_STATUS_bl) %>%
+#'   set_predictors(
+#'     PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl,
+#'     c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+#'   ) %>%
+#'   set_stats('glm') %>%
+#'   fit()
+#'
+#' # summarise model
+#' model_summary <- model %>% summary()
+#'
+#' # save model summary to file as table
+#' model_summary %>% aba_write(tmp_filename_csv)
+#'
+#' # save model summary to file as raw long-form results
+#' model_summary %>% aba_write(tmp_filename_csv, format = 'raw')
+#'
+#' # save model summary as an object which can be loaded back into memory
+#' model_summary %>% aba_write(tmp_filename_rda, format = 'object')
+#'
+#' # load summary back to file to show it works
+#' model_summary2 <- aba_read(tmp_filename_rda)
+#' print(model_summary2)
+#'
+#' # delete temp files
+#' removed <- file.remove(tmp_filename_csv)
+#' removed <- file.remove(tmp_filename_rda)
+#'
 aba_write <- function(object,
                       filename,
                       format = c('table', 'raw', 'object'),
-                      ...) {
+                      separate = FALSE) {
   UseMethod('aba_write')
 }
 
-save_helper <- function(results, filename, sheets) {
+
+#' @export
+aba_write.abaSummary <- function(object,
+                                 filename,
+                                 format = c('table', 'raw', 'object'),
+                                 separate = FALSE) {
+  format <- match.arg(format)
+
+  if (format == 'table') {
+    results <- object %>% as_table()
+    save_helper(results, filename, separate)
+
+  } else if (format == 'raw') {
+    results <- object$results
+    save_helper(results, filename, separate)
+
+  } else if (format == 'object') {
+    saveRDS(
+      object = object,
+      file = filename
+    )
+  }
+}
+
+
+#' @export
+aba_write.TableOne <- function(object,
+                               filename,
+                               format = c('table', 'raw', 'object'),
+                               separate = FALSE) {
+  r <- object
+
+  if (endsWith(filename, '.csv')) {
+    write.csv(
+      print(r, showAllLevels=T),
+      filename,
+      fileEncoding = 'UTF-8'
+    )
+  } else {
+    stop('Filename must end in .csv')
+  }
+}
+
+
+# helper function for saving results to file
+save_helper <- function(results, filename, separate) {
   file_ext <- stringr::str_split(filename, '\\.')[[1]] %>% tail(1)
 
   if (file_ext == 'csv') {
@@ -28,7 +122,7 @@ save_helper <- function(results, filename, sheets) {
         row.names = F
       )
   } else if (file_ext %in% c('xls', 'xlsx')) {
-    if (!sheets) {
+    if (!separate) {
       results %>%
         writexl::write_xlsx(filename)
     } else {
@@ -57,118 +151,49 @@ save_helper <- function(results, filename, sheets) {
   }
 }
 
-#' Write an aba summary object to file
-#' @export
-aba_write.abaSummary <- function(object,
-                                 filename,
-                                 format = c('table', 'raw', 'object'),
-                                 sheets = FALSE,
-                                 ...) {
-  format <- match.arg(format)
 
-  if (format == 'table') {
-    results <- object %>% as_table()
-    save_helper(results, filename, sheets)
-
-  } else if (format == 'raw') {
-    results <- object$results
-    save_helper(results, filename, sheets)
-
-  } else if (format == 'object') {
-    saveRDS(
-      object = object,
-      file = filename
-    )
-  }
-}
-
-#' Write an aba demo table (TableOne) to file
-#' @export
-aba_write.TableOne <- function(object,
-                               filename,
-                               format = c('table', 'raw', 'object'),
-                               ...) {
-  r <- object
-
-  if (endsWith(filename, '.csv')) {
-    write.csv(
-      print(r, showAllLevels=T),
-      filename,
-      fileEncoding = 'UTF-8'
-    )
-  } else {
-    stop('Filename must end in .csv')
-  }
-}
-
-
-#aba_write.abaModel <- function(object,
-#                      file,
-#                      name = NULL,
-#                      include_data = TRUE,
-#                      include_fit = TRUE) {
-#
-#  if (!include_data & ('abaModel' %in% class(object))) {
-#    object$data <- NULL
-#  }
-#  if (!include_fit & ('abaModel' %in% class(object))) {
-#    stat_names <- names(object$spec$stats)
-#    object$results[,stat_names] <- NULL
-#  }
-#
-#  if ('abaBoard' %in% class(file)) {
-#    board <- file$board
-#    if (is.null(name)) name <- 'abaModel'
-#    board %>% pins::pin_write(object, name = name, type = 'rds')
-#  } else {
-#
-#    saveRDS(object = object, file = file)
-#  }
-#
-#}
-
-
-#' Read an ABA object from file
+#' Read an aba object from file
 #'
-#' @param file ABA object
-#' @param name filename
-#' @param ... other
+#' This function allows you to read back into memory an aba object which was
+#' previously saved. This function is not relevant for loading results tables
+#' as you can just use `read.csv` or `read_excel` and the like. Note that this
+#' function essential just wraps `readRDS` for reading an Rda object.
 #'
-#' @return NA
+#' @param filename string. The filename where the aba object is saved.
+#'
+#' @return an aba object
 #' @export
 #'
 #' @examples
-#' x <- 1
-aba_read <- function(file, name = NULL, ...) {
-  if ('abaBoard' %in% class(file)) {
-    if (is.null(name)) stop('Must give name to read from an ABA board.')
-    board <- file$board
-    object <- board %>% pins::pin_read(name)
-  } else {
-    object <- readRDS(file = file)
-  }
+#' # create temp files to save to
+#' tmp_filename_rda <- tempfile(fileext = '.Rda')
+#'
+#' # grab built-in data
+#' data <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
+#'
+#' # fit a standard aba model
+#' model <- data %>% aba_model() %>%
+#'   set_groups(everyone()) %>%
+#'   set_outcomes(ConvertedToAlzheimers, CSF_ABETA_STATUS_bl) %>%
+#'   set_predictors(
+#'     PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl,
+#'     c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+#'   ) %>%
+#'   set_stats('glm') %>%
+#'   fit()
+#'
+#' # save model summary as an object which can be loaded back into memory
+#' model_summary %>% aba_write(tmp_filename_rda, format = 'object')
+#'
+#' # load summary back to file to show it works
+#' model_summary2 <- aba_read(tmp_filename_rda)
+#'
+#' # delete temp files
+#' removed <- file.remove(tmp_filename_rda)
+#'
+aba_read <- function(filename) {
+  object <- readRDS(file = filename)
   return(object)
-}
-
-
-#' Create an aba board
-#'
-#' @param path filepath
-#' @param ... other
-#'
-#' @return abaBoard object
-#' @export
-#'
-#' @examples
-#' x <- 1
-aba_board <- function(path, ...) {
-  pin_board <- pins::board_folder(path = '/Users/ni5875cu/Dropbox/aba_test/')
-  my_board <- list(
-    'board' = pin_board
-  )
-  class(my_board) <- 'abaBoard'
-
-  return(my_board)
 }
 
 
