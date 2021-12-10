@@ -1,40 +1,74 @@
-
-
-#' Create a mmrm stat to use for an aba model.
+#' Create an mmrm stat object.
 #'
-#' @param id string. id variable
-#' @param time string. time variable
-#'   (should be discrete visits common to all participants)
+#' This function creates an mmrm stat object which can be passed as input
+#' to the `set_stats()` function when building an aba model. This stat performs
+#' a MMRM analysis using the `gls` function from the
+#' `nlme` package. Please note that the default mode is to include an interaction
+#' term between the `time` variable and each predictor - i.e., `time*predictor`
+#' will be in the model formula - but this does not happen for covariates.
+#' The data for this model should be in long format with one row per
+#' subject-visit.
 #'
-#' @return
-#' list of the following functions:
-#'   * `formula_fn`: create a formula
-#'   * `fit_fn`: fit a model
-#'   * `evaluate_fn`: evaluate a model
+#' @param id string. This is the variable in the data which represents the
+#'   subject id to be used for random intercepts and random slopes.
+#' @param time string. This is the time variable in the data which represents
+#'   the time from baseline that the visit occured. This should be a categorical
+#'   variable or a continuous variable where the values are shared by
+#'   all subjects. The fact that time visits should be common across all subjects
+#'   is a major operational difference from `stat_lme`, among other differences.
+#' @param treatment string. The treatment variable whose effect on the outcome
+#'   you care about. This is useful for `aba_emmeans` and other functions.
+#' @param baseline_suffix string. The suffix to add to each outcome variable
+#'   in order to pick up the associated baseline variable. You must adjust for
+#'   the baseline outcome in mmrm, and there is no other way to specify a
+#'   different predictor for each outcome. So if the outcomes are e.g.
+#'   "CDRSB" and "MMSE", then a baseline_suffix of "bl" will mean that each
+#'   mmrm fit with "CDRSB" as outcome will have "CDRSB_bl" added to the
+#'   formula and every fit with "MMSE" as outcome will have "MMSE_bl" added.
+#'   This means that these baseline variables must actually exist in the data.
+#'   Also, there will always be an interaction between the baseline outcome
+#'   variable and the time variable.
+#' @param std.beta logical. Whether to standardize model predictors and
+#'   covariates prior to analysis.
+#' @param complete.cases  logical. Whether to only include the subset of data
+#'   with no missing data for any of the outcomes, predictors, or covariates.
+#'   Note that complete cases are considering within each group - outcome
+#'   combination but across all predictor sets.
 #'
+#' @return An abaStat object with `mmrm` stat type.
 #' @export
 #'
 #' @examples
-#' my_stat <- stat_mmrm(id='SUBJECT_ID',
-#'                     time='Years_bl')
 #'
-#' #my_formula <- my_stat$formula_fn(
-#' #  outcome='ConvertedToAlzheimers',
-#' #  predictors=c('PLASMA_PTAU181_bl','PLASMA_NFL_bl'),
-#' #  covariates=c('AGE_bl','GENDER','EDUCAT'),
-#' #  id
-#' #)
+#' data <- adnimerge %>%
+#'   dplyr::filter(VISCODE %in% c('bl','m06','m12','m24'))
 #'
-#' #my_model <- my_stat$fit_fn(
-#' #  formula = my_formula,
-#' #  data = adni_sample
-#' #)
+#' model <- data %>% aba_model() %>%
+#'   set_groups(
+#'     everyone(),
+#'     DX_bl %in% c('MCI', 'AD')
+#'   ) %>%
+#'   set_outcomes(CDRSB, ADAS13) %>%
+#'   set_predictors(
+#'     PLASMA_ABETA_bl,
+#'     PLASMA_PTAU181_bl,
+#'     PLASMA_NFL_bl,
+#'     c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+#'   ) %>%
+#'   set_covariates(AGE, GENDER, EDUCATION) %>%
+#'   set_stats(
+#'     stat_mmrm(id = 'RID', time = 'VISCODE')
+#'   ) %>%
+#'   fit()
+#'
+#' model_summary <- model %>% aba_summary()
+#'
 stat_mmrm <- function(id,
-                     time,
-                     treatment = NULL,
-                     add_baseline = TRUE,
-                     std.beta = FALSE,
-                     complete.cases = TRUE) {
+                      time,
+                      treatment = NULL,
+                      baseline_suffix = 'bl',
+                      std.beta = FALSE,
+                      complete.cases = TRUE) {
   fns <- list(
     'formula_fn' = formula_lme,
     'fit_fn' = fit_mmrm,
@@ -43,7 +77,7 @@ stat_mmrm <- function(id,
       'id' = id,
       'time' = time,
       'treatment' = treatment,
-      'add_baseline' = add_baseline
+      'baseline_suffix' = baseline_suffix
     ),
     'params' = list(
       'std.beta' = std.beta,
@@ -56,22 +90,22 @@ stat_mmrm <- function(id,
   return(fns)
 }
 
-# fit a mmrm model
+# helper function for stat_mmrm
 fit_mmrm <- function(formula, data, extra_params) {
   time <- extra_params$time
   id <- extra_params$id
 
-  # add treatment variable if specified
+  # add treatment variable to formula
   treatment <- extra_params$treatment
   if (!is.null(treatment)) {
     formula <- glue('{formula} + {treatment}*{time}')
   }
 
-  # add baseline variable if specified
-  if (extra_params$add_baseline) {
-    bl_suffix = '_bl'
+  # add baseline variable to formula
+  bl_suffix <- extra_params$baseline_suffix
+  if (!is.null(bl_suffix)) {
     outcome <- formula %>% strsplit(' ~ ') %>% unlist() %>% head(1)
-    formula <- glue('{formula} + {outcome}{bl_suffix}*{time}')
+    formula <- glue('{formula} + {outcome}_{bl_suffix}*{time}')
   }
 
   # make correlation and weights form
@@ -114,7 +148,7 @@ fit_mmrm <- function(formula, data, extra_params) {
   return(model)
 }
 
-
+# helper function for stat_mmrm
 aba_tidy.gls <- function(model, predictors, covariates, ...) {
 
   time_var <- strsplit(as.character(model$call$weights)[2], ' | ')[[1]][3]
@@ -128,7 +162,7 @@ aba_tidy.gls <- function(model, predictors, covariates, ...) {
   return(tidy_df)
 }
 
-#' @export
+# helper function for stat_mmrm
 aba_glance.gls <- function(x, ...) {
   glance_df <- broom.mixed::glance(x) %>% select(-logLik)
 
@@ -156,7 +190,7 @@ aba_glance.gls <- function(x, ...) {
   return(glance_df)
 }
 
-#' @export
+# helper function for stat_mmrm
 run_emmeans.gls <- function(fit, extra_params) {
   time <- extra_params$time
   id <- extra_params$id
@@ -191,6 +225,7 @@ run_emmeans.gls <- function(fit, extra_params) {
   )
 }
 
+# helper function for stat_mmrm
 plot_mmrm <- function(model, data, ...) {
   em_res <- emmeans::emmeans(model, specs = ~TREATMENT | VISIT)
   em_test <- emmeans::contrast(em_res, method = 'pairwise')
@@ -264,7 +299,6 @@ plot_mmrm <- function(model, data, ...) {
     g, g_count, ncol=1, align = 'v', heights = c(0.88, 0.12),
     labels=c('','Sample size'), label.y = 1.1, label.x = 0, vjust=0, hjust=-0.9
   )
-
 
 }
 

@@ -2,38 +2,74 @@
 % Please edit documentation in R/stat_roc.R
 \name{stat_roc}
 \alias{stat_roc}
-\title{Create a roc stat to use for an aba model.}
+\title{Create a roc stat object.}
 \usage{
 stat_roc(
-  direction = ">",
+  direction = "<",
   method = "Youden",
-  tag.healthy = 0,
   std.beta = FALSE,
   complete.cases = TRUE
 )
 }
-\value{
-list of the following functions:
-\itemize{
-\item \code{formula_fn}: create a formula
-\item \code{fit_fn}: fit a model
-\item \code{evaluate_fn}: evaluate a model
+\arguments{
+\item{direction}{'<' or '>. Which direction to interpret as being further
+from the healthy value. '<' is the default value and is interpreted as
+increasing predictor values are worse. '>' is therefore interpreted as
+higher predictor values are closer to healthy (outcome value of 0).}
+
+\item{method}{string. Which method to use to calculate the optimal cutoff
+value. See the \code{OptimalCutpoints::optimal.cutpoints} function for more
+info.}
+
+\item{std.beta}{logical. Whether to standardize model predictors and
+covariates prior to analysis.}
+
+\item{complete.cases}{logical. Whether to only include the subset of data
+with no missing data for any of the outcomes, predictors, or covariates.
+Note that complete cases are considering within each group - outcome
+combination but across all predictor sets.}
 }
+\value{
+An abaStat object with \code{glm} stat type.
 }
 \description{
-Create a roc stat to use for an aba model.
+This function creates a roc stat object which can be passed as input
+to the \code{set_stats()} function when building an aba model. This stat performs
+a traditional ROC / cutpoint analysis from a binary outcome using the
+\code{optimal.cutpoints} function from the \code{OptimalCutpoints} package. Note that
+outcomes for this model should be binary and coded as 0 = healthy and
+1 = disease.
+Coefficients will be presented as the optimal cutpoint for the model derived
+from Youden's index (or whatever method is specified).
+Default metrics include AUC.
 }
 \examples{
-my_stat <- stat_roc()
 
-my_formula <- my_stat$formula_fn(
-  outcome = 'ConvertedToAlzheimers',
-  predictors = 'PLASMA_PTAU181_bl'
-)
+data <- adnimerge \%>\% dplyr::filter(VISCODE == 'bl')
 
-my_model <- my_stat$fit_fn(
-  formula = my_formula,
-  data = aba::adnimerge \%>\% dplyr::filter(VISCODE == 'bl'),
-  extra_params = my_stat$extra_params
-)
+# fit a roc model to predict a binary outcome
+model <- data \%>\% aba_model() \%>\%
+  set_groups(
+    everyone(),
+    DX_bl \%in\% c('MCI', 'AD')
+  ) \%>\%
+  set_outcomes(CSF_ABETA_STATUS_bl) \%>\%
+  set_predictors(PLASMA_PTAU181_bl, PLASMA_NFL_bl) \%>\%
+  set_stats(
+    stat_roc(method='Youden')
+  ) \%>\%
+  fit()
+
+# summarise model
+model_summary <- model \%>\% ummary()
+
+# if using predictors where higher values are better, then flip direction
+model2 <- model \%>\%
+  set_predictors(PLASMA_ABETA_bl) \%>\%
+  set_stats(
+    stat_roc(direction = '>')
+  ) \%>\%
+  fit()
+model2_summary <- model2 \%>\% aba_summary()
+
 }

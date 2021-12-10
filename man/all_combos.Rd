@@ -7,14 +7,36 @@
 all_combos(...)
 }
 \arguments{
-\item{...}{strings. Variable names to create combinations of}
+\item{...}{strings. Variable names from which all possible combinations
+will be created. Each variable string should be separated by a comma.}
 }
 \value{
-list of vectors
+A list of vectors of ll possible combinations of the variables
 }
 \description{
-Create all possible combinations of a set of variables
+This function creates all possible combinations of a set of variables. The
+variables should be given as strings and sep. This function can be used
+inside of a call to \code{set_predictors} when creating an aba model.
 }
 \examples{
-x <- all_combos('a','b','c')
+
+data <- adnimerge \%>\% dplyr::filter(VISCODE == 'bl')
+
+# fit model with all combinations of three variables
+model <- data \%>\% aba_model() \%>\%
+  set_groups(
+    everyone(),
+    DX_bl \%in\% c('MCI', 'AD')
+  ) \%>\%
+  set_outcomes(ConvertedToAlzheimers, CSF_ABETA_STATUS_bl) \%>\%
+  set_predictors(
+    all_combos('PLASMA_ABETA_bl', 'PLASMA_PTAU181_bl', 'PLASMA_NFL_bl')
+  ) \%>\%
+  set_stats(
+    stat_glm(std.beta = T)
+  ) \%>\%
+  fit()
+
+model_summary <- model \%>\% aba_summary()
+
 }

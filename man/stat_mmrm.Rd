@@ -2,47 +2,85 @@
 % Please edit documentation in R/stat_mmrm.R
 \name{stat_mmrm}
 \alias{stat_mmrm}
-\title{Create a mmrm stat to use for an aba model.}
+\title{Create an mmrm stat object.}
 \usage{
 stat_mmrm(
   id,
   time,
   treatment = NULL,
-  add_baseline = TRUE,
+  baseline_suffix = "bl",
   std.beta = FALSE,
   complete.cases = TRUE
 )
 }
 \arguments{
-\item{id}{string. id variable}
+\item{id}{string. This is the variable in the data which represents the
+subject id to be used for random intercepts and random slopes.}
 
-\item{time}{string. time variable
-(should be discrete visits common to all participants)}
+\item{time}{string. This is the time variable in the data which represents
+the time from baseline that the visit occured. This should be a categorical
+variable or a continuous variable where the values are shared by
+all subjects. The fact that time visits should be common across all subjects
+is a major operational difference from \code{stat_lme}, among other differences.}
+
+\item{treatment}{string. The treatment variable whose effect on the outcome
+you care about. This is useful for \code{aba_emmeans} and other functions.}
+
+\item{baseline_suffix}{string. The suffix to add to each outcome variable
+in order to pick up the associated baseline variable. You must adjust for
+the baseline outcome in mmrm, and there is no other way to specify a
+different predictor for each outcome. So if the outcomes are e.g.
+"CDRSB" and "MMSE", then a baseline_suffix of "bl" will mean that each
+mmrm fit with "CDRSB" as outcome will have "CDRSB_bl" added to the
+formula and every fit with "MMSE" as outcome will have "MMSE_bl" added.
+This means that these baseline variables must actually exist in the data.
+Also, there will always be an interaction between the baseline outcome
+variable and the time variable.}
+
+\item{std.beta}{logical. Whether to standardize model predictors and
+covariates prior to analysis.}
+
+\item{complete.cases}{logical. Whether to only include the subset of data
+with no missing data for any of the outcomes, predictors, or covariates.
+Note that complete cases are considering within each group - outcome
+combination but across all predictor sets.}
 }
 \value{
-list of the following functions:
-\itemize{
-\item \code{formula_fn}: create a formula
-\item \code{fit_fn}: fit a model
-\item \code{evaluate_fn}: evaluate a model
-}
+An abaStat object with \code{mmrm} stat type.
 }
 \description{
-Create a mmrm stat to use for an aba model.
+This function creates an mmrm stat object which can be passed as input
+to the \code{set_stats()} function when building an aba model. This stat performs
+a MMRM analysis using the \code{gls} function from the
+\code{nlme} package. Please note that the default mode is to include an interaction
+term between the \code{time} variable and each predictor - i.e., \code{time*predictor}
+will be in the model formula - but this does not happen for covariates.
+The data for this model should be in long format with one row per
+subject-visit.
 }
 \examples{
-my_stat <- stat_mmrm(id='SUBJECT_ID',
-                    time='Years_bl')
 
-#my_formula <- my_stat$formula_fn(
-#  outcome='ConvertedToAlzheimers',
-#  predictors=c('PLASMA_PTAU181_bl','PLASMA_NFL_bl'),
-#  covariates=c('AGE_bl','GENDER','EDUCAT'),
-#  id
-#)
+data <- adnimerge \%>\%
+  dplyr::filter(VISCODE \%in\% c('bl','m06','m12','m24'))
 
-#my_model <- my_stat$fit_fn(
-#  formula = my_formula,
-#  data = adni_sample
-#)
+model <- data \%>\% aba_model() \%>\%
+  set_groups(
+    everyone(),
+    DX_bl \%in\% c('MCI', 'AD')
+  ) \%>\%
+  set_outcomes(CDRSB, ADAS13) \%>\%
+  set_predictors(
+    PLASMA_ABETA_bl,
+    PLASMA_PTAU181_bl,
+    PLASMA_NFL_bl,
+    c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+  ) \%>\%
+  set_covariates(AGE, GENDER, EDUCATION) \%>\%
+  set_stats(
+    stat_mmrm(id = 'RID', time = 'VISCODE')
+  ) \%>\%
+  fit()
+
+model_summary <- model \%>\% aba_summary()
+
 }
