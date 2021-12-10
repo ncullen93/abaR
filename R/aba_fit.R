@@ -165,17 +165,7 @@ aba_compile <- function(object, ...) {
     pivot_longer(cols = names(stat_vals),
                  names_to = 'stats', values_to = 'stats_obj')
 
-  # remove basic models where the stat object specifices
-  mr <- model$results %>%
-    rowwise() %>%
-    mutate(
-      include_basic = ifelse(is.null(stats_obj$params$include.basic), TRUE,
-                             stats_obj$params$include.basic)
-    ) %>%
-    filter((include_basic==TRUE) | (include_basic == FALSE & predictors != '')) %>%
-    select(-include_basic)
-
-  mr <- mr %>%
+  model$results <- model$results %>%
     rename(
       predictor_set = MID,
       group = groups,
@@ -185,9 +175,6 @@ aba_compile <- function(object, ...) {
       stat = stats,
       stat_obj = stats_obj
     )
-
-  model$results <- mr
-
 
   return(model)
 }

@@ -4,19 +4,39 @@
 \alias{aba_plot_roc}
 \title{Plot ROC curves from an aba model}
 \usage{
-aba_plot_roc(model_summary, ...)
+aba_plot_roc(object)
 }
 \arguments{
-\item{...}{other plotting parameters}
-
-\item{model}{abaModel. Fitted aba model to plot.}
+\item{object}{abaSummary. A summary of an aba model with \code{stat_glm} type.}
 }
 \value{
-gpglot or list of ggplots
+a ggplot with roc curves for all predictor sets across each
+group - outcome - stat combination
 }
 \description{
-Plot ROC curves from an aba model
+This function plots ROC curves across group - outcome - stat combinations
+and currently supports \code{stat_glm}.
 }
 \examples{
-x <- 1
+
+data <- adnimerge \%>\% dplyr::filter(VISCODE == 'bl')
+
+# fit glm model with binary outcome variables
+model <- data \%>\% aba_model() \%>\%
+  set_groups(everyone()) \%>\%
+  set_outcomes(ConvertedToAlzheimers, CSF_ABETA_STATUS_bl) \%>\%
+  set_predictors(
+    PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl,
+    c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+  ) \%>\%
+  set_stats(
+    stat_glm(std.beta = T)
+  ) \%>\%
+  fit()
+
+# summarise glm model
+model_summary <- model \%>\% summary()
+
+fig <- model_summary \%>\% aba_plot_roc()
+
 }

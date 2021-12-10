@@ -4,9 +4,27 @@
 \alias{stat_ancova}
 \title{Create an ancova stat object.}
 \usage{
-stat_ancova(std.beta = FALSE, complete.cases = TRUE)
+stat_ancova(
+  treatment,
+  baseline_suffix = "bl",
+  std.beta = FALSE,
+  complete.cases = TRUE
+)
 }
 \arguments{
+\item{treatment}{string. The treatment variable whose effect on the outcome
+you care about. If you don't have a treatment, then you can just use
+\code{stat_lm} with a change variable as the outcome.}
+
+\item{baseline_suffix}{string. The suffix to add to each outcome variable
+in order to pick up the associated baseline variable. You must adjust for
+the baseline outcome in ancova, and there is no other way to specify a
+different predictor for each outcome. So if the outcomes are e.g.
+"CDRSB" and "MMSE", then a baseline_suffix of "bl" will mean that each
+ancova fit with "CDRSB" as outcome will have "CDRSB_bl" added to the
+formula and every fit with "MMSE" as outcome will have "MMSE_bl" added.
+This means that these baseline variables must actually exist in the data!}
+
 \item{std.beta}{logical. Whether to standardize model predictors and
 covariates prior to analysis.}
 
@@ -21,8 +39,38 @@ An abaStat object with \code{ancova} stat type.
 \description{
 This function creates an ancova stat object which can be passed as input
 to the \code{set_stats()} function when building an aba model. This stat performs
-a traditional ancova analysis using the \code{lm} function.
+a traditional ancova analysis using the \code{lm} function with change in endpoint
+as outcome, adjustment for baseline covariates and baseline outcome, and also
+a treatment variable whose effect on the endpoint you care about.
 }
 \examples{
-x <- 1
+# filter to 24 month visit; calculate change in cognition to use as outcome;
+# assume abeta status as "treatment" variable.
+# The goal is to see if "treatment" has an effect on 2y cognitive decline
+data <- adnimerge \%>\%
+  filter(
+    VISCODE == 'm24',
+    DX_bl \%in\% c('MCI', 'AD'),
+    !is.na(CSF_ABETA_STATUS_bl)
+  ) \%>\%
+  mutate(
+    CDRSB = CDRSB - CDRSB_bl,
+    ADAS13 = ADAS13 - ADAS13_bl,
+    TREATMENT = factor(CSF_ABETA_STATUS_bl, levels=c(1,0),
+                       labels=c('Placebo','Treatment'))
+  )
+
+# fit model. note that baseline outcome will be added based on the suffix.
+# e.g., fits with "CDRSB" as outcome will also add "CDRSB_bl" to the formula.
+ancova_model <- data \%>\% aba_model() \%>\%
+  set_outcomes(CDRSB, ADAS13) \%>\%
+  set_covariates(AGE, GENDER, EDUCATION) \%>\%
+  set_stats(
+    stat_ancova(treatment = 'TREATMENT', baseline_suffix = 'bl')
+  ) \%>\%
+  fit()
+
+# summarise model. treatment effect will be shown in the treatment coefficient
+ancova_summary <- ancova_model \%>\% summary()
+
 }

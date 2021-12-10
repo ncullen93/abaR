@@ -1,40 +1,54 @@
-
-
-#' Create a glm stat to use for an aba model.
+#' Create a glm stat object.
 #'
-#' @return
-#' list of the following functions:
-#'   * `formula_fn`: create a formula
-#'   * `fit_fn`: fit a model
-#'   * `evaluate_fn`: evaluate a model
+#' This function creates a glm stat object which can be passed as input
+#' to the `set_stats()` function when building an aba model. This stat performs
+#' a traditional logistic regression analysis using the `glm` function with
+#' a binary outcome. Coefficients will be presented as odds ratios. Default
+#' metrics include AUC.
 #'
+#' @param std.beta logical. Whether to standardize model predictors and
+#'   covariates prior to analysis.
+#' @param complete.cases  logical. Whether to only include the subset of data
+#'   with no missing data for any of the outcomes, predictors, or covariates.
+#'   Note that complete cases are considering within each group - outcome
+#'   combination but across all predictor sets.
+#'
+#' @return An abaStat object with `glm` stat type.
 #' @export
 #'
 #' @examples
-#' my_stat <- stat_glm()
 #'
-#' my_formula <- my_stat$formula_fn(
-#'   outcome='ConvertedToAlzheimers',
-#'   predictors=c('PLASMA_PTAU181_bl','PLASMA_NFL_bl'),
-#'   covariates=c('AGE','GENDER','EDUCATION')
-#' )
+#' data <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
 #'
-#' my_model <- my_stat$fit_fn(
-#'   formula = my_formula,
-#'   data = aba::adnimerge %>% dplyr::filter(VISCODE == 'bl')
-#' )
+#' # fit glm model with binary outcome variables
+#' model <- data %>% aba_model() %>%
+#'   set_groups(everyone()) %>%
+#'   set_outcomes(ConvertedToAlzheimers, CSF_ABETA_STATUS_bl) %>%
+#'   set_predictors(
+#'     PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl,
+#'     c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+#'   ) %>%
+#'   set_stats(
+#'     stat_glm(std.beta = T)
+#'   ) %>%
+#'   fit()
+#'
+#' # summarise glm model
+#' model_summary <- model %>% summary()
+#'
+#' # plot glm results
+#' fig1 <- model_summary %>% aba_plot_coef()
+#' fig2 <- model_summary %>% aba_plot_metric()
+#' fig3 <- model_summary %>% aba_plot_roc()
+#'
 stat_glm <- function(std.beta = FALSE,
-                    complete.cases = TRUE,
-                    include.basic = TRUE,
-                    extra.metrics = NULL) {
+                     complete.cases = TRUE) {
   fns <- list(
     'formula_fn' = formula_std,
     'fit_fn' = fit_glm,
-    'extra.metrics' = extra.metrics,
     'params' = list(
       'std.beta' = std.beta,
-      'complete.cases' = complete.cases,
-      'include.basic' = include.basic
+      'complete.cases' = complete.cases
     )
   )
   fns$stat_type <- 'glm'
@@ -129,21 +143,46 @@ aba_glance.glm <- function(x, x0, ...) {
 }
 
 
+
 #' Plot ROC curves from an aba model
 #'
-#' @param model abaModel. Fitted aba model to plot.
-#' @param ... other plotting parameters
+#' This function plots ROC curves across group - outcome - stat combinations
+#' and currently supports `stat_glm`.
 #'
-#' @return gpglot or list of ggplots
+#' @param object abaSummary. A summary of an aba model with `stat_glm` type.
+#'
+#' @return a ggplot with roc curves for all predictor sets across each
+#'   group - outcome - stat combination
 #' @export
 #'
 #' @examples
-#' x <- 1
-aba_plot_roc <- function(model_summary, ...) {
-  model <- model_summary$model
+#'
+#' data <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
+#'
+#' # fit glm model with binary outcome variables
+#' model <- data %>% aba_model() %>%
+#'   set_groups(everyone()) %>%
+#'   set_outcomes(ConvertedToAlzheimers, CSF_ABETA_STATUS_bl) %>%
+#'   set_predictors(
+#'     PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl,
+#'     c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+#'   ) %>%
+#'   set_stats(
+#'     stat_glm(std.beta = T)
+#'   ) %>%
+#'   fit()
+#'
+#' # summarise glm model
+#' model_summary <- model %>% summary()
+#'
+#' fig <- model_summary %>% aba_plot_roc()
+#'
+aba_plot_roc <- function(object) {
+  model <- object$model
+
   # nest data by distinct group - outcome pairs
   plot_df <- model$results %>%
-    group_by(.data$groups, .data$outcomes, .data$stats) %>%
+    group_by(.data$group, .data$outcome, .data$stat) %>%
     nest()
 
   # create a plot for each group - outcome pair
@@ -151,10 +190,10 @@ aba_plot_roc <- function(model_summary, ...) {
     rowwise() %>%
     mutate(
       plots = plot_roc_single(
-        models = .data$data$stats_fit,
-        stat = .data$data$stats,
-        group = .data$groups,
-        outcome = .data$outcomes,
+        models = .data$data$stat_fit,
+        stat = .data$data$stat,
+        group = .data$group,
+        outcome = .data$outcome,
         data = model$data
       )
     )
@@ -166,10 +205,7 @@ aba_plot_roc <- function(model_summary, ...) {
   return(g)
 }
 
-# models: list of model fits;
-# group: string
-# outcome: string
-# data: tibble
+# helper function for aba_plot_roc
 plot_roc_single <- function(models, stat, group, outcome, data, ...) {
   group.name <- group
   outcome.name <- outcome
