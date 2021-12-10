@@ -87,42 +87,17 @@ aba_stat_lookup <- function(stat) {
   return(stat)
 }
 
-#' aba glance generic
-#'
-#' @param x model
-#'
-#' @param ... extra parameters
-#'
-#' @export
+# generic for internal utility function aba_glance
 aba_glance <- function(x, ...) {
   UseMethod('aba_glance')
 }
 
-#' aba tidy generic
-#'
-#' @param model model
-#' @param predictors predictors
-#' @param covariates covariates
-#' @param ... extra parameters
-#'
-#' @export
+# generic for internal utility function aba_tidy
 aba_tidy <- function(model, predictors, covariates, ...) {
   UseMethod('aba_tidy')
 }
 
-
-#' Run emmeans on a model
-#'
-#' @param model model
-#' @param treatment treatment
-#' @param stats_obj stats obj
-#' @param ... extra parameters
-#'
-#' @return
-#' @export
-#'
-#' @examples
-#' x <- 1
+# generic for internal utility function emmeans
 run_emmeans <- function(fit, extra_params) {
   UseMethod('run_emmeans')
 }
