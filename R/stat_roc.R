@@ -22,20 +22,17 @@
 #'   extra_params = my_stat$extra_params
 #' )
 stat_roc <- function(direction = '>',
-                    method = 'Youden',
-                    tag.healthy = 0,
-                    std.beta = FALSE,
-                    complete.cases = TRUE,
-                    extra.metrics = NULL) {
+                     method = 'Youden',
+                     tag.healthy = 0,
+                     std.beta = FALSE,
+                     complete.cases = TRUE) {
 
   fns <- list(
     'formula_fn' = formula_roc,
     'fit_fn' = fit_roc,
-    'extra.metrics' = extra.metrics,
     'params' = list(
       'std.beta' = std.beta,
-      'complete.cases' = complete.cases,
-      'include.basic' = FALSE
+      'complete.cases' = complete.cases
     ),
     'extra_params' = list(
       'direction' = direction,
@@ -49,14 +46,16 @@ stat_roc <- function(direction = '>',
   return(fns)
 }
 
+# helper function for stat_roc
 formula_roc <- function(outcome, predictors, covariates, ...) {
   if (length(predictors) > 1) stop('ROC predictors should only be length == 1.')
   predictor <- predictors[1]
+  if (is.na(predictor)) predictor <- 1
   f <- as.character(glue('{predictor} ~ {outcome}'))
   return(f)
 }
 
-# fit a glm model
+# helper function for stat_roc
 fit_roc <- function(formula, data, extra_params) {
 
   model <- OptimalCutpoints::optimal.cutpoints(
@@ -71,10 +70,9 @@ fit_roc <- function(formula, data, extra_params) {
   return(model)
 }
 
-#' @export
+# helper function for stat_roc
 aba_tidy.roc <- function(model, predictors, covariates, ...) {
   # coefficient is the cutoff value
-
   cut_val <- model[[model$methods[1]]]$Global$optimal.cutoff$cutoff[1]
   predictor <- as.character(model$call$X)[2]
   cut_vals <- ifelse(predictors==predictor, cut_val, NA)
@@ -88,11 +86,12 @@ aba_tidy.roc <- function(model, predictors, covariates, ...) {
     conf.high = NA
   )
 
+
  return(x)
 }
 
 
-#' @export
+# helper function for stat_roc
 aba_glance.roc <- function(x, x0, ...) {
   auc <- x[[x$methods[1]]]$Global$measures.acc$AUC
   nobs <- nrow(x$data)

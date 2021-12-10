@@ -9,8 +9,7 @@ stat_roc(
   method = "Youden",
   tag.healthy = 0,
   std.beta = FALSE,
-  complete.cases = TRUE,
-  extra.metrics = NULL
+  complete.cases = TRUE
 )
 }
 \value{

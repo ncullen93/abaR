@@ -1,28 +1,49 @@
-
-
-#' Create an lm stat to use for an aba model.
+#' Create an lm stat object.
 #'
-#' @return
-#' list of the following functions:
-#'   * `formula_fn`: create a formula
-#'   * `fit_fn`: fit a model
-#'   * `evaluate_fn`: evaluate a model
+#' This function creates a lm stat object which can be passed as input
+#' to the `set_stats()` function when building an aba model. This stat performs
+#' a traditional linear regression analysis using the `lm` function.
+#' Coefficients will be presented as beta coefficients. Default metrics include
+#' adjusted R2.
 #'
+#' @param std.beta logical. Whether to standardize model predictors and
+#'   covariates prior to analysis.
+#' @param complete.cases  logical. Whether to only include the subset of data
+#'   with no missing data for any of the outcomes, predictors, or covariates.
+#'   Note that complete cases are considering within each group - outcome
+#'   combination but across all predictor sets.
+#'
+#' @return An abaStat object with `lm` stat type.
 #' @export
 #'
 #' @examples
-#' my_stat <- stat_lm()
 #'
-#' my_formula <- my_stat$formula_fn(
-#'   outcome='CDRSB_bl',
-#'   predictors=c('PLASMA_PTAU181_bl','PLASMA_NFL_bl'),
-#'   covariates=c('AGE','GENDER','EDUCATION')
-#' )
+#' data <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
 #'
-#' my_model <- my_stat$fit_fn(
-#'   formula = my_formula,
-#'   data = aba::adnimerge %>% dplyr::filter(VISCODE == 'bl')
-#' )
+#' # fit lm model with continuous outcome variables
+#' model <- data %>% aba_model() %>%
+#'   set_groups(
+#'     everyone(),
+#'     DX_bl %in% c('MCI', 'AD')
+#'   ) %>%
+#'   set_outcomes(CDRSB_bl, MMSE_bl) %>%
+#'   set_predictors(
+#'     PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl,
+#'     c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+#'   ) %>%
+#'   set_covariates(AGE, GENDER, EDUCATION) %>%
+#'   set_stats(
+#'     stat_lm(std.beta = T)
+#'   ) %>%
+#'   fit()
+#'
+#' # summarise model
+#' model_summary <- model %>% summary()
+#'
+#' # plot results
+#' fig1 <- model_summary %>% aba_plot_coef()
+#' fig2 <- model_summary %>% aba_plot_metric()
+#'
 stat_lm <- function(std.beta = FALSE,
                    complete.cases = TRUE) {
   fns <- list(

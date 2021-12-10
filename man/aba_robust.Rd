@@ -41,10 +41,10 @@ effect this has on diagnostic or prognostic modelling.
 \examples{
 
 # read and process data
-df <- adnimerge \%>\% dplyr::filter(VISCODE == 'bl')
+data <- adnimerge \%>\% dplyr::filter(VISCODE == 'bl')
 
 # fit a standard model to predict a binary outcome
-model <- df \%>\% aba_model() \%>\%
+model <- data \%>\% aba_model() \%>\%
   set_groups(everyone()) \%>\%
   set_outcomes(CSF_ABETA_STATUS_bl) \%>\%
   set_predictors(PLASMA_PTAU181_bl, PLASMA_NFL_bl) \%>\%

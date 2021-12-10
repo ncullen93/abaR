@@ -48,12 +48,12 @@ a treatment variable whose effect on the endpoint you care about.
 # assume abeta status as "treatment" variable.
 # The goal is to see if "treatment" has an effect on 2y cognitive decline
 data <- adnimerge \%>\%
-  filter(
+  dplyr::filter(
     VISCODE == 'm24',
     DX_bl \%in\% c('MCI', 'AD'),
     !is.na(CSF_ABETA_STATUS_bl)
   ) \%>\%
-  mutate(
+  dplyr::mutate(
     CDRSB = CDRSB - CDRSB_bl,
     ADAS13 = ADAS13 - ADAS13_bl,
     TREATMENT = factor(CSF_ABETA_STATUS_bl, levels=c(1,0),

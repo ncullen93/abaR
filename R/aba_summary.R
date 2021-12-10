@@ -281,9 +281,7 @@ as_table <- function(object) {
       .data$outcome,
       .data$stat
     ) %>%
-    nest()
-
-  x_res <- x_res %>%
+    nest() %>%
     ungroup() %>%
     unnest(cols=c(.data$data))
 
@@ -300,14 +298,13 @@ as_table <- function(object) {
     x_res %>%
       filter(form == 'metric') %>%
       select(-c('form'))
-  )
-
-  r_metric <- r_metric %>%
+  ) %>%
     select(-nobs, everything())
 
   r_results <- r_coef %>%
-    bind_cols(
-      r_metric %>% select(-c(predictor_set, group, outcome, stat))
+    left_join(
+      r_metric,
+      by = c('group', 'outcome', 'stat', 'predictor_set')
     )
 
   # replace group names for printing if they exist
@@ -372,8 +369,9 @@ print.abaSummary <- function(x, ...) {
     select(-nobs, everything())
 
   r_results <- r_coef %>%
-    bind_cols(
-      r_metric %>% select(-c(predictor_set, group, outcome, stat))
+    left_join(
+      r_metric,
+      by = c('group', 'outcome', 'stat', 'predictor_set')
     )
 
   # replace group names for printing if they exist
