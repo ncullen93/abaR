@@ -1,37 +1,57 @@
-
-
-#' Create a lme stat to use for an aba model.
+#' Create an lme stat object.
 #'
-#' @param id string or variable. id variable
-#' @param time string or variable. time variable.
+#' This function creates an lme stat object which can be passed as input
+#' to the `set_stats()` function when building an aba model. This stat performs
+#' a linear mixed effects model analysis using the `lme` function from the
+#' `nlme` package. Please note that the default mode is to include an interaction
+#' term between the `time` variable and each predictor - i.e., `time*predictor`
+#' will be in the model formula - but this does not happen for covariates. Also,
+#' this model fits random intercepts and random slopes. The data for this model
+#' should be in long format with one row per subject-visit.
 #'
-#' @return
-#' list of the following functions:
-#'   * `formula_fn`: create a formula
-#'   * `fit_fn`: fit a model
-#'   * `evaluate_fn`: evaluate a model
+#' @param id string. This is the variable in the data which represents the
+#'   subject id to be used for random intercepts and random slopes.
+#' @param time string. This is the time variable in the data which represents
+#'   the time from baseline that the visit occured.
+#' @param std.beta logical. Whether to standardize model predictors and
+#'   covariates prior to analysis.
+#' @param complete.cases  logical. Whether to only include the subset of data
+#'   with no missing data for any of the outcomes, predictors, or covariates.
+#'   Note that complete cases are considering within each group - outcome
+#'   combination but across all predictor sets.
 #'
+#' @return An abaStat object with `lme` stat type.
 #' @export
 #'
 #' @examples
-#' my_stat <- stat_lme(id='SUBJECT_ID',
-#'                    time='Years_bl')
 #'
-#' #my_formula <- my_stat$formula_fn(
-#' #  outcome='ConvertedToAlzheimers',
-#' #  predictors=c('PLASMA_PTAU181_bl','PLASMA_NFL_bl'),
-#' #  covariates=c('AGE_bl','GENDER','EDUCAT'),
-#' #  id
-#' #)
-#'#
-#' #my_model <- my_stat$fit_fn(
-#' #  formula = my_formula,
-#' #  data = adni_sample
-#' #)
+#' data <- adnimerge %>%
+#'   dplyr::filter(VISCODE %in% c('bl','m06','m12','m24'))
+#'
+#' model <- data %>% aba_model() %>%
+#'   set_groups(
+#'     everyone(),
+#'     DX_bl %in% c('MCI', 'AD')
+#'   ) %>%
+#'   set_outcomes(CDRSB, ADAS13) %>%
+#'   set_predictors(
+#'     PLASMA_ABETA_bl,
+#'     PLASMA_PTAU181_bl,
+#'     PLASMA_NFL_bl,
+#'     c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+#'   ) %>%
+#'   set_covariates(AGE, GENDER, EDUCATION) %>%
+#'   set_stats(
+#'     stat_lme(id = 'RID', time = 'YEARS_bl')
+#'   ) %>%
+#'   fit()
+#'
+#' model_summary <- model %>% aba_summary()
+#'
 stat_lme <- function(id,
-                    time,
-                    std.beta = FALSE,
-                    complete.cases = TRUE) {
+                     time,
+                     std.beta = FALSE,
+                     complete.cases = TRUE) {
   fns <- list(
     'formula_fn' = formula_lme,
     'fit_fn' = fit_lme,
@@ -50,6 +70,7 @@ stat_lme <- function(id,
   return(fns)
 }
 
+# helper function for lme
 formula_lme <- function(outcome, predictors, covariates, extra_params) {
   time <- extra_params$time
   id <- extra_params$id
@@ -73,7 +94,7 @@ formula_lme <- function(outcome, predictors, covariates, extra_params) {
   return(f)
 }
 
-# fit a lme model
+# helper function for lme
 fit_lme <- function(formula, data, extra_params) {
   time <- extra_params$time
   id <- extra_params$id
@@ -95,7 +116,7 @@ fit_lme <- function(formula, data, extra_params) {
   return(model)
 }
 
-#' @export
+# helper function for lme
 aba_tidy.lme <- function(model, predictors, covariates, ...) {
 
   # include time in predictors
@@ -119,7 +140,7 @@ aba_tidy.lme <- function(model, predictors, covariates, ...) {
 }
 
 
-#' @export
+# helper function for lme
 aba_glance.lme <- function(x, ...) {
 
   glance_df <- broom.mixed::glance(x) %>% #select(-logLik)
