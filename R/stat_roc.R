@@ -45,7 +45,7 @@
 #'   fit()
 #'
 #' # summarise model
-#' model_summary <- model %>% ummary()
+#' model_summary <- model %>% summary()
 #'
 #' # if using predictors where higher values are better, then flip direction
 #' model2 <- model %>%
