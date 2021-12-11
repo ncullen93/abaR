@@ -56,4 +56,4 @@ VignetteBuilder: knitr
 Depends: 
     R (>= 2.10)
 URL: https://ncullen93.github.io/abaR,
-     https://github.com/ncullen93/abaR
+    https://github.com/ncullen93/abaR
