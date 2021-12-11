@@ -1,8 +1,8 @@
 ---
-title: "overview"
+title: "An overview of the abaR package"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{overview}
+  %\VignetteIndexEntry{An overview of the abaR package}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -12,7 +12,30 @@ knitr::opts_chunk$set(collapse = T, comment = "#>")
 options(tibble.print_min = 5L, tibble.print_max = 5L)
 ```
 
+## Head 1
+
+test test
+
 ```{r setup}
+library(dplyr)
 library(aba)
 
+data <- aba::adnimerge
+data
 ```
+
+### Sub 1
+
+test test
+
+### Sub 2
+
+test test
+
+## Head 2
+
+test test
+
+## Head 3
+
+test test

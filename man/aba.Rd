@@ -12,6 +12,7 @@ Automated biomarker analysis in R (abaR) is intended to make it easier to fit st
 Useful links:
 \itemize{
   \item \url{https://ncullen93.github.io/abaR}
+  \item \url{https://github.com/ncullen93/abaR}
 }
 
 }

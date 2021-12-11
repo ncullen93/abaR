@@ -1,6 +1,6 @@
 Package: aba
 Title: Automated biomarker analysis in R
-Version: 0.0.2
+Version: 0.0.9
 Authors@R: 
     person(given = "Nicholas",
            family = "Cullen",
@@ -54,4 +54,5 @@ Imports:
 VignetteBuilder: knitr
 Depends: 
     R (>= 2.10)
-URL: https://ncullen93.github.io/abaR
+URL: https://ncullen93.github.io/abaR,
+     https://github.com/ncullen93/abaR

@@ -12,12 +12,9 @@ knitr::opts_chunk$set(
   out.width = "100%"
 )
 ```
-
-# Automated biomarker analysis in R (abaR)
-
+# Automated biomarker analysis in R
 <!-- badges: start -->
 <!-- badges: end -->
-
 The goals of abaR are the following:
 
 * to make it easy to fit many statistical models

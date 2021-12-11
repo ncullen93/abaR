@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# Automated biomarker analysis in R (abaR)
+# Automated biomarker analysis in R
 
 <!-- badges: start -->
 <!-- badges: end -->
