@@ -11,7 +11,7 @@ navbar:
   type: light
   bg: none
   structure:
-    left:  [intro, articles, reference, tutorials]
+    left:  [intro, articles, publications, reference]
     right: [news, github]
   components:
     articles:
@@ -24,6 +24,11 @@ navbar:
       - text: "Advanced examples"
       - text: ------
       - text: "FAQ"
+    publications:
+      text: Publications
+      menu:
+      - text: "Cullen et al, Nature Communications (2021)"
+        href: articles/overview.html
 
 reference:
   - title: Core functions
