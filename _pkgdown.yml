@@ -22,8 +22,6 @@ navbar:
         href: articles/overview.html
       - text: ------
       - text: "Advanced examples"
-      - text: Plotting results
-        href: articles/test.html
       - text: ------
       - text: "FAQ"
 
