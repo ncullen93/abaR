@@ -8,6 +8,13 @@
 \description{
 Automated biomarker analysis in R (abaR) is intended to make it easier to fit statistical models on biomarker data, to make it easier to use biomarkers to plan and analysis clinical trials, and to facilitate more multi-cohort validation studies.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://ncullen93.github.io/abaR}
+}
+
+}
 \author{
 \strong{Maintainer}: Nicholas Cullen \email{nicholas.cullen@med.lu.se} (\href{https://orcid.org/YOUR-ORCID-ID}{ORCID})
 
