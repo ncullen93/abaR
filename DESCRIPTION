@@ -50,7 +50,8 @@ Imports:
     OptimalCutpoints,
     tableone,
     longpower,
-    withr
+    withr,
+    reactable
 VignetteBuilder: knitr
 Depends: 
     R (>= 2.10)

@@ -6,7 +6,7 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goals of abaR are the following:
+The goals of abaR are to do the following:
 
 -   to make it easy to fit many statistical models
 -   to provide high-level functions for common model visualizations

@@ -327,6 +327,28 @@ as_table <- function(object) {
   r_results
 }
 
+#' @export
+as_reactable <- function(object) {
+  mytable <- object %>% as_table() %>%
+    tidyr::unite('grouping', group, outcome, stat, sep=' | ')
+
+  reactable::reactable(mytable, groupBy=c('grouping'),
+                       pagination = FALSE,
+                       sortable = FALSE,
+                       showPageInfo = FALSE,
+                       defaultColDef = reactable::colDef(
+                         header = function(value) gsub(".", " ", value, fixed = TRUE),
+                         cell = function(value) format(value, nsmall = 1),
+                         align = "center",
+                         minWidth = 140,
+                         html=TRUE,
+                         headerStyle = list(background = "#f7f7f8")
+                       ),
+                       style = list(fontFamily = "Work Sans, sans-serif",
+                                    fontSize = "14px"),
+                       compact=F,
+                       striped = T)
+}
 
 #' @export
 print.abaSummary <- function(x, ...) {
