@@ -13,8 +13,22 @@
 #'   - results: the resulting fitted statistics.
 #'
 #' @param data data.frame the data to use for the object
-#' @param spec abaModelSpec the spec to use for the model. Can be created with
-#'   model_spec().
+#' @param groups vector or list of logical statements as trings. Groups are
+#' subsets of the data on which different models will be fit.
+#' @param outcomes vector or list of strings Outcomes are the dependent
+#'   variables in the statistical fits.
+#' @param covariates vector of strings Covariates are independent variables
+#'   which remain fixed across all statistical fits and are therefore always
+#'   included with the different combinations of predictors.
+#' @param predictors vector or list of strings Predictors are independent
+#'   variables which you want to vary. You can include variables on their own
+#'   or in combination with others. A collection of variables is referred to as
+#'   a `predictor` and unique variables are referred to as a `term`.
+#' @param stats string or abaStat object(s) with `stat_` prefix. Stats are
+#'   the actual statistical models which you want to fit on the data. Their
+#'   primary functions are to 1) generate a suitable model formula given the
+#'   outcome - covariate - predictor combination, and 2) to actually fit the
+#'   statistical model.
 #' @param verbose logical. Whether to give a progress bar during model fitting.
 #'   This can be useful if the fitting procedure is going to take a long time.
 #'

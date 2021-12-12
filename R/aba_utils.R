@@ -155,7 +155,6 @@ set_outcomes <- function(object, ..., labels = NULL) {
 #' @param ... strings or variables. This comma-separated collection of values
 #'   will become the single set of covariates. If you supply actual variables,
 #'   then the data of the aba model should already be set.
-#' @param labels vector of strings. Optional labels for printing & plotting.
 #'
 #' @return An aba model with covariates set.
 #'
@@ -350,7 +349,7 @@ add_predictors <- function(object, ...) {
 #' `complete.cases` which determines whether to only use individuals with all
 #' available data within each group - outcome but across all predictor sets.
 #'
-#' @param object an aba model. The model on which to set stats.
+#' @param .model an aba model. The model on which to set stats.
 #' @param ... strings or aba stat object. Each comma-separated value will be
 #'   a different stat. If you specify a string, then the default stat params
 #'   will be used. Some stats require that you actually call them (e.g. `stat_lme`)
@@ -371,7 +370,7 @@ add_predictors <- function(object, ...) {
 #' # such as `std.beta` and `complete.cases` which is common to all stats.
 #' model <- aba_model() %>%
 #'   set_stats(
-#'     stat_glm(std.beta = T, complete.cases = F)
+#'     stat_glm(std.beta = TRUE, complete.cases = FALSE)
 #'   )
 #'
 #' # some stats such as lme require parameters

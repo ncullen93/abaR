@@ -69,7 +69,7 @@ model_summary <- model \%>\% aba_summary()
 metric_plot <- model_summary \%>\% aba_plot_metric()
 
 # coord flip
-metric_plot2 <- model_summary \%>\% aba_plot_metric(coord_flip=T)
+metric_plot2 <- model_summary \%>\% aba_plot_metric(coord_flip=TRUE)
 
 # compare predictor sets within each outcome instead of the opposite
 metric_plot3 <- model_summary \%>\%

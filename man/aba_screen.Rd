@@ -89,7 +89,7 @@ model_screen <- model \%>\%
     cost_multiplier = c(4, 8, 16),
     include_n = 1000,
     ntrials = 5,
-    verbose = T
+    verbose = TRUE
   )
 
 }

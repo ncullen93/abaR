@@ -7,14 +7,14 @@
 set_stats(.model, ..., labels = NULL)
 }
 \arguments{
+\item{.model}{an aba model. The model on which to set stats.}
+
 \item{...}{strings or aba stat object. Each comma-separated value will be
 a different stat. If you specify a string, then the default stat params
 will be used. Some stats require that you actually call them (e.g. \code{stat_lme})
 because they require other parameters like \code{id} and \code{time} variables.}
 
 \item{labels}{vector of strings. Labels for printing & plotting.}
-
-\item{object}{an aba model. The model on which to set stats.}
 }
 \value{
 An abaModel object with stats sets.
@@ -45,7 +45,7 @@ model <- aba_model() \%>\%
 # such as `std.beta` and `complete.cases` which is common to all stats.
 model <- aba_model() \%>\%
   set_stats(
-    stat_glm(std.beta = T, complete.cases = F)
+    stat_glm(std.beta = TRUE, complete.cases = FALSE)
   )
 
 # some stats such as lme require parameters

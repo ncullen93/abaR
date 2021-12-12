@@ -10,6 +10,9 @@
 #' @param control abaControl. An aba control object which allows users to
 #'   customize the summary process -- e.g., whether to include covariates in
 #'   the table.
+#' @param adjust abaAdjust. An aba adjust object which allows users to
+#'   specify p-value adjustment using a variety of methods and across arbitrary
+#'   model factors.
 #' @param verbose logical. Whether to provide a progress bar to track status.
 #'
 #' @return an abaSummary object which contains coefficients and metrics from
@@ -38,7 +41,7 @@
 #' model_summary <- model %>% aba_summary()
 #'
 #' # create an aba control object to customize the summary
-#' my_control <- aba_control(include_covariates = F)
+#' my_control <- aba_control(include_covariates = FALSE)
 #'
 #' # summarise model with th custom aba control - notice covariates
 #' # wont be included in the tables when you print the summary to console
@@ -81,10 +84,8 @@ aba_summary <- function(object,
 }
 
 #' @export
-summary.abaModel <- function(object,
-                             control = aba_control(),
-                             verbose = FALSE) {
-  object %>% aba_summary(control=control, verbose = verbose)
+summary.abaModel <- function(object, ...) {
+  object %>% aba_summary(...)
 }
 
 # helper function for aba summary
@@ -115,7 +116,7 @@ calculate_coefs <- function(object, control) {
 }
 
 # helper function for aba_summary
-coefs_pivot_wider <- function(object, wider = F) {
+coefs_pivot_wider <- function(object, wider = FALSE) {
   df <- object$results$coefs %>%
     mutate(
       estimate = purrr::pmap_chr(
@@ -264,14 +265,50 @@ metric_fmt <- function(est, lo, hi) {
 #' # convert summary to table
 #' my_table <- model_summary %>% as_table()
 #'
-as_table <- function(object, wider = F) {
+as_table <- function(object) {
   df1 <- object %>% coefs_pivot_wider()
   df2 <- object %>% metrics_pivot_wider()
   df <- df1 %>% left_join(df2, by=c('group','outcome','stat','predictor'))
   df
 }
 
+
+#' Convert an aba summary to a interactive react table
+#'
+#' This function allows you to format an aba summary in the same way
+#' which it is printed to the console using the `print` function. And then
+#' it will be converted to an interactive react table that can be explored
+#' in the Rstudio viewer or in a Shiny app.
+#'
+#' @param object abaSummary. The aba summary to format as a reacttable.
+#'
+#' @return A reactable object from the reactable package
 #' @export
+#'
+#' @examples
+#'
+#' # use built-in data
+#' data <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
+#'
+#' # fit an aba model
+#' model <- data %>% aba_model() %>%
+#'   set_groups(everyone()) %>%
+#'   set_outcomes(PET_ABETA_STATUS_bl) %>%
+#'   set_predictors(
+#'     PLASMA_PTAU181_bl,
+#'     PLASMA_NFL_bl,
+#'     c(PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+#'   ) %>%
+#'   set_covariates(AGE, GENDER, EDUCATION) %>%
+#'   set_stats('glm') %>%
+#'   fit()
+#'
+#' # default aba summary
+#' model_summary <- model %>% aba_summary()
+#'
+#' # convert summary to table
+#' my_table <- model_summary %>% as_reactable()
+#'
 as_reactable <- function(object) {
   mytable <- object %>% as_table() %>%
     tidyr::unite('grouping', group, outcome, stat, sep=' | ')
@@ -291,7 +328,7 @@ as_reactable <- function(object) {
                        style = list(fontFamily = "Work Sans, sans-serif",
                                     fontSize = "14px"),
                        compact=F,
-                       striped = T)
+                       striped = TRUE)
 }
 
 #' @export

@@ -45,15 +45,13 @@
 #'
 #' model <- data %>% aba_model() %>%
 #'   set_groups(
-#'     everyone(),
 #'     DX_bl %in% c('MCI', 'AD')
 #'   ) %>%
 #'   set_outcomes(CDRSB, ADAS13) %>%
 #'   set_predictors(
 #'     PLASMA_ABETA_bl,
 #'     PLASMA_PTAU181_bl,
-#'     PLASMA_NFL_bl,
-#'     c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+#'     PLASMA_NFL_bl
 #'   ) %>%
 #'   set_covariates(AGE, GENDER, EDUCATION) %>%
 #'   set_stats(
@@ -152,7 +150,7 @@ fit_mmrm <- function(formula, data, extra_params) {
 aba_tidy.gls <- function(model, predictors, covariates, ...) {
 
   time_var <- strsplit(as.character(model$call$weights)[2], ' | ')[[1]][3]
-  tidy_df <- broom.mixed::tidy(model, conf.int=T) %>%
+  tidy_df <- broom.mixed::tidy(model, conf.int=TRUE) %>%
     filter(
       !(.data$term %in% predictors)
     ) %>%

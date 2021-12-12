@@ -43,10 +43,10 @@
 #'   aba_fit()
 #'
 #' # run emmeans
+#' \dontrun{
 #' model_emmeans <- model %>% aba_emmeans()
-#'
+#' }
 aba_emmeans <- function(model) {
-
   # count df
   count_df <- model$results %>%
     group_by(group, outcome, stat, predictor) %>%
@@ -275,7 +275,7 @@ plot_emmeans_helper <- function(group, outcome, stat, predictor, object) {
 
   g <- g +
     xlab('Time from baseline') +
-    ylab('Adjusted mean change\nfrom baseline (±SE)') +
+    ylab('Adjusted mean change\nfrom baseline (SE)') +
     theme_classic(base_size = 18) +
     theme(legend.position=c(0.05, legend_y),
           legend.justification = c(0.05,legend_y),

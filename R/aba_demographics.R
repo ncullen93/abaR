@@ -75,7 +75,7 @@ aba_demographics <- function(object,
       vars = all_vars,
       factorVars = factor_vars,
       data = data,
-      test = T, includeNA = T, addOverall = T
+      test = TRUE, includeNA = TRUE, addOverall = T
     )
   } else {
 
@@ -84,7 +84,7 @@ aba_demographics <- function(object,
       factorVars = factor_vars,
       data = data,
       strata = strata,
-      test = T, includeNA = T, addOverall = T
+      test = TRUE, includeNA = TRUE, addOverall = T
     )
   }
 

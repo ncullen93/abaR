@@ -155,15 +155,15 @@ aba_compile <- function(object, ...) {
   # create initial dataframe of the factor names
   r <- val_list %>%
     purrr::cross_df() %>%
-    unnest_longer(group, indices_to='gid', simplify=F) %>%
-    unnest_longer(outcome, indices_to='oid', simplify=F) %>%
-    unnest_longer(stat, indices_to='sid', simplify=F) %>%
-    unnest_longer(predictor, indices_to='pid', simplify=F) %>%
+    unnest_longer(.data$group, indices_to='gid', simplify=FALSE) %>%
+    unnest_longer(.data$outcome, indices_to='oid', simplify=FALSE) %>%
+    unnest_longer(.data$stat, indices_to='sid', simplify=FALSE) %>%
+    unnest_longer(.data$predictor, indices_to='pid', simplify=FALSE) %>%
     mutate(
       covariate = list(covariate_vals)
     ) %>%
     arrange(
-      group, outcome, stat
+      .data$group, .data$outcome, .data$stat
     ) %>%
     select(-contains('id'), everything())
 

@@ -33,7 +33,7 @@ model <- data \%>\% aba_model() \%>\%
     all_combos('PLASMA_ABETA_bl', 'PLASMA_PTAU181_bl', 'PLASMA_NFL_bl')
   ) \%>\%
   set_stats(
-    stat_glm(std.beta = T)
+    stat_glm(std.beta = TRUE)
   ) \%>\%
   fit()
 

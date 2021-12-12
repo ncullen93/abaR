@@ -12,8 +12,6 @@ set_covariates(object, ...)
 \item{...}{strings or variables. This comma-separated collection of values
 will become the single set of covariates. If you supply actual variables,
 then the data of the aba model should already be set.}
-
-\item{labels}{vector of strings. Optional labels for printing & plotting.}
 }
 \value{
 An aba model with covariates set.

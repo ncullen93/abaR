@@ -17,8 +17,6 @@ aba_adjust(
 Possible choices: group, outcome, stat, predictor_set}
 
 \item{form}{vector. Whether to adjust both metrics and coefs, or just one.}
-
-\item{object}{abaSummary. The aba summary whose p-values will be adjusted.}
 }
 \value{
 an abaSummary object. The abaSummary passed to aba_adjust but with

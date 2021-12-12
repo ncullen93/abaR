@@ -25,7 +25,7 @@
 #'     all_combos('PLASMA_ABETA_bl', 'PLASMA_PTAU181_bl', 'PLASMA_NFL_bl')
 #'   ) %>%
 #'   set_stats(
-#'     stat_glm(std.beta = T)
+#'     stat_glm(std.beta = TRUE)
 #'   ) %>%
 #'   fit()
 #'
@@ -34,7 +34,7 @@
 all_combos <- function(...) {
   values <- c(...)
   combo_vals <- seq_along(values) %>%
-    map(~combn(values, .x, simplify=F)) %>%
+    map(~combn(values, .x, simplify=FALSE)) %>%
     flatten()
   return(combo_vals)
 }
@@ -64,7 +64,7 @@ all_combos <- function(...) {
 #'   set_outcomes(ConvertedToAlzheimers, CSF_ABETA_STATUS_bl) %>%
 #'   set_predictors(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl) %>%
 #'   set_stats(
-#'     stat_glm(std.beta = T)
+#'     stat_glm(std.beta = TRUE)
 #'   ) %>%
 #'   fit()
 #'

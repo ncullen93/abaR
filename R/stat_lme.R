@@ -121,9 +121,9 @@ aba_tidy.lme <- function(model, predictors, covariates, ...) {
 
   # include time in predictors
   time_var <- as.character(model$call$random)[2] %>%
-    strsplit(' | ', fixed=T) %>% unlist() %>% head(1)
+    strsplit(' | ', fixed=TRUE) %>% unlist() %>% head(1)
 
-  tidy_df <- broom.mixed::tidy(model, effects='fixed', conf.int=T)
+  tidy_df <- broom.mixed::tidy(model, effects='fixed', conf.int=TRUE)
 
   tidy_df <- tidy_df %>%
     select(-c(.data$df)) %>%

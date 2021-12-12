@@ -15,7 +15,7 @@
 #' Also, note that the model selection procedure is run separately for each
 #' group - outcome - stat combination.
 #'
-#' @param object abaModel. The fitted aba model to run selection on.
+#' @param model abaModel. The fitted aba model to run selection on.
 #' @param method string. The selection algorithm to use (forward or backward).
 #' @param criteria string. Which metric to use when selecting the next
 #'   model (aic or pval).
@@ -49,12 +49,14 @@
 #' model_summary <- model %>% aba_summary()
 #'
 #' # default selection - forward selection by AIC with threshold = -2
-#' model_selection <- model %>% aba_selection(verbose=T)
-#'
+#' \dontrun{
+#' model_selection <- model %>% aba_selection(verbose=TRUE)
+#' }
 #' # selection with p-value and threshold = 0.1
+#' \dontrun{
 #' model_selection <- model %>%
-#'   aba_selection(criteria = 'pval', threshold=0.1, verbose=T)
-#'
+#'   aba_selection(criteria = 'pval', threshold=0.1, verbose=TRUE)
+#' }
 #' # selection by group
 #' model2 <- model %>%
 #'   set_predictors(
@@ -68,24 +70,30 @@
 #'
 #' model_summary2 <- model2 %>% aba_summary()
 #'
+#' \dontrun{
 #' model_selection2 <- model2 %>%
-#'   aba_selection(criteria='pval', threshold=0.1, verbose=T)
+#'   aba_selection(criteria='pval', threshold=0.1, verbose=TRUE)
+#' }
 #'
 #' # add more outcomes
 #' model3 <- model2 %>%
 #'   set_outcomes(ConvertedToAlzheimers, ConvertedToDementia) %>%
 #'   aba_fit()
 #'
+#' \dontrun{
 #' model_selection3 <- model3 %>%
-#'   aba_selection(criteria='pval', threshold=0.1, verbose=T)
+#'   aba_selection(criteria='pval', threshold=0.1, verbose=TRUE)
+#' }
 #'
 #' # add more groups
 #' model4 <- model3 %>%
 #'   set_groups(everyone(), DX_bl %in% c('MCI','AD')) %>%
 #'   aba_fit()
 #'
+#' \dontrun{
 #' model_selection4 <- model4 %>%
-#'   aba_selection(criteria='pval', threshold=0.1, verbose=T)
+#'   aba_selection(criteria='pval', threshold=0.1, verbose=TRUE)
+#' }
 #'
 aba_selection <- function(model,
                           method = c('forward', 'backward'),
@@ -262,7 +270,8 @@ find_next_model <- function(object, baseline_value, criteria, threshold, verbose
 
 
 #' @export
-print.abaSelection <- function(object, ...) {
+print.abaSelection <- function(x, ...) {
+  object <- x
   results <- object$results
   results <- results %>%
     group_by(group, outcome, stat) %>%
@@ -291,7 +300,7 @@ print.abaSelection <- function(object, ...) {
       info_data <- info$data[[1]]
       predictors <- colnames(info_data)[is.na(info_data[1,])]
       old_order <- purrr::map_int(predictors, ~sum(is.na(info_data[[.x]])))
-      new_order <- sort(old_order, index.return=T)$ix
+      new_order <- sort(old_order, index.return=TRUE)$ix
       predictors_new <- predictors[new_order]
       info_data[,predictors] <- info_data[,predictors_new]
       colnames(info_data)[colnames(info_data) %in% predictors] <- predictors_new

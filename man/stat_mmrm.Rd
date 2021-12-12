@@ -65,15 +65,13 @@ data <- adnimerge \%>\%
 
 model <- data \%>\% aba_model() \%>\%
   set_groups(
-    everyone(),
     DX_bl \%in\% c('MCI', 'AD')
   ) \%>\%
   set_outcomes(CDRSB, ADAS13) \%>\%
   set_predictors(
     PLASMA_ABETA_bl,
     PLASMA_PTAU181_bl,
-    PLASMA_NFL_bl,
-    c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+    PLASMA_NFL_bl
   ) \%>\%
   set_covariates(AGE, GENDER, EDUCATION) \%>\%
   set_stats(

@@ -67,7 +67,7 @@ model_robust <- model \%>\%
   aba_robust(
     variation = variation,
     ntrials = 10,
-    verbose = T
+    verbose = TRUE
   )
 
 # plot results using the generic plot function

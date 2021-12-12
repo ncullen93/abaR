@@ -18,6 +18,10 @@ aba_summary(
 customize the summary process -- e.g., whether to include covariates in
 the table.}
 
+\item{adjust}{abaAdjust. An aba adjust object which allows users to
+specify p-value adjustment using a variety of methods and across arbitrary
+model factors.}
+
 \item{verbose}{logical. Whether to provide a progress bar to track status.}
 }
 \value{
@@ -52,7 +56,7 @@ model <- data \%>\% aba_model() \%>\%
 model_summary <- model \%>\% aba_summary()
 
 # create an aba control object to customize the summary
-my_control <- aba_control(include_covariates = F)
+my_control <- aba_control(include_covariates = FALSE)
 
 # summarise model with th custom aba control - notice covariates
 # wont be included in the tables when you print the summary to console

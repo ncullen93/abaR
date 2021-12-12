@@ -21,29 +21,15 @@ Suggests:
     knitr,
     plotly,
     rmarkdown,
-    testthat (>= 3.0.0)
-Config/testthat/edition: 3
-Imports: 
-    purrr,
-    dplyr,
-    magrittr,
-    stringr,
-    rlang,
-    glue,
-    tidyr,
+    testthat (>= 3.0.0),
     methods,
     tidyselect,
-    generics,
-    stats,
     nlme,
-    broom,
-    tibble,
     yardstick,
     pins,
     Matrix,
     MuMIn,
     broom.mixed,
-    ggplot2,
     emmeans,
     ggpubr,
     pROC,
@@ -52,7 +38,24 @@ Imports:
     tableone,
     longpower,
     withr,
-    reactable
+    reactable,
+    psychometric,
+    readr,
+    writexl
+Config/testthat/edition: 3
+Imports: 
+    purrr,
+    dplyr,
+    broom,
+    tibble,
+    ggplot2,
+    glue,
+    magrittr,
+    stringr,
+    rlang,
+    tidyr,
+    stats,
+    generics
 VignetteBuilder: knitr
 Depends: 
     R (>= 2.10)

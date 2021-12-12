@@ -105,8 +105,8 @@ aba_write.TableOne <- function(object,
   r <- object
 
   if (endsWith(filename, '.csv')) {
-    write.csv(
-      print(r, showAllLevels=T),
+    utils::write.csv(
+      print(r, showAllLevels=TRUE),
       filename,
       fileEncoding = 'UTF-8'
     )
@@ -124,7 +124,7 @@ save_helper <- function(results, filename, separate) {
     results %>%
       utils::write.csv(
         filename,
-        row.names = F
+        row.names = FALSE
       )
   } else if (file_ext %in% c('xls', 'xlsx')) {
     if (!separate) {

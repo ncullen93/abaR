@@ -242,13 +242,14 @@ aba_plot.abaLongpower <- function(object, ...) {
 }
 
 #' @export
-print.abaLongpower <- function(object, ...) {
+print.abaLongpower <- function(x, ...) {
+  object <- x
  results <- object$results
  results <- results %>%
-   group_by(group, outcome, stat, predictor_set) %>%
+   group_by(group, outcome, stat, predictor) %>%
    nest() %>%
    mutate(
-     label = glue('{group} | {outcome} | {stat} | {predictor_set}')
+     label = glue('{group} | {outcome} | {stat} | {predictor}')
    )
 
  results_split <- stats::setNames(

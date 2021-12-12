@@ -13,6 +13,8 @@ aba_selection(
 )
 }
 \arguments{
+\item{model}{abaModel. The fitted aba model to run selection on.}
+
 \item{method}{string. The selection algorithm to use (forward or backward).}
 
 \item{criteria}{string. Which metric to use when selecting the next
@@ -22,8 +24,6 @@ model (aic or pval).}
 (defaults to -2 for aic; defaults to 0.1 for pval).}
 
 \item{verbose}{logical. Whether to print out results of each selection round.}
-
-\item{object}{abaModel. The fitted aba model to run selection on.}
 }
 \value{
 an abaSelection object which contains model summary information such
@@ -68,12 +68,14 @@ model <- df \%>\% aba_model() \%>\%
 model_summary <- model \%>\% aba_summary()
 
 # default selection - forward selection by AIC with threshold = -2
-model_selection <- model \%>\% aba_selection(verbose=T)
-
+\dontrun{
+model_selection <- model \%>\% aba_selection(verbose=TRUE)
+}
 # selection with p-value and threshold = 0.1
+\dontrun{
 model_selection <- model \%>\%
-  aba_selection(criteria = 'pval', threshold=0.1, verbose=T)
-
+  aba_selection(criteria = 'pval', threshold=0.1, verbose=TRUE)
+}
 # selection by group
 model2 <- model \%>\%
   set_predictors(
@@ -87,23 +89,29 @@ model2 <- model \%>\%
 
 model_summary2 <- model2 \%>\% aba_summary()
 
+\dontrun{
 model_selection2 <- model2 \%>\%
-  aba_selection(criteria='pval', threshold=0.1, verbose=T)
+  aba_selection(criteria='pval', threshold=0.1, verbose=TRUE)
+}
 
 # add more outcomes
 model3 <- model2 \%>\%
   set_outcomes(ConvertedToAlzheimers, ConvertedToDementia) \%>\%
   aba_fit()
 
+\dontrun{
 model_selection3 <- model3 \%>\%
-  aba_selection(criteria='pval', threshold=0.1, verbose=T)
+  aba_selection(criteria='pval', threshold=0.1, verbose=TRUE)
+}
 
 # add more groups
 model4 <- model3 \%>\%
   set_groups(everyone(), DX_bl \%in\% c('MCI','AD')) \%>\%
   aba_fit()
 
+\dontrun{
 model_selection4 <- model4 \%>\%
-  aba_selection(criteria='pval', threshold=0.1, verbose=T)
+  aba_selection(criteria='pval', threshold=0.1, verbose=TRUE)
+}
 
 }

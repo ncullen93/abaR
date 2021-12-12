@@ -15,17 +15,17 @@ navbar:
     right: [news, github]
   components:
     articles:
-      text: Examples
+      text: Learn
       menu:
-      - text: "Basic examples"
+      - text: "Basic tutorials"
       - text: Intro to aba models
         href: articles/overview.html
       - text: ------
-      - text: "Advanced examples"
+      - text: "Advanced tutorials"
       - text: ------
       - text: "FAQ"
     publications:
-      text: Publications
+      text: Examples
       menu:
       - text: "Cullen et al, Nature Communications (2021)"
         href: articles/overview.html

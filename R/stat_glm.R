@@ -29,7 +29,7 @@
 #'     c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
 #'   ) %>%
 #'   set_stats(
-#'     stat_glm(std.beta = T)
+#'     stat_glm(std.beta = TRUE)
 #'   ) %>%
 #'   fit()
 #'
@@ -91,7 +91,7 @@ aba_glance.glm <- function(x, x0, ...) {
   data$.Predicted <- stats::predict(fit, type='response')
   data$.Truth <- factor(data[[outcome]])
 
-  roc_obj <- pROC::roc(data, .Truth, .Predicted, ci = T, quiet = T)
+  roc_obj <- pROC::roc(data, .Truth, .Predicted, ci = TRUE, quiet = TRUE)
   auc_val <- roc_obj$auc[1]
   auc_val_lo <- roc_obj$ci[1]
   auc_val_hi <- roc_obj$ci[3]
@@ -168,7 +168,7 @@ aba_glance.glm <- function(x, x0, ...) {
 #'     c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
 #'   ) %>%
 #'   set_stats(
-#'     stat_glm(std.beta = T)
+#'     stat_glm(std.beta = TRUE)
 #'   ) %>%
 #'   fit()
 #'
@@ -220,7 +220,7 @@ plot_roc_single <- function(models, stat, group, outcome, data, ...) {
       data$tmp.outcome.pred <- stats::predict(tmp.model, type = "response")
 
       res <- pROC::roc(tmp.outcome ~ tmp.outcome.pred,
-                       quiet = T, ci=T, data=data, percent=T)
+                       quiet = TRUE, ci=T, data=data, percent=TRUE)
       return(res)
     }
   )

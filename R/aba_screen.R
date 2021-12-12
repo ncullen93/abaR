@@ -70,7 +70,7 @@
 #'     cost_multiplier = c(4, 8, 16),
 #'     include_n = 1000,
 #'     ntrials = 5,
-#'     verbose = T
+#'     verbose = TRUE
 #'   )
 #'
 aba_screen <- function(object,
@@ -211,7 +211,7 @@ run_screen_model <- function(fit,
 
   # run bootstrap sample
   if (idx != 1) {
-    data_fit <- data_fit[sample(nrow(data_fit), nrow(data_fit), replace=T),]
+    data_fit <- data_fit[sample(nrow(data_fit), nrow(data_fit), replace=TRUE),]
   }
 
   base_rate <- mean(data_fit$.Predicted)

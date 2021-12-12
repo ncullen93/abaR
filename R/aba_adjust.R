@@ -2,7 +2,6 @@
 #'
 #' Adjust the p-values (model and/or coefficients) of an abaSummary object.
 #'
-#' @param object abaSummary. The aba summary whose p-values will be adjusted.
 #' @param method string. The method to adjust with. See `p.adjust`.
 #' @param by vector. The groupings to use for adjustment.
 #'   Possible choices: group, outcome, stat, predictor_set

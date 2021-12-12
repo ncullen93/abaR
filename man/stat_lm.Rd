@@ -42,7 +42,7 @@ model <- data \%>\% aba_model() \%>\%
   ) \%>\%
   set_covariates(AGE, GENDER, EDUCATION) \%>\%
   set_stats(
-    stat_lm(std.beta = T)
+    stat_lm(std.beta = TRUE)
   ) \%>\%
   fit()
 
