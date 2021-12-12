@@ -28,19 +28,19 @@ also the way to generate publication-ready tables of model results."><!-- mathja
   <a class="nav-link" href="../articles/aba.html">Get started</a>
 </li>
 <li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-examples">Examples</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-examples">
-    <h6 class="dropdown-header" data-toc-skip>Basic examples</h6>
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-learn">Learn</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-learn">
+    <h6 class="dropdown-header" data-toc-skip>Basic tutorials</h6>
     <a class="dropdown-item" href="../articles/overview.html">Intro to aba models</a>
     <div class="dropdown-divider"></div>
-    <h6 class="dropdown-header" data-toc-skip>Advanced examples</h6>
+    <h6 class="dropdown-header" data-toc-skip>Advanced tutorials</h6>
     <div class="dropdown-divider"></div>
     <h6 class="dropdown-header" data-toc-skip>FAQ</h6>
   </div>
 </li>
 <li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-publications">Publications</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-publications">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-examples">Examples</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-examples">
     <a class="dropdown-item" href="../articles/overview.html">Cullen et al, Nature Communications (2021)</a>
   </div>
 </li>
@@ -93,6 +93,10 @@ also the way to generate publication-ready tables of model results.</p>
 <dd><p>abaControl. An aba control object which allows users to
 customize the summary process -- e.g., whether to include covariates in
 the table.</p></dd>
+<dt>adjust</dt>
+<dd><p>abaAdjust. An aba adjust object which allows users to
+specify p-value adjustment using a variety of methods and across arbitrary
+model factors.</p></dd>
 <dt>verbose</dt>
 <dd><p>logical. Whether to provide a progress bar to track status.</p></dd>
 </dl></div>
@@ -125,7 +129,7 @@ the different statistical fits summarised into publication-ready tables.</p>
 <span class="r-in"><span class="va">model_summary</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">aba_summary</span><span class="op">(</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># create an aba control object to customize the summary</span></span>
-<span class="r-in"><span class="va">my_control</span> <span class="op">&lt;-</span> <span class="fu"><a href="aba_control.html">aba_control</a></span><span class="op">(</span>include_covariates <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">my_control</span> <span class="op">&lt;-</span> <span class="fu"><a href="aba_control.html">aba_control</a></span><span class="op">(</span>include_covariates <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># summarise model with th custom aba control - notice covariates</span></span>
 <span class="r-in"><span class="co"># wont be included in the tables when you print the summary to console</span></span>
