@@ -270,5 +270,9 @@ aba_plot_coef <- function(object,
       )
   }
 
+  if (!is.null(palette) & !is.na(palette)) {
+    g <- ggpubr::set_palette(g, palette)
+  }
+
   return(g)
 }
