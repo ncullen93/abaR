@@ -79,6 +79,7 @@ reference:
   - all_combos
   - everyone
   - as_table
+  - as_reactable
 - title: Built-in datasets
   contents:
   - adnimerge
