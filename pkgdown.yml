@@ -3,8 +3,8 @@ pkgdown: 2.0.1
 pkgdown_sha: ~
 articles:
   aba: aba.html
-  overview: overview.html
-last_built: 2021-12-12T18:33Z
+  intro_to_aba_models: intro_to_aba_models.html
+last_built: 2021-12-12T21:07Z
 urls:
   reference: https://ncullen93.github.io/abaR/reference
   article: https://ncullen93.github.io/abaR/articles
