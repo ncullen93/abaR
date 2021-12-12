@@ -7,6 +7,9 @@
     <loc>https://ncullen93.github.io/abaR/LICENSE.html</loc>
   </url>
   <url>
+    <loc>https://ncullen93.github.io/abaR/articles/aba.html</loc>
+  </url>
+  <url>
     <loc>https://ncullen93.github.io/abaR/articles/index.html</loc>
   </url>
   <url>
@@ -43,9 +46,6 @@
     <loc>https://ncullen93.github.io/abaR/reference/aba_model.html</loc>
   </url>
   <url>
-    <loc>https://ncullen93.github.io/abaR/reference/aba_plot.abaRobust.html</loc>
-  </url>
-  <url>
     <loc>https://ncullen93.github.io/abaR/reference/aba_plot.html</loc>
   </url>
   <url>
@@ -68,9 +68,6 @@
   </url>
   <url>
     <loc>https://ncullen93.github.io/abaR/reference/aba_selection.html</loc>
-  </url>
-  <url>
-    <loc>https://ncullen93.github.io/abaR/reference/aba_spec.html</loc>
   </url>
   <url>
     <loc>https://ncullen93.github.io/abaR/reference/aba_summary.html</loc>
@@ -97,13 +94,7 @@
     <loc>https://ncullen93.github.io/abaR/reference/fit.abaModel.html</loc>
   </url>
   <url>
-    <loc>https://ncullen93.github.io/abaR/reference/get_predictors.html</loc>
-  </url>
-  <url>
     <loc>https://ncullen93.github.io/abaR/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://ncullen93.github.io/abaR/reference/metrics_summary.html</loc>
   </url>
   <url>
     <loc>https://ncullen93.github.io/abaR/reference/pipe.html</loc>
