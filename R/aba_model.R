@@ -73,17 +73,32 @@
 #' print(model_summary$results)
 #'
 aba_model <- function(data = NULL,
-                      spec = aba_spec(),
+                      groups = NULL,
+                      outcomes = NULL,
+                      predictors = NULL,
+                      covariates = NULL,
+                      stats = NULL,
                       verbose = FALSE) {
 
   m <- list(
     'data' = data,
-    'spec' = spec,
+    'groups' = groups,
+    'outcomes' = outcomes,
+    'predictors' = predictors,
+    'covariates' = covariates,
+    'stats' = stats,
     'results' = list(),
     'verbose' = verbose
   )
 
   class(m) <- 'abaModel'
+
+  if (!is.null(data)) m <- m %>% set_data(data)
+  if (!is.null(groups)) m <- m %>% set_groups(groups)
+  if (!is.null(outcomes)) m <- m %>% set_outcomes(outcomes)
+  if (!is.null(predictors)) m <- m %>% set_predictors(predictors)
+  if (!is.null(covariates)) m <- m %>% set_covariates(covariates)
+  if (!is.null(stats)) m <- m %>% set_stats(stats)
 
   return(
     m
@@ -94,41 +109,43 @@ aba_model <- function(data = NULL,
 print.abaModel <- function(x, ...) {
   model <- x
 
-  group_vals <- model$spec$group
-  outcome_vals <- model$spec$outcomes
-  outcome_labels <- names(model$spec$outcomes)
-  covariate_vals <- model$spec$covariates
-  predictor_vals <- model$spec$predictors[-1]
-  predictor_labels <- names(model$spec$predictors[-1])
-  stat_vals <- model$spec$stats
-
+  group_vals <- model$groups
+  group_labels <- names(model$groups)
+  outcome_vals <- model$outcomes
+  outcome_labels <- names(model$outcomes)
+  covariate_vals <- model$covariates
+  predictor_vals <- model$predictors[-1]
+  predictor_labels <- names(model$predictors[-1])
+  stat_vals <- model$stats
 
   cat('\n')
   cat('Groups:\n   ')
-  cat(group_vals, sep='\n   ')
+  if (length(group_vals) > 0) {
+    cat(paste0(group_labels, ': ', group_vals, ''), sep='\n   ')
+  }
 
   # OUTCOMES #
   cat('\nOutcomes:\n   ')
-  if (!is.null(outcome_labels)) {
-    cat(paste0(outcome_labels, ' (', outcome_vals, ')'), sep='\n   ')
-  } else {
-    cat(outcome_vals, sep='\n   ')
+  if (length(outcome_vals) > 0) {
+    cat(paste0(outcome_labels, ': ', outcome_vals, ''), sep='\n   ')
   }
 
   # COVARIATES #
-  cat('\nCovariates:\n   ', covariate_vals, '\n')
+  cat('\nCovariates:\n   ')
+  if (length(covariate_vals) > 0) {
+    cat(covariate_vals)
+    cat('\n')
+  }
 
   # PREDICTORS #
-  if (!is.null(model$spec$treatment)) {
-    cat('\nTreatment:\n   ', model$spec$treatment, '\n')
-  } else {
-    cat('\nPredictors:\n   ')
-    if (!is.null(predictor_labels)) {
-      cat(paste0(predictor_labels, ': ', predictor_vals), sep='\n   ')
-    } else {
-      cat(predictor_vals, sep='\n   ')
-    }
+  cat('\nPredictors:\n   ')
+  if (length(predictor_vals) > 0) {
+    cat(paste0(predictor_labels, ': ', predictor_vals), sep='\n   ')
   }
+
+  # STAT #
   cat('\nStats:\n   ')
-  stat_vals %>% purrr::walk(~cat(print(.),'\n   '))
+  if (length(stat_vals) > 0) {
+    stat_vals %>% purrr::walk(~cat(print(.),'\n   '))
+  }
 }

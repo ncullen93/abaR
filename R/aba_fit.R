@@ -69,45 +69,61 @@ fit.abaModel <- function(object, ...) {
 aba_fit <- function(object, ...) {
   model <- object
 
+  if (is.null(model$groups)) model <- model %>% set_groups(everyone())
+  if (is.null(model$predictors)) model$predictors <- list('Basic'=c())
+
   # compile model
-  model <- model %>% aba_compile()
+  fit_df <- model %>% aba_compile()
 
   # progress bar
   pb <- NULL
-  if (model$verbose) pb <- progress::progress_bar$new(total = nrow(model$results))
+  if (model$verbose) pb <- progress::progress_bar$new(total = nrow(fit_df))
 
-  fit_df <- model$results %>%
+  # add data
+  fit_df <- fit_df %>%
     group_by(group, outcome, stat) %>%
     nest() %>%
-    rename(info = data) %>%
+    rename(info=data) %>%
     rowwise() %>%
     mutate(
-      data_proc = process_dataset(
+      data = process_dataset(
         data = model$data,
         group = .data$group,
         outcome = .data$outcome,
         stat = .data$stat,
-        predictors = model$spec$predictors,
-        covariates = model$spec$covariates,
-        params = model$spec$stats[[.data$stat]]$params
+        predictors = model$predictors,
+        covariates = model$covariates
       )
     ) %>%
-    unnest(info) %>%
+    ungroup() %>%
+    unnest(info)
+
+  # fit model
+  fit_df <- fit_df %>%
     rowwise() %>%
     mutate(
-      stat_fit = parse_then_fit(
-        data = .data$data_proc,
-        group = .data$group,
+      fit = fit_stat(
+        data = .data$data,
         outcome = .data$outcome,
+        stat = .data$stat,
         predictors = .data$predictor,
         covariates = .data$covariate,
-        stat_obj = .data$stat_obj,
         pb = pb
       )
     ) %>%
-    select(group, outcome, stat, predictor_set, predictor,
-           covariate, stat_obj, stat_fit) %>%
     ungroup()
+
+  # select only factor labels and fit
+  fit_df <- fit_df %>%
+    select(
+      gid, oid, sid, pid, fit
+    ) %>%
+    rename(
+      group = gid,
+      outcome = oid,
+      stat = sid,
+      predictor = pid
+    )
 
   model$results <- fit_df
   return(model)
@@ -117,87 +133,58 @@ aba_fit <- function(object, ...) {
 aba_compile <- function(object, ...) {
   model <- object
 
-  data <- model$data
-  group_vals <- model$spec$group
-  outcome_vals <- model$spec$outcomes
-  covariate_vals <- model$spec$covariates
-  predictor_vals <- model$spec$predictors
-  predictor_labels <- names(model$spec$predictors)
-  stat_vals <- model$spec$stats
+  groups <- list(model$groups)
+  outcomes <- list(model$outcomes)
+  stats <- list(model$stats)
+  predictors <- list(model$predictors)
 
-  if (is.null(predictor_vals)) predictor_vals <- ""
-
-  # check that minimum parameters have been set
   if (is.null(model$data)) stop('You must set data before fitting.')
-  if (length(outcome_vals) == 0) stop('You must set at least one outcome.')
-  if (length(predictor_vals) + length(covariate_vals) == 0) {
-    stop('You must set at least one predictor or one covariate')
-  }
-  if (length(stat_vals) == 0) stop('You must set at least one stat.')
+  if (length(outcomes) == 0) stop('You must set at least one outcome.')
+  if (length(stats) == 0) stop('You must set at least one stat.')
+
+  # covariate
+  covariate_vals <- model$covariates
 
   val_list <- list(
-    'groups' = group_vals,
-    'outcomes' = as.vector(outcome_vals),
-    'predictors' = as.vector(predictor_vals),
-    'covariates' = stringr::str_c(covariate_vals, collapse=' + '),
-    'stats' = list(stat_vals)
+    'group' = groups,
+    'outcome' = outcomes,
+    'stat' = stats,
+    'predictor' = predictors
   )
 
-  init_df <- val_list %>% purrr::cross_df() %>%
-    group_by(groups, outcomes)
+  # create initial dataframe of the factor names
+  r <- val_list %>%
+    purrr::cross_df() %>%
+    unnest_longer(group, indices_to='gid', simplify=F) %>%
+    unnest_longer(outcome, indices_to='oid', simplify=F) %>%
+    unnest_longer(stat, indices_to='sid', simplify=F) %>%
+    unnest_longer(predictor, indices_to='pid', simplify=F) %>%
+    mutate(
+      covariate = list(covariate_vals)
+    ) %>%
+    arrange(
+      group, outcome, stat
+    ) %>%
+    select(-contains('id'), everything())
 
-  # add model names
-  if (!is.null(predictor_labels)) {
-    init_df <- init_df %>%
-      mutate(
-        MID = predictor_labels
-      ) %>%
-      ungroup() %>%
-      select(MID, everything())
-  } else {
-    init_df <- init_df %>%
-      mutate(MID = paste0('M',row_number())) %>% ungroup() %>%
-      select(MID, everything())
-  }
-
-  model$results <- init_df %>% tibble() %>%
-    unnest_wider(stats) %>%
-    pivot_longer(cols = names(stat_vals),
-                 names_to = 'stats', values_to = 'stats_obj')
-
-  model$results <- model$results %>%
-    rename(
-      predictor_set = MID,
-      group = groups,
-      outcome = outcomes,
-      predictor = predictors,
-      covariate = covariates,
-      stat = stats,
-      stat_obj = stats_obj
-    )
-
-  return(model)
+  return(r)
 }
 
 # Makes a formula and fits the statsitical model from the given parameters.
-parse_then_fit <- function(
-  data, group, outcome, predictors, covariates, stat_obj, pb
+fit_stat <- function(
+  data, outcome, predictors, covariates, stat, pb
 ) {
 
   if (!is.null(pb)) {
     pb$tick()
   }
-
-  # parse predictors and covariates into vectors
-  predictors <- unlist(strsplit(predictors,' \\+ '))
-  covariates <- unlist(strsplit(covariates,' \\+ '))
-
   # fit the models
-  extra_params <- stat_obj$extra_params
-  my_formula <- stat_obj$formula_fn(
+  extra_params <- stat$extra_params
+  my_formula <- stat$formula_fn(
     outcome, predictors, covariates, extra_params
   )
-  my_model <- stat_obj$fit_fn(
+
+  my_model <- stat$fit_fn(
     my_formula, data, extra_params
   )
   return(
@@ -207,19 +194,19 @@ parse_then_fit <- function(
 
 # Processes the raw data from the model spec based on given parameters
 process_dataset <- function(
-  data, group, outcome, stat, predictors, covariates, params
+  data, group, outcome, stat, predictors, covariates
 ) {
 
-  std.beta <- params$std.beta
-  complete.cases <- params$complete.cases
+  std.beta <- stat$params$std.beta
+  complete.cases <- stat$params$complete.cases
 
   data <- data %>% filter(rlang::eval_tidy(rlang::parse_expr(group)))
 
   # workaround for empty predictor set
   if (is.null(predictors)) return(list(data))
 
-  predictors <- stringr::str_split(predictors, ' (\\*|\\+) ') %>%
-    unlist() %>% unique() %>% subset(. != '')
+  predictors <- predictors %>% unlist() %>% unique()
+  predictors <- predictors[predictors != '']
 
   if (std.beta) {
 
@@ -237,13 +224,16 @@ process_dataset <- function(
       covariates %>%
         purrr::map_lgl(~class(data[[.x]]) %in% c('integer','numeric'))
     ]
+
     if (length(scale_covariates) > 0) {
       data[,scale_covariates] <- scale(data[,scale_covariates])
     }
 
     ## scale all continuous outcomes
     if (class(data[[outcome]]) %in% c('integer', 'numeric')) {
-      if (!(stat %in% c('glm'))) data[,outcome] <- scale(data[,outcome])
+      if (!(stat$stat_type %in% c('glm'))) {
+        data[,outcome] <- scale(data[,outcome])
+      }
     }
 
   }

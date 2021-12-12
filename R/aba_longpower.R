@@ -127,43 +127,24 @@ aba_longpower <- function(object,
   ) %>%
     purrr::cross_df()
 
-  param_df <- param_df %>%
-    mutate(PID = paste0('P', 1:nrow(param_df))) %>%
-    select(PID, everything())
-
   # run power analysis
   res_df <- res_df %>%
     rowwise() %>%
     mutate(
       power_fit = list(calculate_power(
-        .data$stat_fit, param_df
+        .data$fit, param_df
       ))
     )
 
   # unnest
   res_df <- res_df %>%
     select(
-      group:predictor_set, power_fit
+      group:predictor, power_fit
     ) %>%
     unnest(power_fit)
 
-  if (!is.null(names(object$spec$groups))) {
-    res_df <- res_df %>%
-      mutate(
-        group = factor(group, levels=object$spec$groups, labels=names(object$spec$groups))
-      )
-  }
-
-  if (!is.null(names(object$spec$outcomes))) {
-    res_df <- res_df %>%
-      mutate(
-        outcome = factor(outcome, levels=object$spec$outcomes,
-                         labels=names(object$spec$outcomes))
-      )
-  }
-
   struct <- list(
-    object = object,
+    results = res_df,
     params = list(
       n = n,
       pct_change = pct_change,
@@ -173,7 +154,7 @@ aba_longpower <- function(object,
       sig_level = sig_level,
       dropout = dropout
     ),
-    results = res_df
+    model = object
   )
 
   class(struct) <- 'abaLongpower'

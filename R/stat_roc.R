@@ -83,7 +83,7 @@ stat_roc <- function(direction = '<',
 formula_roc <- function(outcome, predictors, covariates, ...) {
   if (length(predictors) > 1) stop('ROC predictors should only be length == 1.')
   predictor <- predictors[1]
-  if (is.na(predictor)) predictor <- 1
+  if (is.null(predictor)) predictor <- 1
   f <- as.character(glue('{predictor} ~ {outcome}'))
   return(f)
 }

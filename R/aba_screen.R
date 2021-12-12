@@ -69,7 +69,7 @@
 #'     threshold = seq(0.25, 0.75, by = 0.1),
 #'     cost_multiplier = c(4, 8, 16),
 #'     include_n = 1000,
-#'     ntrials = 10,
+#'     ntrials = 5,
 #'     verbose = T
 #'   )
 #'
@@ -105,7 +105,7 @@ fit_screen <- function(object, ...) {
 
   # expand by threshold / cost_multiplier / include_n
   param_list <- list(
-    'predictor_set' = unique(model_results$predictor_set),
+    'predictor' = unique(model_results$predictor),
     'threshold' = object$threshold,
     'cost_multiplier' = object$cost_multiplier,
     'include_n' = object$include_n
@@ -114,7 +114,7 @@ fit_screen <- function(object, ...) {
   model_results <- model_results %>%
     right_join(
       param_list %>% purrr::cross_df(),
-      by = 'predictor_set'
+      by = 'predictor'
     )
 
   if (object$verbose) pb <- progress::progress_bar$new(total = ntrials)
@@ -129,8 +129,8 @@ fit_screen <- function(object, ...) {
           mutate(
             screen_results = list(
               run_screen_model(
-                fit = .data$stat_fit,
-                outcome = .data$outcome,
+                fit = .data$fit,
+                outcome = model$outcomes[[.data$outcome]],
                 threshold = .data$threshold,
                 cost_multiplier = .data$cost_multiplier,
                 include_n = .data$include_n,
@@ -140,13 +140,13 @@ fit_screen <- function(object, ...) {
           ) %>%
           unnest(screen_results) %>%
           select(
-            -c(stat_obj, stat_fit)
+            -c(fit)
           ) %>%
           mutate(trial = idx)
       }
     ) %>%
     bind_rows() %>%
-    arrange(predictor_set, group, outcome)
+    arrange(predictor, group, outcome)
 
   all_metrics <- screen_results %>%
     select(-c(group:include_n,
@@ -158,8 +158,7 @@ fit_screen <- function(object, ...) {
     left_join(
       screen_results %>% filter(trial != 1) %>%
         group_by(
-          predictor_set, group, outcome,
-          predictor, covariate, stat,
+          group, outcome, stat, predictor,
           threshold, cost_multiplier, include_n
         ) %>%
         summarise(
@@ -171,16 +170,15 @@ fit_screen <- function(object, ...) {
           .groups = 'keep'
         ) %>%
         ungroup(),
-      by = c("predictor_set", "group", "outcome",
-             "stat", "predictor", "covariate",
+      by = c("group", "outcome", "stat", "predictor",
              "threshold", "cost_multiplier", "include_n")
     ) %>%
-    arrange(group, outcome, predictor_set)
+    arrange(group, outcome, predictor)
 
   object$results <- screen_results
   object$results_summary <- screen_results_summary %>%
     select(
-      predictor_set:include_n,
+      predictor:include_n,
       all_of(
         apply(expand.grid(c('','_conf_lo','_conf_hi'), all_metrics),
               1, function(x) paste0(x[2],x[1]))
@@ -197,7 +195,6 @@ run_screen_model <- function(fit,
                              cost_multiplier,
                              include_n,
                              idx) {
-
   data_fit <- stats::model.frame(fit) %>% tibble::tibble()
   data_fit <- data_fit %>%
     mutate(

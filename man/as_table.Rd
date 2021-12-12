@@ -4,7 +4,7 @@
 \alias{as_table}
 \title{Convert an aba summary to a nicely formatted table}
 \usage{
-as_table(object)
+as_table(object, wider = F)
 }
 \arguments{
 \item{object}{abaSummary. The aba summary to format as a table.}

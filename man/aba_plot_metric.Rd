@@ -7,7 +7,7 @@
 aba_plot_metric(
   object,
   metric = NULL,
-  x = "predictor_set",
+  x = "predictor",
   group = "outcome",
   facet = "group",
   coord_flip = FALSE,
@@ -73,6 +73,6 @@ metric_plot2 <- model_summary \%>\% aba_plot_metric(coord_flip=T)
 
 # compare predictor sets within each outcome instead of the opposite
 metric_plot3 <- model_summary \%>\%
-  aba_plot_metric(x = 'outcome', group='predictor_set')
+  aba_plot_metric(x = 'outcome', group='predictor')
 
 }

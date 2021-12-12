@@ -71,6 +71,6 @@ model_robust <- model \%>\%
   )
 
 # plot results using the generic plot function
-fig <- model_robust \%>\% aba_plot()
+fig <- model_robust \%>\% aba_plot_metric()
 
 }

@@ -26,45 +26,52 @@
 #'   set_stats('glm') %>%
 #'   fit()
 #'
-#' model_summary <- model %>% summary()
+#' # no adjustment
+#' model_summary <- model %>% aba_summary()
 #'
 #' # default - correct within group, outcome, and stat (x4 comparisons)
-#' model_summary_adj <- model_summary %>% aba_adjust(method='bonferroni')
+#' model_summary_adj <- model %>%
+#'   aba_summary(adjust = aba_adjust(method='bonferroni'))
 #'
 #' # correct within group but across outcomes (x8 comparisons)
-#' model_summary_adj2 <- model_summary %>%
-#'   aba_adjust(method='bonferroni', by = c('group'))
+#' model_summary_adj2 <- model %>%
+#'   aba_summary(adjust=aba_adjust(method='bonferroni', by = c('group')))
 #'
 #' # correct only model P-values, not coefficient P-values
-#' model_summary_adj3 <- model_summary %>% aba_adjust(form = c('metric'))
+#' model_summary_adj3 <- model %>%
+#'   aba_summary(adjust=aba_adjust(form = c('metric')))
 #'
-aba_adjust<- function(object,
-                      method = c("bonferroni", "fdr", "hochberg",
+aba_adjust<- function(method = c("none", "bonferroni", "fdr", "hochberg",
                                  "holm", "hommel", "BH", "BY"),
                       by = c('group', 'outcome', 'stat'),
                       form = c('metric', 'coef')) {
 
   method <- match.arg(method)
-  object$results <- adjust_pvals(
-    object$results, method, by, form
+  params <- list(
+    method = method,
+    by = by,
+    form = form
   )
-  object
+  params
 }
 
-adjust_pvals <- function(results, method_, by_, form_) {
+adjust_pvals <- function(results, adjust) {
+  .method <- adjust$method
+  .by <- adjust$by
+  .form <- adjust$form
 
-  # adjust metric
-  if ('metric' %in% form_) {
-    r_adj <- results %>%
-      filter(term == 'Pval') %>%
+  # adjust metrics
+  if ('metric' %in% .form) {
+    r_adj <- results$metrics %>%
+      filter(term == 'pval') %>%
       group_by(
-        across(all_of(by_))
+        across(all_of(.by))
       ) %>%
       nest() %>%
       mutate(
         estimate_adj = purrr::map(
           .data$data,
-          function(x) stats::p.adjust(x$estimate, method = method_)
+          function(x) stats::p.adjust(x$estimate, method = .method)
         )
       ) %>%
       unnest(cols = c(data, estimate_adj)) %>%
@@ -73,18 +80,17 @@ adjust_pvals <- function(results, method_, by_, form_) {
       rename(
         estimate = estimate_adj
       ) %>%
-      select(group:form, estimate, everything())
+      select(group:predictor, estimate, everything())
 
-    results <- results %>%
-      filter(term != 'Pval') %>%
+    results$metrics <- results$metrics %>%
+      filter(term != 'pval') %>%
       bind_rows(r_adj)
   }
 
-  if ('coef' %in% form_) {
-    r_adj <- results %>%
-      filter(form == 'coef') %>%
+  if ('coef' %in% .form) {
+    r_adj <- results$coefs %>%
       group_by(
-        across(all_of(by_))
+        across(all_of(.by))
       ) %>%
       nest() %>%
       mutate(
@@ -95,7 +101,7 @@ adjust_pvals <- function(results, method_, by_, form_) {
             xx <- x$pval
             is_intercept <- x$term == '(Intercept)'
             xx[!is_intercept] <-
-              stats::p.adjust(xx[!is_intercept], method = method_)
+              stats::p.adjust(xx[!is_intercept], method = .method)
             xx
           }
         )
@@ -107,9 +113,9 @@ adjust_pvals <- function(results, method_, by_, form_) {
         pval = pval_adj
       )
 
-    results <- r_adj %>%
+    results$coefs <- r_adj %>%
       bind_rows(
-        results %>% filter(form != 'coef')
+        results$coefs
       )
   }
 

@@ -4,16 +4,24 @@
 \alias{aba_model}
 \title{Create an aba model.}
 \usage{
-aba_model(data = NULL, spec = aba_spec(), verbose = FALSE)
+aba_model(
+  data = NULL,
+  groups = NULL,
+  outcomes = NULL,
+  predictors = NULL,
+  covariates = NULL,
+  stats = NULL,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{data}{data.frame the data to use for the object}
 
-\item{spec}{abaModelSpec the spec to use for the model. Can be created with
-model_spec().}
-
 \item{verbose}{logical. Whether to give a progress bar during model fitting.
 This can be useful if the fitting procedure is going to take a long time.}
+
+\item{spec}{abaModelSpec the spec to use for the model. Can be created with
+model_spec().}
 }
 \value{
 An aba model which can be fitted using the \code{aba_fit()} function and

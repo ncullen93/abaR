@@ -1,74 +1,3 @@
-#' Create a aba spec object.
-#'
-#' An aba spec is used to create an aba model. Although it is not expected that
-#' a user will create an aba spec directly, it can still be useful to understand
-#' how aba models are defined and can also be useful for sharing model results
-#' without having to share data or fitted models. Mostly, you will want to look
-#' at the automatically generated spec from an aba model.
-#'
-#' @param groups vector or list of logical statements as trings. Groups are
-#' subsets of the data on which different models will be fit.
-#' @param outcomes vector or list of strings Outcomes are the dependent
-#'   variables in the statistical fits.
-#' @param covariates vector of strings Covariates are independent variables
-#'   which remain fixed across all statistical fits and are therefore always
-#'   included with the different combinations of predictors.
-#' @param predictors vector or list of strings Predictors are independent
-#'   variables which you want to vary. You can include variables on their own
-#'   or in combination with others. A collection of variables is referred to as
-#'   a `predictor_set`.
-#' @param stats string or abaStat object(s) with `stat_` prefix. Stats are
-#'   the actual statistical models which you want to fit on the data. Their
-#'   primary functions are to 1) generate a suitable model formula given the
-#'   outcome - covariate - predictor combination, and 2) to actually fit the
-#'   statistical model.
-#'
-#' @return An abaSpec object which can be used to create an aba model and
-#'   specifies how an aba model should be fit. This aba spec object can be
-#'   shared to demonstrate how an aba model should be created without having
-#'   to actually share any data or actual fits.
-#'
-#' @export
-#'
-#' @examples
-#'
-#' # create an aba model
-#' model <- aba_model() %>%
-#'   set_data(adnimerge %>% dplyr::filter(VISCODE == 'bl')) %>%
-#'   set_groups(everyone()) %>%
-#'   set_outcomes(ConvertedToAlzheimers, CSF_ABETA_STATUS_bl) %>%
-#'   set_predictors(
-#'     PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl,
-#'     c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
-#'   ) %>%
-#'   set_stats('glm')
-#'
-#' # extract model spec... not super useful in its raw form
-#' model_spec <- model$spec
-#'
-aba_spec <- function(groups = NULL,
-                     outcomes = NULL,
-                     covariates = NULL,
-                     predictors = NULL,
-                     stats = NULL) {
-
-  if (is.null(groups)) groups <- 'everyone()'
-
-  spec <- list(
-    'groups' = groups,
-    'outcomes' = outcomes,
-    'covariates' = covariates,
-    'predictors' = predictors,
-    'stats' = stats
-  )
-
-  class(spec) <- 'abaSpec'
-
-  return(
-    spec
-  )
-}
-
 
 #' Set the groups of an aba model.
 #'
@@ -124,14 +53,28 @@ aba_spec <- function(groups = NULL,
 #' print(model)
 #'
 set_groups <- function(object, ..., labels = NULL) {
-  object$spec$groups <-
-    unname(unlist(parse_filter_expr(..., data=object$data)))
-
-  # set labels
-  if (!is.null(labels)) {
-    names(object$spec$groups) <- labels
-  }
-
+  object <-
+    tryCatch(
+      {
+        # expect not a list input
+        x <- parse_filter_expr(..., data=object$data)
+        if (!is.null(labels)) {
+          names(x) <- labels
+        } else {
+          names(x) <- paste0('G', seq_along(x))
+        }
+        object$groups <- x
+        object
+      },
+      error = function(cond) {
+        # try with expectation of list input
+        x <- list(...)[[1]]
+        if (class(x) == 'character') x <- list(x)
+        if (is.null(names(x))) names(x) <- paste0('G', seq_along(x))
+        object$groups <- x
+        object
+      }
+    )
   object
 }
 
@@ -173,14 +116,28 @@ set_groups <- function(object, ..., labels = NULL) {
 #'   set_outcomes('CDRSB', 'ADAS13', 'MMSE')
 #'
 set_outcomes <- function(object, ..., labels = NULL) {
-  object$spec$outcomes <-
-    unname(unlist(parse_select_expr(..., data=object$data)))
-
-  # set labels
-  if (!is.null(labels)) {
-    names(object$spec$outcomes) <- labels
-  }
-
+  object <-
+    tryCatch(
+      {
+        # expect not a list input
+        x <- parse_select_expr(..., data=object$data)
+        if (!is.null(labels)) {
+          names(x) <- labels
+        } else {
+          names(x) <- paste0('O', seq_along(x))
+        }
+        object$outcomes <- x
+        object
+      },
+      error = function(cond) {
+        # try with expectation of list input
+        x <- list(...)[[1]]
+        if (class(x) == 'character') x <- list(x)
+        if (is.null(names(x))) names(x) <- paste0('O', seq_along(x))
+        object$outcomes <- x
+        object
+      }
+    )
   object
 }
 
@@ -218,7 +175,7 @@ set_outcomes <- function(object, ..., labels = NULL) {
 #'   set_covariates('AGE', 'GENDER', 'EDUCATION')
 #'
 set_covariates <- function(object, ...) {
-  object$spec$covariates <-
+  object$covariates <-
     unname(unlist(parse_select_expr(..., data=object$data)))
   object
 }
@@ -228,7 +185,7 @@ set_covariates <- function(object, ...) {
 #' Predictors are the independent variables which you want to vary as a factor
 #' in your statistical models across different groups, outcomes, and stats.
 #' Predictors can be supplied as individual variables or as collections of
-#' variables, so we refer to a unit of predictors as a "predictor_set".
+#' variables, so we refer to a unit of predictors as a "predictor".
 #' This function supports both string inputs and actual variables. This function
 #' also supports tidy-selection functions like `contains` and `starts_with` which
 #' allows convenient selection of many variables at once with common names.
@@ -290,40 +247,24 @@ set_predictors <- function(object,
     tryCatch(
       {
         # expect not a list input
-        object$spec$predictors <- unname(
-          parse_select_expr(..., data=object$data) %>%
-            purrr::map_chr(~stringr::str_c(., collapse=' + '))
-        )
-        object$spec$predictors <- c(
-          '',
-          object$spec$predictors
-        )
+        x <- parse_select_expr(..., data=object$data)
         if (!is.null(labels)) {
-          names(object$spec$predictors) <- c('Basic', labels)
+          names(x) <- labels
+        } else {
+          names(x) <- paste0('P', seq_along(x)-1)
         }
-        return(object)
+        x <- c(list('Basic' = c()), x)
+        object$predictors <- x
+        object
       },
       error = function(cond) {
         # try with expectation of list input
-        predictors <- list(...)[[1]]
-        predictor_labels <- names(predictors)
-        object$spec$predictors <- c('')
-
-        for (p in predictors) {
-          vars <- object$data %>% select(all_of(p)) %>% names()
-          vars <- stringr::str_c(vars, collapse=' + ')
-          object$spec$predictors <- c(
-            object$spec$predictors,
-            vars
-          )
-        }
-        if (!is.null(predictor_labels)) {
-          names(object$spec$predictors) <- c('Basic', predictor_labels)
-        }
-        if (!is.null(labels)) {
-          names(object$spec$predictors) <- c('Basic', labels)
-        }
-        return(object)
+        x <- list(...)[[1]]
+        if (class(x) == 'character') x <- list(x)
+        if (is.null(names(x))) names(x) <- paste0('P', seq_along(x))
+        x <- c(list('Basic' = c()), x)
+        object$predictors <- x
+        object
       }
     )
   object
@@ -363,14 +304,14 @@ add_predictors <- function(object, ...) {
   vars <- vars %>% names()
   vars <- stringr::str_c(vars, collapse=' | ')
 
-  current_predictors <- object$spec$predictors
+  current_predictors <- object$predictors
   if (length(current_predictors) == 0) {
-    object$spec$predictors <- c(
+    object$predictors <- c(
       '',
       vars
     )
   } else {
-    object$spec$predictors <- c(
+    object$predictors <- c(
       current_predictors,
       vars
     )
@@ -378,40 +319,6 @@ add_predictors <- function(object, ...) {
 
   object
 }
-
-
-#' Get all predictors of an aba model.
-#'
-#' This function can be used to get all unique predictor variables from an
-#' aba model. This can be thought of as "flattening" all of the predictor
-#' sets of an aba model.
-#'
-#' @param object an ab model. The model to get predictors from.
-#'
-#' @return A vector of strings containing all unique predictor variables.
-#' @export
-#'
-#' @examples
-#'
-#' data <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
-#'
-#' model <- aba_model() %>%
-#'   set_data(data) %>%
-#'   set_predictors(
-#'     PLASMA_ABETA_bl,
-#'     PLASMA_PTAU181_bl,
-#'     PLASMA_NFL_bl,
-#'     c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
-#'   )
-#'
-#' predictors <- model %>% get_predictors()
-#'
-get_predictors <- function(object) {
-  object$spec$predictors %>%
-    purrr::map(~strsplit(.,' + ',fixed=T)) %>%
-    unlist() %>% unique()
-}
-
 
 #' Set the stats of an aba model
 #'
@@ -464,7 +371,16 @@ get_predictors <- function(object) {
 #' print(model)
 #'
 set_stats <- function(.model, ..., labels = NULL) {
-  stats <- list(...) %>%
+  stats <- list(...)
+  # check if list
+  is_list <- 'list' %in% class(stats[[1]])
+  #is_list <- !('abaStat' %in%class(stats[[1]])) & (length(stats[[1]]) > 1)
+  if (is_list) {
+    stats <- stats[[1]]
+    labels <- names(stats)
+  }
+
+  stats <- stats %>%
     purrr::map(
       function(x) {
         if (is.character(x)) x <- aba_stat_lookup(x)
@@ -476,12 +392,10 @@ set_stats <- function(.model, ..., labels = NULL) {
   if (!is.null(labels)) {
     names(stats) <- labels
   } else {
-    names(stats) <- stats %>%
-      purrr::map_chr('stat_type') %>%
-      make.names(., unique=T)
+    names(stats) <- paste0('S', seq_along(stats))
   }
 
-  .model$spec$stats <- stats
+  .model$stats <- stats
   .model
 }
 

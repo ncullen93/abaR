@@ -76,18 +76,23 @@ aba_write.abaSummary <- function(object,
   format <- match.arg(format)
 
   if (format == 'table') {
+
     results <- object %>% as_table()
     save_helper(results, filename, separate)
 
   } else if (format == 'raw') {
+
     results <- object$results
-    save_helper(results, filename, separate)
+    save_helper(results$coefs, filename %>% stringr::str_replace('\\.','_coefs.'), separate)
+    save_helper(results$metrics, filename %>% stringr::str_replace('\\.','_metrics.'), separate)
 
   } else if (format == 'object') {
+
     saveRDS(
       object = object,
       file = filename
     )
+
   }
 }
 

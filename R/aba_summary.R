@@ -46,21 +46,37 @@
 #'
 aba_summary <- function(object,
                         control = aba_control(),
+                        adjust = aba_adjust(),
                         verbose = FALSE) {
+  model <- object
 
-  # coefficients and model metrics
-  coefs_df <- coefs_summary(object, control) %>% mutate(form = 'coef')
-  metrics_df <- metrics_summary(object) %>% mutate(form = 'metric')
-  results_df <- coefs_df %>% bind_rows(metrics_df) %>%
-    select(group, outcome, stat, predictor_set, term, form, estimate:pval) %>%
+  # calculate coefs
+  coefs_df <- object %>%
+    calculate_coefs(control) %>%
+    unnest(coefs) %>%
+    filter(!is.na(estimate))
+
+  # calculate metrics
+  metrics_df <- object %>%
+    calculate_metrics(control) %>%
+    unnest(metrics) %>%
     filter(!is.na(estimate))
 
   s <- list(
-    model = object,
-    results = results_df
+    results = list(
+      coefs = coefs_df,
+      metrics = metrics_df
+    ),
+    control = control,
+    model = model
   )
 
+  if (adjust$method != 'none') {
+    s$results <- adjust_pvals(s$results, adjust)
+  }
+
   class(s) <- 'abaSummary'
+
   return(s)
 }
 
@@ -72,54 +88,53 @@ summary.abaModel <- function(object,
 }
 
 # helper function for aba summary
-coefs_summary <- function(model, control) {
+calculate_coefs <- function(object, control) {
 
-  all_predictors <- model$spec$predictors %>%
-    purrr::map(~strsplit(.,' + ',fixed=T)) %>%
-    unlist() %>% unique()
-
-  all_covariates <- model$spec$covariates
+  all_variables <- object$predictors %>% unlist() %>% unique()
+  all_covariates <- object$covariates
   if (is.null(all_covariates)) all_covariates <- c('')
 
   # coefficients
-  r <- model$results %>%
-    rowwise() %>%
+  r <- object$results %>%
     mutate(
-      stat_coefs = list(aba_tidy(.data$stat_fit, all_predictors, all_covariates))
-    ) %>%
-    ungroup()
-
-  r <- r %>%
-    unnest(
-      .data$stat_coefs
+      coefs = purrr::map(
+        .data$fit,
+        function(.f) {
+          aba_tidy(.f, all_variables, all_covariates) %>%
+            rename(
+              conf_low = conf.low,
+              conf_high = conf.high,
+              pval = p.value
+            ) %>%
+            select(term, estimate, conf_low, conf_high, pval)
+        }
+      )
     )
 
-  r <- r %>%
-    select(
-      -c(.data$predictor, .data$covariate,
-         .data$std.error, .data$statistic,
-         .data$stat_obj, .data$stat_fit)
-    )
+  r %>% select(-fit)
+}
 
-  r <- r %>%
-    rename(
-      conf_low = conf.low,
-      conf_high = conf.high,
-      pval = p.value
+# helper function for aba_summary
+coefs_pivot_wider <- function(object, wider = F) {
+  df <- object$results$coefs %>%
+    mutate(
+      estimate = purrr::pmap_chr(
+        list(
+          est = .data$estimate,
+          lo = .data$conf_low,
+          hi = .data$conf_high,
+          pval = .data$pval
+        ),
+        coef_fmt
+      )
     ) %>%
-    select(-pval, everything())
-
-  ## remove intercept if specified in control
-  #if (!control$include_intercept) {
-  #  r <- r %>% filter(term != c('(Intercept)'))
-  #}
-
-  # remove covariates if specified in control
-  if (!control$include_covariates) {
-    r <- r %>% filter(!(term %in% c(all_covariates)))
-  }
-
-  return(r)
+    select(-c(conf_low, conf_high, pval)) %>%
+    pivot_wider(
+      names_from = term,
+      values_from = estimate
+    ) %>%
+    select(-any_of(c('(Intercept)')))
+  df
 }
 
 # helper function for aba summary
@@ -134,28 +149,12 @@ coef_fmt <- function(est, lo, hi, pval) {
   coef
 }
 
-# helper function for aba summary
-coef_pivot_wider <- function(r) {
-  r %>% rowwise() %>%
-    mutate(
-      estimate = as.character(coef_fmt(.data$estimate, .data$conf_low,
-                                  .data$conf_high, .data$pval))
-    ) %>%
-    select(-c(pval, conf_low, conf_high)) %>%
-    ungroup() %>%
-    pivot_wider(
-      names_from = .data$term,
-      values_from = .data$estimate
-    )
-}
-
-# helper function for aba summary
-metrics_summary <- function(model) {
+# helper function for aba_summary
+calculate_metrics <- function(object, control) {
   metric_vars <- c(
     'adj.r.squared',
     'R2',
     'AUC',
-    #'Cut',
     'AIC',
     'Pval',
     'nobs',
@@ -163,52 +162,60 @@ metrics_summary <- function(model) {
   )
 
   # add null model
-  model_results <- model$results %>%
+  r <- object$results %>%
     group_by(group, outcome, stat) %>%
     mutate(
-      stat_fit_null = list(
-        ifelse(sum(c('M1','Basic') %in% .data$predictor_set)>0,
-               .data$stat_fit[.data$predictor_set %in% c('M1','Basic')],
-               NA)
+      fit_basic = list(
+        ifelse(
+          sum('Basic' %in% .data$predictor) > 0,
+          .data$fit[.data$predictor == 'Basic'],
+          NA
+        )
       )[[1]]
     ) %>%
     ungroup()
 
-  r <- model_results %>% rowwise() %>%
+  # coefficients
+  r <- r %>%
     mutate(
-      stat_metrics = list(
-        aba_glance(
-          x = .data$stat_fit,
-          x0 = .data$stat_fit_null
-        )
+      metrics = purrr::map2(
+        .data$fit, .data$fit_basic,
+        function(.f, .f0) {
+          x<-aba_glance(.f, .f0) %>%
+            filter(term %in% metric_vars) %>%
+            rename(
+              conf_low = conf.low,
+              conf_high = conf.high
+            ) %>%
+            arrange(match(term, metric_vars)) %>%
+            mutate(term = tolower(term))
+          x
+        }
       )
     )
 
-  r <- r %>%
-    unnest(
-      .data$stat_metrics
-    )
+  r %>% select(-c(fit, fit_basic))
+}
 
-  r <- r %>%
-    select(
-      -c(.data$predictor, .data$covariate),
-      -c(.data$stat_obj, .data$stat_fit, .data$stat_fit_null)
-    )
-
-  r <- r %>%
-    filter(
-      term %in% metric_vars
+metrics_pivot_wider <- function(object) {
+  df <- object$results$metrics %>%
+    mutate(
+      estimate = purrr::pmap_chr(
+        list(
+          est = .data$estimate,
+          lo = .data$conf_low,
+          hi = .data$conf_high
+        ),
+        metric_fmt
+      )
     ) %>%
-    rename(
-      estimate = estimate,
-      conf_low = conf.low,
-      conf_high = conf.high
-    ) %>%
-    arrange(
-      match(term, metric_vars)
+    select(-c(conf_low, conf_high)) %>%
+    pivot_wider(
+      names_from = term,
+      values_from = estimate
     )
 
-  return(r)
+  df
 }
 
 # helper function for aba summary
@@ -218,21 +225,6 @@ metric_fmt <- function(est, lo, hi) {
     metric <- glue('{metric} [{sprintf("%.2f", lo)}, {sprintf("%.2f", hi)}]')
   }
   metric
-}
-
-# helper function for aba summary
-metric_pivot_wider <- function(r) {
-  r %>% rowwise() %>%
-    mutate(
-      estimate = as.character(metric_fmt(.data$estimate, .data$conf_low,
-                                    .data$conf_high))
-    ) %>%
-    select(-c(conf_low, conf_high, pval)) %>%
-    ungroup() %>%
-    pivot_wider(
-      names_from = .data$term,
-      values_from = .data$estimate
-    )
 }
 
 
@@ -272,59 +264,11 @@ metric_pivot_wider <- function(r) {
 #' # convert summary to table
 #' my_table <- model_summary %>% as_table()
 #'
-as_table <- function(object) {
-  x <- object
-
-  x_res <- x$results %>%
-    group_by(
-      .data$group,
-      .data$outcome,
-      .data$stat
-    ) %>%
-    nest() %>%
-    ungroup() %>%
-    unnest(cols=c(.data$data))
-
-  r_coef <- coef_pivot_wider(
-    x_res %>%
-      filter(form == 'coef') %>%
-      select(-c('form'))
-  ) %>%
-    select(
-      -c(any_of('(Intercept)'))
-    )
-
-  r_metric <- metric_pivot_wider(
-    x_res %>%
-      filter(form == 'metric') %>%
-      select(-c('form'))
-  ) %>%
-    select(-nobs, everything())
-
-  r_results <- r_coef %>%
-    left_join(
-      r_metric,
-      by = c('group', 'outcome', 'stat', 'predictor_set')
-    )
-
-  # replace group names for printing if they exist
-  if (!is.null(names(x$model$spec$groups))) {
-    r_results$group <- factor(
-      r_results$group,
-      levels = x$model$spec$groups,
-      labels = names(x$model$spec$groups)
-    )
-  }
-
-  # replace outcome names for printing if they exist
-  if (!is.null(names(x$model$spec$outcomes))) {
-    r_results$outcome <- factor(
-      r_results$outcome,
-      levels = x$model$spec$outcomes,
-      labels = names(x$model$spec$outcomes)
-    )
-  }
-  r_results
+as_table <- function(object, wider = F) {
+  df1 <- object %>% coefs_pivot_wider()
+  df2 <- object %>% metrics_pivot_wider()
+  df <- df1 %>% left_join(df2, by=c('group','outcome','stat','predictor'))
+  df
 }
 
 #' @export
@@ -352,69 +296,9 @@ as_reactable <- function(object) {
 
 #' @export
 print.abaSummary <- function(x, ...) {
-  args <- list(...)
-  nprint <- 5
-  if ('n' %in% names(args)) nprint <- args$n
-  if (nprint == -1) nprint <- 1000
+  tbl <- x %>% as_table()
 
-  x_res <- x$results %>%
-    group_by(
-      .data$group,
-      .data$outcome,
-      .data$stat
-    ) %>%
-    nest()
-
-  r_length_orig <- x_res %>% nrow()
-
-  x_res <- x_res %>%
-    ungroup() %>%
-    slice(1:nprint) %>%
-    unnest(cols=c(.data$data))
-
-  r_coef <- coef_pivot_wider(
-    x_res %>%
-      filter(form == 'coef') %>%
-      select(-c('form'))
-  ) %>%
-    select(
-      -c(any_of('(Intercept)'))
-    )
-
-  r_metric <- metric_pivot_wider(
-    x_res %>%
-      filter(form == 'metric') %>%
-      select(-c('form'))
-  )
-
-  r_metric <- r_metric %>%
-    select(-nobs, everything())
-
-  r_results <- r_coef %>%
-    left_join(
-      r_metric,
-      by = c('group', 'outcome', 'stat', 'predictor_set')
-    )
-
-  # replace group names for printing if they exist
-  if (!is.null(names(x$model$spec$groups))) {
-    r_results$group <- factor(
-      r_results$group,
-      levels = x$model$spec$groups,
-      labels = names(x$model$spec$groups)
-    )
-  }
-
-  # replace outcome names for printing if they exist
-  if (!is.null(names(x$model$spec$outcomes))) {
-    r_results$outcome <- factor(
-      r_results$outcome,
-      levels = x$model$spec$outcomes,
-      labels = names(x$model$spec$outcomes)
-    )
-  }
-
-  r_nested <- r_results %>%
+  tbl_nested <- tbl %>%
     group_by(
       .data$group,
       .data$outcome,
@@ -422,67 +306,29 @@ print.abaSummary <- function(x, ...) {
     ) %>%
     nest() %>%
     mutate(
-      label = glue('{group} | {outcome} | {stat}')
+      label = glue('Group = {group} | Outcome = {outcome} | Stat = {stat}')
     )
 
-  if (!is.null(x$model$spec$treatment)) {
-    r2_nested <- x$results_treatment$emmeans %>%
-      group_by(group, outcome, stat) %>% nest() %>%
-      rename(emmeans = data)
-    r3_nested <- x$results_treatment$pairs %>%
-      group_by(group, outcome, stat) %>% nest() %>%
-      rename(pairs = data)
-    r_nested <- r_nested %>%
-      left_join(r2_nested, by=c('group','outcome','stat')) %>%
-      left_join(r3_nested, by=c('group','outcome','stat'))
-  }
-
-
-  r_split <- stats::setNames(
-    split(r_nested, 1:nrow(r_nested)),
-    r_nested$label
+  tbl_split <- stats::setNames(
+    split(tbl_nested, 1:nrow(tbl_nested)),
+    tbl_nested$label
   )
 
-  r_length <- length(r_split)
+  tbl_length <- length(tbl_split)
 
-  r_split %>% purrr::iwalk(
+  tbl_split %>% purrr::iwalk(
     function(x,y) {
       nchar_label <- nchar(y)
       cat('\n'); cat(rep('-', nchar_label), sep=''); cat('\n')
       cat(y)
       cat('\n'); cat(rep('-', nchar_label), sep=''); cat('\n')
 
-      #cat('\n')
-      #cat('Coefficients & Metrics:\n\n')
-
       # coefficients
       print(
         x$data[[1]][,colMeans(is.na(x$data[[1]])) < 1]
       )
-      if ('emmeans' %in% colnames(x)) {
-        cat('\nTreatment effects:\n\n')
-        print(
-          x$pairs[[1]] %>%
-            select(-c(predictor, covariate, term, null.value, df, statistic)) %>%
-            rename(comparison = contrast) %>%
-            select(predictor_set, comparison, everything()) %>%
-            rowwise() %>%
-            mutate(
-              estimate = as.character(
-                glue('{sprintf("%.2f",estimate)} [{sprintf("%.2f",std.error)}] (P={sprintf("%.4f",p.value)})')
-              )
-            ) %>%
-            select(-c(std.error, p.value, comparison)) %>%
-            pivot_wider(names_from = WEEK, values_from = estimate,
-                        names_prefix = 'Estimate_Time_')
-        )
-      }
     }
   )
 
-  if (r_length < r_length_orig) {
-    cat(glue('\n\n ... {r_length_orig - r_length} of',
-    ' {r_length_orig} tables not printed ...\n\n\n'))
-  }
 
 }

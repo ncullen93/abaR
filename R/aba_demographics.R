@@ -50,9 +50,9 @@ aba_demographics <- function(object,
     data <- data %>% filter(rlang::eval_tidy(rlang::parse_expr(data_filter)))
   }
 
-  predictors <- object %>% get_predictors()
-  covariates <- object$spec$covariates
-  outcomes <- object$spec$outcomes
+  predictors <- object$predictors %>% unlist() %>% unique()
+  covariates <- object$covariates
+  outcomes <- object$outcomes %>% unlist()
 
   all_vars <- c()
   if (include_covariates) all_vars <- c(all_vars, covariates)

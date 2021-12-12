@@ -62,11 +62,11 @@ aba_plot <- function(object, ...) {
 #'
 #' # compare predictor sets within each outcome instead of the opposite
 #' metric_plot3 <- model_summary %>%
-#'   aba_plot_metric(x = 'outcome', group='predictor_set')
+#'   aba_plot_metric(x = 'outcome', group='predictor')
 #'
 aba_plot_metric <- function(object,
                             metric = NULL,
-                            x = 'predictor_set',
+                            x = 'predictor',
                             group = 'outcome',
                             facet = 'group',
                             coord_flip = FALSE,
@@ -74,13 +74,10 @@ aba_plot_metric <- function(object,
                             plotly = FALSE) {
 
   # find main metric - directly after predictors
-  metric <- filter(object$results, form == 'metric')$term[1]
+  metric <- object$results$metrics$term[1]
 
-  plot_df <- object$results %>%
-    filter(
-      form == 'metric',
-      term == metric
-    ) %>%
+  plot_df <- object$results$metrics %>%
+    filter(term == metric) %>%
     rename(
       'x' = {{ x }},
       'group' = {{ group }},
@@ -182,32 +179,30 @@ aba_plot_metric <- function(object,
 #' # compare predictor coefficients across outcomes
 #' coef_plot2 <- model_summary %>%
 #'   aba_plot_coef(
-#'     x = 'outcome', group='predictor_set',
-#'     facet=c('predictor','group'), coord_flip=T
+#'     x = 'outcome', group='predictor',
+#'     facet=c('term','group'), coord_flip=T
 #'   )
 #'
 aba_plot_coef <- function(object,
-                          x = 'predictor',
-                          group = 'predictor_set',
+                          x = 'term',
+                          group = 'predictor',
                           facet = c('outcome', 'group'),
                           coord_flip = FALSE,
                           palette = 'jama',
                           plotly = FALSE) {
 
-  model_type <- object$results$stat[1]
+  model_type <- object$model$stats[[1]]$stat_type
 
   model <- object$model
-  all_predictors <- model %>% get_predictors()
-  all_covariates <- model$spec$covariates
+  all_predictors <- model$predictors %>% unlist() %>% unique()
+  all_covariates <- model$covariates
   all_variables <- c(all_covariates, all_predictors)
 
   facet_x <- facet[1]
   facet_y <- facet[2]
 
-  plot_df <- object$results %>%
-    rename(predictor = term) %>%
+  plot_df <- object$results$coefs %>%
     filter(
-      form == 'coef',
       predictor != '(Intercept)',
       !(predictor %in% all_covariates)
     ) %>%

@@ -5,21 +5,20 @@
 \title{Create an aba_adjust object.}
 \usage{
 aba_adjust(
-  object,
-  method = c("bonferroni", "fdr", "hochberg", "holm", "hommel", "BH", "BY"),
+  method = c("none", "bonferroni", "fdr", "hochberg", "holm", "hommel", "BH", "BY"),
   by = c("group", "outcome", "stat"),
   form = c("metric", "coef")
 )
 }
 \arguments{
-\item{object}{abaSummary. The aba summary whose p-values will be adjusted.}
-
 \item{method}{string. The method to adjust with. See \code{p.adjust}.}
 
 \item{by}{vector. The groupings to use for adjustment.
 Possible choices: group, outcome, stat, predictor_set}
 
 \item{form}{vector. Whether to adjust both metrics and coefs, or just one.}
+
+\item{object}{abaSummary. The aba summary whose p-values will be adjusted.}
 }
 \value{
 an abaSummary object. The abaSummary passed to aba_adjust but with
@@ -42,16 +41,19 @@ model <- df \%>\% aba_model() \%>\%
   set_stats('glm') \%>\%
   fit()
 
-model_summary <- model \%>\% summary()
+# no adjustment
+model_summary <- model \%>\% aba_summary()
 
 # default - correct within group, outcome, and stat (x4 comparisons)
-model_summary_adj <- model_summary \%>\% aba_adjust(method='bonferroni')
+model_summary_adj <- model \%>\%
+  aba_summary(adjust = aba_adjust(method='bonferroni'))
 
 # correct within group but across outcomes (x8 comparisons)
-model_summary_adj2 <- model_summary \%>\%
-  aba_adjust(method='bonferroni', by = c('group'))
+model_summary_adj2 <- model \%>\%
+  aba_summary(adjust=aba_adjust(method='bonferroni', by = c('group')))
 
 # correct only model P-values, not coefficient P-values
-model_summary_adj3 <- model_summary \%>\% aba_adjust(form = c('metric'))
+model_summary_adj3 <- model \%>\%
+  aba_summary(adjust=aba_adjust(form = c('metric')))
 
 }

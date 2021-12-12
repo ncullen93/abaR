@@ -44,21 +44,20 @@
 #'
 #' # run emmeans
 #' model_emmeans <- model %>% aba_emmeans()
-#' print(model_emmeans)
 #'
 aba_emmeans <- function(model) {
 
   # count df
   count_df <- model$results %>%
-    #filter(predictor != '') %>%
-    group_by(group, outcome, stat, predictor_set) %>%
+    group_by(group, outcome, stat, predictor) %>%
     filter(row_number() == 1L) %>%
     rowwise() %>%
     mutate(
-      count_data = list(extract_counts(.data$stat_fit, .data$stat_obj$extra_params))
+      count_data = list(extract_counts(.data$fit,
+                                       model$stats[[.data$stat]]$extra_params))
     ) %>%
     select(
-      -c(predictor:stat_fit)
+      -c(fit)
     ) %>%
     unnest(count_data) %>%
     ungroup() %>%
@@ -66,20 +65,19 @@ aba_emmeans <- function(model) {
     arrange(treatment, time)
 
   r <- model$results %>%
-    #filter(predictor != '') %>%
     rowwise() %>%
     mutate(
       stat_emmeans = list(
         run_emmeans(
-          fit = .data$stat_fit,
-          extra_params = .data$stat_obj$extra_params
+          fit = .data$fit,
+          extra_params = model$stats[[.data$stat]]$extra_params
         )
       )
     ) %>%
     unnest_wider(stat_emmeans)
 
   emmeans_df <- r %>%
-    select(group:predictor_set, emmeans) %>%
+    select(group:predictor, emmeans) %>%
     unnest(emmeans) %>%
     select(-c(df, statistic, std.error)) %>%
     rename(
@@ -92,22 +90,25 @@ aba_emmeans <- function(model) {
     )
 
   pairs_df <- r %>%
-    select(group:predictor_set, pairs) %>%
+    select(group:predictor, pairs) %>%
     unnest(pairs) %>%
     select(-c(term, null.value, df, statistic, std.error)) %>%
     rename(
       conf_low = conf.low,
       conf_high = conf.high
     ) %>%
-    select(group:predictor_set, treatment, time, estimate:pval) %>%
+    select(group:predictor, treatment, time, estimate:pval) %>%
     mutate(
       time = factor(time, levels = unique(time))
     )
 
   s <- list(
-    'emmeans' = emmeans_df,
-    'pairs' = pairs_df,
-    'counts' = count_df
+    results = list(
+      emmeans = emmeans_df,
+      pairs = pairs_df,
+      counts = count_df
+    ),
+    model = model
   )
   class(s) <- 'abaEmmeans'
   return(s)
@@ -154,14 +155,14 @@ extract_counts <- function(fit, extra_params) {
 aba_plot.abaEmmeans <- function(object,
                                 ...) {
   plot_df <- object$emmeans %>%
-    group_by(group, outcome, stat, predictor_set) %>%
+    group_by(group, outcome, stat, predictor) %>%
     nest() %>%
     select(-data) %>%
     ungroup() %>%
     rowwise() %>%
     mutate(
       fig = list(plot_emmeans_helper(
-        .data$group, .data$outcome, .data$stat, .data$predictor_set,
+        .data$group, .data$outcome, .data$stat, .data$predictor,
         object
       ))
     )
@@ -177,38 +178,38 @@ guess_numeric <- function(x) {
   x_num
 }
 
-plot_emmeans_helper <- function(group, outcome, stat, predictor_set, object) {
+plot_emmeans_helper <- function(group, outcome, stat, predictor, object) {
   group <- group
   outcome <- outcome
   stat <- stat
-  predictor_set <- predictor_set
+  predictor <- predictor
 
   df1 <- object$emmeans %>%
     filter(
       .data$group == {{ group }},
       .data$outcome == {{ outcome }},
       .data$stat == {{ stat }},
-      .data$predictor_set == {{ predictor_set }}
+      .data$predictor == {{ predictor }}
     )
   df2 <- object$pairs  %>%
     filter(
       group == {{ group }},
       outcome == {{ outcome }},
       stat == {{ stat }},
-      predictor_set == {{ predictor_set }}
+      predictor == {{ predictor }}
     )
   df3 <- object$counts %>%
     filter(
       group == {{ group }},
       outcome == {{ outcome }},
       stat == {{ stat }},
-      predictor_set == {{ predictor_set }}
+      predictor == {{ predictor }}
     )
   ######
 
   # add zeros for the first time point
   df1 <- df1 %>%
-    group_by(group, outcome, stat, predictor_set) %>%
+    group_by(group, outcome, stat, predictor) %>%
     nest() %>%
     rowwise() %>%
     mutate(
@@ -238,10 +239,10 @@ plot_emmeans_helper <- function(group, outcome, stat, predictor_set, object) {
     left_join(
       df1 %>%
         filter(time!=0) %>%
-        group_by(group, outcome, stat, predictor_set, time) %>%
+        group_by(group, outcome, stat, predictor, time) %>%
         summarise(yval = max(conf_high), .groups='keep') %>%
         ungroup(),
-      by = c('group','outcome','stat','predictor_set','time')
+      by = c('group','outcome','stat','predictor','time')
     )
 
   dodge_width <- max(df1$time) / 40

@@ -87,22 +87,24 @@
 #' model_selection4 <- model4 %>%
 #'   aba_selection(criteria='pval', threshold=0.1, verbose=T)
 #'
-aba_selection <- function(object,
+aba_selection <- function(model,
                           method = c('forward', 'backward'),
                           criteria = c('aic', 'pval'),
                           threshold = NULL,
                           verbose = FALSE) {
-
   method <- match.arg(method)
+  criteria <- match.arg(criteria)
 
-  criteria_map <- list('aic'='AIC', 'pval'='Pval')
-  criteria <- criteria_map[[match.arg(criteria)]]
-
-  if ((criteria == 'AIC') & is.null(threshold)) threshold <- -2
-  if ((criteria == 'Pval') & is.null(threshold)) threshold <- 0.1
+  if (is.null(threshold)) {
+    threshold_map <- list(
+      'aic' = -2,
+      'pval' = 0.1
+    )
+    threshold <- threshold_map[[criteria]]
+  }
 
   m <- list(
-    'model' = object,
+    'model' = model,
     'method' = method,
     'criteria' = criteria,
     'threshold' = threshold,
@@ -116,7 +118,7 @@ aba_selection <- function(object,
 
 # helper function for aba selection
 run_selection <- function(object,
-                             ...) {
+                          ...) {
 
   model <- object$model
   # round 0 - best models are the basic models
@@ -136,25 +138,30 @@ run_selection <- function(object,
         )
       )
     )
-  results$model0_est <- results %>% ungroup() %>% pull(model_0) %>%
+  results$model0_est <- results %>%
+    ungroup() %>%
+    pull(model_0) %>%
     purrr::map_dbl(
       function(m) {
-        s <- aba_summary(m)$results %>%
-          filter(predictor_set == 'M1', term == object$criteria)
+        s <- aba_summary(m)$results$metrics %>%
+          dplyr::filter(
+            predictor == 'Basic',
+            term == object$criteria
+          )
         s$estimate
       }
     )
 
-  n_predictors <- length(model$spec$predictors) - 1
+  n_predictors <- length(model$predictors) - 1
 
   for (idx in 1:n_predictors) {
-    if (object$verbose) cat('Round: ', idx, '\n')
 
     models_to_test <- results[[glue('model_{idx-1}')]] %>%
       map_lgl(~'abaModel' %in% class(.)) %>%
       sum()
 
     if (models_to_test > 0) {
+      if (object$verbose) cat('Round: ', idx, '\n')
       results <- results %>%
         mutate(
           'model_{idx}' := list(
@@ -183,12 +190,14 @@ run_selection <- function(object,
     rowwise() %>%
     mutate(
       value_summary = list(aba_summary(.data$value)),
-      coef_summary = list(.data$value_summary$results %>% filter(form=='coef') %>%
-                            coef_pivot_wider() %>% filter(predictor_set=='M1') %>%
-                            select(-c(group:form))),
-      metric_summary = list(.data$value_summary$results %>% filter(form=='metric') %>%
-                              metric_pivot_wider() %>% filter(predictor_set=='M1') %>%
-                              select(-c(group:form, Pval, nobs)))
+      coef_summary = list(.data$value_summary %>%
+                            coefs_pivot_wider() %>%
+                            filter(predictor=='Basic') %>%
+                            select(-c(group:predictor))),
+      metric_summary = list(.data$value_summary %>%
+                              metrics_pivot_wider() %>%
+                              filter(predictor=='Basic') %>%
+                              select(-c(group:predictor, pval, nobs)))
     )
 
   results <- results %>%
@@ -203,9 +212,10 @@ run_selection <- function(object,
 
 # helper function for aba selection
 create_new_model <- function(model, group, outcome, stat) {
-  model$spec$groups <- group
-  model$spec$outcomes <- outcome
-  model$spec$stats <- list(model$spec$stats[[stat]]) %>% set_names(stat)
+  model$groups <- model$groups[group]
+  model$outcomes <- model$outcomes[outcome]
+
+  model$stats <- list(model$stats[[stat]]) %>% set_names(stat)
   model %>% aba_fit()
 }
 
@@ -217,40 +227,29 @@ find_next_model <- function(object, baseline_value, criteria, threshold, verbose
     object_summary <- object %>% aba_summary()
 
     # get best model
-    best_model <- object_summary$results %>%
+    best_model <- object_summary$results$metrics %>%
       filter(term == criteria) %>%
       group_by(group, outcome, stat) %>%
       mutate(
         est_diff = case_when(
-          term == 'AIC' ~ estimate - min(baseline_value, first(estimate)),
-          term == 'Pval' ~ estimate
+          term == 'aic' ~ estimate - min(baseline_value, first(estimate)),
+          term == 'pval' ~ estimate
         )
       ) %>%
       slice_min(est_diff, n = 1, with_ties = FALSE) %>%
-      ungroup() %>%
-      select(-c(conf_low:pval))
+      ungroup()
 
     if (best_model$est_diff <= threshold) {
 
-      # best predictors
-      new_covariates <- object$results %>%
-        filter(predictor_set == best_model$predictor_set) %>%
-        pull(predictor)
-
+      new_covariates <- object$predictors[[best_model$predictor]]
       if (verbose) cat('Improvement: ', new_covariates, '\n')
 
-      object$spec$predictors <- object$spec$predictors[
-        object$spec$predictors != new_covariates
-      ]
-
-      object$spec$covariates <- c(
-        object$spec$covariates,
-        strsplit(new_covariates, ' + ', fixed=T)[[1]]
-      )
-
+      object$predictors[[best_model$predictor]] <- NULL
+      object$covariates <- c(object$covariates, new_covariates)
       object <- object %>% aba_fit()
 
       return(object)
+
     } else {
       if (verbose) cat('No improvement - stopping\n')
       return(NA)

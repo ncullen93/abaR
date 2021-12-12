@@ -60,7 +60,7 @@
 #'   )
 #'
 #' # plot results using the generic plot function
-#' fig <- model_robust %>% aba_plot()
+#' fig <- model_robust %>% aba_plot_metric()
 #'
 aba_robust <- function(model,
                        bias = NULL,
@@ -95,8 +95,11 @@ fit_robust <- function(object, ...) {
   data_original <- model$data
 
   # get original model summary results
-  results_original <- aba_summary(model)$results %>%
+  model_summary <- model %>% aba_summary()
+  results_coefs_original <- model_summary$results$coefs %>%
     select(-c(conf_low, conf_high, pval))
+  results_metrics_original <- model_summary$results$metrics %>%
+    select(-c(conf_low, conf_high))
 
   # for each trial, simulate noisy data, then re-fit/re-summarise model
   if (object$verbose) pb <- progress::progress_bar$new(total = ntrials)
@@ -113,44 +116,45 @@ fit_robust <- function(object, ...) {
         model_noise <- model %>% set_data(data_noise) %>% aba_fit()
         model_noise_summary <- model_noise %>% aba_summary()
         return(
-          model_noise_summary$results %>%
-            mutate(trial = idx)
+          list(
+            coefs = model_noise_summary$results$coefs %>%
+              select(-c(conf_low:pval)) %>%
+              mutate(trial = idx),
+            metrics = model_noise_summary$results$metrics %>%
+              select(-c(conf_low:conf_high)) %>%
+              mutate(trial = idx)
+          )
+
         )
       }
-    ) %>%
-    bind_rows()
-
-  results <- results %>%
-    left_join(
-      results_original %>% rename(estimate_original = estimate),
-      by = c('predictor_set','group','outcome','stat','term','form')
-    ) %>%
-    mutate(
-      estimate_diff = estimate - estimate_original
     )
-
-
-  results_summary <- results %>%
-    group_by(predictor_set, group, outcome, stat, term, form) %>%
+  results_coefs <- results %>% purrr::map('coefs') %>% bind_rows() %>%
+    group_by(group, outcome, stat, predictor, term) %>%
     summarise(
       conf_low = quantile(estimate, 0.025),
       conf_high = quantile(estimate, 0.975),
       estimate = mean(estimate),
-      conf_low_diff = quantile(estimate_diff, 0.025, na.rm=T),
-      conf_high_diff = quantile(estimate_diff, 0.975, na.rm=T),
-      estimate_diff = mean(estimate_diff, na.rm=T),
       .groups='keep'
     ) %>%
-    select(predictor_set:form,
-           estimate, conf_low, conf_high,
-           estimate_diff, conf_low_diff, conf_high_diff) %>%
     ungroup() %>%
-    arrange(predictor_set, group, outcome, stat, form, term)
+    select(group:term, estimate, conf_low, conf_high)
 
-  object$results_original <- results_original %>%
-    arrange(predictor_set, group, outcome, stat, form, term)
-  object$results <- results
-  object$results_summary <- results_summary
+  results_metrics <- results %>% purrr::map('metrics') %>% bind_rows() %>%
+    group_by(group, outcome, stat, predictor, term) %>%
+    summarise(
+      conf_low = quantile(estimate, 0.025),
+      conf_high = quantile(estimate, 0.975),
+      estimate = mean(estimate),
+      .groups='keep'
+    ) %>%
+    ungroup() %>%
+    select(group:term, estimate, conf_low, conf_high)
+
+  object$results <- list(
+    coefs = results_coefs,
+    metrics = results_metrics
+  )
+  object$results_original <- model_summary$results
 
   return(object)
 }
@@ -186,45 +190,4 @@ simulate_data_noise <- function(data, bias, variation) {
 
   data
 }
-
-#' Plot results of an aba robust object
-#'
-#' @param object an aba robust object. The object whose results will be plotted.
-#'
-#' @return a ggplot
-#' @export
-aba_plot.abaRobust <- function(object, ...) {
-
-  metric <- 'AUC'
-  plot_df <- object$results
-
-  g <- plot_df %>%
-    filter(term == metric) %>%
-    ggplot(aes(x=predictor_set, y=estimate_diff, color=predictor_set)) +
-    geom_jitter(width=0.1, alpha=0.1, size=1) +
-    stat_summary(fun = mean, geom = "crossbar",
-                 size=0.5, width=0.75) +
-    stat_summary(fun.min = function(z) {mean(z)-sd(z)},
-                 fun.max = function(z) {mean(z)+sd(z)},
-                 size = 1, width=0.5,
-                 geom = "errorbar") +
-    geom_hline(yintercept=0, linetype='dashed') +
-    facet_wrap(.~paste0(.data$outcome,' | ', .data$group)) +
-    ylab(glue('Δ{metric} (%)')) +
-    theme_classic(base_size = 16) +
-    theme(legend.position='none',
-          legend.title = element_blank(),
-          axis.title.x = element_blank(),
-          #plot.margin = unit(c(1, 1,0.5,0.5), "lines"),
-          panel.spacing = unit(1.5, "lines"),
-          strip.background = element_blank(),
-          strip.text = element_text(face = "bold", size = 18, vjust = 1.25)) +
-    theme(panel.grid.major.x = element_blank(),
-          panel.grid.major.y = element_line(
-            colour = "black",
-            size = 0.2, linetype = "dotted"))
-
-  g
-}
-
 

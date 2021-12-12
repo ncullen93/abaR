@@ -6,8 +6,8 @@
 \usage{
 aba_plot_coef(
   object,
-  x = "predictor",
-  group = "predictor_set",
+  x = "term",
+  group = "predictor",
   facet = c("outcome", "group"),
   coord_flip = FALSE,
   palette = "jama",
@@ -67,8 +67,8 @@ coef_plot <- model_summary \%>\% aba_plot_coef(coord_flip=T)
 # compare predictor coefficients across outcomes
 coef_plot2 <- model_summary \%>\%
   aba_plot_coef(
-    x = 'outcome', group='predictor_set',
-    facet=c('predictor','group'), coord_flip=T
+    x = 'outcome', group='predictor',
+    facet=c('term','group'), coord_flip=T
   )
 
 }

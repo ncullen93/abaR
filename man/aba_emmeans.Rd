@@ -53,6 +53,5 @@ model <- df \%>\% aba_model() \%>\%
 
 # run emmeans
 model_emmeans <- model \%>\% aba_emmeans()
-print(model_emmeans)
 
 }

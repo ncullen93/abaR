@@ -5,7 +5,7 @@
 \title{Run model selection on an aba model.}
 \usage{
 aba_selection(
-  object,
+  model,
   method = c("forward", "backward"),
   criteria = c("aic", "pval"),
   threshold = NULL,
@@ -13,8 +13,6 @@ aba_selection(
 )
 }
 \arguments{
-\item{object}{abaModel. The fitted aba model to run selection on.}
-
 \item{method}{string. The selection algorithm to use (forward or backward).}
 
 \item{criteria}{string. Which metric to use when selecting the next
@@ -24,6 +22,8 @@ model (aic or pval).}
 (defaults to -2 for aic; defaults to 0.1 for pval).}
 
 \item{verbose}{logical. Whether to print out results of each selection round.}
+
+\item{object}{abaModel. The fitted aba model to run selection on.}
 }
 \value{
 an abaSelection object which contains model summary information such

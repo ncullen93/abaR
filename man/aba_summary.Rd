@@ -4,7 +4,12 @@
 \alias{aba_summary}
 \title{Summarise a fitted aba model.}
 \usage{
-aba_summary(object, control = aba_control(), verbose = FALSE)
+aba_summary(
+  object,
+  control = aba_control(),
+  adjust = aba_adjust(),
+  verbose = FALSE
+)
 }
 \arguments{
 \item{object}{abaModel. The fitted aba model which you want to summarise.}

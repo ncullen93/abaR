@@ -88,7 +88,7 @@ model_screen <- model \%>\%
     threshold = seq(0.25, 0.75, by = 0.1),
     cost_multiplier = c(4, 8, 16),
     include_n = 1000,
-    ntrials = 10,
+    ntrials = 5,
     verbose = T
   )
 

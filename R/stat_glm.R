@@ -190,7 +190,7 @@ aba_plot_roc <- function(object) {
     rowwise() %>%
     mutate(
       plots = plot_roc_single(
-        models = .data$data$stat_fit,
+        models = .data$data$fit,
         stat = .data$data$stat,
         group = .data$group,
         outcome = .data$outcome,
