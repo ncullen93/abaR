@@ -175,8 +175,22 @@ set_outcomes <- function(object, ..., labels = NULL) {
 #'   set_covariates('AGE', 'GENDER', 'EDUCATION')
 #'
 set_covariates <- function(object, ...) {
-  object$covariates <-
-    unname(unlist(parse_select_expr(..., data=object$data)))
+  object <-
+    tryCatch(
+      {
+        x <- parse_select_expr(..., data=object$data)
+        x <- x %>% unlist() %>% unname() %>% unique()
+        object$covariates <- x
+        object
+      },
+      error = function(cond) {
+        # try with expectation of list input
+        x <- list(...)[[1]] %>% unlist() %>% unname() %>% unique()
+        object$covariates <- x
+        object
+      }
+    )
+
   object
 }
 

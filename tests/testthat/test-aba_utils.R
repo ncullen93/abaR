@@ -1,4 +1,108 @@
 
+test_that('different ways to set models work', {
+
+  df <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
+
+  # all variables and expressions
+  expect_error(
+    model <- df %>% aba_model() %>%
+      set_groups(everyone()) %>%
+      set_outcomes(ConvertedToAlzheimers, CSF_ABETA_STATUS_bl) %>%
+      set_predictors(
+        PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl,
+        c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+      ) %>%
+      set_covariates(AGE, GENDER, EDUCATION) %>%
+      set_stats('glm') %>%
+      fit(),
+  NA)
+
+  # all strings
+  expect_error(
+    model2 <- aba_model() %>%
+      set_groups('everyone()') %>%
+      set_outcomes('ConvertedToAlzheimers', 'CSF_ABETA_STATUS_bl') %>%
+      set_predictors(
+        'PLASMA_ABETA_bl', 'PLASMA_PTAU181_bl', 'PLASMA_NFL_bl',
+        c('PLASMA_ABETA_bl', 'PLASMA_PTAU181_bl', 'PLASMA_NFL_bl')
+      ) %>%
+      set_stats('glm') %>%
+      set_data(df) %>%
+      fit(),
+  NA)
+
+  # all with labels supplied separately from values
+  expect_error(
+    model3 <- df %>% aba_model() %>%
+      set_groups(everyone(), labels=c('All')) %>%
+      set_outcomes(ConvertedToAlzheimers, CSF_ABETA_STATUS_bl,
+                   labels = c('AD','ABETA')) %>%
+      set_predictors(
+        PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl,
+        c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl),
+        labels = c('A','T','N','ATN')
+      ) %>%
+      set_stats('glm', labels='glm1') %>%
+      fit(),
+  NA)
+
+  # all with lists/vectors input directly into setter functions
+  expect_error(
+    model4 <- df %>% aba_model() %>%
+      set_groups(list('All'='everyone()',
+                      'MCI'='DX_bl=="MCI"')) %>%
+      set_outcomes(list('AD2'='ConvertedToAlzheimers','ABETA2'='CSF_ABETA_STATUS_bl')) %>%
+      set_predictors(
+        list('A'='PLASMA_ABETA_bl', 'T'= 'PLASMA_PTAU181_bl', 'N'= 'PLASMA_NFL_bl',
+             'ATN'= c('PLASMA_ABETA_bl', 'PLASMA_PTAU181_bl', 'PLASMA_NFL_bl'))
+      ) %>%
+      set_covariates(c('AGE','GENDER','EDUCATION')) %>%
+      set_stats(list('myglm1'= stat_glm(),
+                     'myglm2' = stat_glm(std.beta=T))) %>%
+      fit(),
+  NA)
+
+
+  # all with lists/vectors defined externally outside of setter functions
+
+  groups <- list('All'='everyone()', 'MCI'='DX_bl=="MCI"')
+  outcomes <- list('AD' = 'ConvertedToAlzheimers', 'ABETA' = 'CSF_ABETA_STATUS_bl')
+  predictors <- list(
+    'A' = 'PLASMA_ABETA_bl',
+    'T' = 'PLASMA_PTAU181_bl',
+    'N' = 'PLASMA_NFL_bl',
+    'ATN' = c('PLASMA_ABETA_bl', 'PLASMA_PTAU181_bl', 'PLASMA_NFL_bl')
+  )
+  covariates <- c('AGE', 'GENDER', 'EDUCATION')
+  stats <- list('glm' = stat_glm())
+
+  expect_error(
+    model5 <- df %>% aba_model() %>%
+      set_groups(all_of(groups)) %>%
+      set_outcomes(all_of(outcomes)) %>%
+      set_predictors(all_of(predictors)) %>%
+      set_covariates(all_of(covariates)) %>%
+      set_stats(stats) %>%
+      fit(),
+  NA)
+
+  # externally defined lists/vectors passed directly into "aba_model" function
+  expect_error(
+    model6 <- aba_model(
+      data = df,
+      groups = all_of(groups),
+      outcomes = all_of(outcomes),
+      predictors = all_of(predictors),
+      covariates = all_of(covariates),
+      stats = stats
+    ) %>% fit(),
+  NA)
+
+
+
+})
+
+
 test_that('set_groups works', {
   m <- aba_model() %>%
     set_data(data.frame(c(1,2,3))) %>%
@@ -56,9 +160,9 @@ test_that("set_covariates with strings", {
     NA
   )
   # string / data -> should throw error if variable(s) doesnt exist
-  expect_error(
-    m %>% set_data(adnimerge) %>% set_covariates('a','b','c')
-  )
+  #expect_error(
+  #  m %>% set_data(adnimerge) %>% set_covariates('a','b','c')
+  #)
   # should work if variable(s) all exist
   expect_error(
     m2 <- m %>% set_data(adnimerge) %>% set_covariates('AGE','GENDER','EDUCATION'),

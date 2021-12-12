@@ -24,7 +24,8 @@ parse_select_expr <- function(..., data) {
         xx <- stringr::str_split(xx, '\\*')[[1]]
         n_star <- length(xx)
       }
-      n <- names(tidyselect::eval_select(xx, data))
+
+      n <- names(tidyselect::eval_select(all_of(xx), data))
 
       if (n_star > 1) {
         n <- paste(n, collapse = ' * ')
