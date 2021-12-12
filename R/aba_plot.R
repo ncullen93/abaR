@@ -167,20 +167,20 @@ aba_plot_metric <- function(object,
 #'     PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl,
 #'     c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
 #'   ) %>%
-#'   set_stats(stat_glm(std.beta=T)) %>%
+#'   set_stats(stat_glm(std.beta=TRUE)) %>%
 #'   fit()
 #'
 #' # summarise aba model to calculate metrics
 #' model_summary <- model %>% aba_summary()
 #'
 #' # plot the coefficients using default
-#' coef_plot <- model_summary %>% aba_plot_coef(coord_flip=T)
+#' coef_plot <- model_summary %>% aba_plot_coef(coord_flip=TRUE)
 #'
 #' # compare predictor coefficients across outcomes
 #' coef_plot2 <- model_summary %>%
 #'   aba_plot_coef(
 #'     x = 'outcome', group='predictor',
-#'     facet=c('term','group'), coord_flip=T
+#'     facet=c('term','group'), coord_flip=TRUE
 #'   )
 #'
 aba_plot_coef <- function(object,
