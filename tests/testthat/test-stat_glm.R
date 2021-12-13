@@ -36,6 +36,11 @@ test_that("complete.cases=F works", {
   )
 
   expect_error(
+    g <- ms %>% aba_plot_coef(coord_flip=T),
+    NA
+  )
+
+  expect_error(
     g <- ms %>% aba_plot_roc(),
     NA
   )
