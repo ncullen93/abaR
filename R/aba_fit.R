@@ -210,8 +210,8 @@ process_dataset <- function(
   predictors <- predictors %>% unlist() %>% unique()
   predictors <- predictors[predictors != '']
 
-  if (std.beta) {
-    if (length(std.beta) == 1) std.beta <- c(std.beta, std.beta)
+  if (length(std.beta) == 1) std.beta <- c(std.beta, std.beta)
+  if (sum(std.beta) > 0) {
 
     if (std.beta[2] == TRUE) {
       # scale all continuous predictors
