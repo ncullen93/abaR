@@ -25,4 +25,9 @@ test_that("standard summary works", {
       aba_summary(),
     NA
   )
+
+  expect_output(
+    print(m),
+    NULL
+  )
 })

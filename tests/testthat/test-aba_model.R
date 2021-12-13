@@ -21,7 +21,7 @@ test_that("different predictor forms work", {
 
   expect_output(
     print(model),
-    ''
+    NULL
   )
 
   # three individual biomarkers
