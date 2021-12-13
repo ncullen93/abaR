@@ -89,6 +89,9 @@
 </h1></div>
 <!-- badges: start -->
 
+<div class="section level3">
+<h3 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+</h3>
 <p>The goals of the aba package are the following:</p>
 <ul>
 <li>to reduce effort and error associated with fitting statistical models across multiple analysis factors (groups, outcomes, predictors)</li>
@@ -97,14 +100,15 @@
 <li>to facilitate multi-cohort validation studies</li>
 </ul>
 <div class="figure">
-<img src="inst/aba_overview.png" alt=""><p class="caption">overview image</p>
+<img src="reference/figures/README-aba_overview.png" alt=""><p class="caption">overview image</p>
 </div>
 <p>With the abaR package, it becomes easier to fit statistical models on permuatations of covariates / predictors / outcomes / groups, to make it easier to investigate how biomarkers can be used to plan (screening / enirichment) and analyze clinical trials, and to facilitate multi-cohort validation studies when data cannot be easily shared between collaborators.</p>
-<div class="section level2">
-<h2 id="get-started">Get started<a class="anchor" aria-label="anchor" href="#get-started"></a>
-</h2>
+</div>
+<div class="section level3">
+<h3 id="getting-started">Getting started<a class="anchor" aria-label="anchor" href="#getting-started"></a>
+</h3>
 <p>To view tutorials and examples of how to use the package, you can visit the package website at <a href="https://ncullen93.github.io/abaR" class="uri">https://ncullen93.github.io/abaR</a>.</p>
-<p>You can view and install the development version of the aba package from <a href="https://github.com/ncullen93/abaR" class="external-link">GitHub</a> with the following:</p>
+<p>You can install the development version of the aba package from <a href="https://github.com/ncullen93/abaR" class="external-link">GitHub</a> with the following:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
 <span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"ncullen93/abaR"</span><span class="op">)</span></code></pre></div>
@@ -130,22 +134,27 @@
 <span class="va">model_fit</span> <span class="op">&lt;-</span> <span class="va">model_spec</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span>
 <span class="va">model_summary</span> <span class="op">&lt;-</span> <span class="va">model_fit</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="studies">Studies<a class="anchor" aria-label="anchor" href="#studies"></a>
-</h2>
+<div class="section level3">
+<h3 id="publications">Publications<a class="anchor" aria-label="anchor" href="#publications"></a>
+</h3>
 <p>Some publications whose analysis have been done with functions from the aba package are featured here:</p>
 <p><a href="https://www.nature.com/articles/s43587-020-00003-5" class="external-link">Individualized prognosis of cognitive decline and dementia in mild cognitive impairment based on plasma biomarker combinations</a> NC Cullen, A Leuzy, S Palmqvist, S Janelidze, E Stomrud, P Pesini, et al. Nature Aging, 2021</p>
 <p><a href="https://www.nature.com/articles/s41591-021-01348-z" class="external-link">Prediction of future Alzheimer’s disease dementia using plasma phospho-tau combined with other accessible measures</a> S Palmqvist, P Tideman, N Cullen, H Zetterberg, K Blennow, JL Dage, et al. Nature Medicine, 2021</p>
 <p><a href="https://www.nature.com/articles/s41467-021-23746-0" class="external-link">Plasma biomarkers of Alzheimer’s disease improve prediction of cognitive decline in cognitively unimpaired elderly populations</a> NC Cullen, A Leuzy, S Janelidze, S Palmqvist, AL Svenningsson, et al. Nature Communications, 2021</p>
 <p><a href="https://onlinelibrary.wiley.com/doi/full/10.1002/acn3.51158" class="external-link">Comparing progression biomarkers in clinical trials of early Alzheimer’s disease</a> NC Cullen, H Zetterberg, PS Insel, B Olsson, U Andreasson, et al. Annals of Clinical and Translational Neurology 7 (9), 1661-1673</p>
-<div class="section level3">
-<h3 id="cite">Cite<a class="anchor" aria-label="anchor" href="#cite"></a>
-</h3>
+<div class="section level4">
+<h4 id="cite">Cite<a class="anchor" aria-label="anchor" href="#cite"></a>
+</h4>
 <p>If you use the aba package in your work, we appreciate if you cite us. An example statement that can be added at the end of the “Statistical analysis” section of your methods is provided here:</p>
 <blockquote>
 <p>The analysis was done in the R programming language (v4.0.3) using the Automated Biomarker Analysis for R (“aba”) package [citation].</p>
 </blockquote>
 </div>
+</div>
+<div class="section level3">
+<h3 id="getting-help">Getting help<a class="anchor" aria-label="anchor" href="#getting-help"></a>
+</h3>
+<p>The easiest way to get help is to create an issue on the github page or to send us an email with your questions.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
