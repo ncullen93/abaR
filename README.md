@@ -19,6 +19,8 @@ The goals of abaR are to do the following:
 -   to facilitate multi-cohort validation studies without direct data
     sharing
 
+![overview image](inst/aba_overview.png)
+
 With the abaR package, it becomes easier to fit statistical models on
 permuatations of covariates / predictors / outcomes / groups, to make it
 easier to investigate how biomarkers can be used to plan (screening /
