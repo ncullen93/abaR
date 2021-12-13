@@ -94,31 +94,3 @@ fit_ancova <- function(formula, data, extra_params) {
   model$call$formula <- stats::formula(formula)
   return(model)
 }
-
-# helper function for ancova
-aba_tidy.ancova <- function(model, predictors, covariates) {
-  tidy_df <- broom::glance(model)
-  return(tidy_df)
-}
-
-# helper function for ancova
-aba_glance.ancova <- function(x, x0, ...) {
-  glance_df <- broom::glance(x)
-
-  # pivot longer to be like coefficients
-  glance_df <- glance_df %>%
-    pivot_longer(cols = everything()) %>%
-    rename(term = name, estimate = value)
-
-  # add confidence interval
-  glance_df <- glance_df %>%
-    mutate(
-      conf.low = NA,
-      conf.high = NA
-    )
-
-  return(glance_df)
-}
-
-
-
