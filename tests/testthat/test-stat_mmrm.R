@@ -15,10 +15,10 @@ test_that("standard mmrm works", {
       MMSE = MMSE - MMSE_bl
     )
 
-  # fit mmrm model for different endpoints, adjusted for covariates
+  # with treatment
   expect_error(
     model <- df %>% aba_model() %>%
-      set_outcomes(CDRSB, ADAS13, MMSE) %>%
+      set_outcomes(CDRSB, ADAS13) %>%
       set_covariates(
         AGE, GENDER, EDUCATION
       ) %>%
@@ -28,9 +28,26 @@ test_that("standard mmrm works", {
       aba_fit(),
     NA
   )
-
   expect_error(
     model_summary <- model %>% aba_summary(),
+    NA
+  )
+
+  # without treatment
+  expect_error(
+    model2 <- df %>% aba_model() %>%
+      set_outcomes(CDRSB, ADAS13) %>%
+      set_covariates(
+        AGE, GENDER, EDUCATION
+      ) %>%
+      set_stats(
+        stat_mmrm(id = 'RID', time = 'VISCODE')
+      ) %>%
+      aba_fit(),
+    NA
+  )
+  expect_error(
+    model_summary2 <- model2 %>% aba_summary(),
     NA
   )
 
