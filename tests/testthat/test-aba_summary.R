@@ -10,10 +10,9 @@ test_that("standard summary works", {
         ConvertedToDementia
       ) %>%
       set_predictors(
-        PLASMA_ABETA_bl,
         PLASMA_PTAU181_bl,
         PLASMA_NFL_bl,
-        c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+        c(PLASMA_PTAU181_bl, PLASMA_NFL_bl)
       ) %>%
       set_covariates(
         AGE, GENDER, EDUCATION
@@ -23,6 +22,16 @@ test_that("standard summary works", {
       ) %>%
       aba_fit() %>%
       aba_summary(),
+    NA
+  )
+
+  expect_error(
+    tbl <- m %>% as_table(),
+    NA
+  )
+
+  expect_error(
+    tbl <- m %>% as_reactable(),
     NA
   )
 

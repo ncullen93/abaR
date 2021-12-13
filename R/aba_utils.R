@@ -283,56 +283,6 @@ set_predictors <- function(object,
   object
 }
 
-#' Add predictors to an aba model
-#'
-#' This function adds predictors to the already set predictors of an aba model.
-#'
-#' @param object An aba model. The model for which you want to set predictors
-#' @param ... strings or variables or tidy-selection functions. Each
-#'   comma-separated value will be a new
-#'   predictor set. If you supply actual variables, then the data of the aba
-#'   model should already be set.
-#'
-#' @return An aba model with predictors added.
-#'
-#' @export
-#'
-#' @examples
-#' data <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
-#'
-#' model <- aba_model() %>%
-#'   set_data(data) %>%
-#'   set_predictors(
-#'     PLASMA_ABETA_bl,
-#'     PLASMA_PTAU181_bl,
-#'     PLASMA_NFL_bl,
-#'     c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
-#'   )
-#'
-#' model <- model %>%
-#'   add_predictors(c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl))
-#'
-add_predictors <- function(object, ...) {
-  vars <- object$data %>% select(...)
-  vars <- vars %>% names()
-  vars <- stringr::str_c(vars, collapse=' | ')
-
-  current_predictors <- object$predictors
-  if (length(current_predictors) == 0) {
-    object$predictors <- c(
-      '',
-      vars
-    )
-  } else {
-    object$predictors <- c(
-      current_predictors,
-      vars
-    )
-  }
-
-  object
-}
-
 #' Set the stats of an aba model
 #'
 #' Stats are the objects which specify 1) how model formulas should be created
