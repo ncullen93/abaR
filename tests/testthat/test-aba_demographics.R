@@ -21,11 +21,11 @@ test_that("example works", {
     NA
   )
 
-  #tmp_filename_csv <- tempfile(fileext = '.csv')
-  #expect_error(
-  #  my_table %>% aba_write(tmp_filename_csv),
-  #  NA
-  #)
-  #removed <- file.remove(tmp_filename_csv)
+  tmp_filename_csv <- tempfile(fileext = '.csv')
+  expect_error(
+    my_table %>% aba_write(tmp_filename_csv),
+    NA
+  )
+  removed <- file.remove(tmp_filename_csv)
 
 })
