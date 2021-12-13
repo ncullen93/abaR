@@ -108,16 +108,20 @@ aba_glance.glm <- function(x, x0, ...) {
   cut_val <- cut_model$Youden$Global$optimal.cutoff$cutoff[1]
 
   # compare current model to null model
-  s <- stats::anova(fit, fit0)
-  null_pval <- 1 - stats::pchisq(abs(s$Deviance[2]), abs(s$Df[2]))
+  if (!is.null(fit0)) {
+    s <- stats::anova(fit, fit0)
+    null_pval <- 1 - stats::pchisq(abs(s$Deviance[2]), abs(s$Df[2]))
+    glance_df <- glance_df %>%
+      bind_cols(tibble::tibble(Pval = null_pval))
+  }
+
 
   # combine broom::glance with extra metrics
   glance_df <- glance_df %>%
-    dplyr::bind_cols(
+    bind_cols(
       tibble::tibble(
         AUC = auc_val,
-        Cut = cut_val,
-        Pval = null_pval
+        Cut = cut_val
       )
     )
 

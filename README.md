@@ -102,7 +102,7 @@ analysis” section of your methods is provided here:
 > The analysis was done in the R programming language (v4.0.3) using the
 > Automated Biomarker Analysis for R (“aba”) package \[citation\].
 
-## Getting help
+## Receiving help
 
 The easiest way to get help is to create an issue on the github page or
 to send us an email with your questions.

@@ -90,9 +90,7 @@ aba_glance.lm <- function(x, x0, ...) {
     s <- stats::anova(x, x0)
     null_pval <- s$`Pr(>F)`[2]
     glance_df <- glance_df %>%
-      bind_cols(
-        tibble::tibble(Pval = null_pval)
-      )
+      bind_cols(tibble::tibble(Pval = null_pval))
   }
 
   # pivot longer to be like coefficients

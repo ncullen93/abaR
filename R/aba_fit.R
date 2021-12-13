@@ -200,7 +200,9 @@ process_dataset <- function(
   std.beta <- stat$params$std.beta
   complete.cases <- stat$params$complete.cases
 
-  data <- data %>% filter(rlang::eval_tidy(rlang::parse_expr(group)))
+  data <- data %>%
+    filter(rlang::eval_tidy(rlang::parse_expr(group))) %>%
+    drop_na(all_of(outcome))
 
   # workaround for empty predictor set
   if (is.null(predictors)) return(list(data))
@@ -209,36 +211,43 @@ process_dataset <- function(
   predictors <- predictors[predictors != '']
 
   if (std.beta) {
+    if (length(std.beta) == 1) std.beta <- c(std.beta, std.beta)
 
-    # scale all continuous predictors
-    scale_predictors <- predictors[
-      predictors %>%
-        purrr::map_lgl(~class(data[[.x]]) %in% c('integer','numeric'))
-    ]
-    if (length(scale_predictors) > 0) {
-      data[,scale_predictors] <- scale(data[,scale_predictors])
-    }
+    if (std.beta[2] == TRUE) {
+      # scale all continuous predictors
+      scale_predictors <- predictors[
+        predictors %>%
+          purrr::map_lgl(~class(data[[.x]]) %in% c('integer','numeric'))
+      ]
+      if (length(scale_predictors) > 0) {
+        data[,scale_predictors] <- scale(data[,scale_predictors])
+      }
 
-    # scale all continuous covariates
-    scale_covariates <- covariates[
-      covariates %>%
-        purrr::map_lgl(~class(data[[.x]]) %in% c('integer','numeric'))
-    ]
+      # scale all continuous covariates
+      scale_covariates <- covariates[
+        covariates %>%
+          purrr::map_lgl(~class(data[[.x]]) %in% c('integer','numeric'))
+      ]
 
-    if (length(scale_covariates) > 0) {
-      data[,scale_covariates] <- scale(data[,scale_covariates])
-    }
-
-    ## scale all continuous outcomes
-    if (class(data[[outcome]]) %in% c('integer', 'numeric')) {
-      if (!(stat$stat_type %in% c('glm'))) {
-        data[,outcome] <- scale(data[,outcome])
+      if (length(scale_covariates) > 0) {
+        data[,scale_covariates] <- scale(data[,scale_covariates])
       }
     }
-
+    if (std.beta[1] == TRUE) {
+      ## scale all continuous outcomes
+      if (class(data[[outcome]]) %in% c('integer', 'numeric')) {
+        if (!(stat$stat_type %in% c('glm'))) {
+          data[,outcome] <- scale(data[,outcome])
+        }
+      }
+    }
   }
+
+  # if not complete cases, take rows with at least one non-zero covariate/predictor
   if (complete.cases) {
     data <- data[complete.cases(data[,c(covariates,predictors)]),]
+  } else {
+    data <- data[rowSums(!is.na(data[,c(covariates,predictors)])) > 0,]
   }
 
   return(list(data))

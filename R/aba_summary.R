@@ -162,19 +162,27 @@ calculate_metrics <- function(object, control) {
     'nsub'
   )
 
+
   # add null model
   r <- object$results %>%
     group_by(group, outcome, stat) %>%
     mutate(
       fit_basic = list(
-        ifelse(
-          sum('Basic' %in% .data$predictor) > 0,
+        ifelse(sum('Basic' %in% .data$predictor) > 0,
           .data$fit[.data$predictor == 'Basic'],
-          NA
+          NULL
         )
       )[[1]]
     ) %>%
     ungroup()
+
+  # remove basic model when complete.cases = F because we cannot compare
+  # models fit on different sizes of data (i.e., pvalue and aic is not valid)
+  r <- r %>%
+    rowwise() %>%
+    mutate(complete_cases = object$stats[[.data$stat]]$params$complete.cases) %>%
+    ungroup() %>%
+    mutate(fit_basic = ifelse(.data$complete_cases, fit_basic, list(NULL)))
 
   # coefficients
   r <- r %>%
@@ -182,7 +190,7 @@ calculate_metrics <- function(object, control) {
       metrics = purrr::map2(
         .data$fit, .data$fit_basic,
         function(.f, .f0) {
-          x<-aba_glance(.f, .f0) %>%
+          x <- aba_glance(.f, .f0) %>%
             filter(term %in% metric_vars) %>%
             rename(
               conf_low = conf.low,
@@ -195,10 +203,31 @@ calculate_metrics <- function(object, control) {
       )
     )
 
-  r %>% select(-c(fit, fit_basic))
+  # remove aic if !complete_cases
+  process_metrics <- function(m, c) {
+    if (!c) m <- m %>% filter(!(term %in% c('aic')))
+    m
+  }
+  r <- r %>%
+    rowwise() %>%
+    mutate(
+      metrics = list(process_metrics(.data$metrics, .data$complete_cases))
+    ) %>%
+    ungroup()
+
+  r <- r %>%
+    select(-any_of(c('fit', 'fit_basic', 'complete_cases')))
+
+  r
 }
 
 metrics_pivot_wider <- function(object) {
+  digit_map <- list(
+    'pval' = 4,
+    'nobs' = 0,
+    'metric' = 2
+  )
+
   df <- object$results$metrics %>%
     mutate(
       estimate = purrr::pmap_chr(
@@ -207,7 +236,8 @@ metrics_pivot_wider <- function(object) {
           lo = .data$conf_low,
           hi = .data$conf_high
         ),
-        metric_fmt
+        metric_fmt,
+        control = object$control
       )
     ) %>%
     select(-c(conf_low, conf_high)) %>%
@@ -220,7 +250,7 @@ metrics_pivot_wider <- function(object) {
 }
 
 # helper function for aba summary
-metric_fmt <- function(est, lo, hi) {
+metric_fmt <- function(est, lo, hi, control) {
   metric <- glue('{sprintf("%.2f", est)}')
   if (!is.na(lo)) {
     metric <- glue('{metric} [{sprintf("%.2f", lo)}, {sprintf("%.2f", hi)}]')

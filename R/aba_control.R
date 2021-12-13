@@ -5,7 +5,7 @@
 #'
 #' @param include_covariates boolean. Whether to include covariates in coefs
 #' @param include_intercept  boolean. Whether to include intercept in coefs
-#'
+#' @param pval_digits integer. How many decimals of a pvalue to show
 #' @return a list with the control parameters specified
 #' @export
 #'
@@ -34,13 +34,17 @@
 #' model_summary2 <- model %>% aba_summary(control = my_control)
 #' print(model_summary2)
 #'
-aba_control <- function(include_covariates = TRUE,
-                        include_intercept = FALSE) {
+aba_control <- function(include_intercept = FALSE,
+                        include_covariates = TRUE,
+                        pval_digits = 4) {
 
   ctrl <- list(
     include_covariates = include_covariates,
-    include_intercept = include_intercept
+    include_intercept = include_intercept,
+    pval_digits = pval_digits
   )
+
+  class(ctrl) <- 'abaControl'
 
   return(ctrl)
 }

@@ -4,12 +4,18 @@
 \alias{aba_control}
 \title{Create an aba control object.}
 \usage{
-aba_control(include_covariates = TRUE, include_intercept = FALSE)
+aba_control(
+  include_intercept = FALSE,
+  include_covariates = TRUE,
+  pval_digits = 4
+)
 }
 \arguments{
+\item{include_intercept}{boolean. Whether to include intercept in coefs}
+
 \item{include_covariates}{boolean. Whether to include covariates in coefs}
 
-\item{include_intercept}{boolean. Whether to include intercept in coefs}
+\item{pval_digits}{integer. How many decimals of a pvalue to show}
 }
 \value{
 a list with the control parameters specified

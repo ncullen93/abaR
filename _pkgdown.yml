@@ -11,24 +11,24 @@ navbar:
   type: light
   bg: none
   structure:
-    left:  [intro, articles, publications, reference, contact]
+    left:  [intro, tutorials, studies, gallery, reference, contact]
     right: [news, github]
   components:
-    articles:
-      text: Tutorials
+    tutorials:
+      text: Basic Tutorials
       menu:
-      - text: "Basic tutorials"
       - text: Intro to aba models
         href: articles/intro_to_aba_models.html
       - text: ------
-      - text: "Advanced tutorials"
-      - text: ------
       - text: "FAQ"
-    publications:
-      text: Studies
+    studies:
+      text: Advanced Tutorials
       menu:
-      - text: "Cullen et al, Nature Communications (2021)"
-        href: articles/overview.html
+      - text: Go further with aba models
+        href: articles/intro_to_aba_models.html
+    gallery:
+      text: Gallery
+      href: articles/overview.html
 
 reference:
 - title: Core functions
