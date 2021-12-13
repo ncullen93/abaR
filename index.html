@@ -89,29 +89,29 @@
 </h1></div>
 <!-- badges: start -->
 
-<p>The goals of abaR are to do the following:</p>
+<p>The goals of the aba package are the following:</p>
 <ul>
-<li>to make it easy to fit many statistical models</li>
-<li>to provide high-level functions for common model visualizations</li>
-<li>to improve workflows for biomarker-based planning and analysis of clinical trials</li>
-<li>to facilitate multi-cohort validation studies without direct data sharing</li>
+<li>to reduce effort and error associated with fitting statistical models across multiple analysis factors (groups, outcomes, predictors)</li>
+<li>to allow anyone to generate publication-ready figures and tables</li>
+<li>to provide advanced tools for biomarker-based planning and analysis of clinical trials</li>
+<li>to facilitate multi-cohort validation studies</li>
 </ul>
 <div class="figure">
 <img src="inst/aba_overview.png" alt=""><p class="caption">overview image</p>
 </div>
 <p>With the abaR package, it becomes easier to fit statistical models on permuatations of covariates / predictors / outcomes / groups, to make it easier to investigate how biomarkers can be used to plan (screening / enirichment) and analyze clinical trials, and to facilitate multi-cohort validation studies when data cannot be easily shared between collaborators.</p>
-<p>The abaR package is based on tidyverse principles, which is why it features a workflow heavily based on the pipe ( %&gt;% ) operator. This lets you analyze data in a manner which is more similar to the way we talk and think about biomarker analysis.</p>
-<p>A meta-goal of the abaR framework is to cater to users at a wide range of abstraction levels. This means that abaR should work equally well for users whether they want a high-level framework to analyze biomarkers without thinking much about the underlying statistics, or wether they want a low-level framework where they just want a way to easily run their own highly custom statistical models on different parameter combinations and across cohorts.</p>
 <div class="section level2">
-<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+<h2 id="get-started">Get started<a class="anchor" aria-label="anchor" href="#get-started"></a>
 </h2>
-<p>You can install the development version from <a href="https://github.com/ncullen93/abaR" class="external-link">GitHub</a> with:</p>
+<p>You can install the development version of the aba package from <a href="https://github.com/ncullen93/abaR" class="external-link">GitHub</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
 <span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"ncullen93/abaR"</span><span class="op">)</span></code></pre></div>
+<p>To view tutorials and examples of how to use the package, you can visit the package website at <a href="https://ncullen93.github.io/abaR" class="uri">https://ncullen93.github.io/abaR</a></p>
+<p>Some examples of publications whose analysis have been completed mostly or entirely with the aba package are feature here:</p>
 </div>
 <div class="section level2">
-<h2 id="statistical-analysis">Statistical analysis<a class="anchor" aria-label="anchor" href="#statistical-analysis"></a>
+<h2 id="a-simple-example">A simple example<a class="anchor" aria-label="anchor" href="#a-simple-example"></a>
 </h2>
 <p>The general workflow of fitting an aba model for statistical analysis looks like this:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
