@@ -17,7 +17,6 @@ test_that("pvalue adjust works", {
     x[!x %in% c(NaN, 1)]
   }
 
-  devtools::load_all()
   df <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
   model <- df %>% aba_model() %>%
     set_groups(DX_bl=='CU', DX_bl=='MCI') %>%
