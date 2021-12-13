@@ -23,4 +23,9 @@ test_that("example works", {
       aba_selection(criteria = 'pval', threshold=0.1, verbose=F),
     NA
   )
+
+  expect_output(
+    print(model_selection),
+    NULL
+  )
 })
