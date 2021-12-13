@@ -5,8 +5,7 @@ Authors@R:
     person(given = "Nicholas",
            family = "Cullen",
            role = c("aut", "cre"),
-           email = "nicholas.cullen@med.lu.se",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
+           email = "nickcullen31@gmail.com")
 Description: Automated biomarker analysis in R (abaR) is intended to make it
     easier to fit statistical models on biomarker data, to make it easier to
     use biomarkers to plan and analysis clinical trials, and to facilitate more

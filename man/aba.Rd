@@ -17,7 +17,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Nicholas Cullen \email{nicholas.cullen@med.lu.se} (\href{https://orcid.org/YOUR-ORCID-ID}{ORCID})
+\strong{Maintainer}: Nicholas Cullen \email{nickcullen31@gmail.com}
 
 }
 \keyword{internal}

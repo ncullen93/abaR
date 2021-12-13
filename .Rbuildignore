@@ -10,4 +10,4 @@
 ^doc$
 ^Meta$
 ^codecov\.yml$
-cran-comments.md
+^cran-comments.md$
