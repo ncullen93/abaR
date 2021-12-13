@@ -117,30 +117,6 @@ print.abaStat <- function(x, ...) {
   }
 }
 
-# std normalize a dataframe
-normalize_data <- function(data,
-                           outcome,
-                           predictors,
-                           covariates,
-                           stat_obj) {
-  std.beta <- stat_obj$params$std.beta
-  complete.cases <- stat_obj$params$complete.cases
-
-  all_vars <- c(covariates, predictors)
-
-  if (std.beta) {
-    factor_vars <- sapply(data[,all_vars], class)
-    factor_vars <- names(factor_vars[factor_vars=='factor'])
-    scale_vars <- all_vars[!(all_vars %in% factor_vars)]
-    data[, scale_vars] <- scale(data[, scale_vars])
-  }
-  if (complete.cases) {
-    data <- data[complete.cases(data[, all_vars]), ]
-  }
-
-  data
-}
-
 #' Pipe operator
 #'
 #' See \code{magrittr::\link[magrittr:pipe]{\%>\%}} for details.
