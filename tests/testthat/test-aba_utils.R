@@ -181,10 +181,9 @@ test_that("tidy eval throws error without data set", {
   expect_error(
     aba_model() %>% set_predictors('x','y',contains('x'))
   )
-
   # set_groups()
   expect_error(
-    aba_model() %>% set_groups(x > 1)
+    aba_model() %>% set_groups(madeup_variable > 1)
   )
 })
 

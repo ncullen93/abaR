@@ -70,15 +70,20 @@ adjust_pvals <- function(results, adjust) {
       mutate(
         estimate_adj = purrr::map(
           .data$data,
-          function(x) stats::p.adjust(x$estimate, method = .method)
+          function(x) {
+            # dont include basic model in comparison
+            xx <- x$estimate
+            is_basic <- x$predictor == 'Basic'
+            xx[!is_basic] <-
+              stats::p.adjust(xx[!is_basic], method = .method)
+            xx
+          }
         )
       ) %>%
       unnest(cols = c(data, estimate_adj)) %>%
       ungroup() %>%
       select(-estimate) %>%
-      rename(
-        estimate = estimate_adj
-      ) %>%
+      rename(estimate = estimate_adj) %>%
       select(group:predictor, estimate, everything())
 
     results$metrics <- results$metrics %>%
@@ -112,10 +117,7 @@ adjust_pvals <- function(results, adjust) {
         pval = pval_adj
       )
 
-    results$coefs <- r_adj %>%
-      bind_rows(
-        results$coefs
-      )
+    results$coefs <- r_adj
   }
 
   return(results)
