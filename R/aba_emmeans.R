@@ -154,7 +154,7 @@ extract_counts <- function(fit, extra_params) {
 #' @export
 aba_plot.abaEmmeans <- function(object,
                                 ...) {
-  plot_df <- object$emmeans %>%
+  plot_df <- object$results$emmeans %>%
     group_by(group, outcome, stat, predictor) %>%
     nest() %>%
     select(-data) %>%
@@ -184,21 +184,21 @@ plot_emmeans_helper <- function(group, outcome, stat, predictor, object) {
   stat <- stat
   predictor <- predictor
 
-  df1 <- object$emmeans %>%
+  df1 <- object$results$emmeans %>%
     filter(
       .data$group == {{ group }},
       .data$outcome == {{ outcome }},
       .data$stat == {{ stat }},
       .data$predictor == {{ predictor }}
     )
-  df2 <- object$pairs  %>%
+  df2 <- object$results$pairs  %>%
     filter(
       group == {{ group }},
       outcome == {{ outcome }},
       stat == {{ stat }},
       predictor == {{ predictor }}
     )
-  df3 <- object$counts %>%
+  df3 <- object$results$counts %>%
     filter(
       group == {{ group }},
       outcome == {{ outcome }},

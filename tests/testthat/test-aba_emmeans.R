@@ -29,4 +29,9 @@ test_that("example works", {
     model_emmeans <- model %>% aba_emmeans(),
     NA
   )
+
+  expect_error(
+    figs <- model_emmeans %>% aba_plot(),
+    NA
+  )
 })
