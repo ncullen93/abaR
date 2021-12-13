@@ -19,6 +19,10 @@ test_that("different predictor forms work", {
     NA
   )
 
+  expect_output(
+    print(model),
+    ''
+  )
 
   # three individual biomarkers
   vars <- c('CSF_ABETA_bl','CSF_PTAU_bl','CSF_TAU_bl')
