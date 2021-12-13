@@ -10,14 +10,15 @@
 coverage](https://codecov.io/gh/ncullen93/abaR/branch/main/graph/badge.svg)](https://app.codecov.io/gh/ncullen93/abaR?branch=main)
 <!-- badges: end -->
 
-The goals of abaR are to do the following:
+The goals of the aba package are the following:
 
--   to make it easy to fit many statistical models
--   to provide high-level functions for common model visualizations
--   to improve workflows for biomarker-based planning and analysis of
-    clinical trials
--   to facilitate multi-cohort validation studies without direct data
-    sharing
+-   to reduce effort and error associated with fitting statistical
+    models across multiple analysis factors (groups, outcomes,
+    predictors)
+-   to allow anyone to generate publication-ready figures and tables
+-   to provide advanced tools for biomarker-based planning and analysis
+    of clinical trials
+-   to facilitate multi-cohort validation studies
 
 ![overview image](inst/aba_overview.png)
 
@@ -28,22 +29,9 @@ enirichment) and analyze clinical trials, and to facilitate multi-cohort
 validation studies when data cannot be easily shared between
 collaborators.
 
-The abaR package is based on tidyverse principles, which is why it
-features a workflow heavily based on the pipe ( %&gt;% ) operator. This
-lets you analyze data in a manner which is more similar to the way we
-talk and think about biomarker analysis.
+## Get started
 
-A meta-goal of the abaR framework is to cater to users at a wide range
-of abstraction levels. This means that abaR should work equally well for
-users whether they want a high-level framework to analyze biomarkers
-without thinking much about the underlying statistics, or wether they
-want a low-level framework where they just want a way to easily run
-their own highly custom statistical models on different parameter
-combinations and across cohorts.
-
-## Installation
-
-You can install the development version from
+You can install the development version of the aba package from
 [GitHub](https://github.com/ncullen93/abaR) with:
 
 ``` r
@@ -51,7 +39,13 @@ You can install the development version from
 devtools::install_github("ncullen93/abaR")
 ```
 
-## Statistical analysis
+To view tutorials and examples of how to use the package, you can visit
+the package website at <https://ncullen93.github.io/abaR>
+
+Some examples of publications whose analysis have been completed mostly
+or entirely with the aba package are feature here:
+
+## A simple example
 
 The general workflow of fitting an aba model for statistical analysis
 looks like this:
