@@ -2,6 +2,7 @@ test_that("example works", {
   # create temp files to save to
   tmp_filename_csv <- tempfile(fileext = '.csv')
   tmp_filename_rda <- tempfile(fileext = '.Rda')
+  tmp_filename_xlsx <- tempfile(fileext = '.xlsx')
 
   # grab built-in data
   data <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
@@ -26,7 +27,6 @@ test_that("example works", {
     NA
   )
 
-
   # save model summary to file as raw long-form results
   expect_error(
     model_summary %>% aba_write(tmp_filename_csv, format = 'raw'),
@@ -45,9 +45,20 @@ test_that("example works", {
     NA
   )
 
+  expect_error(
+    model_summary %>% aba_write(tmp_filename_xlsx),
+    NA
+  )
+
+  expect_error(
+    model_summary %>% aba_write(tmp_filename_xlsx, separate=TRUE),
+    NA
+  )
+
   # delete temp files
   removed <- file.remove(tmp_filename_csv)
   removed <- file.remove(tmp_filename_rda)
+  removed <- file.remove(tmp_filename_xlsx)
 })
 
 test_that("save and load works", {

@@ -31,6 +31,11 @@ test_that("example works", {
     NA
   )
 
+  expect_output(
+    print(pwr),
+    NULL
+  )
+
   # generate a standard results figure from the power results
   expect_error(
     fig <- pwr %>% aba_plot(),
