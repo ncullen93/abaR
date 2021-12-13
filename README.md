@@ -10,6 +10,8 @@
 coverage](https://codecov.io/gh/ncullen93/abaR/branch/main/graph/badge.svg)](https://app.codecov.io/gh/ncullen93/abaR?branch=main)
 <!-- badges: end -->
 
+### Overview
+
 The goals of the aba package are the following:
 
 -   to reduce effort and error associated with fitting statistical
@@ -20,7 +22,7 @@ The goals of the aba package are the following:
     of clinical trials
 -   to facilitate multi-cohort validation studies
 
-![overview image](inst/aba_overview.png)
+![overview image](man/figures/README-aba_overview.png)
 
 With the abaR package, it becomes easier to fit statistical models on
 permuatations of covariates / predictors / outcomes / groups, to make it
@@ -29,12 +31,12 @@ enirichment) and analyze clinical trials, and to facilitate multi-cohort
 validation studies when data cannot be easily shared between
 collaborators.
 
-## Get started
+### Getting started
 
 To view tutorials and examples of how to use the package, you can visit
 the package website at <https://ncullen93.github.io/abaR>.
 
-You can view and install the development version of the aba package from
+You can install the development version of the aba package from
 [GitHub](https://github.com/ncullen93/abaR) with the following:
 
 ``` r
@@ -67,7 +69,7 @@ model_fit <- model_spec %>% fit()
 model_summary <- model_fit %>% summary()
 ```
 
-## Studies
+### Publications
 
 Some publications whose analysis have been done with functions from the
 aba package are featured here:
@@ -96,7 +98,7 @@ disease](https://onlinelibrary.wiley.com/doi/full/10.1002/acn3.51158) NC
 Cullen, H Zetterberg, PS Insel, B Olsson, U Andreasson, et al. Annals of
 Clinical and Translational Neurology 7 (9), 1661-1673
 
-### Cite
+#### Cite
 
 If you use the aba package in your work, we appreciate if you cite us.
 An example statement that can be added at the end of the “Statistical
@@ -104,3 +106,8 @@ analysis” section of your methods is provided here:
 
 > The analysis was done in the R programming language (v4.0.3) using the
 > Automated Biomarker Analysis for R (“aba”) package \[citation\].
+
+### Getting help
+
+The easiest way to get help is to create an issue on the github page or
+to send us an email with your questions.
