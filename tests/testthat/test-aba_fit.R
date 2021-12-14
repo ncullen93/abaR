@@ -110,7 +110,7 @@ test_that("tidy eval before setting data gives error", {
 })
 
 
-test_that("having a variable completely missing throws an error", {
+test_that("small data after processing throws an error", {
 
   data_start <- adnimerge %>%
     dplyr::filter(VISCODE == 'bl',
