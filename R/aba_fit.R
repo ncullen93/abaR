@@ -250,6 +250,23 @@ process_dataset <- function(
     data <- data[rowSums(!is.na(data[,c(covariates,predictors)])) > 0,]
   }
 
+  # check for empty data
+  if (nrow(data) < 10) {
+    message <- glue('Processed data (Group: {group} | Outcome: {outcome}) has less
+                 than 10 rows. Check the following:
+                 - that your group filter is valid
+                 - that any your outcome(s), covariate(s), and predictor(s)
+                   are not all NA in your data')
+    if (complete.cases == TRUE) {
+      message <- glue(
+        '{message}.
+        Also, try setting complete.cases = F in your stat
+        e.g., model %>% set_stats(stat_glm(complete.cases=F))'
+      )
+    }
+    stop(message)
+  }
+
   return(list(data))
 }
 

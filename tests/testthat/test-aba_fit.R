@@ -110,6 +110,99 @@ test_that("tidy eval before setting data gives error", {
 })
 
 
+test_that("having a variable completely missing throws an error", {
+
+  data_start <- adnimerge %>%
+    dplyr::filter(VISCODE == 'bl',
+                  DX_bl == 'MCI') %>%
+    select(DX_bl, MMSE_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl,
+           AGE, GENDER, EDUCATION) %>%
+    filter(complete.cases(.))
+
+  ###############
+  data_missing <- data_start
+  data_missing$MMSE_bl <- NA
+
+  expect_error(
+    model <- data_missing %>%
+      aba_model() %>%
+      set_outcomes(MMSE_bl) %>%
+      set_predictors(
+        PLASMA_PTAU181_bl,
+        PLASMA_NFL_bl,
+        c(PLASMA_PTAU181_bl, PLASMA_NFL_bl),
+      ) %>%
+      set_covariates(
+        AGE, GENDER, EDUCATION
+      ) %>%
+      set_stats('lm') %>%
+      aba_fit()
+  )
+
+  ###############
+  data_missing <- data_start
+  data_missing$PLASMA_PTAU181_bl <- NA
+
+  expect_error(
+    model <- data_missing %>%
+      aba_model() %>%
+      set_outcomes(MMSE_bl) %>%
+      set_predictors(
+        PLASMA_PTAU181_bl,
+        PLASMA_NFL_bl,
+        c(PLASMA_PTAU181_bl, PLASMA_NFL_bl),
+      ) %>%
+      set_covariates(
+        AGE, GENDER, EDUCATION
+      ) %>%
+      set_stats('lm') %>%
+      aba_fit()
+  )
+
+  #########
+  # this should not give an error because nrow(data) < 10 (= 9)
+  data_missing <- data_start
+  data_missing[1:(nrow(data_missing)-9),'PLASMA_PTAU181_bl'] <- NA
+  expect_error(
+    model <- data_missing %>%
+      aba_model() %>%
+      set_outcomes(MMSE_bl) %>%
+      set_predictors(
+        PLASMA_PTAU181_bl,
+        PLASMA_NFL_bl,
+        c(PLASMA_PTAU181_bl, PLASMA_NFL_bl),
+      ) %>%
+      set_covariates(
+        AGE, GENDER, EDUCATION
+      ) %>%
+      set_stats('lm') %>%
+      aba_fit()
+  )
+
+  #########
+
+  # this should not give an error because nrow(data) > 10 (= 11)
+  data_missing <- data_start
+  data_missing[1:(nrow(data_missing)-11),'PLASMA_PTAU181_bl'] <- NA
+  expect_error(
+    model <- data_missing %>%
+      aba_model() %>%
+      set_outcomes(MMSE_bl) %>%
+      set_predictors(
+        PLASMA_PTAU181_bl,
+        PLASMA_NFL_bl,
+        c(PLASMA_PTAU181_bl, PLASMA_NFL_bl),
+      ) %>%
+      set_covariates(
+        AGE, GENDER, EDUCATION
+      ) %>%
+      set_stats('lm') %>%
+      aba_fit(),
+    NA
+  )
+
+})
+
 test_that("fit with only one value for each spec param works", {
 
   # no group & no predictors - should still work

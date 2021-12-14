@@ -171,12 +171,6 @@ test_that("set_covariates with strings", {
 })
 
 
-test_that("add_predictors works", {
-  m <- aba_model() %>%
-    set_predictors('a','b','c')
-
-})
-
 test_that("tidy eval throws error without data set", {
   # set_predictors()
   expect_error(
