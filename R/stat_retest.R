@@ -132,7 +132,6 @@ fit_retest <- function(formula, data, extra_params) {
     pivot_longer(-c(id),
                  names_to = 'time',
                  values_to = 'estimate') %>%
-    mutate(outcome = outcome) %>%
     select(all_of(c(id)), time, estimate)
 
   struct <- list(
