@@ -40,7 +40,6 @@ reference:
   - set_groups
   - set_outcomes
   - set_predictors
-  - add_predictors
   - set_covariates
   - set_stats
   - aba_fit
@@ -54,6 +53,7 @@ reference:
   - stat_lm
   - stat_lme
   - stat_mmrm
+  - stat_retest
   - stat_roc
 - title: Additional functionality
   contents:
