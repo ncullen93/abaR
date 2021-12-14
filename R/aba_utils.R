@@ -97,7 +97,6 @@ set_groups <- function(object, ..., labels = NULL) {
 #' @export
 #'
 #' @examples
-#'
 #' data <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
 #'
 #' # set with variables
@@ -114,25 +113,27 @@ set_groups <- function(object, ..., labels = NULL) {
 #' # result in an error if these variables do not éxist in the eventual data.
 #' model <- aba_model() %>%
 #'   set_outcomes('CDRSB', 'ADAS13', 'MMSE')
-#'
 set_outcomes <- function(object, ..., labels = NULL) {
   object <-
     tryCatch(
       {
+
         # expect not a list input
-        x <- parse_select_expr(..., data=object$data)
+        x <- parse_select_expr(..., data=object$data) %>% unlist()
         if (!is.null(labels)) {
           names(x) <- labels
         } else {
           names(x) <- paste0('O', seq_along(x))
         }
-        object$outcomes <- x
+        object$outcomes <- as.list(x)
         object
       },
       error = function(cond) {
+
         # try with expectation of list input
         x <- list(...)[[1]]
-        if (class(x) == 'character') x <- list(x)
+        if (class(x) == 'character') x <- as.list(x)
+        if (!is.null(labels)) names(x) <- labels
         if (is.null(names(x))) names(x) <- paste0('O', seq_along(x))
         object$outcomes <- x
         object
@@ -387,6 +388,9 @@ set_stats <- function(.model, ..., labels = NULL) {
 #'
 set_data <- function(model, data) {
   if (!is.data.frame(data)) stop('data argument must be data.frame')
+
+  # ensure data is not grouped
+  data <- data %>% ungroup()
 
   model$data <- data
   model

@@ -1,3 +1,46 @@
+test_that("setting outcomes using tidy selection works as expected", {
+  df <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
+  my_outcomes <- list(
+    'a' = 'CSF_ABETA_bl',
+    't' = 'CSF_PTAU_bl',
+    'n' = 'CSF_TAU_bl'
+  )
+  outcomes2 <- list('O1'='CSF_ABETA_bl',
+                    'O2'=  'CSF_PTAU_bl',
+                    'O3' = 'CSF_TAU_bl')
+  outcomes3 <- c('CSF_ABETA_bl',
+                 'CSF_PTAU_bl',
+                 'CSF_TAU_bl')
+  m <- df %>% aba_model() %>% set_outcomes(my_outcomes)
+  expect_identical(m$outcomes, my_outcomes)
+
+  m2 <- df %>% aba_model() %>% set_outcomes(outcomes3)
+  expect_identical(
+    m2$outcomes,
+    outcomes2
+  )
+
+  m3 <- df %>% aba_model() %>% set_outcomes(CSF_ABETA_bl:CSF_TAU_bl)
+  expect_equal(
+    m3$outcomes,
+    outcomes2
+  )
+
+  m4 <- df %>% aba_model() %>%
+    set_outcomes(outcomes3, labels=names(my_outcomes))
+  expect_equal(
+    m4$outcomes,
+    my_outcomes
+  )
+
+  m5 <- df %>% aba_model() %>% set_outcomes(CSF_ABETA_bl:CSF_TAU_bl,
+                                            labels=names(my_outcomes))
+  expect_equal(
+    m5$outcomes,
+    my_outcomes
+  )
+})
+
 
 test_that('different ways to set models work', {
 
