@@ -204,17 +204,19 @@ process_dataset <- function(
     filter(rlang::eval_tidy(rlang::parse_expr(group))) %>%
     drop_na(all_of(outcome))
 
-  # workaround for empty predictor set
-  if (is.null(predictors)) return(list(data))
-
+  # process predictors and covariates; check if they exist
   predictors <- predictors %>% unlist() %>% unique()
   predictors <- predictors[predictors != '']
+  has_predictors <- length(predictors) > 0
+  has_covariates <- length(covariates) > 0
 
   if (length(std.beta) == 1) std.beta <- c(std.beta, std.beta)
-  if (sum(std.beta) > 0) {
 
-    if (std.beta[2] == TRUE) {
-      # scale all continuous predictors
+  # standardize predictors and covariates
+  if ((std.beta[2] == TRUE) & (has_predictors | has_covariates)) {
+
+    # scale all continuous predictors
+    if (has_predictors) {
       scale_predictors <- predictors[
         predictors %>%
           purrr::map_lgl(~class(data[[.x]]) %in% c('integer','numeric'))
@@ -222,8 +224,10 @@ process_dataset <- function(
       if (length(scale_predictors) > 0) {
         data[,scale_predictors] <- scale(data[,scale_predictors])
       }
+    }
 
-      # scale all continuous covariates
+    # scale all continuous covariates
+    if (has_covariates) {
       scale_covariates <- covariates[
         covariates %>%
           purrr::map_lgl(~class(data[[.x]]) %in% c('integer','numeric'))
@@ -233,38 +237,43 @@ process_dataset <- function(
         data[,scale_covariates] <- scale(data[,scale_covariates])
       }
     }
-    if (std.beta[1] == TRUE) {
-      ## scale all continuous outcomes
-      if (class(data[[outcome]]) %in% c('integer', 'numeric')) {
-        if (!(stat$stat_type %in% c('glm'))) {
-          data[,outcome] <- scale(data[,outcome])
-        }
+  }
+
+  # standardize outcome
+  if (std.beta[1] == TRUE) {
+    ## scale all continuous outcomes
+    if (class(data[[outcome]]) %in% c('integer', 'numeric')) {
+      if (!(stat$stat_type %in% c('glm'))) {
+        data[,outcome] <- scale(data[,outcome])
       }
     }
   }
 
-  # if not complete cases, take rows with at least one non-zero covariate/predictor
-  if (complete.cases) {
-    data <- data[complete.cases(data[,c(covariates,predictors)]),]
-  } else {
-    data <- data[rowSums(!is.na(data[,c(covariates,predictors)])) > 0,]
-  }
+  # only check complete cases if there are predictors or covariates
+  if (has_predictors | has_covariates) {
+    # if not complete cases, take rows with at least one non-zero covariate/predictor
+    if (complete.cases) {
+      data <- data[complete.cases(data[,c(covariates,predictors)]),]
+    } else {
+      data <- data[rowSums(!is.na(data[,c(covariates,predictors)])) > 0,]
+    }
 
-  # check for empty data
-  if (nrow(data) < 10) {
-    message <- glue('Processed data (Group: {group} | Outcome: {outcome}) has less
+    # check for empty data
+    if (nrow(data) < 10) {
+      message <- glue('Processed data (Group: {group} | Outcome: {outcome}) has less
                  than 10 rows. Check the following:
                  - that your group filter is valid
                  - that any your outcome(s), covariate(s), and predictor(s)
                    are not all NA in your data')
-    if (complete.cases == TRUE) {
-      message <- glue(
-        '{message}.
+      if (complete.cases == TRUE) {
+        message <- glue(
+          '{message}.
         Also, try setting complete.cases = F in your stat
         e.g., model %>% set_stats(stat_glm(complete.cases=F))'
-      )
+        )
+      }
+      stop(message)
     }
-    stop(message)
   }
 
   return(list(data))

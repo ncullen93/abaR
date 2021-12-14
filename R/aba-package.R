@@ -1,7 +1,7 @@
 #' @title Automated biomarker analysis in R
 #' @name aba
 #'
-#' @importFrom stats AIC coef confint logLik na.omit
+#' @importFrom stats AIC coef confint logLik na.omit sd
 #' @importFrom glue glue
 #' @importFrom rlang :=
 #'
@@ -32,6 +32,6 @@ utils::globalVariables(
     'pid', 'power', 'power_fit', 'predictor', 'predictor_se', 'pval',
     'pval_adj', 'quantile', 'sid', 'tail', 'term', 'threshold',
     'time', 'treatment', 'tria', 'value', 'value_summary',
-    'yval', 'info', 'trial', 'where'
+    'yval', 'info', 'trial', 'where', 'val'
   )
 )
