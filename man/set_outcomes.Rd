@@ -26,7 +26,6 @@ separated by a comma, where each input is a different outcome You can also
 specify labels for each outcome.
 }
 \examples{
-
 data <- adnimerge \%>\% dplyr::filter(VISCODE == 'bl')
 
 # set with variables
@@ -43,5 +42,4 @@ model <- aba_model() \%>\%
 # result in an error if these variables do not éxist in the eventual data.
 model <- aba_model() \%>\%
   set_outcomes('CDRSB', 'ADAS13', 'MMSE')
-
 }

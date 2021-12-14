@@ -11,7 +11,7 @@ all_combos(...)
 will be created. Each variable string should be separated by a comma.}
 }
 \value{
-A list of vectors of ll possible combinations of the variables
+A list of vectors of all possible combinations of the variables
 }
 \description{
 This function creates all possible combinations of a set of variables. The

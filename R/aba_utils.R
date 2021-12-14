@@ -18,7 +18,7 @@
 #' @param labels vector of strings. Optional labels for printing & plotting.
 #'
 #' @return An aba model with groups set to the given input.
-#'
+#
 #' @export
 #'
 #' @examples

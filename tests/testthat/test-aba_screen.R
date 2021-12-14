@@ -28,10 +28,10 @@ test_that("example works", {
   expect_error(
     model_screen <- model %>%
       aba_screen(
-        threshold = seq(0.25, 0.75, by = 0.1),
-        cost_multiplier = c(4, 8, 16),
+        threshold = seq(0.25, 0.75, by = 0.25),
+        cost_multiplier = c(4, 8),
         include_n = 1000,
-        ntrials = 5,
+        ntrials = 3,
         verbose = TRUE
       ),
     NA

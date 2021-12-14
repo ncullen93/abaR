@@ -29,7 +29,7 @@ collaborators.
 ## Getting started
 
 To view tutorials and examples of how to use the package, you can visit
-the package website at <https://ncullen93.github.io/abaR>.
+the package website at <https://ncullen93.github.io/abaR/>.
 
 You can install the development version of the aba package from
 [GitHub](https://github.com/ncullen93/abaR) with the following:

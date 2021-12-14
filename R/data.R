@@ -10,5 +10,5 @@
 #'
 #' @format A data frame with 15,598 rows and 28 variables.
 #'
-#' @source \url{adni.loni.usc.edu}
+#' @source \url{https://adni.loni.usc.edu}
 "adnimerge"

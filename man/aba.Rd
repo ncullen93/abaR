@@ -6,13 +6,13 @@
 \alias{aba-package}
 \title{Automated biomarker analysis in R}
 \description{
-Automated biomarker analysis in R (abaR) is intended to make it easier to fit statistical models on biomarker data, to make it easier to use biomarkers to plan and analysis clinical trials, and to facilitate more multi-cohort validation studies.
+Automated biomarker analysis in R is intended to make it easier to fit statistical models on biomarker data, to make it easier to use biomarkers to plan and analysis clinical trials, and to facilitate more multi-cohort validation studies.
 }
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://ncullen93.github.io/abaR}
-  \item \url{https://github.com/ncullen93/abaR}
+  \item \url{https://github.com/ncullen93/abaR/}
+  \item \url{https://ncullen93.github.io/abaR/}
 }
 
 }

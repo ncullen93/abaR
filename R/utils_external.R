@@ -7,7 +7,7 @@
 #' @param ... strings. Variable names from which all possible combinations
 #'   will be created. Each variable string should be separated by a comma.
 #'
-#' @return A list of vectors of ll possible combinations of the variables
+#' @return A list of vectors of all possible combinations of the variables
 #' @export
 #'
 #' @examples
