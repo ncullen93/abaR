@@ -57,10 +57,7 @@ aba_summary <- function(object,
   coefs_df <- object %>% calculate_coefs(control)
 
   # calculate metrics
-  metrics_df <- object %>%
-    calculate_metrics(control) %>%
-    unnest(metrics) %>%
-    filter(!is.na(estimate))
+  metrics_df <- object %>% calculate_metrics(control)
 
   s <- list(
     results = list(
@@ -128,9 +125,27 @@ calculate_coefs <- function(object, control) {
   return(r)
 }
 
+
 # helper function for aba_summary
 coefs_pivot_wider <- function(object, wider = FALSE) {
-  df <- object$results$coefs %>%
+  df <- object$results$coefs
+  control <- object$control
+
+  # handle digits
+  df <- df %>%
+    mutate(
+      across(estimate:conf_high,
+             ~purrr::map_chr(., ~sprintf(glue('%.{control$coef_digits}f'), .))),
+      pval = purrr::map_chr(
+        pval,
+        ~clip_metric(
+          sprintf(glue('%.{control$pval_digits}f'), .),
+          control$pval_digits
+        )
+      )
+    )
+
+  df <- df %>%
     mutate(
       estimate = purrr::pmap_chr(
         list(
@@ -153,12 +168,14 @@ coefs_pivot_wider <- function(object, wider = FALSE) {
 
 # helper function for aba summary
 coef_fmt <- function(est, lo, hi, pval) {
-  coef <- glue('{sprintf("%.2f", est)}')
-  if (!is.na(lo)) {
-    coef <- glue('{coef} [{sprintf("%.2f", lo)}, {sprintf("%.2f", hi)}]')
-  }
+  coef <- glue('{est}')
+  if (!is.na(lo) | !is.na(hi)) coef <- glue('{coef} [{lo}, {hi}]')
   if (!is.na(pval)) {
-    coef <- glue('{coef} (P={sprintf("%.4f", pval)})')
+    if (grepl('<',pval)) {
+      coef <- glue('{coef} (P{pval})')
+    } else {
+      coef <- glue('{coef} (P={pval})')
+    }
   }
   coef
 }
@@ -226,7 +243,9 @@ calculate_metrics <- function(object, control) {
     ungroup()
 
   r <- r %>%
-    select(-any_of(c('fit', 'fit_basic', 'complete_cases')))
+    select(-any_of(c('fit', 'fit_basic', 'complete_cases'))) %>%
+    unnest(metrics) %>%
+    filter(!is.na(estimate))
 
   r
 }
@@ -252,11 +271,9 @@ metrics_pivot_wider <- function(object) {
       values_from = estimate
     )
 
-  # clip metrics (pval)
-  df <- df %>%
-    mutate(
-      pval = purrr::map_chr(pval, clip_metric, object$control$pval_digits)
-    )
+  df <- df %>% mutate(
+    pval = purrr::map_chr(pval, clip_metric, object$control$pval_digits)
+  )
 
   df
 }

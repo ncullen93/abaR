@@ -41,14 +41,16 @@ aba_control <- function(include_intercept = FALSE,
                         include_covariates = TRUE,
                         pval_digits = 4,
                         aic_digits = 0,
-                        metric_digits = 2) {
+                        metric_digits = 2,
+                        coef_digits = 2) {
 
   ctrl <- list(
     include_covariates = include_covariates,
     include_intercept = include_intercept,
     pval_digits = pval_digits,
     aic_digits = aic_digits,
-    metric_digits = metric_digits
+    metric_digits = metric_digits,
+    coef_digits = coef_digits
   )
 
   class(ctrl) <- 'abaControl'

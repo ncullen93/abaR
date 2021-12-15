@@ -9,7 +9,8 @@ aba_control(
   include_covariates = TRUE,
   pval_digits = 4,
   aic_digits = 0,
-  metric_digits = 2
+  metric_digits = 2,
+  coef_digits = 2
 )
 }
 \arguments{
