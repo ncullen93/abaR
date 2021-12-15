@@ -112,7 +112,7 @@ fit_retest <- function(formula, data, extra_params) {
     )
   df_res_orig <- df_res
 
-  all_visits <- df_res %>% select(-c(id)) %>% names()
+  all_visits <- df_res %>% select(-all_of(c(id))) %>% names()
   all_visit_combos <- all_combos(all_visits)
   is_pairs <- all_visit_combos %>% purrr::map_lgl(~length(.) == 2)
   all_visit_pairs <- all_visit_combos[is_pairs] %>% unique()
@@ -129,7 +129,7 @@ fit_retest <- function(formula, data, extra_params) {
 
   df_res_subject <- df_res %>%
     select(-all_of(c(all_visits))) %>%
-    pivot_longer(-c(id),
+    pivot_longer(-all_of(c(id)),
                  names_to = 'time',
                  values_to = 'estimate') %>%
     select(all_of(c(id)), time, estimate)

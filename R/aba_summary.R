@@ -117,7 +117,12 @@ calculate_coefs <- function(object, control) {
 
   # remove covariates if specified
   if (!control$include_covariates) {
-    r <- r %>% filter(!term %in% model$covariates)
+    r <- r %>% filter(!term %in% object$covariates)
+  }
+
+  # remove intercept if specified
+  if (!control$include_intercept) {
+    r <- r %>% filter(!term == '(Intercept)')
   }
 
   return(r)
@@ -141,8 +146,7 @@ coefs_pivot_wider <- function(object, wider = FALSE) {
     pivot_wider(
       names_from = term,
       values_from = estimate
-    ) %>%
-    select(-any_of(c('(Intercept)')))
+    )
 
   df
 }
@@ -328,7 +332,9 @@ metric_fmt <- function(est, lo, hi, term, control) {
 as_table <- function(object) {
   df1 <- object %>% coefs_pivot_wider()
   df2 <- object %>% metrics_pivot_wider()
-  df <- df1 %>% left_join(df2, by=c('group','outcome','stat','predictor'))
+  df <- df2 %>%
+    left_join(df1, by=c('group','outcome','stat','predictor')) %>%
+    select(all_of(df1 %>% names),everything())
   df
 }
 
