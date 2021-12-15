@@ -58,6 +58,28 @@ test_that("digits works", {
     ms2 %>% as_table() %>% pull('auc') %>% head(1),
     "0.576 [0.532, 0.621]"
   )
+
+  # coefficients
+  my_ctrl <- aba_control(coef_digits = 3)
+  ms2 <- model %>% aba_summary(control = my_ctrl)
+  expect_identical(
+    ms2 %>% as_table() %>% pull(PLASMA_NFL_bl) %>% tail(1),
+    '1.121 [0.912, 1.378] (P=0.2781)'
+  )
+
+  my_ctrl <- aba_control(coef_digits = 1)
+  ms2 <- model %>% aba_summary(control = my_ctrl)
+  expect_identical(
+    ms2 %>% as_table() %>% pull(PLASMA_NFL_bl) %>% tail(1),
+    '1.1 [0.9, 1.4] (P=0.2781)'
+  )
+
+  my_ctrl <- aba_control(coef_digits = 0, pval_digits = 3)
+  ms2 <- model %>% aba_summary(control = my_ctrl)
+  expect_identical(
+    ms2 %>% as_table() %>% pull(PLASMA_NFL_bl) %>% tail(1),
+    '1 [1, 1] (P=0.278)'
+  )
 })
 
 
