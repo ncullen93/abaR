@@ -95,6 +95,8 @@ calculate_coefs <- function(object, control) {
       coefs = purrr::map(
         .data$fit,
         function(.f) {
+          if (is.null(.f)) return(NULL)
+
           aba_tidy(.f, all_variables, all_covariates) %>%
             rename(
               conf_low = conf.low,
@@ -219,6 +221,7 @@ calculate_metrics <- function(object, control) {
       metrics = purrr::map2(
         .data$fit, .data$fit_basic,
         function(model, basic_model) {
+          if (is.null(model)) return(NULL)
           x <- aba_glance(model, basic_model) %>%
             filter(term %in% metric_vars) %>%
             rename(conf_low = conf.low, conf_high = conf.high) %>%
@@ -271,9 +274,12 @@ metrics_pivot_wider <- function(object) {
       values_from = estimate
     )
 
-  df <- df %>% mutate(
-    pval = purrr::map_chr(pval, clip_metric, object$control$pval_digits)
-  )
+  if ('pval' %in% colnames(df)) {
+    df <- df %>% mutate(
+      pval = purrr::map_chr(pval, clip_metric, object$control$pval_digits)
+    )
+
+  }
 
   df
 }
@@ -286,7 +292,8 @@ clip_metric <- function(metric, digits) {
 }
 
 default_digits_map <- list(
-  'nobs' = 0
+  'nobs' = 0,
+  'nsub' = 0
 )
 
 # helper function for aba summary

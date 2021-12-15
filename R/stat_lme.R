@@ -100,19 +100,34 @@ fit_lme <- function(formula, data, extra_params) {
   id <- extra_params$id
   random_formula <- glue::glue('~ {time} | {id}')
 
-  model <- nlme::lme(stats::formula(formula),
-                     random = stats::formula(random_formula),
-                     control = nlme::lmeControl(
-                       maxIter = 1e10,
-                       msMaxIter = 1000,
-                       opt = "optim"
-                     ),
-                     na.action = stats::na.omit,
-                     data = data, method = "REML")
+  model <-
+   tryCatch(
+     {
+       model <- nlme::lme(stats::formula(formula),
+                          random = stats::formula(random_formula),
+                          control = nlme::lmeControl(
+                            maxIter = 1e10,
+                            msMaxIter = 1000,
+                            opt = "optim"
+                          ),
+                          na.action = stats::na.omit,
+                          data = data, method = "REML")
 
-  model$call$fixed <- stats::formula(formula)
-  model$call$random <- stats::formula(random_formula)
-  #model$call$data <- data
+       model$call$fixed <- stats::formula(formula)
+       model$call$random <- stats::formula(random_formula)
+       model
+     },
+     error = function(cond) {
+       warning(
+         glue('Problem fitting model:
+         {formula}
+         Check your variables for collinearity or missingness.
+         Skipping for now...')
+       )
+       NULL
+     }
+   )
+
   return(model)
 }
 

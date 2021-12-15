@@ -1,21 +1,3 @@
-devtools::load_all()
-data <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
-
-model <- data %>% aba_model() %>%
-  set_groups(everyone()) %>%
-  set_outcomes(CSF_ABETA_STATUS_bl) %>%
-  set_predictors(
-    PLASMA_PTAU181_bl, PLASMA_NFL_bl,
-    c(PLASMA_PTAU181_bl, PLASMA_NFL_bl)
-  ) %>%
-  set_covariates(AGE, GENDER, EDUCATION) %>%
-  set_stats(
-    stat_glm(std.beta=T)
-  ) %>%
-  fit()
-
-ms <- model %>% aba_summary()
-
 
 test_that("digits works", {
   data <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
