@@ -6,6 +6,9 @@
 #' @param include_covariates boolean. Whether to include covariates in coefs
 #' @param include_intercept  boolean. Whether to include intercept in coefs
 #' @param pval_digits integer. How many decimals of a pvalue to show
+#' @param aic_digits integer. How many decimals of AIC value to show
+#' @param metric_digits integer. Default value of how many decimals to show
+#'   for model metrics (e.g., auc, adj.r.squared, etc)
 #' @return a list with the control parameters specified
 #' @export
 #'
@@ -16,10 +19,10 @@
 #' # standard example
 #' model <- df %>% aba_model() %>%
 #'   set_groups(everyone()) %>%
-#'   set_outcomes(ConvertedToAlzheimers, CSF_ABETA_STATUS_bl) %>%
+#'   set_outcomes(CSF_ABETA_STATUS_bl) %>%
 #'   set_predictors(
-#'     PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl,
-#'     c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+#'     PLASMA_PTAU181_bl, PLASMA_NFL_bl,
+#'     c(PLASMA_PTAU181_bl, PLASMA_NFL_bl)
 #'   ) %>%
 #'   set_covariates(AGE, GENDER, EDUCATION) %>%
 #'   set_stats('glm') %>%
@@ -36,12 +39,16 @@
 #'
 aba_control <- function(include_intercept = FALSE,
                         include_covariates = TRUE,
-                        pval_digits = 4) {
+                        pval_digits = 4,
+                        aic_digits = 0,
+                        metric_digits = 2) {
 
   ctrl <- list(
     include_covariates = include_covariates,
     include_intercept = include_intercept,
-    pval_digits = pval_digits
+    pval_digits = pval_digits,
+    aic_digits = aic_digits,
+    metric_digits = metric_digits
   )
 
   class(ctrl) <- 'abaControl'

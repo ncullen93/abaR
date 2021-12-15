@@ -54,10 +54,7 @@ aba_summary <- function(object,
   model <- object
 
   # calculate coefs
-  coefs_df <- object %>%
-    calculate_coefs(control) %>%
-    unnest(coefs) %>%
-    filter(!is.na(estimate))
+  coefs_df <- object %>% calculate_coefs(control)
 
   # calculate metrics
   metrics_df <- object %>%
@@ -112,7 +109,18 @@ calculate_coefs <- function(object, control) {
       )
     )
 
-  r %>% select(-fit)
+  # unnest coefficient tables and remove NA coefficients
+  r <- r %>%
+    select(-fit) %>%
+    unnest(.data$coefs) %>%
+    filter(!is.na(estimate))
+
+  # remove covariates if specified
+  if (!control$include_covariates) {
+    r <- r %>% filter(!term %in% model$covariates)
+  }
+
+  return(r)
 }
 
 # helper function for aba_summary
@@ -135,6 +143,7 @@ coefs_pivot_wider <- function(object, wider = FALSE) {
       values_from = estimate
     ) %>%
     select(-any_of(c('(Intercept)')))
+
   df
 }
 
@@ -162,7 +171,6 @@ calculate_metrics <- function(object, control) {
     'nsub'
   )
 
-
   # add null model
   r <- object$results %>%
     group_by(group, outcome, stat) %>%
@@ -177,7 +185,7 @@ calculate_metrics <- function(object, control) {
     ungroup()
 
   # remove basic model when complete.cases = F because we cannot compare
-  # models fit on different sizes of data (i.e., pvalue and aic is not valid)
+  # models fit on different sizes of data (e.g., pvalue and aic is not valid)
   r <- r %>%
     rowwise() %>%
     mutate(complete_cases = object$stats[[.data$stat]]$params$complete.cases) %>%
@@ -189,13 +197,10 @@ calculate_metrics <- function(object, control) {
     mutate(
       metrics = purrr::map2(
         .data$fit, .data$fit_basic,
-        function(.f, .f0) {
-          x <- aba_glance(.f, .f0) %>%
+        function(model, basic_model) {
+          x <- aba_glance(model, basic_model) %>%
             filter(term %in% metric_vars) %>%
-            rename(
-              conf_low = conf.low,
-              conf_high = conf.high
-            ) %>%
+            rename(conf_low = conf.low, conf_high = conf.high) %>%
             arrange(match(term, metric_vars)) %>%
             mutate(term = tolower(term))
           x
@@ -208,6 +213,7 @@ calculate_metrics <- function(object, control) {
     if (!c) m <- m %>% filter(!(term %in% c('aic')))
     m
   }
+
   r <- r %>%
     rowwise() %>%
     mutate(
@@ -222,11 +228,6 @@ calculate_metrics <- function(object, control) {
 }
 
 metrics_pivot_wider <- function(object) {
-  digit_map <- list(
-    'pval' = 4,
-    'nobs' = 0,
-    'metric' = 2
-  )
 
   df <- object$results$metrics %>%
     mutate(
@@ -234,7 +235,8 @@ metrics_pivot_wider <- function(object) {
         list(
           est = .data$estimate,
           lo = .data$conf_low,
-          hi = .data$conf_high
+          hi = .data$conf_high,
+          term = .data$term
         ),
         metric_fmt,
         control = object$control
@@ -246,15 +248,43 @@ metrics_pivot_wider <- function(object) {
       values_from = estimate
     )
 
+  # clip metrics (pval)
+  df <- df %>%
+    mutate(
+      pval = purrr::map_chr(pval, clip_metric, object$control$pval_digits)
+    )
+
   df
 }
 
-# helper function for aba summary
-metric_fmt <- function(est, lo, hi, control) {
-  metric <- glue('{sprintf("%.2f", est)}')
-  if (!is.na(lo)) {
-    metric <- glue('{metric} [{sprintf("%.2f", lo)}, {sprintf("%.2f", hi)}]')
+clip_metric <- function(metric, digits) {
+  if (metric == paste0('0.',paste0(rep('0', digits),collapse=''))) {
+    metric <- paste0('<0.',paste0(rep('0', digits-1),collapse=''),'1')
   }
+  metric
+}
+
+default_digits_map <- list(
+  'nobs' = 0
+)
+
+# helper function for aba summary
+metric_fmt <- function(est, lo, hi, term, control) {
+
+  if (term %in% names(default_digits_map)) {
+    digits <- default_digits_map[[term]]
+  } else if (glue('{term}_digits') %in% names(control)) {
+    digits <- control[[glue('{term}_digits')]]
+  } else {
+    digits <- control$metric_digits
+  }
+  fmt <- glue('%.{digits}f')
+
+  metric <- glue('{sprintf({fmt}, est)}')
+  if (!is.na(lo)) {
+    metric <- glue('{metric} [{sprintf({fmt}, lo)}, {sprintf({fmt}, hi)}]')
+  }
+
   metric
 }
 

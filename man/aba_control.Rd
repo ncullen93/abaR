@@ -7,7 +7,9 @@
 aba_control(
   include_intercept = FALSE,
   include_covariates = TRUE,
-  pval_digits = 4
+  pval_digits = 4,
+  aic_digits = 0,
+  metric_digits = 2
 )
 }
 \arguments{
@@ -16,6 +18,11 @@ aba_control(
 \item{include_covariates}{boolean. Whether to include covariates in coefs}
 
 \item{pval_digits}{integer. How many decimals of a pvalue to show}
+
+\item{aic_digits}{integer. How many decimals of AIC value to show}
+
+\item{metric_digits}{integer. Default value of how many decimals to show
+for model metrics (e.g., auc, adj.r.squared, etc)}
 }
 \value{
 a list with the control parameters specified
@@ -31,10 +38,10 @@ df <- adnimerge \%>\% dplyr::filter(VISCODE == 'bl')
 # standard example
 model <- df \%>\% aba_model() \%>\%
   set_groups(everyone()) \%>\%
-  set_outcomes(ConvertedToAlzheimers, CSF_ABETA_STATUS_bl) \%>\%
+  set_outcomes(CSF_ABETA_STATUS_bl) \%>\%
   set_predictors(
-    PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl,
-    c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+    PLASMA_PTAU181_bl, PLASMA_NFL_bl,
+    c(PLASMA_PTAU181_bl, PLASMA_NFL_bl)
   ) \%>\%
   set_covariates(AGE, GENDER, EDUCATION) \%>\%
   set_stats('glm') \%>\%
