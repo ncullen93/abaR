@@ -137,6 +137,9 @@ the different statistical fits summarised into publication-ready tables.</p>
 <span class="r-in"><span class="co"># summarise model with th custom aba control - notice covariates</span></span>
 <span class="r-in"><span class="co"># wont be included in the tables when you print the summary to console</span></span>
 <span class="r-in"><span class="va">model_summary2</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">aba_summary</span><span class="op">(</span>control <span class="op">=</span> <span class="va">my_control</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> Problem with `filter()` input `..1`.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Input `..1` is `!term %in% model$covariates`.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> object 'model' not found</span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>

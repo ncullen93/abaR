@@ -77,7 +77,9 @@ printed to console.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">aba_control</span><span class="op">(</span>
   include_intercept <span class="op">=</span> <span class="cn">FALSE</span>,
   include_covariates <span class="op">=</span> <span class="cn">TRUE</span>,
-  pval_digits <span class="op">=</span> <span class="fl">4</span>
+  pval_digits <span class="op">=</span> <span class="fl">4</span>,
+  aic_digits <span class="op">=</span> <span class="fl">0</span>,
+  metric_digits <span class="op">=</span> <span class="fl">2</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -89,6 +91,11 @@ printed to console.</p>
 <dd><p>boolean. Whether to include covariates in coefs</p></dd>
 <dt>pval_digits</dt>
 <dd><p>integer. How many decimals of a pvalue to show</p></dd>
+<dt>aic_digits</dt>
+<dd><p>integer. How many decimals of AIC value to show</p></dd>
+<dt>metric_digits</dt>
+<dd><p>integer. Default value of how many decimals to show
+for model metrics (e.g., auc, adj.r.squared, etc)</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -103,10 +110,10 @@ printed to console.</p>
 <span class="r-in"><span class="co"># standard example</span></span>
 <span class="r-in"><span class="va">model</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="aba_model.html">aba_model</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
 <span class="r-in">  <span class="fu"><a href="set_groups.html">set_groups</a></span><span class="op">(</span><span class="fu"><a href="everyone.html">everyone</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="set_outcomes.html">set_outcomes</a></span><span class="op">(</span><span class="va">ConvertedToAlzheimers</span>, <span class="va">CSF_ABETA_STATUS_bl</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
+<span class="r-in">  <span class="fu"><a href="set_outcomes.html">set_outcomes</a></span><span class="op">(</span><span class="va">CSF_ABETA_STATUS_bl</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
 <span class="r-in">  <span class="fu"><a href="set_predictors.html">set_predictors</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="va">PLASMA_ABETA_bl</span>, <span class="va">PLASMA_PTAU181_bl</span>, <span class="va">PLASMA_NFL_bl</span>,</span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">PLASMA_ABETA_bl</span>, <span class="va">PLASMA_PTAU181_bl</span>, <span class="va">PLASMA_NFL_bl</span><span class="op">)</span></span>
+<span class="r-in">    <span class="va">PLASMA_PTAU181_bl</span>, <span class="va">PLASMA_NFL_bl</span>,</span>
+<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">PLASMA_PTAU181_bl</span>, <span class="va">PLASMA_NFL_bl</span><span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
 <span class="r-in">  <span class="fu"><a href="set_covariates.html">set_covariates</a></span><span class="op">(</span><span class="va">AGE</span>, <span class="va">GENDER</span>, <span class="va">EDUCATION</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
 <span class="r-in">  <span class="fu"><a href="set_stats.html">set_stats</a></span><span class="op">(</span><span class="st">'glm'</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
@@ -119,63 +126,23 @@ printed to console.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Group = G1 | Outcome = O1 | Stat = S1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 11</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   predictor AGE     GENDER   EDUCATION   PLASMA_ABETA_bl  PLASMA_PTAU181_…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Basic     1.03 [… 0.70 [0… 1.02 [0.83… <span style="color: #BB0000;">NA</span>               <span style="color: #BB0000;">NA</span>              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> P0        1.03 [… 0.66 [0… 1.02 [0.84… 0.00 [0.00, 389… <span style="color: #BB0000;">NA</span>              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> P1        1.01 [… 0.75 [0… 1.01 [0.82… <span style="color: #BB0000;">NA</span>               2.65 [1.07, 6.9…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> P2        0.95 [… 0.82 [0… 1.04 [0.84… <span style="color: #BB0000;">NA</span>               <span style="color: #BB0000;">NA</span>              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> P3        0.94 [… 0.75 [0… 1.05 [0.84… 0.00 [0.00, 649… 2.10 [0.79, 5.9…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 5 more variables: PLASMA_NFL_bl &lt;chr&gt;, auc &lt;chr&gt;, aic &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   pval &lt;chr&gt;, nobs &lt;chr&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Group = G1 | Outcome = O2 | Stat = S1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 11</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   predictor AGE     GENDER   EDUCATION   PLASMA_ABETA_bl  PLASMA_PTAU181_…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Basic     1.06 [… 1.27 [0… 0.99 [0.86… <span style="color: #BB0000;">NA</span>               <span style="color: #BB0000;">NA</span>              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> P0        1.03 [… 1.01 [0… 1.00 [0.87… 0.00 [0.00, 0.0… <span style="color: #BB0000;">NA</span>              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> P1        1.04 [… 1.33 [0… 0.99 [0.86… <span style="color: #BB0000;">NA</span>               3.28 [1.71, 6.9…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> P2        1.06 [… 1.27 [0… 0.98 [0.86… <span style="color: #BB0000;">NA</span>               <span style="color: #BB0000;">NA</span>              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> P3        1.04 [… 1.09 [0… 1.00 [0.86… 0.00 [0.00, 0.0… 2.64 [1.36, 5.6…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 5 more variables: PLASMA_NFL_bl &lt;chr&gt;, auc &lt;chr&gt;, aic &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   pval &lt;chr&gt;, nobs &lt;chr&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 4 × 10</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   predictor AGE    GENDER  EDUCATION  PLASMA_PTAU181_… PLASMA_NFL_bl auc  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Basic     1.03 … 1.39 [… 0.93 [0.8… <span style="color: #BB0000;">NA</span>               <span style="color: #BB0000;">NA</span>            0.58…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> P0        1.01 … 1.31 [… 0.96 [0.8… 3.89 [2.80, 5.5… <span style="color: #BB0000;">NA</span>            0.72…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> P1        1.00 … 1.43 [… 0.94 [0.8… <span style="color: #BB0000;">NA</span>               2.27 [1.48, … 0.63…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> P2        1.00 … 1.33 [… 0.96 [0.8… 3.67 [2.61, 5.2… 1.29 [0.81, … 0.72…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 3 more variables: aic &lt;chr&gt;, pval &lt;chr&gt;, nobs &lt;chr&gt;</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># add a control object - don't include covariate coefficients</span></span>
 <span class="r-in"><span class="va">my_control</span> <span class="op">&lt;-</span> <span class="fu">aba_control</span><span class="op">(</span>include_covariates <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">model_summary2</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="aba_summary.html">aba_summary</a></span><span class="op">(</span>control <span class="op">=</span> <span class="va">my_control</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> Problem with `filter()` input `..1`.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Input `..1` is `!term %in% model$covariates`.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> object 'model' not found</span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">model_summary2</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Group = G1 | Outcome = O1 | Stat = S1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 11</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   predictor AGE     GENDER   EDUCATION   PLASMA_ABETA_bl  PLASMA_PTAU181_…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Basic     1.03 [… 0.70 [0… 1.02 [0.83… <span style="color: #BB0000;">NA</span>               <span style="color: #BB0000;">NA</span>              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> P0        1.03 [… 0.66 [0… 1.02 [0.84… 0.00 [0.00, 389… <span style="color: #BB0000;">NA</span>              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> P1        1.01 [… 0.75 [0… 1.01 [0.82… <span style="color: #BB0000;">NA</span>               2.65 [1.07, 6.9…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> P2        0.95 [… 0.82 [0… 1.04 [0.84… <span style="color: #BB0000;">NA</span>               <span style="color: #BB0000;">NA</span>              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> P3        0.94 [… 0.75 [0… 1.05 [0.84… 0.00 [0.00, 649… 2.10 [0.79, 5.9…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 5 more variables: PLASMA_NFL_bl &lt;chr&gt;, auc &lt;chr&gt;, aic &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   pval &lt;chr&gt;, nobs &lt;chr&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Group = G1 | Outcome = O2 | Stat = S1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 11</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   predictor AGE     GENDER   EDUCATION   PLASMA_ABETA_bl  PLASMA_PTAU181_…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Basic     1.06 [… 1.27 [0… 0.99 [0.86… <span style="color: #BB0000;">NA</span>               <span style="color: #BB0000;">NA</span>              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> P0        1.03 [… 1.01 [0… 1.00 [0.87… 0.00 [0.00, 0.0… <span style="color: #BB0000;">NA</span>              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> P1        1.04 [… 1.33 [0… 0.99 [0.86… <span style="color: #BB0000;">NA</span>               3.28 [1.71, 6.9…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> P2        1.06 [… 1.27 [0… 0.98 [0.86… <span style="color: #BB0000;">NA</span>               <span style="color: #BB0000;">NA</span>              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> P3        1.04 [… 1.09 [0… 1.00 [0.86… 0.00 [0.00, 0.0… 2.64 [1.36, 5.6…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 5 more variables: PLASMA_NFL_bl &lt;chr&gt;, auc &lt;chr&gt;, aic &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   pval &lt;chr&gt;, nobs &lt;chr&gt;</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in print(model_summary2):</span> object 'model_summary2' not found</span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>
