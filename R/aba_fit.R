@@ -126,6 +126,7 @@ aba_fit <- function(object, ...) {
     )
 
   model$results <- fit_df
+  model$is_fit <- TRUE
   return(model)
 }
 

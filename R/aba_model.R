@@ -102,7 +102,8 @@ aba_model <- function(data = NULL,
     'covariates' = covariates,
     'stats' = stats,
     'results' = list(),
-    'verbose' = verbose
+    'verbose' = verbose,
+    'is_fit' = FALSE
   )
 
   class(m) <- 'abaModel'

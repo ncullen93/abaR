@@ -75,6 +75,7 @@ set_groups <- function(object, ..., labels = NULL) {
         object
       }
     )
+  object$is_fit <- FALSE
   object
 }
 
@@ -139,6 +140,7 @@ set_outcomes <- function(object, ..., labels = NULL) {
         object
       }
     )
+  object$is_fit <- FALSE
   object
 }
 
@@ -190,7 +192,7 @@ set_covariates <- function(object, ...) {
         object
       }
     )
-
+  object$is_fit <- FALSE
   object
 }
 
@@ -281,6 +283,7 @@ set_predictors <- function(object,
         object
       }
     )
+  object$is_fit <- FALSE
   object
 }
 
@@ -360,6 +363,7 @@ set_stats <- function(.model, ..., labels = NULL) {
   }
 
   .model$stats <- stats
+  .model$is_fit <- FALSE
   .model
 }
 
@@ -393,6 +397,7 @@ set_data <- function(model, data) {
   data <- data %>% ungroup()
 
   model$data <- data
+  model$is_fit <- FALSE
   model
 }
 

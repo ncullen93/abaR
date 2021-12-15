@@ -9,6 +9,8 @@
 #' @param aic_digits integer. How many decimals of AIC value to show
 #' @param metric_digits integer. Default value of how many decimals to show
 #'   for model metrics (e.g., auc, adj.r.squared, etc)
+#' @param coef_digits integer. Default value of how many decimals to show
+#'   for model coefficients
 #' @return a list with the control parameters specified
 #' @export
 #'

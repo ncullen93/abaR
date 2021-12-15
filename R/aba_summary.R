@@ -52,6 +52,8 @@ aba_summary <- function(object,
                         adjust = aba_adjust(),
                         verbose = FALSE) {
   model <- object
+  if (!model$is_fit) stop('You cant summarise a model which has not been fit.
+  Please call "aba_fit()" on your model first.')
 
   # calculate coefs
   coefs_df <- object %>% calculate_coefs(control)

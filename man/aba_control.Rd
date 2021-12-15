@@ -24,6 +24,9 @@ aba_control(
 
 \item{metric_digits}{integer. Default value of how many decimals to show
 for model metrics (e.g., auc, adj.r.squared, etc)}
+
+\item{coef_digits}{integer. Default value of how many decimals to show
+for model coefficients}
 }
 \value{
 a list with the control parameters specified
