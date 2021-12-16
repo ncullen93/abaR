@@ -125,6 +125,11 @@ aba_fit <- function(object, ...) {
       predictor = pid
     )
 
+  # check that all models are not null
+  if (sum(purrr::map_lgl(fit_df$fit, ~!is.null(.))) == 0) {
+    stop('All models failed to be fit. Check your model setup.')
+  }
+
   model$results <- fit_df
   model$is_fit <- TRUE
   return(model)

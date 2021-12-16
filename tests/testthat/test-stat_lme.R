@@ -1,9 +1,10 @@
 
-test_that("error model gets skipped and still works", {
+test_that("errors in model fit are properly handled", {
   # create a confounded variable
   data <- adnimerge %>%
     dplyr::mutate(PTAU_NFL_RATIO_bl = PLASMA_PTAU181_bl + PLASMA_NFL_bl)
 
+  # a few models failing should still works
   expect_error(
     suppressWarnings(
       model <- data %>% aba_model() %>%
@@ -28,6 +29,24 @@ test_that("error model gets skipped and still works", {
   expect_error(
     ms <- model %>% aba_summary(),
     NA
+  )
+
+  # all models failing should give an error
+  expect_error(
+    suppressWarnings(
+    model <- data %>% aba_model() %>%
+      set_groups(DX_bl == 'MCI', everyone()) %>%
+      set_outcomes(CDRSB) %>%
+      set_predictors(
+        AGE, GENDER, EDUCATION
+      ) %>%
+      set_covariates(PLASMA_PTAU181_bl, PLASMA_NFL_bl, PTAU_NFL_RATIO_bl) %>%
+      set_stats(
+        stat_lme(id='RID', time='YEARS_bl')
+      ) %>%
+      aba_fit()
+    ),
+    'failed to be fit'
   )
 
 })
