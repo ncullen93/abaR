@@ -203,6 +203,18 @@ test_that("small data after processing throws an error", {
 
 })
 
+test_that("verbose works", {
+  expect_error(
+    m <- adnimerge %>%
+      aba_model(verbose = TRUE) %>%
+      set_outcomes(MMSE) %>%
+      set_covariates(AGE) %>%
+      set_stats('lm') %>%
+      aba_fit(),
+    NA
+  )
+})
+
 test_that("fit with only one value for each spec param works", {
 
   # no group & no predictors - should still work

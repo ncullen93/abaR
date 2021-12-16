@@ -1,3 +1,11 @@
+test_that("print stat works", {
+  mmrm <- stat_mmrm(id = 'id', time = 'time', treatment = 'x')
+  expect_output(
+    print(mmrm),
+    NULL
+  )
+})
+
 test_that("standard mmrm works", {
 
   # fit
