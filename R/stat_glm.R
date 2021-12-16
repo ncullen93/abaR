@@ -71,9 +71,9 @@ fit_glm <- function(formula, data, ...) {
 # helper function for glm
 aba_tidy.glm <- function(model, predictors, covariates, ...) {
   # using conf.int = T with broom::tidy gives warning if no covariates present
-  withr::local_options(.new = list(warn = -1))
-
-  x <- broom::tidy(model, exponentiate = TRUE, conf.int = TRUE)
+  x <- suppressWarnings(
+    broom::tidy(model, exponentiate = TRUE, conf.int = TRUE)
+  )
   x
 }
 

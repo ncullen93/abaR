@@ -68,23 +68,24 @@ aba_demographics <- function(object,
   # TODO...
   # check if time variable is present in any stats
   # describe only baseline if longitudinal data is used
-
-  withr::local_options(.new = list(warn = -1))
   if (is.null(strata)) {
-    tbl <- tableone::CreateTableOne(
-      vars = all_vars,
-      factorVars = factor_vars,
-      data = data,
-      test = TRUE, includeNA = TRUE, addOverall = T
+    tbl <- suppressWarnings(
+      tableone::CreateTableOne(
+        vars = all_vars,
+        factorVars = factor_vars,
+        data = data,
+        test = TRUE, includeNA = TRUE, addOverall = T
+      )
     )
   } else {
-
-    tbl <- tableone::CreateTableOne(
-      vars = all_vars,
-      factorVars = factor_vars,
-      data = data,
-      strata = strata,
-      test = TRUE, includeNA = TRUE, addOverall = T
+    tbl <- suppressWarnings(
+      tableone::CreateTableOne(
+        vars = all_vars,
+        factorVars = factor_vars,
+        data = data,
+        strata = strata,
+        test = TRUE, includeNA = TRUE, addOverall = T
+      )
     )
   }
 

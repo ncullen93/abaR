@@ -1,12 +1,15 @@
 #' Plot an aba object
 #'
 #' This is a generic function for plotting an aba object. The resulting plot will
-#' depend on the type of aba object.The supported objects are the following:
-#'   - abaSummary
-#'   - abaEmmeans
+#' depend on the type of aba object. The supported objects are the following:
+#'   - aba_emmeans
+#'   - aba_longpower
+#'   - aba_robust
 #'
 #' @param object aba object. The object to plot.
 #' @param ... additional parameters
+#'
+#' @return a ggplot with plotted results depending on the aba object.
 #'
 #' @export
 aba_plot <- function(object, ...) {

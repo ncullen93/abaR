@@ -43,7 +43,7 @@
 #'   aba_fit()
 #'
 #' # run emmeans
-#' \dontrun{
+#' \donttest{
 #' model_emmeans <- model %>% aba_emmeans()
 #' }
 aba_emmeans <- function(model) {
@@ -170,7 +170,6 @@ aba_plot.abaEmmeans <- function(object,
 }
 
 guess_numeric <- function(x) {
-  withr::local_options(.new = list(warn = -1))
   x[tolower(x) %in% c('bl','baseline')] <- 0
   x_num <- readr::parse_number(x)
   x_num[is.na(x_num)] <- 0
@@ -230,7 +229,7 @@ plot_emmeans_helper <- function(group, outcome, stat, predictor, object) {
     unnest(data) %>%
     ungroup() %>%
     mutate(
-      time = guess_numeric(as.character(time))
+      time = suppressWarnings(guess_numeric(as.character(time)))
     )
 
   # add y value height to p-value table

@@ -1,15 +1,14 @@
 Package: aba
-Title: Automated Biomarker Analysis in R
+Title: Automated Biomarker Analysis
 Version: 0.0.9
 Authors@R: 
     person(given = "Nicholas",
            family = "Cullen",
            role = c("aut", "cre"),
            email = "nickcullen31@gmail.com")
-Description: Automated biomarker analysis in R is intended to make it
-    easier to fit statistical models on biomarker data, to make it easier to
-    use biomarkers to plan and analysis clinical trials, and to facilitate more
-    multi-cohort validation studies.
+Description: A tool to fit clinical prediction models and plan clinical trials 
+    using biomarker data across multiple analysis factors (groups, outcomes, 
+    predictors).
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true

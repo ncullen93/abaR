@@ -52,7 +52,7 @@ model <- df \%>\% aba_model() \%>\%
   aba_fit()
 
 # run emmeans
-\dontrun{
+\donttest{
 model_emmeans <- model \%>\% aba_emmeans()
 }
 }

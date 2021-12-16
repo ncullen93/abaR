@@ -6,7 +6,7 @@
 \alias{aba-package}
 \title{Automated biomarker analysis in R}
 \description{
-Automated biomarker analysis in R is intended to make it easier to fit statistical models on biomarker data, to make it easier to use biomarkers to plan and analysis clinical trials, and to facilitate more multi-cohort validation studies.
+A tool to fit clinical prediction models and plan clinical trials using biomarker data across multiple analysis factors (groups, outcomes, predictors).
 }
 \seealso{
 Useful links:

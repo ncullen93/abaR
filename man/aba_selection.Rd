@@ -68,11 +68,11 @@ model <- df \%>\% aba_model() \%>\%
 model_summary <- model \%>\% aba_summary()
 
 # default selection - forward selection by AIC with threshold = -2
-\dontrun{
+\donttest{
 model_selection <- model \%>\% aba_selection(verbose=TRUE)
 }
 # selection with p-value and threshold = 0.1
-\dontrun{
+\donttest{
 model_selection <- model \%>\%
   aba_selection(criteria = 'pval', threshold=0.1, verbose=TRUE)
 }
@@ -89,7 +89,7 @@ model2 <- model \%>\%
 
 model_summary2 <- model2 \%>\% aba_summary()
 
-\dontrun{
+\donttest{
 model_selection2 <- model2 \%>\%
   aba_selection(criteria='pval', threshold=0.1, verbose=TRUE)
 }
@@ -99,7 +99,7 @@ model3 <- model2 \%>\%
   set_outcomes(ConvertedToAlzheimers, ConvertedToDementia) \%>\%
   aba_fit()
 
-\dontrun{
+\donttest{
 model_selection3 <- model3 \%>\%
   aba_selection(criteria='pval', threshold=0.1, verbose=TRUE)
 }
@@ -109,7 +109,7 @@ model4 <- model3 \%>\%
   set_groups(everyone(), DX_bl \%in\% c('MCI','AD')) \%>\%
   aba_fit()
 
-\dontrun{
+\donttest{
 model_selection4 <- model4 \%>\%
   aba_selection(criteria='pval', threshold=0.1, verbose=TRUE)
 }

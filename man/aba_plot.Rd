@@ -11,11 +11,15 @@ aba_plot(object, ...)
 
 \item{...}{additional parameters}
 }
+\value{
+a ggplot with plotted results depending on the aba object.
+}
 \description{
 This is a generic function for plotting an aba object. The resulting plot will
-depend on the type of aba object.The supported objects are the following:
+depend on the type of aba object. The supported objects are the following:
 \itemize{
-\item abaSummary
-\item abaEmmeans
+\item aba_emmeans
+\item aba_longpower
+\item aba_robust
 }
 }

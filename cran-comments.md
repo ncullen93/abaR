@@ -2,14 +2,18 @@
 
 This is a resubmission. In this version I have:
 
-* Converted the DESCRIPTION title to title case.
+* Removed redundnat "in R" from title and description
 
-* Fixed link references so they do not seem wrong
+* Rewrote description to not start with "This package", etc
 
-* Fixed latex building error on windows/linux
+* Added missing \value to .Rd file for aba_plot function
 
-* Tested package on mac and windows for no notes
-  
+* Replaced \dontrun{} with \donttest{} where relevant
+
+* Removed files from vignettes/examples/ folder which had specific paths
+
+* Replaced 'options(warn = -1)' with 'suppresWarnings()' where relevant
+
 
 ## R CMD check results
 
