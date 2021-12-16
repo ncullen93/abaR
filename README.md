@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# Automated biomarker analysis in R
+# Automated biomarker analysis
 
 <!-- badges: start -->
 
@@ -19,7 +19,7 @@ The goals of the aba package are the following:
 
 ![overview image](man/figures/README-aba_overview.png)
 
-With the abaR package, it becomes easier to fit statistical models on
+With the aba package, it becomes easier to fit statistical models on
 permuatations of covariates / predictors / outcomes / groups, to make it
 easier to investigate how biomarkers can be used to plan (screening /
 enirichment) and analyze clinical trials, and to facilitate multi-cohort
