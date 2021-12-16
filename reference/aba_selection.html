@@ -143,14 +143,36 @@ group - outcome - stat combination.</p>
 <span class="r-in"><span class="va">model_summary</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="aba_summary.html">aba_summary</a></span><span class="op">(</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># default selection - forward selection by AIC with threshold = -2</span></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in"><span class="co"># \donttest{</span></span>
 <span class="r-in"><span class="va">model_selection</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">aba_selection</span><span class="op">(</span>verbose<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Round:  1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  ADAS13_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Round:  2 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  MRI_HIPP_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Round:  3 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  CDRSB_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Round:  4 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  PLASMA_NFL_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Round:  5 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> No improvement - stopping</span>
+<span class="r-in"><span class="co"># }</span></span>
 <span class="r-in"><span class="co"># selection with p-value and threshold = 0.1</span></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in"><span class="co"># \donttest{</span></span>
 <span class="r-in"><span class="va">model_selection</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
 <span class="r-in">  <span class="fu">aba_selection</span><span class="op">(</span>criteria <span class="op">=</span> <span class="st">'pval'</span>, threshold<span class="op">=</span><span class="fl">0.1</span>, verbose<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Round:  1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  ADAS13_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Round:  2 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  MRI_HIPP_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Round:  3 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  CDRSB_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Round:  4 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  PLASMA_NFL_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Round:  5 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  PLASMA_PTAU181_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Round:  6 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> No improvement - stopping</span>
+<span class="r-in"><span class="co"># }</span></span>
 <span class="r-in"><span class="co"># selection by group</span></span>
 <span class="r-in"><span class="va">model2</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
 <span class="r-in">  <span class="fu"><a href="set_predictors.html">set_predictors</a></span><span class="op">(</span></span>
@@ -164,30 +186,70 @@ group - outcome - stat combination.</p>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">model_summary2</span> <span class="op">&lt;-</span> <span class="va">model2</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="aba_summary.html">aba_summary</a></span><span class="op">(</span><span class="op">)</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in"><span class="co"># \donttest{</span></span>
 <span class="r-in"><span class="va">model_selection2</span> <span class="op">&lt;-</span> <span class="va">model2</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
 <span class="r-in">  <span class="fu">aba_selection</span><span class="op">(</span>criteria<span class="op">=</span><span class="st">'pval'</span>, threshold<span class="op">=</span><span class="fl">0.1</span>, verbose<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Round:  1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  CDRSB_bl ADAS13_bl MMSE_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Round:  2 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  MRI_HIPP_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Round:  3 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  PLASMA_ABETA_bl PLASMA_PTAU181_bl PLASMA_NFL_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Round:  4 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> No improvement - stopping</span>
+<span class="r-in"><span class="co"># }</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># add more outcomes</span></span>
 <span class="r-in"><span class="va">model3</span> <span class="op">&lt;-</span> <span class="va">model2</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
 <span class="r-in">  <span class="fu"><a href="set_outcomes.html">set_outcomes</a></span><span class="op">(</span><span class="va">ConvertedToAlzheimers</span>, <span class="va">ConvertedToDementia</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
 <span class="r-in">  <span class="fu"><a href="aba_fit.html">aba_fit</a></span><span class="op">(</span><span class="op">)</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in"><span class="co"># \donttest{</span></span>
 <span class="r-in"><span class="va">model_selection3</span> <span class="op">&lt;-</span> <span class="va">model3</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
 <span class="r-in">  <span class="fu">aba_selection</span><span class="op">(</span>criteria<span class="op">=</span><span class="st">'pval'</span>, threshold<span class="op">=</span><span class="fl">0.1</span>, verbose<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Round:  1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  CDRSB_bl ADAS13_bl MMSE_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  MRI_HIPP_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Round:  2 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  MRI_HIPP_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  CDRSB_bl ADAS13_bl MMSE_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Round:  3 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  PLASMA_ABETA_bl PLASMA_PTAU181_bl PLASMA_NFL_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  PLASMA_ABETA_bl PLASMA_PTAU181_bl PLASMA_NFL_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Round:  4 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> No improvement - stopping</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> No improvement - stopping</span>
+<span class="r-in"><span class="co"># }</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># add more groups</span></span>
 <span class="r-in"><span class="va">model4</span> <span class="op">&lt;-</span> <span class="va">model3</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
 <span class="r-in">  <span class="fu"><a href="set_groups.html">set_groups</a></span><span class="op">(</span><span class="fu"><a href="everyone.html">everyone</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">DX_bl</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'MCI'</span>,<span class="st">'AD'</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
 <span class="r-in">  <span class="fu"><a href="aba_fit.html">aba_fit</a></span><span class="op">(</span><span class="op">)</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in"><span class="co"># \donttest{</span></span>
 <span class="r-in"><span class="va">model_selection4</span> <span class="op">&lt;-</span> <span class="va">model4</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
 <span class="r-in">  <span class="fu">aba_selection</span><span class="op">(</span>criteria<span class="op">=</span><span class="st">'pval'</span>, threshold<span class="op">=</span><span class="fl">0.1</span>, verbose<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Round:  1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  CDRSB_bl ADAS13_bl MMSE_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  MRI_HIPP_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  MRI_HIPP_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  MRI_HIPP_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Round:  2 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  MRI_HIPP_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  CDRSB_bl ADAS13_bl MMSE_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  CSF_ABETA_bl CSF_PTAU_bl CSF_TAU_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  CSF_ABETA_bl CSF_PTAU_bl CSF_TAU_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Round:  3 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  PLASMA_ABETA_bl PLASMA_PTAU181_bl PLASMA_NFL_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  PLASMA_ABETA_bl PLASMA_PTAU181_bl PLASMA_NFL_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  PLASMA_ABETA_bl PLASMA_PTAU181_bl PLASMA_NFL_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> No improvement - stopping</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Round:  4 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> No improvement - stopping</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> No improvement - stopping</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> No improvement - stopping</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Found NA - skipping</span>
+<span class="r-in"><span class="co"># }</span></span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>
