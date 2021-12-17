@@ -30,7 +30,7 @@ test_that("example works", {
 
   expect_error(
     g <- model_summary %>%
-      aba_plot_coef(x='term', group='group', facet=c('outcome','predictor'),
+      aba_plot_coef(axis=c('term','group','outcome','predictor'),
                     coord_flip=T),
     NA
   )

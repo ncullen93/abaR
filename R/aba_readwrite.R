@@ -13,8 +13,8 @@
 #'   console), "raw" (long-form results like what you see when you call
 #'   `object$results`), or "object" (the actual aba object which can be later
 #'   be loaded into memory and used again).
-#' @param separate logical. Whether to save the results in separate files (for
-#' csv) or separate sheets (for excel) based on group - outcome - stat
+#' @param split logical. Whether to save the results in split files (for
+#' csv) or split sheets (for excel) based on group - outcome - stat
 #' combinations. This argument is ignored if format == "object".
 #'
 #' @return N/A
@@ -63,7 +63,7 @@
 aba_write <- function(object,
                       filename,
                       format = c('table', 'raw', 'object'),
-                      separate = FALSE) {
+                      split = FALSE) {
   UseMethod('aba_write')
 }
 
@@ -72,36 +72,90 @@ aba_write <- function(object,
 aba_write.abaSummary <- function(object,
                                  filename,
                                  format = c('table', 'raw', 'object'),
-                                 separate = FALSE) {
+                                 split = FALSE) {
   format <- match.arg(format)
+  file_ext <- stringr::str_split(filename, '\\.')[[1]] %>% tail(1)
+  file_base <- stringr::str_split(filename, '\\.')[[1]][1]
 
-  if (format == 'table') {
-
-    results <- object %>% as_table()
-    save_helper(results, filename, separate)
-
-  } else if (format == 'raw') {
-
-    results <- object$results
-    save_helper(results$coefs, filename %>% stringr::str_replace('\\.','_coefs.'), separate)
-    save_helper(results$metrics, filename %>% stringr::str_replace('\\.','_metrics.'), separate)
-
-  } else if (format == 'object') {
-
-    saveRDS(
-      object = object,
-      file = filename
-    )
-
+  if (format %in% c('table', 'raw')) {
+    results <- object$results$coefs %>%
+      mutate(form = 'coef') %>%
+      bind_rows(
+        object$results$metrics %>%
+          mutate(form = 'metric')
+      )
+    if (format == 'table') results <- object %>% as_table()
+    save_helper(results, filename, split)
+  } else {
+    saveRDS(object = object, file = filename)
   }
+
 }
 
+save_helper <- function(results, filename, split) {
+  file_ext <- stringr::str_split(filename, '\\.')[[1]] %>% tail(1)
+  file_base <- stringr::str_split(filename, '\\.')[[1]][1]
+  # if no split, just save entire file
+  # otherwise, split and save in separate files
+  if (split[1] == FALSE) {
+    results %>% utils::write.csv(filename, row.names = FALSE)
+  } else {
+    if (split[1] == TRUE) {
+      split <- c('group', 'outcome')
+      if (n_distinct(results$outcome) > 10*n_distinct(results$predictor)) {
+        split <- c('group', 'predictor')
+      }
+    }
+    if (length(split) != 2) stop('split must have length == 2.')
+    a1 <- split[1]
+    a2 <- split[2]
+
+    tbl_nested <- results %>%
+      group_by(
+        .data[[a1]],
+        .data[[a2]],
+        .data$stat
+      ) %>%
+      nest() %>%
+      mutate(
+        label =
+          glue('{tup(a1)} = {.data[[a1]]} | {tup(a2)} = {.data[[a2]]} | Stat = {stat}')
+      )
+
+    tbl_split <- stats::setNames(
+      split(tbl_nested, 1:nrow(tbl_nested)),
+      tbl_nested$label
+    )
+
+    if (file_ext == 'csv') {
+      tbl_split %>% purrr::iwalk(
+        function(x,y) {
+          tmp_label <- y
+          tmp_data <- x$data[[1]][,colMeans(is.na(x$data[[1]])) < 1]
+          tmp_data %>%
+            utils::write.csv(
+              glue('{file_base} ({tmp_label}).{file_ext}'),
+              row.names = FALSE
+            )
+        }
+      )
+    } else {
+      tbl_split <- tbl_split %>%
+        purrr::map(
+          ~.$data[[1]][,colMeans(is.na(.$data[[1]])) < 1]
+        )
+      suppressWarnings(
+        tbl_split %>% writexl::write_xlsx(filename)
+      )
+    }
+  }
+}
 
 #' @export
 aba_write.TableOne <- function(object,
                                filename,
                                format = c('table', 'raw', 'object'),
-                               separate = FALSE) {
+                               split = FALSE) {
   r <- object
 
   if (endsWith(filename, '.csv')) {
@@ -114,48 +168,6 @@ aba_write.TableOne <- function(object,
     stop('Filename must end in .csv')
   }
 }
-
-
-# helper function for saving results to file
-save_helper <- function(results, filename, separate) {
-  file_ext <- stringr::str_split(filename, '\\.')[[1]] %>% tail(1)
-
-  if (file_ext == 'csv') {
-    results %>%
-      utils::write.csv(
-        filename,
-        row.names = FALSE
-      )
-  } else if (file_ext %in% c('xls', 'xlsx')) {
-    if (!separate) {
-      results %>%
-        writexl::write_xlsx(filename)
-    } else {
-      # group and set label
-      results <- results %>%
-        group_by(
-          .data$group,
-          .data$outcome,
-          .data$stat
-        ) %>%
-        nest() %>%
-        mutate(
-          label = glue('{group} | {outcome} | {stat}')
-        )
-
-      # split into separate tables
-      results <- split(results, 1:nrow(results)) %>%
-        set_names(unique(results$label))
-
-      results <- results %>% purrr::map(~.x[['data']][[1]])
-
-      # save to file
-      results %>%
-        writexl::write_xlsx(filename)
-    }
-  }
-}
-
 
 #' Read an aba object from file
 #'

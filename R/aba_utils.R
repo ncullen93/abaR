@@ -58,11 +58,10 @@ set_groups <- function(object, ..., labels = NULL) {
       {
         # expect not a list input
         x <- parse_filter_expr(..., data=object$data)
-        if (!is.null(labels)) {
-          names(x) <- labels
-        } else {
-          names(x) <- paste0('G', seq_along(x))
-        }
+        names(x) <- x
+        names(x)[names(x)=='everyone()'] <- 'everyone'
+        if (!is.null(labels)) names(x) <- labels
+
         object$groups <- x
         object
       },
@@ -70,7 +69,8 @@ set_groups <- function(object, ..., labels = NULL) {
         # try with expectation of list input
         x <- list(...)[[1]]
         if (class(x) == 'character') x <- list(x)
-        if (is.null(names(x))) names(x) <- paste0('G', seq_along(x))
+        if (is.null(names(x))) names(x) <- x
+        names(x)[names(x)=='everyone()'] <- 'everyone'
         object$groups <- x
         object
       }
@@ -124,7 +124,7 @@ set_outcomes <- function(object, ..., labels = NULL) {
         if (!is.null(labels)) {
           names(x) <- labels
         } else {
-          names(x) <- paste0('O', seq_along(x))
+          names(x) <- x#paste0('O', seq_along(x))
         }
         object$outcomes <- as.list(x)
         object
@@ -135,7 +135,7 @@ set_outcomes <- function(object, ..., labels = NULL) {
         x <- list(...)[[1]]
         if (class(x) == 'character') x <- as.list(x)
         if (!is.null(labels)) names(x) <- labels
-        if (is.null(names(x))) names(x) <- paste0('O', seq_along(x))
+        if (is.null(names(x))) names(x) <- x#paste0('O', seq_along(x))
         object$outcomes <- x
         object
       }
@@ -264,20 +264,26 @@ set_predictors <- function(object,
       {
         # expect not a list input
         x <- parse_select_expr(..., data=object$data)
+
+        if (is.list(x[[1]])) x <- x[[1]]
+
         if (!is.null(labels)) {
           names(x) <- labels
         } else {
-          names(x) <- paste0('P', seq_along(x)-1)
+          names(x) <- x %>% purrr::map_chr(~paste(., collapse=' + '))
         }
         x <- c(list('Basic' = c()), x)
         object$predictors <- x
         object
       },
       error = function(cond) {
+
         # try with expectation of list input
         x <- list(...)[[1]]
         if (class(x) == 'character') x <- list(x)
-        if (is.null(names(x))) names(x) <- paste0('P', seq_along(x))
+        if (is.null(names(x))) {
+          names(x) <- x %>% purrr::map_chr(~paste(., collapse=' + '))
+        }
         x <- c(list('Basic' = c()), x)
         object$predictors <- x
         object

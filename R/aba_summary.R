@@ -67,7 +67,8 @@ aba_summary <- function(object,
       metrics = metrics_df
     ),
     control = control,
-    model = model
+    model = model,
+    verbose = verbose
   )
 
   if (adjust$method != 'none') {
@@ -280,13 +281,13 @@ metrics_pivot_wider <- function(object) {
     df <- df %>% mutate(
       pval = purrr::map_chr(pval, clip_metric, object$control$pval_digits)
     )
-
   }
 
   df
 }
 
 clip_metric <- function(metric, digits) {
+  if (is.na(metric)) return(metric)
   if (metric == paste0('0.',paste0(rep('0', digits),collapse=''))) {
     metric <- paste0('<0.',paste0(rep('0', digits-1),collapse=''),'1')
   }
@@ -364,7 +365,6 @@ as_table <- function(object) {
   df
 }
 
-
 #' Convert an aba summary to a interactive react table
 #'
 #' This function allows you to format an aba summary in the same way
@@ -423,19 +423,34 @@ as_reactable <- function(object) {
                        striped = TRUE)
 }
 
+tup <- function(x) {
+  stringr::str_to_title(x)
+}
+
 #' @export
 print.abaSummary <- function(x, ...) {
-  tbl <- x %>% as_table()
+  params <- list(...)
 
+  split <- c('group', 'outcome')
+  if (length(x$model$outcomes) >= 5*length(x$model$predictors)) {
+    split <- c('group', 'predictor')
+  }
+  if ('split' %in% names(params)) split <- params$split
+  if (length(split) != 2) stop('split must have length == 2.')
+  a1 <- split[1]
+  a2 <- split[2]
+
+  tbl <- x %>% as_table()
   tbl_nested <- tbl %>%
     group_by(
-      .data$group,
-      .data$outcome,
+      .data[[a1]],
+      .data[[a2]],
       .data$stat
     ) %>%
     nest() %>%
     mutate(
-      label = glue('Group = {group} | Outcome = {outcome} | Stat = {stat}')
+      label =
+      glue('{tup(a1)} = {.data[[a1]]} | {tup(a2)} = {.data[[a2]]} | Stat = {stat}')
     )
 
   tbl_split <- stats::setNames(
@@ -458,6 +473,4 @@ print.abaSummary <- function(x, ...) {
       )
     }
   )
-
-
 }

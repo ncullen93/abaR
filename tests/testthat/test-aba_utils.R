@@ -11,19 +11,24 @@ test_that("setting outcomes using tidy selection works as expected", {
   outcomes3 <- c('CSF_ABETA_bl',
                  'CSF_PTAU_bl',
                  'CSF_TAU_bl')
+  outcomes4 <- list(
+    'CSF_ABETA_bl' = 'CSF_ABETA_bl',
+    'CSF_PTAU_bl' = 'CSF_PTAU_bl',
+    'CSF_TAU_bl' = 'CSF_TAU_bl'
+  )
   m <- df %>% aba_model() %>% set_outcomes(my_outcomes)
   expect_identical(m$outcomes, my_outcomes)
 
   m2 <- df %>% aba_model() %>% set_outcomes(outcomes3)
   expect_identical(
     m2$outcomes,
-    outcomes2
+    outcomes4
   )
 
   m3 <- df %>% aba_model() %>% set_outcomes(CSF_ABETA_bl:CSF_TAU_bl)
   expect_equal(
     m3$outcomes,
-    outcomes2
+    outcomes4
   )
 
   m4 <- df %>% aba_model() %>%

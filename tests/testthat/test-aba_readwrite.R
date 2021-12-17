@@ -51,7 +51,7 @@ test_that("example works", {
   )
 
   expect_error(
-    model_summary %>% aba_write(tmp_filename_xlsx, separate=TRUE),
+    model_summary %>% aba_write(tmp_filename_xlsx, split=TRUE),
     NA
   )
 

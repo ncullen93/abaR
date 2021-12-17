@@ -6,10 +6,10 @@
 \usage{
 aba_plot_coef(
   object,
-  x = "term",
-  group = "predictor",
-  facet = c("outcome", "group"),
+  axis = c("term", "predictor", "outcome", "group"),
   coord_flip = FALSE,
+  include_covariates = TRUE,
+  sort = FALSE,
   palette = "jama",
   plotly = FALSE
 )
@@ -18,19 +18,17 @@ aba_plot_coef(
 \item{object}{an aba model summary. The object to plot - this should be the
 result of an \code{aba_summary()} call.}
 
-\item{x}{string. The model spec factor to use as the x axis. Defaults to
-predictor sets.}
-
-\item{group}{string. The model spec factor to use as the group variable in
-ggplot - this corresponding to "group", "fill", and "color" in ggplot.
-Defaults to outcome.}
-
-\item{facet}{string. The model spec factor to use as the group variable in
-ggplot - this corresponding to "facet_wrap" in ggplot. Defaults to group.}
+\item{axis}{string. Specifies the x axis variable, color/fill variable, and
+facet variable in that order. Should be a vector of length three that
+includes only "predictor", "outcome", and "group" as values.}
 
 \item{coord_flip}{logical. Whether to flip the x and y axes. This can be
 useful when there are a large amount of predictor sets and you want to
 view metrics vertically.}
+
+\item{include_covariates}{logical. Whether to include covariates}
+
+\item{sort}{logical. Whether to sort axis labels by coefficient value}
 
 \item{palette}{string. Which ggpubr palette to use. See \code{ggpubr::set_palette}.}
 

@@ -7,10 +7,10 @@
 aba_plot_metric(
   object,
   metric = NULL,
-  x = "predictor",
-  group = "outcome",
-  facet = "group",
+  axis = c("predictor", "outcome", "group"),
   coord_flip = FALSE,
+  include_basic = TRUE,
+  sort = FALSE,
   palette = "jama",
   plotly = FALSE
 )
@@ -19,22 +19,19 @@ aba_plot_metric(
 \item{object}{an aba model summary. The object to plot - this should be the
 result of an \code{aba_summary()} call.}
 
-\item{metric}{string. The performance metric to plot (e.g., \code{AIC}, \code{AUC},
-\code{adj.r.squared})}
+\item{metric}{string. The metric to plot.}
 
-\item{x}{string. The model spec factor to use as the x axis. Defaults to
-predictor sets.}
-
-\item{group}{string. The model spec factor to use as the group variable in
-ggplot - this corresponding to "group", "fill", and "color" in ggplot.
-Defaults to outcome.}
-
-\item{facet}{string. The model spec factor to use as the group variable in
-ggplot - this corresponding to "facet_wrap" in ggplot. Defaults to group.}
+\item{axis}{string. Specifies the x axis variable, color/fill variable, and
+facet variable in that order. Should be a vector of length three that
+includes only "predictor", "outcome", and "group" as values.}
 
 \item{coord_flip}{logical. Whether to flip the x and y axes. This can be
 useful when there are a large amount of predictor sets and you want to
 view metrics vertically.}
+
+\item{include_basic}{logical. Whether to include basic predictor.}
+
+\item{sort}{logical. Whether to sort axis labels by metric value}
 
 \item{palette}{string. Which ggpubr palette to use. See \code{ggpubr::set_palette}.}
 

@@ -20,18 +20,15 @@ aba_plot <- function(object, ...) {
 #'
 #' @param object an aba model summary. The object to plot - this should be the
 #'   result of an `aba_summary()` call.
-#' @param metric string. The performance metric to plot (e.g., `AIC`, `AUC`,
-#'   `adj.r.squared`)
-#' @param x string. The model spec factor to use as the x axis. Defaults to
-#'   predictor sets.
-#' @param group string. The model spec factor to use as the group variable in
-#'   ggplot - this corresponding to "group", "fill", and "color" in ggplot.
-#'   Defaults to outcome.
-#' @param facet string. The model spec factor to use as the group variable in
-#'   ggplot - this corresponding to "facet_wrap" in ggplot. Defaults to group.
+#' @param metric string. The metric to plot.
+#' @param axis string. Specifies the x axis variable, color/fill variable, and
+#'   facet variable in that order. Should be a vector of length three that
+#'   includes only "predictor", "outcome", and "group" as values.
 #' @param coord_flip logical. Whether to flip the x and y axes. This can be
 #'   useful when there are a large amount of predictor sets and you want to
 #'   view metrics vertically.
+#' @param include_basic logical. Whether to include basic predictor.
+#' @param sort logical. Whether to sort axis labels by metric value
 #' @param palette string. Which ggpubr palette to use. See `ggpubr::set_palette`.
 #' @param plotly logical. Whether to use plot.ly instead of standard ggplot.
 #'   Defaults to false. Using ggplotly can be useful if you want interactivity
@@ -69,28 +66,58 @@ aba_plot <- function(object, ...) {
 #'
 aba_plot_metric <- function(object,
                             metric = NULL,
-                            x = 'predictor',
-                            group = 'outcome',
-                            facet = 'group',
+                            axis = c('predictor', 'outcome', 'group'),
                             coord_flip = FALSE,
+                            include_basic = TRUE,
+                            sort = FALSE,
                             palette = 'jama',
                             plotly = FALSE) {
 
   # find main metric - directly after predictors
   metric <- object$results$metrics$term[1]
+  plot_df <- object$results$metrics %>% filter(term == metric)
+  if (!include_basic) plot_df <- plot_df %>% filter(predictor != 'Basic')
 
-  plot_df <- object$results$metrics %>%
-    filter(term == metric) %>%
+  if (sum(is.na(match(c('predictor', 'outcome', 'group'), axis))) > 0) {
+    stop('axis should contain "predictor", "outcome", and "group"')
+  }
+
+  x <- axis[1]
+  fill <- axis[2]
+  facet <- axis[3]
+
+  # auto change 'x' and 'group' if there is a big difference because
+  # it is probably what the user wants
+  if (n_distinct(plot_df$outcome) > 5*n_distinct(plot_df$predictor)) {
+    if (x != 'outcome') {
+      warning('Auto exchanging x axis variable and fill variable because
+            of large difference between n_distinct(outcome) versus
+            n_distinct(predictor). Specify "outcome" as first entry in
+            "axis" arg to avoid this warning.')
+      x <- 'outcome'
+      fill <- 'predictor'
+      facet <- 'group'
+    }
+  }
+
+  plot_df <- plot_df %>%
     rename(
       'x' = {{ x }},
-      'group' = {{ group }},
+      'fill' = {{ fill }},
       'facet' = {{ facet }}
     )
+
+  # this doesnt take into account groups
+  if (sort) {
+    plot_df <- plot_df %>% mutate(x = forcats::fct_reorder(x, estimate))
+  }
+
+  n_groups <- dplyr::n_distinct(object$results$metrics[[fill]])
 
   g <- ggplot(plot_df,
               aes(x = .data$x,
                   y = .data$estimate,
-                  color = .data$group)) +
+                  color = .data$fill)) +
     geom_point(position = position_dodge(0.5), size = 2.5) +
     geom_errorbar(
       aes(ymin = .data$conf_low,
@@ -106,10 +133,13 @@ aba_plot_metric <- function(object,
     g <- g + geom_hline(aes(yintercept=0.5), linetype='dashed')
   }
 
+  legend_position <- 'top'
+  if (n_groups > 6) legend_position <- 'none'
   g <- g +
     theme_classic(base_size = 16) +
     theme(
-      legend.position = "top", legend.margin = margin(5, 0, 0, 0),
+      legend.position = legend_position,
+      legend.margin = margin(5, 0, 0, 0),
       plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "lines"),
       panel.spacing = unit(1.5, "lines"),
       strip.background = element_blank(),
@@ -119,18 +149,21 @@ aba_plot_metric <- function(object,
       panel.grid.major.x = element_blank(),
       panel.grid.major.y = element_line(
         colour = "black",
-        size = 0.2, linetype = "dotted"),
-      axis.title.x = element_blank()
+        size = 0.2, linetype = "dotted")
     )
 
-  if (coord_flip) g <- g + coord_flip()
+  if (coord_flip) {
+    g <- g + coord_flip() + theme(axis.title.y = element_blank())
+  } else {
+    g <- g + theme(axis.title.x = element_blank())
+  }
+
+  if (!is.null(palette) & (n_groups <= 6)) {
+    g <- ggpubr::set_palette(g, palette)
+  }
 
   if (plotly) {
     g <- plotly::ggplotly(g)
-  }
-
-  if (!is.null(palette) & !is.na(palette)) {
-    g <- ggpubr::set_palette(g, palette)
   }
 
   return(g)
@@ -141,16 +174,14 @@ aba_plot_metric <- function(object,
 #'
 #' @param object an aba model summary. The object to plot - this should be the
 #'   result of an `aba_summary()` call.
-#' @param x string. The model spec factor to use as the x axis. Defaults to
-#'   predictor sets.
-#' @param group string. The model spec factor to use as the group variable in
-#'   ggplot - this corresponding to "group", "fill", and "color" in ggplot.
-#'   Defaults to outcome.
-#' @param facet string. The model spec factor to use as the group variable in
-#'   ggplot - this corresponding to "facet_wrap" in ggplot. Defaults to group.
+#' @param axis string. Specifies the x axis variable, color/fill variable, and
+#'   facet variable in that order. Should be a vector of length three that
+#'   includes only "predictor", "outcome", and "group" as values.
 #' @param coord_flip logical. Whether to flip the x and y axes. This can be
 #'   useful when there are a large amount of predictor sets and you want to
 #'   view metrics vertically.
+#' @param include_covariates logical. Whether to include covariates
+#' @param sort logical. Whether to sort axis labels by coefficient value
 #' @param palette string. Which ggpubr palette to use. See `ggpubr::set_palette`.
 #' @param plotly logical. Whether to use plot.ly instead of standard ggplot.
 #'   Defaults to false. Using ggplotly can be useful if you want interactivity
@@ -187,41 +218,48 @@ aba_plot_metric <- function(object,
 #'   )
 #'
 aba_plot_coef <- function(object,
-                          x = 'term',
-                          group = 'predictor',
-                          facet = c('outcome', 'group'),
+                          axis = c('term', 'predictor', 'outcome', 'group'),
                           coord_flip = FALSE,
+                          include_covariates = TRUE,
+                          sort = FALSE,
                           palette = 'jama',
                           plotly = FALSE) {
 
-  model_type <- object$model$stats[[1]]$stat_type
-
   model <- object$model
-  all_predictors <- model$predictors %>% unlist() %>% unique()
-  all_covariates <- model$covariates
-  all_variables <- c(all_covariates, all_predictors)
+  all_preds <- model$predictors %>% unlist() %>% unique()
+  all_covars <- model$covariates
+  all_vars <- c(all_covars, all_preds)
 
-  facet_x <- facet[1]
-  facet_y <- facet[2]
+  if (sum(is.na(match(c('term', 'predictor', 'outcome', 'group'), axis))) > 0) {
+    stop('axis should contain "term", "predictor", "outcome", and "group"')
+  }
 
-  plot_df <- object$results$coefs %>%
-    filter(
-      predictor != '(Intercept)',
-      !(predictor %in% all_covariates)
-    ) %>%
+  x <- axis[1]
+  fill <- axis[2]
+  facet_x <- axis[3]
+  facet_y <- axis[4]
+
+  plot_df <- object$results$coefs %>% filter(predictor != '(Intercept)')
+  if (!include_covariates) plot_df <- plot_df %>% filter(!term %in% all_covars)
+
+  plot_df <- plot_df %>%
     rename(
       'x' = {{ x }},
-      'group' = {{ group }},
+      'fill' = {{ fill }},
       'facet_x' = {{ facet_x }},
       'facet_y' = {{ facet_y }}
     )
 
   if (nrow(plot_df) == 0) stop('There are no predictors to plot.')
+  n_groups <- dplyr::n_distinct(plot_df[[fill]])
+
+  # this doesnt take into account groups
+  if (sort) plot_df <- plot_df %>% mutate(x = forcats::fct_reorder(x, estimate))
 
   g <- ggplot(plot_df,
               aes(x = .data$x,
                   y = .data$estimate,
-                  color = .data$group)) +
+                  color = .data$fill)) +
     geom_point(position = position_dodge(0.5), size = 2.5) +
     geom_errorbar(
       aes(ymin = .data$conf_low,
@@ -229,53 +267,32 @@ aba_plot_coef <- function(object,
       position=position_dodge(0.5), size=0.5,
       width = 0.2
     ) +
-    facet_wrap(.data$facet_x ~ .data$facet_y)
-    #facet_wrap(.~paste0(.data$facet_x,' | ', .data$facet_y))
-
-
-  if (model_type == 'glm') {
-    g <- g + geom_hline(aes(yintercept=1), linetype='dashed')
-  } else if (model_type == 'lm') {
-    g <- g + geom_hline(aes(yintercept=0), linetype='dashed')
-  }
-
-  g <- g +
-    theme_classic(base_size = 14) +
+    facet_wrap(.~paste0(.data$facet_x,' | ', .data$facet_y)) +
+    ylab('Model coefficient') +
+    theme_classic(base_size = 16) +
     theme(
-      legend.position = "top", legend.margin = margin(5, 0, 0, 0),
+      legend.position = ifelse(n_groups > 6, 'none', 'top'),
+      legend.margin = margin(5, 0, 0, 0),
       plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "lines"),
       panel.spacing = unit(1.5, "lines"),
       strip.background = element_blank(),
-      strip.text = element_text(face = "bold", size = 14, vjust = 1.25),
+      strip.text = element_text(face = "bold", size = 16, vjust = 1.25),
       plot.title = element_text(hjust = 0.5),
-      legend.title = element_blank()
+      legend.title = element_blank(),
+      panel.grid.major.x = element_blank(),
+      panel.grid.major.y = element_line(
+        colour = "black",
+        size = 0.2, linetype = "dotted")
     )
 
-
   if (coord_flip) {
-    g <- g +
-      coord_flip() +
-      theme(
-        panel.grid.major.y = element_blank(),
-        panel.grid.major.x = element_line(
-          colour = "black",
-          size = 0.2, linetype = "dotted"),
-        axis.title.x = element_blank()
-      )
+    g <- g + coord_flip() + theme(axis.title.y = element_blank())
   } else {
-    g <- g +
-      theme(
-        panel.grid.major.x = element_blank(),
-        panel.grid.major.y = element_line(
-          colour = "black",
-          size = 0.2, linetype = "dotted"),
-        axis.title.x = element_blank()
-      )
+    g <- g + theme(axis.title.x = element_blank())
   }
 
-  if (!is.null(palette) & !is.na(palette)) {
-    g <- ggpubr::set_palette(g, palette)
-  }
+  if (!is.null(palette) & (n_groups <= 6)) g <- ggpubr::set_palette(g, palette)
+  if (plotly) g <- plotly::ggplotly(g)
 
   return(g)
 }

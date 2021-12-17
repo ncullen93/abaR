@@ -3,9 +3,9 @@
 #' Adjust the p-values (model and/or coefficients) of an abaSummary object.
 #'
 #' @param method string. The method to adjust with. See `p.adjust`.
-#' @param by vector. The groupings to use for adjustment.
-#'   Possible choices: group, outcome, stat, predictor_set
-#' @param form vector. Whether to adjust both metrics and coefs, or just one.
+#' @param family vector. Which factors to consider a family together
+#'   Possible choices: group, outcome, stat, predictor
+#' @param target vector. Whether to adjust both metrics and coefs, or just one.
 #'
 #' @return an abaSummary object. The abaSummary passed to aba_adjust but with
 #' p-values changed according to how the user specified.
@@ -34,46 +34,52 @@
 #'
 #' # correct within group but across outcomes (x8 comparisons)
 #' model_summary_adj2 <- model %>%
-#'   aba_summary(adjust=aba_adjust(method='bonferroni', by = c('group')))
+#'   aba_summary(adjust=aba_adjust(method='bonferroni', family = c('group')))
 #'
 #' # correct only model P-values, not coefficient P-values
 #' model_summary_adj3 <- model %>%
-#'   aba_summary(adjust=aba_adjust(form = c('metric')))
+#'   aba_summary(adjust=aba_adjust(target = c('metric')))
 #'
 aba_adjust<- function(method = c("none", "bonferroni", "fdr", "hochberg",
                                  "holm", "hommel", "BH", "BY"),
-                      by = c('group', 'outcome', 'stat'),
-                      form = c('metric', 'coef')) {
+                      family = c('group', 'outcome', 'stat'),
+                      target = c('metric', 'coef')) {
 
   method <- match.arg(method)
   params <- list(
     method = method,
-    by = by,
-    form = form
+    family = family,
+    target = target
   )
   params
 }
 
 adjust_pvals <- function(results, adjust) {
   .method <- adjust$method
-  .by <- adjust$by
-  .form <- adjust$form
+  .family <- adjust$family
+  .target <- adjust$target
 
   # adjust metrics
-  if ('metric' %in% .form) {
+  if ('metric' %in% .target) {
     r_adj <- results$metrics %>%
       filter(term == 'pval') %>%
       group_by(
-        across(all_of(.by))
+        across(all_of(.family))
       ) %>%
       nest() %>%
       mutate(
         estimate_adj = purrr::map(
           .data$data,
           function(x) {
+
             # dont include basic model in comparison
+            if ('predictor' %in% names(x)) {
+              is_basic <- x$predictor == 'Basic'
+            } else {
+              is_basic <- F
+            }
+
             xx <- x$estimate
-            is_basic <- x$predictor == 'Basic'
             xx[!is_basic] <-
               stats::p.adjust(xx[!is_basic], method = .method)
             xx
@@ -91,10 +97,10 @@ adjust_pvals <- function(results, adjust) {
       bind_rows(r_adj)
   }
 
-  if ('coef' %in% .form) {
+  if ('coef' %in% .target) {
     r_adj <- results$coefs %>%
       group_by(
-        across(all_of(.by))
+        across(all_of(.family))
       ) %>%
       nest() %>%
       mutate(

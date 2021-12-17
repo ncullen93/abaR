@@ -6,17 +6,17 @@
 \usage{
 aba_adjust(
   method = c("none", "bonferroni", "fdr", "hochberg", "holm", "hommel", "BH", "BY"),
-  by = c("group", "outcome", "stat"),
-  form = c("metric", "coef")
+  family = c("group", "outcome", "stat"),
+  target = c("metric", "coef")
 )
 }
 \arguments{
 \item{method}{string. The method to adjust with. See \code{p.adjust}.}
 
-\item{by}{vector. The groupings to use for adjustment.
-Possible choices: group, outcome, stat, predictor_set}
+\item{family}{vector. Which factors to consider a family together
+Possible choices: group, outcome, stat, predictor}
 
-\item{form}{vector. Whether to adjust both metrics and coefs, or just one.}
+\item{target}{vector. Whether to adjust both metrics and coefs, or just one.}
 }
 \value{
 an abaSummary object. The abaSummary passed to aba_adjust but with
@@ -48,7 +48,7 @@ model_summary_adj <- model \%>\%
 
 # correct within group but across outcomes (x8 comparisons)
 model_summary_adj2 <- model \%>\%
-  aba_summary(adjust=aba_adjust(method='bonferroni', by = c('group')))
+  aba_summary(adjust=aba_adjust(method='bonferroni', family = c('group')))
 
 # correct only model P-values, not coefficient P-values
 model_summary_adj3 <- model \%>\%

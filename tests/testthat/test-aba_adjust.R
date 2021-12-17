@@ -45,7 +45,7 @@ test_that("pvalue adjust works", {
 
   # correct within group but across outcomes
   # 6 model pvals, 8 coefficient pvals
-  ms3 <- model %>% aba_summary(adjust=aba_adjust(method='bonferroni', by=c('group')))
+  ms3 <- model %>% aba_summary(adjust=aba_adjust(method='bonferroni', family=c('group')))
   pvals3 <- get_pvals(ms3)
 
   expect_equal(length(pvals$metrics), length(pvals3$metrics))
@@ -54,7 +54,7 @@ test_that("pvalue adjust works", {
   expect_equal(p_ratio(pvals3$coefs, pvals$coefs), 8)
 
   # correct only model P-values, not coefficient P-values
-  ms4 <- model %>% aba_summary(adjust=aba_adjust(method='b', form = 'metric'))
+  ms4 <- model %>% aba_summary(adjust=aba_adjust(method='b', target = 'metric'))
   pvals4 <- get_pvals(ms4)
   expect_equal(length(pvals$metrics), length(pvals4$metrics))
   expect_equal(length(pvals$coefs), length(pvals4$coefs))
@@ -62,7 +62,7 @@ test_that("pvalue adjust works", {
   expect_equal(p_ratio(pvals4$coefs, pvals$coefs), numeric(0))
 
   # correct only coef P-values, not model P-values
-  ms4 <- model %>% aba_summary(adjust=aba_adjust(method='b', form = 'coef'))
+  ms4 <- model %>% aba_summary(adjust=aba_adjust(method='b', target = 'coef'))
   pvals4 <- get_pvals(ms4)
   expect_equal(length(pvals$metrics), length(pvals4$metrics))
   expect_equal(length(pvals$coefs), length(pvals4$coefs))

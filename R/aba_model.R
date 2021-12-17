@@ -135,14 +135,24 @@ print.abaModel <- function(x, ...) {
 
   cat('\n')
   cat('Groups:\n   ')
-  if (length(group_vals) > 0) {
-    cat(paste0(group_labels, ': ', group_vals, ''), sep='\n   ')
+  n_groups <- length(group_vals)
+  if (n_groups > 0) {
+    cat(group_labels[1:min(n_groups, 8)], sep='\n   ')
+    if (n_groups >= 9) {
+      cat('   ...\n   ')
+      cat(group_labels[n_groups], sep='\n   ')
+    }
   }
 
   # OUTCOMES #
   cat('\nOutcomes:\n   ')
-  if (length(outcome_vals) > 0) {
-    cat(paste0(outcome_labels, ': ', outcome_vals, ''), sep='\n   ')
+  n_outcomes <- length(outcome_vals)
+  if (n_outcomes > 0) {
+    cat(outcome_labels[1:min(n_outcomes, 8)], sep='\n   ')
+    if (n_outcomes >= 9) {
+      cat('   ...\n   ')
+      cat(outcome_labels[n_outcomes], sep='\n   ')
+    }
   }
 
   # COVARIATES #
@@ -154,8 +164,13 @@ print.abaModel <- function(x, ...) {
 
   # PREDICTORS #
   cat('\nPredictors:\n   ')
-  if (length(predictor_vals) > 0) {
-    cat(paste0(predictor_labels, ': ', predictor_vals), sep='\n   ')
+  n_predictors <- length(predictor_vals)
+  if (n_predictors > 0) {
+    cat(predictor_labels[1:min(n_predictors, 8)], sep='\n   ')
+    if (n_predictors >= 9) {
+      cat('   ...\n   ')
+      cat(predictor_labels[n_predictors], sep='\n   ')
+    }
   }
 
   # STAT #

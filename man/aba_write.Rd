@@ -8,7 +8,7 @@ aba_write(
   object,
   filename,
   format = c("table", "raw", "object"),
-  separate = FALSE
+  split = FALSE
 )
 }
 \arguments{
@@ -23,8 +23,8 @@ console), "raw" (long-form results like what you see when you call
 \code{object$results}), or "object" (the actual aba object which can be later
 be loaded into memory and used again).}
 
-\item{separate}{logical. Whether to save the results in separate files (for
-csv) or separate sheets (for excel) based on group - outcome - stat
+\item{split}{logical. Whether to save the results in split files (for
+csv) or split sheets (for excel) based on group - outcome - stat
 combinations. This argument is ignored if format == "object".}
 }
 \value{
