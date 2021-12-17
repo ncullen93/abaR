@@ -1,6 +1,6 @@
 Package: aba
 Title: Automated Biomarker Analysis
-Version: 0.0.9
+Version: 0.0.9.9000
 Authors@R: 
     person(given = "Nicholas",
            family = "Cullen",
