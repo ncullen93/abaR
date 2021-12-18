@@ -28,6 +28,8 @@ ggplot2 theme which can be added to a ggplot object
 Custom aba ggplot2 theme
 }
 \examples{
+library(ggplot2)
+
 data <- data.frame(x=1:10, y=1:10)
-fig <- ggplot(data, aes(x=x,y=y)) + geom_point() + theme_aba2()
+fig <- ggplot(data, aes(x=x,y=y)) + geom_point() + theme_aba()
 }

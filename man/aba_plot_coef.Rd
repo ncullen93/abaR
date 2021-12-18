@@ -65,8 +65,7 @@ coef_plot <- model_summary \%>\% aba_plot_coef(coord_flip=TRUE)
 # compare predictor coefficients across outcomes
 coef_plot2 <- model_summary \%>\%
   aba_plot_coef(
-    x = 'outcome', group='predictor',
-    facet=c('term','group'), coord_flip=TRUE
+    axis = c('outcome', 'predictor','term','group'), coord_flip=TRUE
   )
 
 }

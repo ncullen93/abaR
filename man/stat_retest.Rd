@@ -74,6 +74,6 @@ model_summary <- model \%>\% aba_summary()
 
 # plot model results like any other summary
 g <- model_summary \%>\% aba_plot_coef(
-  x='term', group='group', facet=c('outcome','predictor'), coord_flip=TRUE
+  axis=c('term', 'group', 'outcome','predictor'), coord_flip=TRUE
 )
 }

@@ -46,7 +46,6 @@ a ggplot of the specified aba model summary metric.
 Plot metrics of an aba model summary
 }
 \examples{
-
 # fit aba model
 model <- aba_model() \%>\%
   set_data(adnimerge \%>\% dplyr::filter(VISCODE == 'bl')) \%>\%
@@ -70,6 +69,5 @@ metric_plot2 <- model_summary \%>\% aba_plot_metric(coord_flip=TRUE)
 
 # compare predictor sets within each outcome instead of the opposite
 metric_plot3 <- model_summary \%>\%
-  aba_plot_metric(x = 'outcome', group='predictor')
-
+  aba_plot_metric(axis = c('outcome','predictor', 'group'))
 }

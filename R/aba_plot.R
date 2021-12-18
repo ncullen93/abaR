@@ -38,7 +38,6 @@ aba_plot <- function(object, ...) {
 #' @export
 #'
 #' @examples
-#'
 #' # fit aba model
 #' model <- aba_model() %>%
 #'   set_data(adnimerge %>% dplyr::filter(VISCODE == 'bl')) %>%
@@ -62,8 +61,7 @@ aba_plot <- function(object, ...) {
 #'
 #' # compare predictor sets within each outcome instead of the opposite
 #' metric_plot3 <- model_summary %>%
-#'   aba_plot_metric(x = 'outcome', group='predictor')
-#'
+#'   aba_plot_metric(axis = c('outcome','predictor', 'group'))
 aba_plot_metric <- function(object,
                             metric = NULL,
                             axis = c('predictor', 'outcome', 'group'),
@@ -213,8 +211,7 @@ aba_plot_metric <- function(object,
 #' # compare predictor coefficients across outcomes
 #' coef_plot2 <- model_summary %>%
 #'   aba_plot_coef(
-#'     x = 'outcome', group='predictor',
-#'     facet=c('term','group'), coord_flip=TRUE
+#'     axis = c('outcome', 'predictor','term','group'), coord_flip=TRUE
 #'   )
 #'
 aba_plot_coef <- function(object,
@@ -309,8 +306,10 @@ aba_plot_coef <- function(object,
 #' @export
 #'
 #' @examples
+#' library(ggplot2)
+#'
 #' data <- data.frame(x=1:10, y=1:10)
-#' fig <- ggplot(data, aes(x=x,y=y)) + geom_point() + theme_aba2()
+#' fig <- ggplot(data, aes(x=x,y=y)) + geom_point() + theme_aba()
 theme_aba <- function(base_size = 16,
                       legend.position = 'top',
                       coord_flip = FALSE,
