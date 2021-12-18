@@ -52,6 +52,6 @@ model_summary_adj2 <- model \%>\%
 
 # correct only model P-values, not coefficient P-values
 model_summary_adj3 <- model \%>\%
-  aba_summary(adjust=aba_adjust(form = c('metric')))
+  aba_summary(adjust=aba_adjust(target = c('metric')))
 
 }
