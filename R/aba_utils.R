@@ -59,7 +59,7 @@ set_groups <- function(object, ..., labels = NULL) {
         # expect not a list input
         x <- parse_filter_expr(..., data=object$data)
         names(x) <- x
-        names(x)[names(x)=='everyone()'] <- 'everyone'
+        names(x)[names(x)=='everyone()'] <- 'Everyone'
         if (!is.null(labels)) names(x) <- labels
 
         object$groups <- x
@@ -70,7 +70,7 @@ set_groups <- function(object, ..., labels = NULL) {
         x <- list(...)[[1]]
         if (class(x) == 'character') x <- list(x)
         if (is.null(names(x))) names(x) <- x
-        names(x)[names(x)=='everyone()'] <- 'everyone'
+        names(x)[names(x)=='everyone()'] <- 'Everyone'
         object$groups <- x
         object
       }
@@ -270,7 +270,7 @@ set_predictors <- function(object,
         if (!is.null(labels)) {
           names(x) <- labels
         } else {
-          names(x) <- x %>% purrr::map_chr(~paste(., collapse=' + '))
+          names(x) <- paste0('P', seq_along(x))#x %>% purrr::map_chr(~paste(., collapse=' + '))
         }
         x <- c(list('Basic' = c()), x)
         object$predictors <- x
@@ -282,7 +282,7 @@ set_predictors <- function(object,
         x <- list(...)[[1]]
         if (class(x) == 'character') x <- list(x)
         if (is.null(names(x))) {
-          names(x) <- x %>% purrr::map_chr(~paste(., collapse=' + '))
+          names(x) <- names(x) <- paste0('P', seq_along(x))#x %>% purrr::map_chr(~paste(., collapse=' + '))
         }
         x <- c(list('Basic' = c()), x)
         object$predictors <- x

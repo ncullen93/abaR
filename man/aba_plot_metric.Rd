@@ -11,6 +11,7 @@ aba_plot_metric(
   coord_flip = FALSE,
   include_basic = TRUE,
   sort = FALSE,
+  facet_labels = TRUE,
   palette = "jama",
   plotly = FALSE
 )
@@ -50,12 +51,14 @@ Plot metrics of an aba model summary
 model <- aba_model() \%>\%
   set_data(adnimerge \%>\% dplyr::filter(VISCODE == 'bl')) \%>\%
   set_groups(everyone()) \%>\%
-  set_outcomes(ConvertedToAlzheimers, CSF_ABETA_STATUS_bl) \%>\%
+  set_outcomes(ConvertedToAlzheimers, CSF_ABETA_STATUS_bl,
+               labels=c('Conversion to AD', 'CSF Abeta Status')) \%>\%
   set_predictors(
     PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl,
-    c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+    c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl),
+    labels = c('A','T','N','ATN')
   ) \%>\%
-  set_stats('glm') \%>\%
+  set_stats(stat_glm(std.beta=TRUE)) \%>\%
   fit()
 
 # summarise aba model to calculate metrics

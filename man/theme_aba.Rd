@@ -9,6 +9,7 @@ theme_aba(
   legend.position = "top",
   coord_flip = FALSE,
   legend_title = FALSE,
+  facet_labels = TRUE,
   family = c("Verdana", "Tahoma", "Helvetica")
 )
 }

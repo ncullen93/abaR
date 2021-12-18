@@ -42,12 +42,14 @@ aba_plot <- function(object, ...) {
 #' model <- aba_model() %>%
 #'   set_data(adnimerge %>% dplyr::filter(VISCODE == 'bl')) %>%
 #'   set_groups(everyone()) %>%
-#'   set_outcomes(ConvertedToAlzheimers, CSF_ABETA_STATUS_bl) %>%
+#'   set_outcomes(ConvertedToAlzheimers, CSF_ABETA_STATUS_bl,
+#'                labels=c('Conversion to AD', 'CSF Abeta Status')) %>%
 #'   set_predictors(
 #'     PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl,
-#'     c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+#'     c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl),
+#'     labels = c('A','T','N','ATN')
 #'   ) %>%
-#'   set_stats('glm') %>%
+#'   set_stats(stat_glm(std.beta=TRUE)) %>%
 #'   fit()
 #'
 #' # summarise aba model to calculate metrics
@@ -68,12 +70,17 @@ aba_plot_metric <- function(object,
                             coord_flip = FALSE,
                             include_basic = TRUE,
                             sort = FALSE,
+                            facet_labels = TRUE,
                             palette = 'jama',
                             plotly = FALSE) {
 
   # find main metric - directly after predictors
   metric <- object$results$metrics$term[1]
-  plot_df <- object$results$metrics %>% filter(term == metric)
+  plot_df <- object$results$metrics %>% filter(term == metric) %>%
+    mutate(
+      predictor = factor(predictor,
+                         levels=unique(object$results$metrics$predictor))
+    )
   if (!include_basic) plot_df <- plot_df %>% filter(predictor != 'Basic')
 
   if (sum(is.na(match(c('predictor', 'outcome', 'group'), axis))) > 0) {
@@ -116,13 +123,13 @@ aba_plot_metric <- function(object,
               aes(x = .data$x,
                   y = .data$estimate,
                   color = .data$fill)) +
-    geom_point(position = position_dodge(0.5), size = 2.5) +
     geom_errorbar(
       aes(ymin = .data$conf_low,
           ymax = .data$conf_high),
       position=position_dodge(0.5), size=0.5,
       width = 0.2
     ) +
+    geom_point(position = position_dodge(0.5), size = 4) +
     facet_wrap(. ~ .data$facet) +
     ylab(metric)
 
@@ -131,30 +138,14 @@ aba_plot_metric <- function(object,
     g <- g + geom_hline(aes(yintercept=0.5), linetype='dashed')
   }
 
-  legend_position <- 'top'
-  if (n_groups > 6) legend_position <- 'none'
-  g <- g +
-    theme_classic(base_size = 16) +
-    theme(
-      legend.position = legend_position,
-      legend.margin = margin(5, 0, 0, 0),
-      plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "lines"),
-      panel.spacing = unit(1.5, "lines"),
-      strip.background = element_blank(),
-      strip.text = element_text(face = "bold", size = 16, vjust = 1.25),
-      plot.title = element_text(hjust = 0.5),
-      legend.title = element_blank(),
-      panel.grid.major.x = element_blank(),
-      panel.grid.major.y = element_line(
-        colour = "black",
-        size = 0.2, linetype = "dotted")
-    )
+  #theme
+  g <- g + theme_aba(
+    legend.position = ifelse(n_groups > 6, 'none', 'top'),
+    coord_flip = coord_flip,
+    facet_labels = facet_labels
+  )
 
-  if (coord_flip) {
-    g <- g + coord_flip() + theme(axis.title.y = element_blank())
-  } else {
-    g <- g + theme(axis.title.x = element_blank())
-  }
+  if (coord_flip) g <- g + coord_flip()
 
   if (!is.null(palette) & (n_groups <= 6)) {
     g <- ggpubr::set_palette(g, palette)
@@ -194,10 +185,12 @@ aba_plot_metric <- function(object,
 #' model <- aba_model() %>%
 #'   set_data(adnimerge %>% dplyr::filter(VISCODE == 'bl')) %>%
 #'   set_groups(everyone()) %>%
-#'   set_outcomes(ConvertedToAlzheimers, CSF_ABETA_STATUS_bl) %>%
+#'   set_outcomes(ConvertedToAlzheimers, CSF_ABETA_STATUS_bl,
+#'                labels=c('Conversion to AD', 'CSF Abeta Status')) %>%
 #'   set_predictors(
 #'     PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl,
-#'     c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+#'     c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl),
+#'     labels = c('A','T','N','ATN')
 #'   ) %>%
 #'   set_stats(stat_glm(std.beta=TRUE)) %>%
 #'   fit()
@@ -314,6 +307,7 @@ theme_aba <- function(base_size = 16,
                       legend.position = 'top',
                       coord_flip = FALSE,
                       legend_title = FALSE,
+                      facet_labels = TRUE,
                       family = c('Verdana', 'Tahoma', 'Helvetica')) {
   family <- match.arg(family)
 
@@ -322,11 +316,12 @@ theme_aba <- function(base_size = 16,
       text = element_text(size=base_size, family=family, color='black'),
       legend.position = legend.position,
       legend.margin = margin(5, 0, 0, 0),
-      plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "lines"),
+      plot.margin = unit(c(0.5, 1.5, 0.5, 0.5), "lines"),
       panel.spacing = unit(1.5, "lines"),
       strip.background = element_blank(),
       strip.text = element_text(face = "bold", color='black',
-                                size = base_size, vjust = 1.25),
+                                size = base_size, vjust = 0,
+                                margin = margin(b=5)),
       plot.title = element_text(hjust = 0.5),
       axis.line.x.bottom=element_line(size=1.2),
       axis.ticks.y = element_line(size=1.2),
@@ -341,6 +336,13 @@ theme_aba <- function(base_size = 16,
         color='black', margin = margin(t = 3, r = 0, b = 6, l = 0)
       )
     )
+
+  if (!facet_labels) {
+    t <- t %+replace% theme(
+      strip.background = element_blank(),
+      strip.text.x = element_blank()
+    )
+  }
 
   if (!legend_title) t <- t %+replace% theme(legend.title = element_blank())
 
