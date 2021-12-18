@@ -270,7 +270,7 @@ set_predictors <- function(object,
         if (!is.null(labels)) {
           names(x) <- labels
         } else {
-          names(x) <- paste0('P', seq_along(x))#x %>% purrr::map_chr(~paste(., collapse=' + '))
+          names(x) <- paste0('M', seq_along(x))
         }
         x <- c(list('Basic' = c()), x)
         object$predictors <- x
@@ -282,7 +282,7 @@ set_predictors <- function(object,
         x <- list(...)[[1]]
         if (class(x) == 'character') x <- list(x)
         if (is.null(names(x))) {
-          names(x) <- names(x) <- paste0('P', seq_along(x))#x %>% purrr::map_chr(~paste(., collapse=' + '))
+          names(x) <- names(x) <- paste0('M', seq_along(x))
         }
         x <- c(list('Basic' = c()), x)
         object$predictors <- x
