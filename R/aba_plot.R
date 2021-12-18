@@ -296,3 +296,67 @@ aba_plot_coef <- function(object,
 
   return(g)
 }
+
+
+#' Custom aba ggplot2 theme
+#'
+#' @param base_size integer. base font size
+#' @param legend.position string. where to place legend ('none' = no legend)
+#' @param coord_flip logical. whether to flip x and y axes
+#' @param legend_title logical. whether to include legend title.
+#'
+#' @return ggplot2 theme which can be added to a ggplot object
+#' @export
+#'
+#' @examples
+#' data <- data.frame(x=1:10, y=1:10)
+#' fig <- ggplot(data, aes(x=x,y=y)) + geom_point() + theme_aba2()
+theme_aba <- function(base_size = 16,
+                      legend.position = 'top',
+                      coord_flip = FALSE,
+                      legend_title = FALSE,
+                      family = c('Verdana', 'Tahoma', 'Helvetica')) {
+  family <- match.arg(family)
+
+  t <- theme_classic(base_size = base_size) %+replace%
+    theme(
+      text = element_text(size=base_size, family=family, color='black'),
+      legend.position = legend.position,
+      legend.margin = margin(5, 0, 0, 0),
+      plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "lines"),
+      panel.spacing = unit(1.5, "lines"),
+      strip.background = element_blank(),
+      strip.text = element_text(face = "bold", color='black',
+                                size = base_size, vjust = 1.25),
+      plot.title = element_text(hjust = 0.5),
+      axis.line.x.bottom=element_line(size=1.2),
+      axis.ticks.y = element_line(size=1.2),
+      axis.ticks.length.y = unit(0.2,"cm"),
+      axis.ticks.x = element_line(size=1.2),
+      axis.ticks.length.x = unit(0.2,"cm"),
+      axis.line.y.left=element_line(size=1.2),
+      axis.text.y = element_text(
+        color='black', margin = margin(t = 0, r = 3, b = 0, l = 6)
+      ),
+      axis.text.x = element_text(
+        color='black', margin = margin(t = 3, r = 0, b = 6, l = 0)
+      )
+    )
+
+  if (!legend_title) t <- t %+replace% theme(legend.title = element_blank())
+
+  if (coord_flip) {
+    t <- t %+replace%
+      theme(axis.title.y = element_blank(),
+            panel.grid.major.y = element_blank(),
+            panel.grid.major.x = element_line(colour = "gray", size = 0.2,
+                                              linetype = "solid"))
+  } else {
+    t <- t %+replace%
+      theme(axis.title.x = element_blank(),
+            panel.grid.major.x = element_blank(),
+            panel.grid.major.y = element_line(colour = "gray", size = 0.2,
+                                              linetype = "solid"))
+  }
+}
+
