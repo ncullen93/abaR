@@ -27,7 +27,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">aba</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.9</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.9.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -132,19 +132,19 @@
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Groups:</span>
-<span class="co">#&gt;    G1: DX_bl %in% c("MCI", "AD")</span>
+<span class="co">#&gt;    DX_bl %in% c("MCI", "AD")</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Outcomes:</span>
-<span class="co">#&gt;    O1: ConvertedToAlzheimers</span>
-<span class="co">#&gt;    O2: CSF_ABETA_STATUS_bl</span>
+<span class="co">#&gt;    ConvertedToAlzheimers</span>
+<span class="co">#&gt;    CSF_ABETA_STATUS_bl</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Covariates:</span>
 <span class="co">#&gt;    AGE GENDER EDUCATION</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Predictors:</span>
-<span class="co">#&gt;    P0: PLASMA_PTAU181_bl</span>
-<span class="co">#&gt;    P1: PLASMA_NFL_bl</span>
-<span class="co">#&gt;    P2: c("PLASMA_PTAU181_bl", "PLASMA_NFL_bl")</span>
+<span class="co">#&gt;    PLASMA_PTAU181_bl</span>
+<span class="co">#&gt;    PLASMA_NFL_bl</span>
+<span class="co">#&gt;    PLASMA_PTAU181_bl + PLASMA_NFL_bl</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Stats:</span>
 <span class="co">#&gt;    glm </span>
@@ -158,28 +158,28 @@
 <code class="sourceCode R"><span class="va">model_summary</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">model_summary</span><span class="op">)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; -------------------------------------</span>
-<span class="co">#&gt; Group = G1 | Outcome = O1 | Stat = S1</span>
-<span class="co">#&gt; -------------------------------------</span>
+<span class="co">#&gt; -------------------------------------------------------------------------------</span>
+<span class="co">#&gt; Group = DX_bl %in% c("MCI", "AD") | Outcome = ConvertedToAlzheimers | Stat = S1</span>
+<span class="co">#&gt; -------------------------------------------------------------------------------</span>
 <span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 10</span></span>
-<span class="co">#&gt;   predictor AGE    GENDER  EDUCATION  PLASMA_PTAU181_… PLASMA_NFL_bl auc  </span>
-<span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Basic     1.32 … 0.95 [… 1.04 [0.8… <span style="color: #BB0000;">NA</span>               <span style="color: #BB0000;">NA</span>            0.59…</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">2</span> P0        1.13 … 0.90 [… 1.10 [0.8… 2.52 [1.91, 3.3… <span style="color: #BB0000;">NA</span>            0.72…</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">3</span> P1        0.94 … 0.99 [… 1.03 [0.8… <span style="color: #BB0000;">NA</span>               1.95 [1.49, … 0.67…</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">4</span> P2        0.92 … 0.94 [… 1.08 [0.8… 2.23 [1.68, 3.0… 1.56 [1.18, … 0.74…</span>
+<span class="co">#&gt;   predictor  AGE    GENDER  EDUCATION PLASMA_PTAU181_… PLASMA_NFL_bl auc  </span>
+<span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Basic      1.32 … 0.95 [… 1.04 [0.… <span style="color: #BB0000;">NA</span>               <span style="color: #BB0000;">NA</span>            0.59…</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">2</span> PLASMA_PT… 1.13 … 0.90 [… 1.10 [0.… 2.52 [1.91, 3.3… <span style="color: #BB0000;">NA</span>            0.72…</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">3</span> PLASMA_NF… 0.94 … 0.99 [… 1.03 [0.… <span style="color: #BB0000;">NA</span>               1.95 [1.49, … 0.67…</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">4</span> PLASMA_PT… 0.92 … 0.94 [… 1.08 [0.… 2.23 [1.68, 3.0… 1.56 [1.18, … 0.74…</span>
 <span class="co">#&gt; <span style="color: #949494;"># … with 3 more variables: aic &lt;chr&gt;, pval &lt;chr&gt;, nobs &lt;chr&gt;</span></span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; -------------------------------------</span>
-<span class="co">#&gt; Group = G1 | Outcome = O2 | Stat = S1</span>
-<span class="co">#&gt; -------------------------------------</span>
+<span class="co">#&gt; -----------------------------------------------------------------------------</span>
+<span class="co">#&gt; Group = DX_bl %in% c("MCI", "AD") | Outcome = CSF_ABETA_STATUS_bl | Stat = S1</span>
+<span class="co">#&gt; -----------------------------------------------------------------------------</span>
 <span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 10</span></span>
-<span class="co">#&gt;   predictor AGE    GENDER  EDUCATION  PLASMA_PTAU181_… PLASMA_NFL_bl auc  </span>
-<span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Basic     1.26 … 1.21 [… 0.85 [0.6… <span style="color: #BB0000;">NA</span>               <span style="color: #BB0000;">NA</span>            0.59…</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">2</span> P0        1.12 … 1.18 [… 0.92 [0.7… 2.31 [1.83, 2.9… <span style="color: #BB0000;">NA</span>            0.72…</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">3</span> P1        1.08 … 1.23 [… 0.86 [0.6… <span style="color: #BB0000;">NA</span>               1.35 [1.07, … 0.62…</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">4</span> P2        1.12 … 1.18 [… 0.92 [0.7… 2.30 [1.80, 2.9… 1.02 [0.79, … 0.72…</span>
+<span class="co">#&gt;   predictor  AGE    GENDER  EDUCATION PLASMA_PTAU181_… PLASMA_NFL_bl auc  </span>
+<span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Basic      1.26 … 1.21 [… 0.85 [0.… <span style="color: #BB0000;">NA</span>               <span style="color: #BB0000;">NA</span>            0.59…</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">2</span> PLASMA_PT… 1.12 … 1.18 [… 0.92 [0.… 2.31 [1.83, 2.9… <span style="color: #BB0000;">NA</span>            0.72…</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">3</span> PLASMA_NF… 1.08 … 1.23 [… 0.86 [0.… <span style="color: #BB0000;">NA</span>               1.35 [1.07, … 0.62…</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">4</span> PLASMA_PT… 1.12 … 1.18 [… 0.92 [0.… 2.30 [1.80, 2.9… 1.02 [0.79, … 0.72…</span>
 <span class="co">#&gt; <span style="color: #949494;"># … with 3 more variables: aic &lt;chr&gt;, pval &lt;chr&gt;, nobs &lt;chr&gt;</span></span></code></pre></div>
 <p>As you see, summarizing an aba model is the way to collect all the important information. When you print an aba summary to the console, it will be formatted in a nice manner allowing you to inspect the results. As you will see later, which values are included in the summary and how they are formatted is completely customizable.</p>
 <p>Although viewing a nicely formatted summary table is a good way to understand our results, plotting the variable coefficients and model metrics can provide deeper insight. Therefore, there are multiple plotting functions in aba which work out-of-the-box with aba summaries.</p>

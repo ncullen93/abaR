@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">aba</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.9</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.9.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,10 +73,10 @@
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">aba_plot_coef</span><span class="op">(</span>
   <span class="va">object</span>,
-  x <span class="op">=</span> <span class="st">"term"</span>,
-  group <span class="op">=</span> <span class="st">"predictor"</span>,
-  facet <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"outcome"</span>, <span class="st">"group"</span><span class="op">)</span>,
+  axis <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"term"</span>, <span class="st">"predictor"</span>, <span class="st">"outcome"</span>, <span class="st">"group"</span><span class="op">)</span>,
   coord_flip <span class="op">=</span> <span class="cn">FALSE</span>,
+  include_covariates <span class="op">=</span> <span class="cn">TRUE</span>,
+  sort <span class="op">=</span> <span class="cn">FALSE</span>,
   palette <span class="op">=</span> <span class="st">"jama"</span>,
   plotly <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span></code></pre></div>
@@ -87,20 +87,18 @@
     <dl><dt>object</dt>
 <dd><p>an aba model summary. The object to plot - this should be the
 result of an <code><a href="aba_summary.html">aba_summary()</a></code> call.</p></dd>
-<dt>x</dt>
-<dd><p>string. The model spec factor to use as the x axis. Defaults to
-predictor sets.</p></dd>
-<dt>group</dt>
-<dd><p>string. The model spec factor to use as the group variable in
-ggplot - this corresponding to "group", "fill", and "color" in ggplot.
-Defaults to outcome.</p></dd>
-<dt>facet</dt>
-<dd><p>string. The model spec factor to use as the group variable in
-ggplot - this corresponding to "facet_wrap" in ggplot. Defaults to group.</p></dd>
+<dt>axis</dt>
+<dd><p>string. Specifies the x axis variable, color/fill variable, and
+facet variable in that order. Should be a vector of length three that
+includes only "predictor", "outcome", and "group" as values.</p></dd>
 <dt>coord_flip</dt>
 <dd><p>logical. Whether to flip the x and y axes. This can be
 useful when there are a large amount of predictor sets and you want to
 view metrics vertically.</p></dd>
+<dt>include_covariates</dt>
+<dd><p>logical. Whether to include covariates</p></dd>
+<dt>sort</dt>
+<dd><p>logical. Whether to sort axis labels by coefficient value</p></dd>
 <dt>palette</dt>
 <dd><p>string. Which ggpubr palette to use. See <code><a href="https://rpkgs.datanovia.com/ggpubr/reference/set_palette.html" class="external-link">ggpubr::set_palette</a></code>.</p></dd>
 <dt>plotly</dt>
@@ -140,6 +138,7 @@ on web pages.</p></dd>
 <span class="r-in">    x <span class="op">=</span> <span class="st">'outcome'</span>, group<span class="op">=</span><span class="st">'predictor'</span>,</span>
 <span class="r-in">    facet<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'term'</span>,<span class="st">'group'</span><span class="op">)</span>, coord_flip<span class="op">=</span><span class="cn">TRUE</span></span>
 <span class="r-in">  <span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in aba_plot_coef(., x = "outcome", group = "predictor", facet = c("term",     "group"), coord_flip = TRUE):</span> unused arguments (x = "outcome", group = "predictor", facet = c("term", "group"))</span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>
