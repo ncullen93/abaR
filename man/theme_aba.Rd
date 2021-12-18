@@ -21,6 +21,11 @@ theme_aba(
 \item{coord_flip}{logical. whether to flip x and y axes}
 
 \item{legend_title}{logical. whether to include legend title.}
+
+\item{facet_labels}{logical. Whether to include labels of facets.}
+
+\item{family}{string. which font family to use. Should be one of
+Verdana, Tahoma, Helvetica}
 }
 \value{
 ggplot2 theme which can be added to a ggplot object

@@ -68,6 +68,14 @@ model_fit <- model_spec %>% fit()
 model_summary <- model_fit %>% summary()
 ```
 
+You can then generate publication-ready figures in just one line of code:
+
+``` r
+fig <- model_summary %>% aba_plot_coef(palette = 'lancet')
+```
+
+![coefficient image](man/figures/README-coef_plot.png)
+
 ## Publications
 
 Some publications whose analysis has been done partially or completely with functions from the aba package are featured here:

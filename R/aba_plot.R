@@ -127,20 +127,22 @@ aba_plot_metric <- function(object,
       position=position_dodge(0.5), size=0.5, width = 0.2
     ) +
     geom_point(position = position_dodge(0.5), size = 4) +
-    facet_wrap(. ~ .data$facet) +
-    ylab(toupper(metric))
+    ylab(toupper(metric)) +
+    theme_aba(
+      legend.position = ifelse(n_groups > 6, 'none', 'top'),
+      coord_flip = coord_flip,
+      facet_labels = facet_labels
+    )
+
+  # add facet only if facet variable has more than 1 unique value
+  if (length(unique(plot_df$facet)) > 1) {
+    g <- g + facet_wrap(. ~ .data$facet)
+  }
 
   if (metric == 'auc') {
     g <- g + ylim(c(min(0.5, plot_df$conf_low), 1))
     g <- g + geom_hline(aes(yintercept=0.5), linetype='dashed')
   }
-
-  # add aba them
-  g <- g + theme_aba(
-    legend.position = ifelse(n_groups > 6, 'none', 'top'),
-    coord_flip = coord_flip,
-    facet_labels = facet_labels
-  )
 
   if (coord_flip) g <- g + coord_flip()
   if (!is.null(palette) & (n_groups <= 6)) g <- ggpubr::set_palette(g, palette)
@@ -154,6 +156,10 @@ aba_plot_metric <- function(object,
 #'
 #' @param object an aba model summary. The object to plot - this should be the
 #'   result of an `aba_summary()` call.
+#' @param term_labels list. A list where name is equal to a term
+#'   variable and value is equal to the label you want to replace it with in
+#'   the plot. Useful to exchange variable names with labels. Rememeber that
+#'   terms are the data variables/columns which make up predictors.
 #' @param axis string. Specifies the x axis variable, color/fill variable, and
 #'   facet variable in that order. Should be a vector of length three that
 #'   includes only "predictor", "outcome", and "group" as values.
@@ -162,6 +168,9 @@ aba_plot_metric <- function(object,
 #'   view metrics vertically.
 #' @param include_covariates logical. Whether to include covariates
 #' @param sort logical. Whether to sort axis labels by coefficient value
+#' @param facet_labels logical. Whether to include facet labels.
+#' @param facet_axis logical. Whether to keep axis segment/labels for all
+#'   facets or whether to remove them for facets.
 #' @param palette string. Which ggpubr palette to use. See `ggpubr::set_palette`.
 #' @param plotly logical. Whether to use plot.ly instead of standard ggplot.
 #'   Defaults to false. Using ggplotly can be useful if you want interactivity
@@ -190,38 +199,65 @@ aba_plot_metric <- function(object,
 #' model_summary <- model %>% aba_summary()
 #'
 #' # plot the coefficients using default
-#' coef_plot <- model_summary %>% aba_plot_coef(coord_flip=TRUE)
+#' coef_plot <- model_summary %>% aba_plot_coef(coord_flip = TRUE)
+#'
+#' # add term labels
+#' term_labels <- list(
+#'   'PLASMA_ABETA_bl' = 'Plasma Abeta',
+#'   'PLASMA_PTAU181_bl' = 'Plasma P-tau',
+#'   'PLASMA_NFL_bl' = 'Plasma NfL'
+#' )
+#' coef_plot2 <- model_summary %>% aba_plot_coef(coord_flip = TRUE,
+#'                                               term_labels = term_labels)
 #'
 #' # compare predictor coefficients across outcomes
-#' coef_plot2 <- model_summary %>%
+#' coef_plot3 <- model_summary %>%
 #'   aba_plot_coef(
 #'     axis = c('outcome', 'predictor','term','group'), coord_flip=TRUE
 #'   )
-#'
 aba_plot_coef <- function(object,
+                          term_labels = NULL,
                           axis = c('term', 'predictor', 'outcome', 'group'),
                           coord_flip = FALSE,
                           include_covariates = TRUE,
                           sort = FALSE,
-                          palette = 'jama',
+                          facet_labels = TRUE,
+                          facet_axis = FALSE,
+                          palette = c('jama', 'nature', 'lancet', 'none'),
                           plotly = FALSE) {
-
-  model <- object$model
-  all_preds <- model$predictors %>% unlist() %>% unique()
-  all_covars <- model$covariates
-  all_vars <- c(all_covars, all_preds)
+  palette <- match.arg(palette)
+  if (palette == 'nature') palette <- 'npg'
 
   if (sum(is.na(match(c('term', 'predictor', 'outcome', 'group'), axis))) > 0) {
     stop('axis should contain "term", "predictor", "outcome", and "group"')
   }
 
+  model <- object$model
+  all_covars <- model$covariates
+  plot_df <- object$results$coefs %>% filter(predictor != '(Intercept)')
+  plot_df <- plot_df %>%
+    mutate(
+      predictor = factor(predictor, levels=unique(plot_df$predictor))
+    )
+
+  if (!is.null(term_labels)) {
+    if (!is.list(term_labels)) stop('term_labels should be a list.')
+    plot_df <- plot_df %>%
+      mutate(
+        term = map_chr(
+          term, ~ifelse(. %in% names(term_labels), term_labels[[.]], .)
+        )
+      )
+  }
+  plot_df <- plot_df %>%
+    mutate(term = factor(term, levels=unique(plot_df$term)))
+
+  if (!include_covariates) plot_df <- plot_df %>% filter(!term %in% all_covars)
+
   x <- axis[1]
   fill <- axis[2]
   facet_x <- axis[3]
   facet_y <- axis[4]
-
-  plot_df <- object$results$coefs %>% filter(predictor != '(Intercept)')
-  if (!include_covariates) plot_df <- plot_df %>% filter(!term %in% all_covars)
 
   plot_df <- plot_df %>%
     rename(
@@ -235,44 +271,42 @@ aba_plot_coef <- function(object,
   n_groups <- dplyr::n_distinct(plot_df[[fill]])
 
   # this doesnt take into account groups
-  if (sort) plot_df <- plot_df %>% mutate(x = forcats::fct_reorder(x, estimate))
-
-  g <- ggplot(plot_df,
-              aes(x = .data$x,
-                  y = .data$estimate,
-                  color = .data$fill)) +
-    geom_point(position = position_dodge(0.5), size = 2.5) +
-    geom_errorbar(
-      aes(ymin = .data$conf_low,
-          ymax = .data$conf_high),
-      position=position_dodge(0.5), size=0.5,
-      width = 0.2
-    ) +
-    facet_wrap(.~paste0(.data$facet_x,' | ', .data$facet_y)) +
-    ylab('Model coefficient') +
-    theme_classic(base_size = 16) +
-    theme(
-      legend.position = ifelse(n_groups > 6, 'none', 'top'),
-      legend.margin = margin(5, 0, 0, 0),
-      plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "lines"),
-      panel.spacing = unit(1.5, "lines"),
-      strip.background = element_blank(),
-      strip.text = element_text(face = "bold", size = 16, vjust = 1.25),
-      plot.title = element_text(hjust = 0.5),
-      legend.title = element_blank(),
-      panel.grid.major.x = element_blank(),
-      panel.grid.major.y = element_line(
-        colour = "black",
-        size = 0.2, linetype = "dotted")
-    )
-
-  if (coord_flip) {
-    g <- g + coord_flip() + theme(axis.title.y = element_blank())
-  } else {
-    g <- g + theme(axis.title.x = element_blank())
+  if (sort) {
+    plot_df <- plot_df %>% mutate(x = forcats::fct_reorder(x, estimate))
   }
 
-  if (!is.null(palette) & (n_groups <= 6)) g <- ggpubr::set_palette(g, palette)
+  scales <- ifelse(facet_axis, 'free', 'fixed')
+
+  g <- plot_df %>%
+    ggplot(aes(x = .data$x, y = .data$estimate, color = .data$fill)) +
+    geom_errorbar(
+      aes(ymin = .data$conf_low, ymax = .data$conf_high),
+      position=position_dodge(0.5), size=0.5, width = 0.2
+    ) +
+    geom_point(position = position_dodge(0.5), size = 2.5) +
+    scale_y_continuous(limits=c(min(plot_df$conf_low), max(plot_df$conf_high)))+
+    ylab('Model coefficient') +
+    theme_aba(
+      legend.position = ifelse(n_groups > 6, 'none', 'top'),
+      coord_flip = coord_flip,
+      facet_labels = facet_labels
+    )
+
+  # add facets only if facet variables have more than 1 unique value
+  if (length(unique(plot_df$facet_x)) > 1) {
+    if (length(unique(plot_df$facet_y)) > 1) {
+      g <- g + facet_wrap(~paste0(.data$facet_x,' | ', .data$facet_y), scales = scales)
+    } else {
+      g <- g + facet_wrap(~.data$facet_x, scales = scales)
+    }
+  } else {
+    if (length(unique(plot_df$facet_x)) > 1) {
+      g <- g + facet_wrap(~.data$facet_y, scales = scales)
+    }
+  }
+
+  if (coord_flip) g <- g + coord_flip()
+  if ((palette != 'none') & (n_groups <= 6)) g <- ggpubr::set_palette(g, palette)
   if (plotly) g <- plotly::ggplotly(g)
 
   return(g)
@@ -285,6 +319,9 @@ aba_plot_coef <- function(object,
 #' @param legend.position string. where to place legend ('none' = no legend)
 #' @param coord_flip logical. whether to flip x and y axes
 #' @param legend_title logical. whether to include legend title.
+#' @param facet_labels logical. Whether to include labels of facets.
+#' @param family string. which font family to use. Should be one of
+#'   Verdana, Tahoma, Helvetica
 #'
 #' @return ggplot2 theme which can be added to a ggplot object
 #' @export
@@ -300,19 +337,20 @@ theme_aba <- function(base_size = 16,
                       legend_title = FALSE,
                       facet_labels = TRUE,
                       family = c('Verdana', 'Tahoma', 'Helvetica')) {
+
   family <- match.arg(family)
 
   t <- theme_classic(base_size = base_size) %+replace%
     theme(
       text = element_text(size=base_size, family=family, color='black'),
       legend.position = legend.position,
-      legend.margin = margin(5, 0, 0, 0),
+      legend.margin = margin(5, 0, -5, 0),
       plot.margin = unit(c(0.5, 1.5, 0.5, 0.5), "lines"),
       panel.spacing = unit(1.5, "lines"),
       strip.background = element_blank(),
-      strip.text = element_text(face = "bold", color='black',
+      strip.text = element_text(color='black',
                                 size = base_size, vjust = 0,
-                                margin = margin(b=5)),
+                                margin = margin(b=10)),
       plot.title = element_text(hjust = 0.5),
       axis.line.x.bottom=element_line(size=1.2),
       axis.ticks.y = element_line(size=1.2),

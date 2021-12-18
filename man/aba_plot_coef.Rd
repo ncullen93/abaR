@@ -6,17 +6,25 @@
 \usage{
 aba_plot_coef(
   object,
+  term_labels = NULL,
   axis = c("term", "predictor", "outcome", "group"),
   coord_flip = FALSE,
   include_covariates = TRUE,
   sort = FALSE,
-  palette = "jama",
+  facet_labels = TRUE,
+  facet_axis = FALSE,
+  palette = c("jama", "nature", "lancet", "none"),
   plotly = FALSE
 )
 }
 \arguments{
 \item{object}{an aba model summary. The object to plot - this should be the
 result of an \code{aba_summary()} call.}
+
+\item{term_labels}{list. A list where name is equal to a term
+variable and value is equal to the label you want to replace it with in
+the plot. Useful to exchange variable names with labels. Rememeber that
+terms are the data variables/columns which make up predictors.}
 
 \item{axis}{string. Specifies the x axis variable, color/fill variable, and
 facet variable in that order. Should be a vector of length three that
@@ -29,6 +37,11 @@ view metrics vertically.}
 \item{include_covariates}{logical. Whether to include covariates}
 
 \item{sort}{logical. Whether to sort axis labels by coefficient value}
+
+\item{facet_labels}{logical. Whether to include facet labels.}
+
+\item{facet_axis}{logical. Whether to keep axis segment/labels for all
+facets or whether to remove them for facets.}
 
 \item{palette}{string. Which ggpubr palette to use. See \code{ggpubr::set_palette}.}
 
@@ -62,12 +75,20 @@ model <- aba_model() \%>\%
 model_summary <- model \%>\% aba_summary()
 
 # plot the coefficients using default
-coef_plot <- model_summary \%>\% aba_plot_coef(coord_flip=TRUE)
+coef_plot <- model_summary \%>\% aba_plot_coef(coord_flip = TRUE)
+
+# add term labels
+term_labels <- list(
+  'PLASMA_ABETA_bl' = 'Plasma Abeta',
+  'PLASMA_PTAU181_bl' = 'Plasma P-tau',
+  'PLASMA_NFL_bl' = 'Plasma NfL'
+)
+coef_plot2 <- model_summary \%>\% aba_plot_coef(coord_flip = TRUE,
+                                              term_labels = term_labels)
 
 # compare predictor coefficients across outcomes
-coef_plot2 <- model_summary \%>\%
+coef_plot3 <- model_summary \%>\%
   aba_plot_coef(
     axis = c('outcome', 'predictor','term','group'), coord_flip=TRUE
   )
-
 }
