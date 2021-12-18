@@ -108,27 +108,30 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
 <span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"ncullen93/abaR"</span><span class="op">)</span></code></pre></div>
-<p>The general workflow of fitting an aba model for statistical analysis looks like this:</p>
+<p>The typical workflow for performing statistical analysis with aba is incredibly simple:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ncullen93/abaR/" class="external-link">aba</a></span><span class="op">)</span>
 
 <span class="va">df</span> <span class="op">&lt;-</span> <span class="fu">aba</span><span class="fu">::</span><span class="va"><a href="reference/adnimerge.html">adnimerge</a></span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">VISCODE</span> <span class="op">==</span> <span class="st">'bl'</span><span class="op">)</span>
 
-<span class="va">model_spec</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="reference/aba_model.html">aba_model</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="reference/set_groups.html">set_groups</a></span><span class="op">(</span><span class="fu"><a href="reference/everyone.html">everyone</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span>
+<span class="co"># build and fit an aba model with multiple outcomes and predictors</span>
+<span class="va">model</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="reference/aba_model.html">aba_model</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="reference/set_outcomes.html">set_outcomes</a></span><span class="op">(</span><span class="va">ConvertedToAlzheimers</span>, <span class="va">CSF_ABETA_STATUS_bl</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="reference/set_predictors.html">set_predictors</a></span><span class="op">(</span>
-    <span class="va">PLASMA_ABETA_bl</span>,
-    <span class="va">PLASMA_PTAU181_bl</span>,
-    <span class="va">PLASMA_NFL_bl</span>,
+    <span class="va">PLASMA_ABETA_bl</span>, <span class="va">PLASMA_PTAU181_bl</span>, <span class="va">PLASMA_NFL_bl</span>,
     <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">PLASMA_ABETA_bl</span>, <span class="va">PLASMA_PTAU181_bl</span>, <span class="va">PLASMA_NFL_bl</span><span class="op">)</span>
   <span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="reference/set_stats.html">set_stats</a></span><span class="op">(</span>
-    <span class="fu"><a href="reference/stat_glm.html">stat_glm</a></span><span class="op">(</span>std.beta<span class="op">=</span><span class="cn">T</span><span class="op">)</span>
-  <span class="op">)</span>
+  <span class="fu"><a href="reference/set_stats.html">set_stats</a></span><span class="op">(</span><span class="st">'glm'</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span>
 
-<span class="va">model_fit</span> <span class="op">&lt;-</span> <span class="va">model_spec</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span>
+<span class="co"># summarise the model results (coefficients and metrics)</span>
 <span class="va">model_summary</span> <span class="op">&lt;-</span> <span class="va">model_fit</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<p>You can then generate publication-ready figures in just one line of code:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">fig</span> <span class="op">&lt;-</span> <span class="va">model_summary</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="reference/aba_plot_coef.html">aba_plot_coef</a></span><span class="op">(</span>palette <span class="op">=</span> <span class="st">'lancet'</span><span class="op">)</span></code></pre></div>
+<div class="figure">
+<img src="reference/figures/README-coef_plot.png" alt=""><p class="caption">coefficient image</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="publications">Publications<a class="anchor" aria-label="anchor" href="#publications"></a>

@@ -78,6 +78,7 @@
   coord_flip <span class="op">=</span> <span class="cn">FALSE</span>,
   include_basic <span class="op">=</span> <span class="cn">TRUE</span>,
   sort <span class="op">=</span> <span class="cn">FALSE</span>,
+  facet_labels <span class="op">=</span> <span class="cn">TRUE</span>,
   palette <span class="op">=</span> <span class="st">"jama"</span>,
   plotly <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span></code></pre></div>
@@ -102,6 +103,8 @@ view metrics vertically.</p></dd>
 <dd><p>logical. Whether to include basic predictor.</p></dd>
 <dt>sort</dt>
 <dd><p>logical. Whether to sort axis labels by metric value</p></dd>
+<dt>facet_labels</dt>
+<dd><p>logical. Whether to include facet labels or not.</p></dd>
 <dt>palette</dt>
 <dd><p>string. Which ggpubr palette to use. See <code><a href="https://rpkgs.datanovia.com/ggpubr/reference/set_palette.html" class="external-link">ggpubr::set_palette</a></code>.</p></dd>
 <dt>plotly</dt>
@@ -116,17 +119,18 @@ on web pages.</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="co"># fit aba model</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># fit aba model</span></span>
 <span class="r-in"><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="aba_model.html">aba_model</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
 <span class="r-in">  <span class="fu"><a href="set_data.html">set_data</a></span><span class="op">(</span><span class="va">adnimerge</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">VISCODE</span> <span class="op">==</span> <span class="st">'bl'</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
 <span class="r-in">  <span class="fu"><a href="set_groups.html">set_groups</a></span><span class="op">(</span><span class="fu"><a href="everyone.html">everyone</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="set_outcomes.html">set_outcomes</a></span><span class="op">(</span><span class="va">ConvertedToAlzheimers</span>, <span class="va">CSF_ABETA_STATUS_bl</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
+<span class="r-in">  <span class="fu"><a href="set_outcomes.html">set_outcomes</a></span><span class="op">(</span><span class="va">ConvertedToAlzheimers</span>, <span class="va">CSF_ABETA_STATUS_bl</span>,</span>
+<span class="r-in">               labels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'Conversion to AD'</span>, <span class="st">'CSF Abeta Status'</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
 <span class="r-in">  <span class="fu"><a href="set_predictors.html">set_predictors</a></span><span class="op">(</span></span>
 <span class="r-in">    <span class="va">PLASMA_ABETA_bl</span>, <span class="va">PLASMA_PTAU181_bl</span>, <span class="va">PLASMA_NFL_bl</span>,</span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">PLASMA_ABETA_bl</span>, <span class="va">PLASMA_PTAU181_bl</span>, <span class="va">PLASMA_NFL_bl</span><span class="op">)</span></span>
+<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">PLASMA_ABETA_bl</span>, <span class="va">PLASMA_PTAU181_bl</span>, <span class="va">PLASMA_NFL_bl</span><span class="op">)</span>,</span>
+<span class="r-in">    labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'A'</span>,<span class="st">'T'</span>,<span class="st">'N'</span>,<span class="st">'ATN'</span><span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="set_stats.html">set_stats</a></span><span class="op">(</span><span class="st">'glm'</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
+<span class="r-in">  <span class="fu"><a href="set_stats.html">set_stats</a></span><span class="op">(</span><span class="fu"><a href="stat_glm.html">stat_glm</a></span><span class="op">(</span>std.beta<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
 <span class="r-in">  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># summarise aba model to calculate metrics</span></span>
@@ -140,9 +144,7 @@ on web pages.</p></dd>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># compare predictor sets within each outcome instead of the opposite</span></span>
 <span class="r-in"><span class="va">metric_plot3</span> <span class="op">&lt;-</span> <span class="va">model_summary</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu">aba_plot_metric</span><span class="op">(</span>x <span class="op">=</span> <span class="st">'outcome'</span>, group<span class="op">=</span><span class="st">'predictor'</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in aba_plot_metric(., x = "outcome", group = "predictor"):</span> unused arguments (x = "outcome", group = "predictor")</span>
-<span class="r-in"></span>
+<span class="r-in">  <span class="fu">aba_plot_metric</span><span class="op">(</span>axis <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'outcome'</span>,<span class="st">'predictor'</span>, <span class="st">'group'</span><span class="op">)</span><span class="op">)</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
