@@ -70,6 +70,7 @@ reference:
   - aba_plot_coef
   - aba_plot_metric
   - aba_plot_roc
+  - theme_aba
 - title: Saving and loading
   contents:
   - aba_read
