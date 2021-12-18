@@ -44,7 +44,7 @@ You can install the development version of the aba package from
 devtools::install_github("ncullen93/abaR")
 ```
 
-The general workflow of fitting an aba model for statistical analysis looks like this:
+The typical workflow for performing statistical analysis with aba is incredibly simple:
 
 ``` r
 library(aba)
@@ -58,7 +58,7 @@ model <- df %>% aba_model() %>%
     PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl,
     c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
   ) %>%
-  set_stats(stat_glm(std.beta=T)) %>% 
+  set_stats('glm') %>% 
   fit()
 
 # summarise the model results (coefficients and metrics)
