@@ -34,6 +34,8 @@ view metrics vertically.}
 
 \item{sort}{logical. Whether to sort axis labels by metric value}
 
+\item{facet_labels}{logical. Whether to include facet labels or not.}
+
 \item{palette}{string. Which ggpubr palette to use. See \code{ggpubr::set_palette}.}
 
 \item{plotly}{logical. Whether to use plot.ly instead of standard ggplot.

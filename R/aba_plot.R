@@ -29,6 +29,7 @@ aba_plot <- function(object, ...) {
 #'   view metrics vertically.
 #' @param include_basic logical. Whether to include basic predictor.
 #' @param sort logical. Whether to sort axis labels by metric value
+#' @param facet_labels logical. Whether to include facet labels or not.
 #' @param palette string. Which ggpubr palette to use. See `ggpubr::set_palette`.
 #' @param plotly logical. Whether to use plot.ly instead of standard ggplot.
 #'   Defaults to false. Using ggplotly can be useful if you want interactivity
@@ -119,26 +120,22 @@ aba_plot_metric <- function(object,
 
   n_groups <- dplyr::n_distinct(object$results$metrics[[fill]])
 
-  g <- ggplot(plot_df,
-              aes(x = .data$x,
-                  y = .data$estimate,
-                  color = .data$fill)) +
+  g <- plot_df %>%
+    ggplot(aes(x = .data$x, y = .data$estimate, color = .data$fill)) +
     geom_errorbar(
-      aes(ymin = .data$conf_low,
-          ymax = .data$conf_high),
-      position=position_dodge(0.5), size=0.5,
-      width = 0.2
+      aes(ymin = .data$conf_low, ymax = .data$conf_high),
+      position=position_dodge(0.5), size=0.5, width = 0.2
     ) +
     geom_point(position = position_dodge(0.5), size = 4) +
     facet_wrap(. ~ .data$facet) +
-    ylab(metric)
+    ylab(toupper(metric))
 
-  if (metric == 'AUC') {
+  if (metric == 'auc') {
     g <- g + ylim(c(min(0.5, plot_df$conf_low), 1))
     g <- g + geom_hline(aes(yintercept=0.5), linetype='dashed')
   }
 
-  #theme
+  # add aba them
   g <- g + theme_aba(
     legend.position = ifelse(n_groups > 6, 'none', 'top'),
     coord_flip = coord_flip,
@@ -146,14 +143,8 @@ aba_plot_metric <- function(object,
   )
 
   if (coord_flip) g <- g + coord_flip()
-
-  if (!is.null(palette) & (n_groups <= 6)) {
-    g <- ggpubr::set_palette(g, palette)
-  }
-
-  if (plotly) {
-    g <- plotly::ggplotly(g)
-  }
+  if (!is.null(palette) & (n_groups <= 6)) g <- ggpubr::set_palette(g, palette)
+  if (plotly) g <- plotly::ggplotly(g)
 
   return(g)
 }
