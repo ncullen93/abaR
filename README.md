@@ -49,17 +49,12 @@ df <- aba::adnimerge %>% filter(VISCODE == 'bl')
 
 # build and fit an aba model with multiple outcomes and predictors
 model <- df %>% aba_model() %>%
-  set_groups(everyone()) %>%
   set_outcomes(ConvertedToAlzheimers, CSF_ABETA_STATUS_bl) %>%
   set_predictors(
-    PLASMA_ABETA_bl,
-    PLASMA_PTAU181_bl,
-    PLASMA_NFL_bl,
+    PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl,
     c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
   ) %>%
-  set_stats(
-    stat_glm(std.beta=T)
-  ) %>% 
+  set_stats(stat_glm(std.beta=T)) %>% 
   fit()
 
 # summarise the model results (coefficients and metrics)
