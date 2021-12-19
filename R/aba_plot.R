@@ -65,7 +65,7 @@ aba_plot <- function(object, ...) {
 #' # compare predictor sets within each outcome instead of the opposite
 #' metric_plot3 <- model_summary %>%
 #'   aba_plot_metric(axis = c('outcome','predictor', 'group'))
-aba_plot_metric <- function(object,
+aba_plot_metric <- function(model_summary,
                             metric = NULL,
                             axis = c('predictor', 'outcome', 'group'),
                             coord_flip = FALSE,
@@ -74,7 +74,7 @@ aba_plot_metric <- function(object,
                             facet_labels = TRUE,
                             palette = 'jama',
                             plotly = FALSE) {
-
+  object <- model_summary
   # find main metric - directly after predictors
   metric <- object$results$metrics$term[1]
   plot_df <- object$results$metrics %>% filter(term == metric) %>%
@@ -215,7 +215,7 @@ aba_plot_metric <- function(object,
 #'   aba_plot_coef(
 #'     axis = c('outcome', 'predictor','term','group'), coord_flip=TRUE
 #'   )
-aba_plot_coef <- function(object,
+aba_plot_coef <- function(model_summary,
                           term_labels = NULL,
                           axis = c('term', 'predictor', 'outcome', 'group'),
                           coord_flip = FALSE,
@@ -225,6 +225,7 @@ aba_plot_coef <- function(object,
                           facet_axis = FALSE,
                           palette = c('jama', 'nature', 'lancet', 'none'),
                           plotly = FALSE) {
+  object <- model_summary
   palette <- match.arg(palette)
   if (palette == 'nature') palette <- 'npg'
 

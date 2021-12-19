@@ -32,8 +32,8 @@ generics::fit
 #'
 #' model <- model_spec %>% aba_fit()
 #'
-fit.abaModel <- function(object, ...) {
-  object %>% aba_fit(...)
+fit.abaModel <- function(model, ...) {
+  model %>% aba_fit(...)
 }
 
 #' Fit an aba model.
@@ -45,7 +45,7 @@ fit.abaModel <- function(object, ...) {
 #' Note that this function is identical to the generic `fit()` function which
 #' is also provided for compatability with the greater R ecosystem.
 #'
-#' @param object aba model The aba model to be fitted.
+#' @param model aba model The aba model to be fitted.
 #' @param ... additional parameters.
 #'
 #' @return abaModel
@@ -66,8 +66,7 @@ fit.abaModel <- function(object, ...) {
 #'
 #' model <- model_spec %>% aba_fit()
 #'
-aba_fit <- function(object, ...) {
-  model <- object
+aba_fit <- function(model, ...) {
 
   if (is.null(model$groups)) model <- model %>% set_groups(everyone())
   if (is.null(model$predictors)) model$predictors <- list('Basic'=c())

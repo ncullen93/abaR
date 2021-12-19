@@ -7,7 +7,7 @@
 #'
 #' Note that support is weaker for longitudinal data right now.
 #'
-#' @param object abaModel. The fitted aba model to create demographics table from.
+#' @param model abaModel. The fitted aba model to create demographics table from.
 #' @param strata string (optional). How to stratify the demographics table.
 #' @param include_predictors boolean. Whether to include predictors in table.
 #' @param include_covariates boolean. Whether to include covariates in table.
@@ -38,13 +38,14 @@
 #' my_table <- model %>% aba_demographics(strata = 'DX_bl')
 #' print(my_table)
 #'
-aba_demographics <- function(object,
+aba_demographics <- function(model,
                              strata = NULL,
                              include_predictors = TRUE,
                              include_covariates = TRUE,
                              include_outcomes = TRUE,
                              add_vars = NULL,
                              data_filter = NULL) {
+  object <- model
   data <- object$data
   if (!is.null(data_filter)){
     data <- data %>% filter(rlang::eval_tidy(rlang::parse_expr(data_filter)))

@@ -52,7 +52,8 @@
 #'   )
 #' print(model)
 #'
-set_groups <- function(object, ..., labels = NULL) {
+set_groups <- function(model, ..., labels = NULL) {
+  object <- model
   object <-
     tryCatch(
       {
@@ -114,7 +115,8 @@ set_groups <- function(object, ..., labels = NULL) {
 #' # result in an error if these variables do not éxist in the eventual data.
 #' model <- aba_model() %>%
 #'   set_outcomes('CDRSB', 'ADAS13', 'MMSE')
-set_outcomes <- function(object, ..., labels = NULL) {
+set_outcomes <- function(model, ..., labels = NULL) {
+  object <- model
   object <-
     tryCatch(
       {
@@ -176,7 +178,8 @@ set_outcomes <- function(object, ..., labels = NULL) {
 #' model <- aba_model() %>%
 #'   set_covariates('AGE', 'GENDER', 'EDUCATION')
 #'
-set_covariates <- function(object, ...) {
+set_covariates <- function(model, ...) {
+  object <- model
   object <-
     tryCatch(
       {
@@ -256,9 +259,8 @@ set_covariates <- function(object, ...) {
 #'     c('PLASMA_ABETA_bl', 'PLASMA_PTAU181_bl', 'PLASMA_NFL_bl')
 #'   )
 #'
-set_predictors <- function(object,
-                           ...,
-                           labels = NULL) {
+set_predictors <- function(model, ..., labels = NULL) {
+  object <- model
   object <-
     tryCatch(
       {

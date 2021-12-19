@@ -6,7 +6,7 @@
 #' function to use if you want to see the results of a fitted aba model. It is
 #' also the way to generate publication-ready tables of model results.
 #'
-#' @param object abaModel. The fitted aba model which you want to summarise.
+#' @param model abaModel. The fitted aba model which you want to summarise.
 #' @param control abaControl. An aba control object which allows users to
 #'   customize the summary process -- e.g., whether to include covariates in
 #'   the table.
@@ -47,11 +47,11 @@
 #' # wont be included in the tables when you print the summary to console
 #' model_summary2 <- model %>% aba_summary(control = my_control)
 #'
-aba_summary <- function(object,
+aba_summary <- function(model,
                         control = aba_control(),
                         adjust = aba_adjust(),
                         verbose = FALSE) {
-  model <- object
+  object <- model
   if (!model$is_fit) stop('You cant summarise a model which has not been fit.
   Please call "aba_fit()" on your model first.')
 
@@ -81,8 +81,8 @@ aba_summary <- function(object,
 }
 
 #' @export
-summary.abaModel <- function(object, ...) {
-  object %>% aba_summary(...)
+summary.abaModel <- function(model, ...) {
+  model %>% aba_summary(...)
 }
 
 # helper function for aba summary

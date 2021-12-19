@@ -10,7 +10,7 @@
 #' package in R. Please see documentation there to get a better understanding
 #' of the actual formulas involved.
 #'
-#' @param object aba model. The fitted aba model on which to calculate power.
+#' @param model aba model. The fitted aba model on which to calculate power.
 #'   This model should feature a longitudinal aba stat (e.g., `stat_lme`)
 #' @param n integer. The total minimum required sample size.
 #' @param pct_change double between 0 - 1. The expected treatment effect which
@@ -99,7 +99,7 @@
 #'
 #' fig2 <- pwr2 %>% aba_plot()
 #'
-aba_longpower <- function(object,
+aba_longpower <- function(model,
                           n = NULL,
                           pct_change = NULL,
                           power = NULL,
@@ -107,7 +107,7 @@ aba_longpower <- function(object,
                           t_freq = NULL,
                           sig_level = 0.05,
                           dropout = 0) {
-
+  object <- model
   if (is.null(n)) n <- NA
   if (is.null(pct_change)) pct_change <- NA
   if (is.null(power)) power <- NA
