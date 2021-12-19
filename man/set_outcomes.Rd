@@ -4,10 +4,10 @@
 \alias{set_outcomes}
 \title{Set the outcomes of an aba model.}
 \usage{
-set_outcomes(object, ..., labels = NULL)
+set_outcomes(model, ..., labels = NULL)
 }
 \arguments{
-\item{object}{An aba model. The model for which you want to set outcomes}
+\item{model}{An aba model. The model for which you want to set outcomes}
 
 \item{...}{strings or variables. Each comma-seperated value will be a
 new outcome. If you give variables, then the data of the aba model should

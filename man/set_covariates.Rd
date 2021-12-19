@@ -4,10 +4,10 @@
 \alias{set_covariates}
 \title{Set the covariates of an aba model.}
 \usage{
-set_covariates(object, ...)
+set_covariates(model, ...)
 }
 \arguments{
-\item{object}{an aba model. The model for which you want to set covariates.}
+\item{model}{an aba model. The model for which you want to set covariates.}
 
 \item{...}{strings or variables. This comma-separated collection of values
 will become the single set of covariates. If you supply actual variables,

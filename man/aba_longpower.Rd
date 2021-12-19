@@ -5,7 +5,7 @@
 \title{Run power analysis on a longitudinal-based aba model.}
 \usage{
 aba_longpower(
-  object,
+  model,
   n = NULL,
   pct_change = NULL,
   power = NULL,
@@ -16,7 +16,7 @@ aba_longpower(
 )
 }
 \arguments{
-\item{object}{aba model. The fitted aba model on which to calculate power.
+\item{model}{aba model. The fitted aba model on which to calculate power.
 This model should feature a longitudinal aba stat (e.g., \code{stat_lme})}
 
 \item{n}{integer. The total minimum required sample size.}

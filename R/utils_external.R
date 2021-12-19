@@ -40,6 +40,42 @@ all_combos <- function(...) {
 }
 
 
+#' Create groups from all levels of one or more variables
+#'
+#' This function should only be used within a call to `set_groups()`. This allows
+#' you to create groups for every unique level of a variable or every combination
+#' of unique levels of multiple variables. Also, the data of the aba model must
+#' already be set.
+#'
+#' @param ... variables. Variables in data
+#'
+#' @return N/A. Has implications for aba model groups.
+#' @export
+#'
+#' @examples
+#' data <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
+#' # set groups as all of one variable's levels
+#' model <- data %>% aba_model() %>%
+#'   set_groups(
+#'     all_levels(DX_bl)
+#'   )
+#'
+#' # set groups as all combinations of two variables' levels
+#' model <- data %>% aba_model() %>%
+#'   set_groups(
+#'     all_levels(DX_bl, CSF_ABETA_STATUS_bl)
+#'   )
+#'
+#' # use all_levels() in combination with additional, independent group statements
+#' model <- data %>% aba_model() %>%
+#'   set_groups(
+#'     DX_bl == 'CU',
+#'     all_levels(DX_bl, CSF_ABETA_STATUS_bl)
+#'   )
+all_levels <- function(...) {
+  list(...)
+}
+
 #' Use all data rows as a group in an aba model.
 #'
 #' This is a helper function which allows you to specify a group in an aba model

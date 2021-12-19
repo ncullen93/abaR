@@ -78,6 +78,7 @@ reference:
 - title: Utility functions
   contents:
   - all_combos
+  - all_levels
   - everyone
   - as_table
   - as_reactable

@@ -12,7 +12,7 @@
 #' no filtering. This can be useful when you want to fit models on the entire
 #' group and on a sub-group.
 #'
-#' @param object An aba model. The model for which you want to set groups.
+#' @param model An aba model. The model for which you want to set groups.
 #' @param ... comma-separated strings or logical expressions. This specifies
 #'   the subsets of the data by which the aba model will filter.
 #' @param labels vector of strings. Optional labels for printing & plotting.
@@ -59,6 +59,7 @@ set_groups <- function(model, ..., labels = NULL) {
       {
         # expect not a list input
         x <- parse_filter_expr(..., data=object$data)
+        x <- as.list(unlist(x))
         names(x) <- x
         names(x)[names(x)=='everyone()'] <- 'Everyone'
         if (!is.null(labels)) names(x) <- labels
@@ -88,7 +89,7 @@ set_groups <- function(model, ..., labels = NULL) {
 #' separated by a comma, where each input is a different outcome You can also
 #' specify labels for each outcome.
 #'
-#' @param object An aba model. The model for which you want to set outcomes
+#' @param model An aba model. The model for which you want to set outcomes
 #' @param ... strings or variables. Each comma-seperated value will be a
 #'   new outcome. If you give variables, then the data of the aba model should
 #'   already be set.
@@ -156,7 +157,7 @@ set_outcomes <- function(model, ..., labels = NULL) {
 #' inputs and actual variables. The inputs should be separated
 #' by a comma, where all variables together is the single covariate set.
 #'
-#' @param object an aba model. The model for which you want to set covariates.
+#' @param model an aba model. The model for which you want to set covariates.
 #' @param ... strings or variables. This comma-separated collection of values
 #'   will become the single set of covariates. If you supply actual variables,
 #'   then the data of the aba model should already be set.
@@ -209,7 +210,7 @@ set_covariates <- function(model, ...) {
 #' also supports tidy-selection functions like `contains` and `starts_with` which
 #' allows convenient selection of many variables at once with common names.
 #'
-#' @param object An aba model. The model for which you want to set predictors
+#' @param model An aba model. The model for which you want to set predictors
 #' @param ... strings or variables or tidy-selection functions. Each
 #'   comma-separated value will be a new
 #'   predictor set. If you supply actual variables, then the data of the aba
@@ -311,7 +312,7 @@ set_predictors <- function(model, ..., labels = NULL) {
 #' `complete.cases` which determines whether to only use individuals with all
 #' available data within each group - outcome but across all predictor sets.
 #'
-#' @param .model an aba model. The model on which to set stats.
+#' @param model an aba model. The model on which to set stats.
 #' @param ... strings or aba stat object. Each comma-separated value will be
 #'   a different stat. If you specify a string, then the default stat params
 #'   will be used. Some stats require that you actually call them (e.g. `stat_lme`)
@@ -345,7 +346,8 @@ set_predictors <- function(model, ..., labels = NULL) {
 #' # you can see these extra stat params when you print the model
 #' print(model)
 #'
-set_stats <- function(.model, ..., labels = NULL) {
+set_stats <- function(model, ..., labels = NULL) {
+  .model <- model
   stats <- list(...)
   # check if list
   is_list <- 'list' %in% class(stats[[1]])

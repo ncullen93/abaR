@@ -5,7 +5,7 @@
 \title{Plot coefficients of an aba model summary}
 \usage{
 aba_plot_coef(
-  object,
+  model_summary,
   term_labels = NULL,
   axis = c("term", "predictor", "outcome", "group"),
   coord_flip = FALSE,
@@ -18,7 +18,7 @@ aba_plot_coef(
 )
 }
 \arguments{
-\item{object}{an aba model summary. The object to plot - this should be the
+\item{model_summary}{an aba model summary. The object to plot - this should be the
 result of an \code{aba_summary()} call.}
 
 \item{term_labels}{list. A list where name is equal to a term

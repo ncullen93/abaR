@@ -4,10 +4,10 @@
 \alias{set_groups}
 \title{Set the groups of an aba model.}
 \usage{
-set_groups(object, ..., labels = NULL)
+set_groups(model, ..., labels = NULL)
 }
 \arguments{
-\item{object}{An aba model. The model for which you want to set groups.}
+\item{model}{An aba model. The model for which you want to set groups.}
 
 \item{...}{comma-separated strings or logical expressions. This specifies
 the subsets of the data by which the aba model will filter.}

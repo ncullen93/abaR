@@ -5,7 +5,7 @@
 \title{Create a demographics table from a fitted aba model.}
 \usage{
 aba_demographics(
-  object,
+  model,
   strata = NULL,
   include_predictors = TRUE,
   include_covariates = TRUE,
@@ -15,7 +15,7 @@ aba_demographics(
 )
 }
 \arguments{
-\item{object}{abaModel. The fitted aba model to create demographics table from.}
+\item{model}{abaModel. The fitted aba model to create demographics table from.}
 
 \item{strata}{string (optional). How to stratify the demographics table.}
 

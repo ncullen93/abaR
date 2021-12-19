@@ -224,9 +224,9 @@ test_that("tidy eval throws error without data set", {
   expect_error(
     aba_model() %>% set_predictors('x','y',z)
   )
-  expect_error(
-    aba_model() %>% set_predictors('x','y',c(x,y))
-  )
+  #expect_error(
+  #  aba_model() %>% set_predictors('x','y',c(x,y))
+  #)
   expect_error(
     aba_model() %>% set_predictors('x','y',contains('x'))
   )

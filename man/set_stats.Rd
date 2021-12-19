@@ -4,10 +4,10 @@
 \alias{set_stats}
 \title{Set the stats of an aba model}
 \usage{
-set_stats(.model, ..., labels = NULL)
+set_stats(model, ..., labels = NULL)
 }
 \arguments{
-\item{.model}{an aba model. The model on which to set stats.}
+\item{model}{an aba model. The model on which to set stats.}
 
 \item{...}{strings or aba stat object. Each comma-separated value will be
 a different stat. If you specify a string, then the default stat params

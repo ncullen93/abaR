@@ -18,7 +18,7 @@ aba_plot <- function(object, ...) {
 
 #' Plot metrics of an aba model summary
 #'
-#' @param object an aba model summary. The object to plot - this should be the
+#' @param model_summary an aba model summary. The object to plot - this should be the
 #'   result of an `aba_summary()` call.
 #' @param metric string. The metric to plot.
 #' @param axis string. Specifies the x axis variable, color/fill variable, and
@@ -154,7 +154,7 @@ aba_plot_metric <- function(model_summary,
 
 #' Plot coefficients of an aba model summary
 #'
-#' @param object an aba model summary. The object to plot - this should be the
+#' @param model_summary an aba model summary. The object to plot - this should be the
 #'   result of an `aba_summary()` call.
 #' @param term_labels list. A list where name is equal to a term
 #'   variable and value is equal to the label you want to replace it with in

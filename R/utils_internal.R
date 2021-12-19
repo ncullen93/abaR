@@ -40,26 +40,64 @@ parse_filter_expr <- function(..., data) {
 
   rlang::enexprs(...) %>% purrr::map(
     function(x) {
+      is_multi <- FALSE
       if (is.character(x)) {
         #if (x == 'everyone()') x <- 'TRUE'
         x <- str2lang(x)
         if (is.null(data)) return(deparse(x))
       } else {
+        if (startsWith(deparse(x), 'all_levels')) {
+          x <- deparse(x)
+
+          var <- gsub("[\\(\\)]", "", regmatches(x, gregexpr("\\(.*?\\)", x))[[1]])
+          vars <- strsplit(var, ',')[[1]] %>% purrr::map_chr(trimws)
+
+          # get all different values of each variable
+          group_vals <- vars %>% purrr::map(
+            function(v) {
+              vals <- unique(data[[v]])
+              vals <- vals[!is.na(vals) & vals != '']
+              xx <- paste0(v, ' == ', "'",as.character(vals), "'")
+              xx <- xx %>% map_chr(~paste0('"',.,'"'))
+              xx
+            }
+          )
+          x <- group_vals %>%
+            cross() %>%
+            map(
+              function(v) {
+                xx <- paste0('(',v,')',collapse=' & ')
+                xx <- stringr::str_replace_all(xx, '\\"','')
+                xx <- stringr::str_replace_all(xx, "'","\\'")
+                #print(xx)
+                xx
+              }
+            )
+          x_orig <- x
+          # now combine them together
+          x <- x %>% map(str2lang)
+          #x_orig <- x
+          #print(x)
+          is_multi <- TRUE
+        }
+
         # parse list of statements: e.g. list(DX_bl == 'CU', AGE_bl < 85)
         if (stringr::str_starts(deparse(x, width.cutoff=500L), 'list\\(')) {
           x <- stringr::str_replace_all(
             deparse(x,  width.cutoff=500L),
-            c('list\\(' = '', '\\)' = '', ',' = ' &')
+            c('list'='', '\\(' = '', '\\)' = '', ',' = ' &')
           )
           x <- str2lang(x)
         }
 
         if (is.null(data)) stop('You must set data if you are using tidy evaluation.')
       }
-      # check that filter works
+
       data_tmp <- data %>% dplyr::filter(!!x)
       # return string version of filter
-      deparse(x, width.cutoff=500L)
+      xx <- deparse(x, width.cutoff=500L)
+      if (is_multi) xx <- x_orig
+      xx
     }
   )
 }

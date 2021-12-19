@@ -5,7 +5,7 @@
 \title{Plot metrics of an aba model summary}
 \usage{
 aba_plot_metric(
-  object,
+  model_summary,
   metric = NULL,
   axis = c("predictor", "outcome", "group"),
   coord_flip = FALSE,
@@ -17,7 +17,7 @@ aba_plot_metric(
 )
 }
 \arguments{
-\item{object}{an aba model summary. The object to plot - this should be the
+\item{model_summary}{an aba model summary. The object to plot - this should be the
 result of an \code{aba_summary()} call.}
 
 \item{metric}{string. The metric to plot.}
