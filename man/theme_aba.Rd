@@ -10,6 +10,7 @@ theme_aba(
   coord_flip = FALSE,
   legend_title = FALSE,
   facet_labels = TRUE,
+  axis_title = FALSE,
   family = c("Tahoma", "Helvetica", "Verdana")
 )
 }
@@ -23,6 +24,8 @@ theme_aba(
 \item{legend_title}{logical. whether to include legend title.}
 
 \item{facet_labels}{logical. Whether to include labels of facets.}
+
+\item{axis_title}{logical. Whether to include axis title for non-primary axis}
 
 \item{family}{string. which font family to use. Should be one of
 Verdana, Tahoma, Helvetica}

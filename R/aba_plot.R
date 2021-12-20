@@ -325,6 +325,7 @@ aba_plot_coef <- function(model_summary,
 #' @param coord_flip logical. whether to flip x and y axes
 #' @param legend_title logical. whether to include legend title.
 #' @param facet_labels logical. Whether to include labels of facets.
+#' @param axis_title logical. Whether to include axis title for non-primary axis
 #' @param family string. which font family to use. Should be one of
 #'   Verdana, Tahoma, Helvetica
 #'
@@ -341,6 +342,7 @@ theme_aba <- function(base_size = 16,
                       coord_flip = FALSE,
                       legend_title = FALSE,
                       facet_labels = TRUE,
+                      axis_title = FALSE,
                       family = c('Tahoma', 'Helvetica', 'Verdana')) {
 
   family <- match.arg(family)
@@ -357,7 +359,7 @@ theme_aba <- function(base_size = 16,
                                 size = base_size, vjust = 0,
                                 margin = margin(b=10)),
       plot.title = element_text(hjust = 0.5),
-      axis.line.x.bottom=element_line(size=1.2),
+      axis.line.x.bottom = element_line(size=1.2),
       axis.ticks.y = element_line(size=1.2),
       axis.ticks.length.y = unit(0.2,"cm"),
       axis.ticks.x = element_line(size=1.2),
@@ -382,16 +384,17 @@ theme_aba <- function(base_size = 16,
 
   if (coord_flip) {
     t <- t %+replace%
-      theme(axis.title.y = element_blank(),
-            panel.grid.major.y = element_blank(),
+      theme(panel.grid.major.y = element_blank(),
             panel.grid.major.x = element_line(colour = "gray", size = 0.2,
                                               linetype = "solid"))
+    if (!axis_title) t <- t %+replace% theme(axis.title.y = element_blank())
   } else {
     t <- t %+replace%
-      theme(axis.title.x = element_blank(),
-            panel.grid.major.x = element_blank(),
+      theme(panel.grid.major.x = element_blank(),
             panel.grid.major.y = element_line(colour = "gray", size = 0.2,
                                               linetype = "solid"))
+    if (!axis_title) t <- t %+replace% theme(axis.title.x = element_blank())
   }
+  t
 }
 
