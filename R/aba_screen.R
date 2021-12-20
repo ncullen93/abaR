@@ -8,7 +8,7 @@
 #' cost-benefit analysis. This analysis uses bootstrap sampling to generate
 #' confidence intervals.
 #'
-#' @param object an aba model. The fitted aba model which you want to use as
+#' @param model an aba model. The fitted aba model which you want to use as
 #'   the screening algorithm.
 #' @param threshold double or vector of doubles between 0 and 1. The threshold
 #'   represents the percentage of individuals who will be invited to take the
@@ -26,6 +26,10 @@
 #'   to be included in the clinical trial. This is therefore the number of
 #'   individuals who must pass the screening test and who then must pass the
 #'   main inclusion test
+#' @param risk_type string ('relative' or 'absolute'). Whether to treat the
+#'   threshold as a relative risk in the population used to fit the model
+#'   (i.e. relative) or as an absolute risk based on predicted values
+#'   from the statistical model (i.e. absolute).
 #' @param ntrials integer. The number of bootstrap trials to run in order to
 #'   generate the confidence interval
 #' @param verbose logical. Whether to show a progress bar for each trial.
@@ -34,7 +38,6 @@
 #' @export
 #'
 #' @examples
-#'
 #' # use built-in data
 #' df <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
 #'
@@ -44,11 +47,9 @@
 #' # use plasma markers to decide who should undergo PET scans in order to
 #' # minimize the risk of negative (i.e., wasted) PET scans.
 #' model <- df %>% aba_model() %>%
-#'   set_groups(everyone()) %>%
 #'   set_outcomes(PET_ABETA_STATUS_bl) %>%
 #'   set_predictors(
-#'     PLASMA_PTAU181_bl,
-#'     PLASMA_NFL_bl,
+#'     PLASMA_PTAU181_bl, PLASMA_NFL_bl,
 #'     c(PLASMA_PTAU181_bl, PLASMA_NFL_bl)
 #'   ) %>%
 #'   set_covariates(AGE, GENDER, EDUCATION) %>%
@@ -72,17 +73,20 @@
 #'     ntrials = 5,
 #'     verbose = TRUE
 #'   )
-#'
-aba_screen <- function(object,
+aba_screen <- function(model,
                        threshold,
                        cost_multiplier,
                        include_n,
+                       risk_type = c('relative', 'absolute'),
                        ntrials = 100,
                        verbose = TRUE) {
 
+  risk_type <- match.arg(risk_type)
+
   m <- list(
-    'model' = object,
+    'model' = model,
     'threshold' = threshold,
+    'risk_type' = risk_type,
     'cost_multiplier' = cost_multiplier,
     'include_n' = include_n,
     'params' = list(
@@ -102,6 +106,7 @@ fit_screen <- function(object, ...) {
   model <- object$model
   model_results <- model$results
   ntrials <- object$params$ntrials
+  risk_type <- object$risk_type
 
   # expand by threshold / cost_multiplier / include_n
   param_list <- list(
@@ -132,6 +137,7 @@ fit_screen <- function(object, ...) {
                 fit = .data$fit,
                 outcome = model$outcomes[[.data$outcome]],
                 threshold = .data$threshold,
+                risk_type = risk_type,
                 cost_multiplier = .data$cost_multiplier,
                 include_n = .data$include_n,
                 idx = idx
@@ -192,6 +198,7 @@ fit_screen <- function(object, ...) {
 run_screen_model <- function(fit,
                              outcome,
                              threshold,
+                             risk_type,
                              cost_multiplier,
                              include_n,
                              idx) {
@@ -202,7 +209,11 @@ run_screen_model <- function(fit,
       .Truth = .data[[outcome]]
     )
 
-  cut_val <- unname(quantile(data_fit$.Predicted, 1 - threshold))
+  if (risk_type == 'relative') {
+    cut_val <- unname(quantile(data_fit$.Predicted, 1 - threshold))
+  } else if (risk_type == 'absolute') {
+    cut_val <- threshold
+  }
 
   data_fit <- data_fit %>%
     mutate(

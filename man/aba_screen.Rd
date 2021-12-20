@@ -5,16 +5,17 @@
 \title{Create an aba screen object.}
 \usage{
 aba_screen(
-  object,
+  model,
   threshold,
   cost_multiplier,
   include_n,
+  risk_type = c("relative", "absolute"),
   ntrials = 100,
   verbose = TRUE
 )
 }
 \arguments{
-\item{object}{an aba model. The fitted aba model which you want to use as
+\item{model}{an aba model. The fitted aba model which you want to use as
 the screening algorithm.}
 
 \item{threshold}{double or vector of doubles between 0 and 1. The threshold
@@ -36,6 +37,11 @@ to be included in the clinical trial. This is therefore the number of
 individuals who must pass the screening test and who then must pass the
 main inclusion test}
 
+\item{risk_type}{string ('relative' or 'absolute'). Whether to treat the
+threshold as a relative risk in the population used to fit the model
+(i.e. relative) or as an absolute risk based on predicted values
+from the statistical model (i.e. absolute).}
+
 \item{ntrials}{integer. The number of bootstrap trials to run in order to
 generate the confidence interval}
 
@@ -53,7 +59,6 @@ cost-benefit analysis. This analysis uses bootstrap sampling to generate
 confidence intervals.
 }
 \examples{
-
 # use built-in data
 df <- adnimerge \%>\% dplyr::filter(VISCODE == 'bl')
 
@@ -63,11 +68,9 @@ df <- adnimerge \%>\% dplyr::filter(VISCODE == 'bl')
 # use plasma markers to decide who should undergo PET scans in order to
 # minimize the risk of negative (i.e., wasted) PET scans.
 model <- df \%>\% aba_model() \%>\%
-  set_groups(everyone()) \%>\%
   set_outcomes(PET_ABETA_STATUS_bl) \%>\%
   set_predictors(
-    PLASMA_PTAU181_bl,
-    PLASMA_NFL_bl,
+    PLASMA_PTAU181_bl, PLASMA_NFL_bl,
     c(PLASMA_PTAU181_bl, PLASMA_NFL_bl)
   ) \%>\%
   set_covariates(AGE, GENDER, EDUCATION) \%>\%
@@ -91,5 +94,4 @@ model_screen <- model \%>\%
     ntrials = 5,
     verbose = TRUE
   )
-
 }

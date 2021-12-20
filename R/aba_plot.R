@@ -245,6 +245,8 @@ aba_plot_coef <- function(model_summary,
       predictor = factor(predictor, levels=unique(plot_df$predictor))
     )
 
+  if (!include_covariates) plot_df <- plot_df %>% filter(!term %in% all_covars)
+
   if (!is.null(term_labels)) {
     if (!is.list(term_labels)) stop('term_labels should be a list.')
     plot_df <- plot_df %>%
@@ -257,7 +259,6 @@ aba_plot_coef <- function(model_summary,
   plot_df <- plot_df %>%
     mutate(term = factor(term, levels=unique(plot_df$term)))
 
-  if (!include_covariates) plot_df <- plot_df %>% filter(!term %in% all_covars)
 
   x <- axis[1]
   fill <- axis[2]
@@ -305,7 +306,7 @@ aba_plot_coef <- function(model_summary,
       g <- g + facet_wrap(~.data$facet_x, scales = scales)
     }
   } else {
-    if (length(unique(plot_df$facet_x)) > 1) {
+    if (length(unique(plot_df$facet_y)) > 1) {
       g <- g + facet_wrap(~.data$facet_y, scales = scales)
     }
   }
