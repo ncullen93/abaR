@@ -2,6 +2,7 @@
 
 S3method(aba_plot,abaEmmeans)
 S3method(aba_plot,abaLongpower)
+S3method(aba_plot,abaSummary)
 S3method(aba_write,TableOne)
 S3method(aba_write,abaSummary)
 S3method(fit,abaModel)

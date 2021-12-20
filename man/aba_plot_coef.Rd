@@ -12,7 +12,7 @@ aba_plot_coef(
   include_covariates = TRUE,
   sort = FALSE,
   facet_labels = TRUE,
-  facet_axis = FALSE,
+  facet_axis = TRUE,
   palette = c("jama", "nature", "lancet", "none"),
   plotly = FALSE
 )

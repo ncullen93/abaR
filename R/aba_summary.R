@@ -473,3 +473,18 @@ print.abaSummary <- function(x, ...) {
     }
   )
 }
+
+
+#' @export
+aba_plot.abaSummary <- function(object, ...) {
+  g_metric <- object %>% aba_plot_metric(...)
+  g_coef <- object %>% aba_plot_coef(...)
+  fig <- suppressWarnings(ggpubr::ggarrange(
+    g_metric, g_coef, nrow = 2
+  ))
+  fig
+}
+
+
+
+

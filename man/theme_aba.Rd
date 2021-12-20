@@ -10,7 +10,7 @@ theme_aba(
   coord_flip = FALSE,
   legend_title = FALSE,
   facet_labels = TRUE,
-  family = c("Verdana", "Tahoma", "Helvetica")
+  family = c("Tahoma", "Helvetica", "Verdana")
 )
 }
 \arguments{

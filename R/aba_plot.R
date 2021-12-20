@@ -75,6 +75,10 @@ aba_plot_metric <- function(model_summary,
                             palette = 'jama',
                             plotly = FALSE) {
   object <- model_summary
+
+  # if no covariates, then dont include basic
+  if (length(object$model$covariates) == 0) include_basic <- FALSE
+
   # find main metric - directly after predictors
   metric <- object$results$metrics$term[1]
   plot_df <- object$results$metrics %>% filter(term == metric) %>%
@@ -222,7 +226,7 @@ aba_plot_coef <- function(model_summary,
                           include_covariates = TRUE,
                           sort = FALSE,
                           facet_labels = TRUE,
-                          facet_axis = FALSE,
+                          facet_axis = TRUE,
                           palette = c('jama', 'nature', 'lancet', 'none'),
                           plotly = FALSE) {
   object <- model_summary
@@ -286,7 +290,7 @@ aba_plot_coef <- function(model_summary,
     ) +
     geom_point(position = position_dodge(0.5), size = 2.5) +
     scale_y_continuous(limits=c(min(plot_df$conf_low), max(plot_df$conf_high)))+
-    ylab('Model coefficient') +
+    ylab('Coefficient') +
     theme_aba(
       legend.position = ifelse(n_groups > 6, 'none', 'top'),
       coord_flip = coord_flip,
@@ -337,7 +341,7 @@ theme_aba <- function(base_size = 16,
                       coord_flip = FALSE,
                       legend_title = FALSE,
                       facet_labels = TRUE,
-                      family = c('Verdana', 'Tahoma', 'Helvetica')) {
+                      family = c('Tahoma', 'Helvetica', 'Verdana')) {
 
   family <- match.arg(family)
 
