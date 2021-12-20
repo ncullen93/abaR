@@ -36,4 +36,17 @@ test_that("example works", {
       ),
     NA
   )
+
+  expect_error(
+    model_screen <- model %>%
+      aba_screen(
+        threshold = seq(0.25, 0.75, by = 0.25),
+        risk_type = 'absolute',
+        cost_multiplier = c(4, 8),
+        include_n = 1000,
+        ntrials = 3,
+        verbose = TRUE
+      ),
+    NA
+  )
 })
