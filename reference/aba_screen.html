@@ -87,10 +87,11 @@ confidence intervals.</p>
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">aba_screen</span><span class="op">(</span>
-  <span class="va">object</span>,
+  <span class="va">model</span>,
   <span class="va">threshold</span>,
   <span class="va">cost_multiplier</span>,
   <span class="va">include_n</span>,
+  risk_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"relative"</span>, <span class="st">"absolute"</span><span class="op">)</span>,
   ntrials <span class="op">=</span> <span class="fl">100</span>,
   verbose <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span></code></pre></div>
@@ -98,7 +99,7 @@ confidence intervals.</p>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
-    <dl><dt>object</dt>
+    <dl><dt>model</dt>
 <dd><p>an aba model. The fitted aba model which you want to use as
 the screening algorithm.</p></dd>
 <dt>threshold</dt>
@@ -120,6 +121,11 @@ inclusion test.</p></dd>
 to be included in the clinical trial. This is therefore the number of
 individuals who must pass the screening test and who then must pass the
 main inclusion test</p></dd>
+<dt>risk_type</dt>
+<dd><p>string ('relative' or 'absolute'). Whether to treat the
+threshold as a relative risk in the population used to fit the model
+(i.e. relative) or as an absolute risk based on predicted values
+from the statistical model (i.e. absolute).</p></dd>
 <dt>ntrials</dt>
 <dd><p>integer. The number of bootstrap trials to run in order to
 generate the confidence interval</p></dd>
@@ -133,8 +139,7 @@ generate the confidence interval</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="co"># use built-in data</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># use built-in data</span></span>
 <span class="r-in"><span class="va">df</span> <span class="op">&lt;-</span> <span class="va">adnimerge</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">VISCODE</span> <span class="op">==</span> <span class="st">'bl'</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># first, fit an aba model to predict amyloid PET status from plasma markers</span></span>
@@ -143,11 +148,9 @@ generate the confidence interval</p></dd>
 <span class="r-in"><span class="co"># use plasma markers to decide who should undergo PET scans in order to</span></span>
 <span class="r-in"><span class="co"># minimize the risk of negative (i.e., wasted) PET scans.</span></span>
 <span class="r-in"><span class="va">model</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="aba_model.html">aba_model</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="set_groups.html">set_groups</a></span><span class="op">(</span><span class="fu"><a href="everyone.html">everyone</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
 <span class="r-in">  <span class="fu"><a href="set_outcomes.html">set_outcomes</a></span><span class="op">(</span><span class="va">PET_ABETA_STATUS_bl</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
 <span class="r-in">  <span class="fu"><a href="set_predictors.html">set_predictors</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="va">PLASMA_PTAU181_bl</span>,</span>
-<span class="r-in">    <span class="va">PLASMA_NFL_bl</span>,</span>
+<span class="r-in">    <span class="va">PLASMA_PTAU181_bl</span>, <span class="va">PLASMA_NFL_bl</span>,</span>
 <span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">PLASMA_PTAU181_bl</span>, <span class="va">PLASMA_NFL_bl</span><span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
 <span class="r-in">  <span class="fu"><a href="set_covariates.html">set_covariates</a></span><span class="op">(</span><span class="va">AGE</span>, <span class="va">GENDER</span>, <span class="va">EDUCATION</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
@@ -171,7 +174,6 @@ generate the confidence interval</p></dd>
 <span class="r-in">    ntrials <span class="op">=</span> <span class="fl">5</span>,</span>
 <span class="r-in">    verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span class="r-in">  <span class="op">)</span></span>
-<span class="r-in"></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
