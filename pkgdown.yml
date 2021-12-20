@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   aba: aba.html
   intro_to_aba_models: intro_to_aba_models.html
-last_built: 2021-12-20T10:27Z
+last_built: 2021-12-20T10:33Z
 urls:
   reference: https://ncullen93.github.io/abaR/reference
   article: https://ncullen93.github.io/abaR/articles
