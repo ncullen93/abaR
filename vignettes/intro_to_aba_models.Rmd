@@ -6,7 +6,7 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-
+  
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -33,7 +33,7 @@ library(dplyr, warn.conflicts = FALSE)
 ## A basic example
 
 An aba model is composed of the following factors:
-
+  
 - data
 - groups
 - outcomes
@@ -42,7 +42,7 @@ An aba model is composed of the following factors:
 - statistics
 
 These are the things you will define in your aba model. What follows is a basic example of fitting an aba model to perform logistic regression on two different sub-groups of our data, with two different outcomes, with three different combinations of predictor variables, and with three fixed covariate variables:
-
+  
 ```{r}
 data <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
 
@@ -60,7 +60,7 @@ model <- aba_model() %>%
 ```
 
 As you see here, we set all the various factors of the aba model using the `set_*` functions. These functions modify and build up the aba model. We can print our aba model to the console at any time to get a nice overview of what our model contains:
-
+  
 ```{r}
 print(model)
 ```
