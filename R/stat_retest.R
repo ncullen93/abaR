@@ -66,8 +66,12 @@ stat_retest <- function(id,
   method <- match.arg(method)
 
   fns <- list(
-    'formula_fn' = formula_retest,
-    'fit_fn' = fit_retest,
+    'fns' = list(
+      'formula' = formula_retest,
+      'fit' = fit_retest,
+      'tidy' = tidy_retest,
+      'glance' = glance_retest
+    ),
     'params' = list(
       'std.beta' = std.beta,
       'complete.cases' = complete.cases
@@ -147,7 +151,7 @@ fit_retest <- function(formula, data, extra_params) {
 }
 
 # helper function for stat_retest
-aba_tidy.rtm <- function(model, predictors, covariates, ...) {
+tidy_retest <- function(model, predictors, covariates, ...) {
   res <- model$results
   id <- model$id
   time <- model$time
@@ -187,7 +191,7 @@ aba_tidy.rtm <- function(model, predictors, covariates, ...) {
 }
 
 # helper function for stat_retest
-aba_glance.rtm <- function(x, x0, ...) {
+glance_retest <- function(x, x0, ...) {
   res <- tibble::tibble(
     nobs = nrow(x$data)
   )

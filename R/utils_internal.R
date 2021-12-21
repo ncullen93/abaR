@@ -102,19 +102,6 @@ parse_filter_expr <- function(..., data) {
   )
 }
 
-
-# function to make a standard formula using by glm, lm, etc
-formula_std <- function(outcome, predictors, covariates, ...) {
-  f <- paste0(outcome, " ~ ")
-  if (length(covariates) > 0) {
-    f <- paste0(f, paste(covariates, collapse = " + "))
-    if (length(predictors) > 0) f <- paste0(f, ' + ')
-  }
-  if (length(predictors) > 0) f <- paste0(f, paste(predictors, collapse = " + "))
-  if (length(covariates) + length(predictors) == 0) f <- paste0(f, '1')
-  return(f)
-}
-
 # lookup abaStat object/function from a string supplied by user
 # e.g. aba_stat_lookup('glm') is equivalent to stat_glm()
 # but this function happens behind the scenes
@@ -124,16 +111,6 @@ aba_stat_lookup <- function(stat) {
     stat <- stat_fn()
   }
   return(stat)
-}
-
-# generic for internal utility function aba_glance
-aba_glance <- function(x, ...) {
-  UseMethod('aba_glance')
-}
-
-# generic for internal utility function aba_tidy
-aba_tidy <- function(model, predictors, covariates, ...) {
-  UseMethod('aba_tidy')
 }
 
 # generic for internal utility function emmeans
@@ -153,6 +130,18 @@ print.abaStat <- function(x, ...) {
     }
     cat(')')
   }
+}
+
+empty_tidy_data <- function() {
+  tibble::tibble(
+    term = NA,
+    estimate = NA,
+    std.error = NA,
+    statistic  = NA,
+    p.value  = NA,
+    conf.low  = NA,
+    conf.high = NA
+  )
 }
 
 #' Pipe operator

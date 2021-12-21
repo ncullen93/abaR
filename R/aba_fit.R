@@ -185,11 +185,11 @@ fit_stat <- function(
   }
   # fit the models
   extra_params <- stat$extra_params
-  my_formula <- stat$formula_fn(
+  my_formula <- stat$fns$formula(
     outcome, predictors, covariates, extra_params
   )
 
-  my_model <- stat$fit_fn(
+  my_model <- stat$fns$fit(
     my_formula, data, extra_params
   )
   return(
@@ -256,11 +256,17 @@ process_dataset <- function(
 
   # only check complete cases if there are predictors or covariates
   if (has_predictors | has_covariates) {
+    # add extra variables that may be provided directly to a stat object
+    extra_vars <- unname(unlist(stat$extra_params))
+    extra_vars <- extra_vars[extra_vars %in% names(data)]
+
+    check_vars <- c(covariates, predictors, extra_vars)
+
     # if not complete cases, take rows with at least one non-zero covariate/predictor
     if (complete.cases) {
-      data <- data[complete.cases(data[,c(covariates,predictors)]),]
+      data <- data[complete.cases(data[,check_vars]),]
     } else {
-      data <- data[rowSums(!is.na(data[,c(covariates,predictors)])) > 0,]
+      data <- data[rowSums(!is.na(data[,check_vars])) > 0,]
     }
 
     # check for empty data

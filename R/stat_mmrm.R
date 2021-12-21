@@ -68,8 +68,12 @@ stat_mmrm <- function(id,
                       std.beta = FALSE,
                       complete.cases = TRUE) {
   fns <- list(
-    'formula_fn' = formula_lme,
-    'fit_fn' = fit_mmrm,
+    'fns' = list(
+      'formula' = formula_lme,
+      'fit' = fit_mmrm,
+      'tidy' = tidy_mmrm,
+      'glance' = glance_mmrm
+    ),
     'treatment' = treatment,
     'extra_params' = list(
       'id' = id,
@@ -147,7 +151,7 @@ fit_mmrm <- function(formula, data, extra_params) {
 }
 
 # helper function for stat_mmrm
-aba_tidy.gls <- function(model, predictors, covariates, ...) {
+tidy_mmrm <- function(model, predictors, covariates, ...) {
 
   time_var <- strsplit(as.character(model$call$weights)[2], ' | ')[[1]][3]
   tidy_df <- broom.mixed::tidy(model, conf.int=TRUE) %>%
@@ -161,7 +165,7 @@ aba_tidy.gls <- function(model, predictors, covariates, ...) {
 }
 
 # helper function for stat_mmrm
-aba_glance.gls <- function(x, ...) {
+glance_mmrm <- function(x, ...) {
   glance_df <- broom.mixed::glance(x) %>% select(-logLik)
 
   # add sample size info

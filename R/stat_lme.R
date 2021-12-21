@@ -53,8 +53,12 @@ stat_lme <- function(id,
                      std.beta = FALSE,
                      complete.cases = TRUE) {
   fns <- list(
-    'formula_fn' = formula_lme,
-    'fit_fn' = fit_lme,
+    'fns' = list(
+      'formula' = formula_lme,
+      'fit' = fit_lme,
+      'tidy' = tidy_lme,
+      'glance' = glance_lme
+    ),
     'extra_params' = list(
       'id' = id,
       'time' = time
@@ -132,7 +136,7 @@ fit_lme <- function(formula, data, extra_params) {
 }
 
 # helper function for lme
-aba_tidy.lme <- function(model, predictors, covariates, ...) {
+tidy_lme <- function(model, predictors, covariates, ...) {
 
   # include time in predictors
   time_var <- as.character(model$call$random)[2] %>%
@@ -156,7 +160,7 @@ aba_tidy.lme <- function(model, predictors, covariates, ...) {
 
 
 # helper function for lme
-aba_glance.lme <- function(x, ...) {
+glance_lme <- function(x, ...) {
 
   glance_df <- broom.mixed::glance(x) %>% #select(-logLik)
     dplyr::bind_cols(

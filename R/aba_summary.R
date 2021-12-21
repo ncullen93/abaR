@@ -94,12 +94,12 @@ calculate_coefs <- function(object, control) {
   # coefficients
   r <- object$results %>%
     mutate(
-      coefs = purrr::map(
-        .data$fit,
-        function(.f) {
-          if (is.null(.f)) return(NULL)
-
-          aba_tidy(.f, all_variables, all_covariates) %>%
+      coefs = purrr::map2(
+        .data$fit, .data$stat,
+        function(.fit, stat_label) {
+          if (is.null(.fit)) return(NULL)
+          stat_obj <- object$stats[[stat_label]]
+          stat_obj$fns$tidy(.fit, all_variables, all_covariates) %>%
             rename(
               conf_low = conf.low,
               conf_high = conf.high,
@@ -112,7 +112,7 @@ calculate_coefs <- function(object, control) {
 
   # unnest coefficient tables and remove NA coefficients
   r <- r %>%
-    select(-fit) %>%
+    select(-.data$fit) %>%
     unnest(.data$coefs) %>%
     filter(!is.na(estimate))
 
@@ -190,10 +190,12 @@ calculate_metrics <- function(object, control) {
     'adj.r.squared',
     'R2',
     'AUC',
+    'concordance',
     'AIC',
     'Pval',
     'nobs',
-    'nsub'
+    'nsub',
+    'nevent'
   )
 
   # add null model
@@ -220,11 +222,12 @@ calculate_metrics <- function(object, control) {
   # coefficients
   r <- r %>%
     mutate(
-      metrics = purrr::map2(
-        .data$fit, .data$fit_basic,
-        function(model, basic_model) {
+      metrics = purrr::pmap(
+        list(.data$fit, .data$fit_basic, .data$stat),
+        function(model, basic_model, stat_label) {
           if (is.null(model)) return(NULL)
-          x <- aba_glance(model, basic_model) %>%
+          stat_obj <- object$stats[[stat_label]]
+          x <- stat_obj$fns$glance(model, basic_model) %>%
             filter(term %in% metric_vars) %>%
             rename(conf_low = conf.low, conf_high = conf.high) %>%
             arrange(match(term, metric_vars)) %>%
@@ -233,6 +236,24 @@ calculate_metrics <- function(object, control) {
         }
       )
     )
+
+  ## coefficients
+  #r <- r %>%
+  #  mutate(
+  #    coefs = purrr::map2(
+  #      .data$stat_obj, .data$fit,
+  #      function(.stat, .fit) {
+  #        if (is.null(.fit)) return(NULL)
+  #        .stat$fns$tidy(.fit, all_variables, all_covariates) %>%
+  #          rename(
+  #            conf_low = conf.low,
+  #            conf_high = conf.high,
+  #            pval = p.value
+  #          ) %>%
+  #          select(term, estimate, conf_low, conf_high, pval)
+  #      }
+  #    )
+  #  )
 
   # remove aic if !complete_cases
   process_metrics <- function(m, c) {
@@ -293,9 +314,11 @@ clip_metric <- function(metric, digits) {
   metric
 }
 
+# default digits that will never change
 default_digits_map <- list(
   'nobs' = 0,
-  'nsub' = 0
+  'nsub' = 0,
+  'nevent' = 0
 )
 
 # helper function for aba summary

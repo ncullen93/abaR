@@ -47,8 +47,12 @@
 stat_lm <- function(std.beta = FALSE,
                    complete.cases = TRUE) {
   fns <- list(
-    'formula_fn' = formula_std,
-    'fit_fn' = fit_lm,
+    'fns' = list(
+      'formula' = formula_lm,
+      'fit' = fit_lm,
+      'tidy' = tidy_lm,
+      'glance' = glance_lm
+    ),
     'params' = list(
       'std.beta' = std.beta,
       'complete.cases' = complete.cases
@@ -60,25 +64,37 @@ stat_lm <- function(std.beta = FALSE,
 }
 
 # helper function for lm
+formula_lm <- function(outcome, predictors, covariates, ...) {
+  f <- paste0(outcome, " ~ ")
+  if (length(covariates) > 0) {
+    f <- paste0(f, paste(covariates, collapse = " + "))
+    if (length(predictors) > 0) f <- paste0(f, ' + ')
+  }
+  if (length(predictors) > 0) f <- paste0(f, paste(predictors, collapse = " + "))
+  if (length(covariates) + length(predictors) == 0) f <- paste0(f, '1')
+  return(f)
+}
+
+# helper function for lm
 fit_lm <- function(formula, data, ...) {
   model <- stats::lm(stats::formula(formula), data = data)
   model$call$formula <- stats::formula(formula)
   return(model)
 }
 
-# helper function for lm
-aba_tidy.lm <- function(model, predictors, covariates, ...) {
+# helpfer function for lm
+tidy_lm <- function(model, predictors, covariates, ...) {
   broom::tidy(model, conf.int = TRUE)
 }
 
 # helper function for lm
-aba_glance.lm <- function(x, x0, ...) {
+glance_lm <- function(fit, fit_basic, ...) {
 
   # tidy glance
-  glance_df <- broom::glance(x)
+  glance_df <- broom::glance(fit)
 
   # r squared confidence interval
-  ci_rsq <- psychometric::CI.Rsqlm(x)
+  ci_rsq <- psychometric::CI.Rsqlm(fit)
 
   # adjust the confidence interval because we use adj.r.squared
   rsq_diff <- glance_df$r.squared - glance_df$adj.r.squared
@@ -86,8 +102,8 @@ aba_glance.lm <- function(x, x0, ...) {
   ci_rsq$UCL <- ci_rsq$UCL - rsq_diff
 
   # add comparison to null model
-  if (!is.null(x0)) {
-    s <- stats::anova(x, x0)
+  if (!is.null(fit_basic)) {
+    s <- stats::anova(fit, fit_basic)
     null_pval <- s$`Pr(>F)`[2]
     glance_df <- glance_df %>%
       bind_cols(tibble::tibble(Pval = null_pval))
@@ -97,7 +113,6 @@ aba_glance.lm <- function(x, x0, ...) {
   glance_df <- glance_df %>%
     pivot_longer(cols = everything()) %>%
     rename(term = name, estimate = value)
-
 
   ## add confidence intervals
   glance_df <- glance_df %>%

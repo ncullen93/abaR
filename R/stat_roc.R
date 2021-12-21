@@ -62,8 +62,12 @@ stat_roc <- function(direction = '<',
                      complete.cases = TRUE) {
 
   fns <- list(
-    'formula_fn' = formula_roc,
-    'fit_fn' = fit_roc,
+    'fns' = list(
+      'formula' = formula_roc,
+      'fit' = fit_roc,
+      'tidy' = tidy_roc,
+      'glance' = glance_roc
+    ),
     'params' = list(
       'std.beta' = std.beta,
       'complete.cases' = complete.cases
@@ -104,7 +108,7 @@ fit_roc <- function(formula, data, extra_params) {
 }
 
 # helper function for stat_roc
-aba_tidy.roc <- function(model, predictors, covariates, ...) {
+tidy_roc <- function(model, predictors, covariates, ...) {
   # coefficient is the cutoff value
   cut_val <- model[[model$methods[1]]]$Global$optimal.cutoff$cutoff[1]
   predictor <- as.character(model$call$X)[2]
@@ -124,7 +128,7 @@ aba_tidy.roc <- function(model, predictors, covariates, ...) {
 }
 
 # helper function for stat_roc
-aba_glance.roc <- function(x, x0, ...) {
+glance_roc <- function(x, x0, ...) {
   auc <- x[[x$methods[1]]]$Global$measures.acc$AUC
   nobs <- nrow(x$data)
 

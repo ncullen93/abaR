@@ -44,8 +44,12 @@
 stat_glm <- function(std.beta = FALSE,
                      complete.cases = TRUE) {
   fns <- list(
-    'formula_fn' = formula_std,
-    'fit_fn' = fit_glm,
+    'fns' = list(
+      'formula' = formula_lm,
+      'fit' = fit_glm,
+      'tidy' = tidy_glm,
+      'glance' = glance_glm
+    ),
     'params' = list(
       'std.beta' = std.beta,
       'complete.cases' = complete.cases
@@ -69,7 +73,7 @@ fit_glm <- function(formula, data, ...) {
 }
 
 # helper function for glm
-aba_tidy.glm <- function(model, predictors, covariates, ...) {
+tidy_glm <- function(model, predictors, covariates, ...) {
   # using conf.int = T with broom::tidy gives warning if no covariates present
   x <- suppressWarnings(
     broom::tidy(model, exponentiate = TRUE, conf.int = TRUE)
@@ -78,7 +82,7 @@ aba_tidy.glm <- function(model, predictors, covariates, ...) {
 }
 
 # helper function for glm
-aba_glance.glm <- function(x, x0, ...) {
+glance_glm <- function(x, x0, ...) {
   # tidy glance
   glance_df <- broom::glance(x)
 

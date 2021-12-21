@@ -62,8 +62,12 @@ stat_ancova <- function(treatment,
                         std.beta = FALSE,
                         complete.cases = TRUE) {
   fns <- list(
-    'formula_fn' = formula_std,
-    'fit_fn' = fit_ancova,
+    'fns' = list(
+      'formula' = formula_lm,
+      'fit' = fit_ancova,
+      'tidy' = tidy_lm,
+      'glance' = glance_lm
+    ),
     'params' = list(
       'std.beta' = std.beta,
       'complete.cases' = complete.cases
