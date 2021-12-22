@@ -46,12 +46,12 @@ fit.abaModel <- function(object, ...) {
 #' is also provided for compatability with the greater R ecosystem.
 #'
 #' @param object aba model The aba model to be fitted.
-#' @param ... additional parameters.
+#' @param nboot integer. Number of bootstrap samples to fit. Default is 0.
+#' @param verbose logical. Whether to give a progress bar during model fitting.
 #'
 #' @return abaModel
 #' @export
 #' @examples
-#'
 #' data <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
 #'
 #' model_spec <- aba_model() %>%
@@ -65,72 +65,83 @@ fit.abaModel <- function(object, ...) {
 #'   set_stats('glm')
 #'
 #' model <- model_spec %>% aba_fit()
-#'
-aba_fit <- function(object, ...) {
+aba_fit <- function(object, nboot = 0, verbose = FALSE) {
   model <- object
   if (is.null(model$groups)) model <- model %>% set_groups(everyone())
   if (is.null(model$predictors)) model$predictors <- list('Basic'=c())
 
   # compile model
   fit_df <- model %>% aba_compile()
+  ntrials <- 1 + nboot
 
   # progress bar
   pb <- NULL
-  if (model$verbose) pb <- progress::progress_bar$new(total = nrow(fit_df))
+  if (verbose) pb <- progress::progress_bar$new(total = ntrials*nrow(fit_df))
 
-  # add data
-  fit_df <- fit_df %>%
-    group_by(group, outcome, stat) %>%
-    nest() %>%
-    rename(info=data) %>%
-    rowwise() %>%
-    mutate(
-      data = process_dataset(
-        data = model$data,
-        group = .data$group,
-        outcome = .data$outcome,
-        stat = .data$stat,
-        predictors = model$predictors,
-        covariates = model$covariates
-      )
+  fit_df <- 1:ntrials %>%
+    purrr::map(
+      function(index) {
+        # add data
+        fit_df <- fit_df %>%
+          group_by(group, outcome, stat) %>%
+          nest() %>%
+          rename(info=data) %>%
+          rowwise() %>%
+          mutate(
+            data = process_dataset(
+              data = model$data,
+              group = .data$group,
+              outcome = .data$outcome,
+              stat = .data$stat,
+              predictors = model$predictors,
+              covariates = model$covariates
+            )
+          ) %>%
+          ungroup() %>%
+          unnest(info)
+
+        # fit model
+        fit_df <- fit_df %>%
+          rowwise() %>%
+          mutate(
+            fit = fit_stat(
+              data = .data$data,
+              outcome = .data$outcome,
+              stat = .data$stat,
+              predictors = .data$predictor,
+              covariates = .data$covariate,
+              is_boot = index != 1,
+              pb = pb
+            )
+          ) %>%
+          ungroup()
+
+        # select only factor labels and fit
+        fit_df <- fit_df %>%
+          select(gid, oid, sid, pid, fit) %>%
+          rename(
+            group = gid,
+            outcome = oid,
+            stat = sid,
+            predictor = pid
+          )
+
+        if (nboot > 0) {
+          fit_df <- fit_df %>% mutate(boot = index - 1)
+        }
+
+        # check that all models are not null
+        if (sum(purrr::map_lgl(fit_df$fit, ~!is.null(.))) == 0) {
+          stop('All models failed to be fit. Check your model setup.')
+        }
+        fit_df
+      }
     ) %>%
-    ungroup() %>%
-    unnest(info)
-
-  # fit model
-  fit_df <- fit_df %>%
-    rowwise() %>%
-    mutate(
-      fit = fit_stat(
-        data = .data$data,
-        outcome = .data$outcome,
-        stat = .data$stat,
-        predictors = .data$predictor,
-        covariates = .data$covariate,
-        pb = pb
-      )
-    ) %>%
-    ungroup()
-
-  # select only factor labels and fit
-  fit_df <- fit_df %>%
-    select(
-      gid, oid, sid, pid, fit
-    ) %>%
-    rename(
-      group = gid,
-      outcome = oid,
-      stat = sid,
-      predictor = pid
-    )
-
-  # check that all models are not null
-  if (sum(purrr::map_lgl(fit_df$fit, ~!is.null(.))) == 0) {
-    stop('All models failed to be fit. Check your model setup.')
-  }
+    bind_rows()
 
   model$results <- fit_df
   model$is_fit <- TRUE
+  model$is_booted <- nboot > 0
   return(model)
 }
 
@@ -177,21 +188,19 @@ aba_compile <- function(object, ...) {
 
 # Makes a formula and fits the statsitical model from the given parameters.
 fit_stat <- function(
-  data, outcome, predictors, covariates, stat, pb
+  data, outcome, predictors, covariates, stat, is_boot, pb
 ) {
+  if (!is.null(pb)) pb$tick()
 
-  if (!is.null(pb)) {
-    pb$tick()
-  }
-  # fit the models
-  extra_params <- stat$extra_params
+  # apply bootstrap
+  if (is_boot) data <- data[sample(1:nrow(data), nrow(data), replace=TRUE),]
+
+  # fit the model
   my_formula <- stat$fns$formula(
-    outcome, predictors, covariates, extra_params
+    outcome, predictors, covariates, stat$extra_params
   )
+  my_model <- stat$fns$fit(my_formula, data, stat$extra_params)
 
-  my_model <- stat$fns$fit(
-    my_formula, data, extra_params
-  )
   return(
     list(my_model)
   )

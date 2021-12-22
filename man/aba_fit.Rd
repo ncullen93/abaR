@@ -4,12 +4,14 @@
 \alias{aba_fit}
 \title{Fit an aba model.}
 \usage{
-aba_fit(object, ...)
+aba_fit(object, nboot = 0, verbose = FALSE)
 }
 \arguments{
 \item{object}{aba model The aba model to be fitted.}
 
-\item{...}{additional parameters.}
+\item{nboot}{integer. Number of bootstrap samples to fit. Default is 0.}
+
+\item{verbose}{logical. Whether to give a progress bar during model fitting.}
 }
 \value{
 abaModel
@@ -24,7 +26,6 @@ Note that this function is identical to the generic \code{fit()} function which
 is also provided for compatability with the greater R ecosystem.
 }
 \examples{
-
 data <- adnimerge \%>\% dplyr::filter(VISCODE == 'bl')
 
 model_spec <- aba_model() \%>\%
@@ -38,5 +39,4 @@ model_spec <- aba_model() \%>\%
   set_stats('glm')
 
 model <- model_spec \%>\% aba_fit()
-
 }

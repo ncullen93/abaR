@@ -29,8 +29,6 @@
 #'   primary functions are to 1) generate a suitable model formula given the
 #'   outcome - covariate - predictor combination, and 2) to actually fit the
 #'   statistical model.
-#' @param verbose logical. Whether to give a progress bar during model fitting.
-#'   This can be useful if the fitting procedure is going to take a long time.
 #'
 #' @return An aba model which can be fitted using the `aba_fit()` function and
 #'   which can be modified in any manner.
@@ -91,8 +89,7 @@ aba_model <- function(data = NULL,
                       outcomes = NULL,
                       predictors = NULL,
                       covariates = NULL,
-                      stats = NULL,
-                      verbose = FALSE) {
+                      stats = NULL) {
 
   m <- list(
     'data' = data,
@@ -102,7 +99,6 @@ aba_model <- function(data = NULL,
     'covariates' = covariates,
     'stats' = stats,
     'results' = list(),
-    'verbose' = verbose,
     'is_fit' = FALSE
   )
 
@@ -133,7 +129,10 @@ print.abaModel <- function(x, ...) {
   predictor_labels <- names(model$predictors[-1])
   stat_vals <- model$stats
 
-  cat('\n')
+  fit_str <- glue('{ifelse(!model$is_fit, "not ","")}fitted')
+  cat(glue('----------------\naba model ({fit_str})'))
+
+  cat('\n----------------\n')
   cat('Groups:\n   ')
   n_groups <- length(group_vals)
   if (n_groups > 0) {

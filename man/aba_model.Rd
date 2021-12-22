@@ -10,8 +10,7 @@ aba_model(
   outcomes = NULL,
   predictors = NULL,
   covariates = NULL,
-  stats = NULL,
-  verbose = FALSE
+  stats = NULL
 )
 }
 \arguments{
@@ -37,9 +36,6 @@ the actual statistical models which you want to fit on the data. Their
 primary functions are to 1) generate a suitable model formula given the
 outcome - covariate - predictor combination, and 2) to actually fit the
 statistical model.}
-
-\item{verbose}{logical. Whether to give a progress bar during model fitting.
-This can be useful if the fitting procedure is going to take a long time.}
 }
 \value{
 An aba model which can be fitted using the \code{aba_fit()} function and
