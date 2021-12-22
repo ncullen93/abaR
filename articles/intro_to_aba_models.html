@@ -130,7 +130,9 @@
 <p>As you see here, we set all the various factors of the aba model using the <code>set_*</code> functions. These functions modify and build up the aba model. We can print our aba model to the console at any time to get a nice overview of what our model contains:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span>
-<span class="co">#&gt; </span>
+<span class="co">#&gt; ----------------</span>
+<span class="co">#&gt; aba model (not fitted)</span>
+<span class="co">#&gt; ----------------</span>
 <span class="co">#&gt; Groups:</span>
 <span class="co">#&gt;    DX_bl %in% c("MCI", "AD")</span>
 <span class="co">#&gt; </span>
@@ -158,9 +160,9 @@
 <code class="sourceCode R"><span class="va">model_summary</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">model_summary</span><span class="op">)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; -------------------------------------------------------------------------------</span>
-<span class="co">#&gt; Group = DX_bl %in% c("MCI", "AD") | Outcome = ConvertedToAlzheimers | Stat = S1</span>
-<span class="co">#&gt; -------------------------------------------------------------------------------</span>
+<span class="co">#&gt; ----------------------------------------------------------------------------</span>
+<span class="co">#&gt; Group: DX_bl %in% c("MCI", "AD") | Outcome: ConvertedToAlzheimers | Stat: S1</span>
+<span class="co">#&gt; ----------------------------------------------------------------------------</span>
 <span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 10</span></span>
 <span class="co">#&gt;   predictor AGE    GENDER  EDUCATION  PLASMA_PTAU181_… PLASMA_NFL_bl auc  </span>
 <span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
@@ -170,9 +172,9 @@
 <span class="co">#&gt; <span style="color: #BCBCBC;">4</span> M3        0.92 … 0.94 [… 1.08 [0.8… 2.23 [1.68, 3.0… 1.56 [1.18, … 0.74…</span>
 <span class="co">#&gt; <span style="color: #949494;"># … with 3 more variables: aic &lt;chr&gt;, pval &lt;chr&gt;, nobs &lt;chr&gt;</span></span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; -----------------------------------------------------------------------------</span>
-<span class="co">#&gt; Group = DX_bl %in% c("MCI", "AD") | Outcome = CSF_ABETA_STATUS_bl | Stat = S1</span>
-<span class="co">#&gt; -----------------------------------------------------------------------------</span>
+<span class="co">#&gt; --------------------------------------------------------------------------</span>
+<span class="co">#&gt; Group: DX_bl %in% c("MCI", "AD") | Outcome: CSF_ABETA_STATUS_bl | Stat: S1</span>
+<span class="co">#&gt; --------------------------------------------------------------------------</span>
 <span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 10</span></span>
 <span class="co">#&gt;   predictor AGE    GENDER  EDUCATION  PLASMA_PTAU181_… PLASMA_NFL_bl auc  </span>
 <span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>

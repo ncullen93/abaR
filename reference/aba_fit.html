@@ -77,15 +77,17 @@ group - outcome - stat combination.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">aba_fit</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">aba_fit</span><span class="op">(</span><span class="va">object</span>, nboot <span class="op">=</span> <span class="fl">0</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>object</dt>
 <dd><p>aba model The aba model to be fitted.</p></dd>
-<dt>...</dt>
-<dd><p>additional parameters.</p></dd>
+<dt>nboot</dt>
+<dd><p>integer. Number of bootstrap samples to fit. Default is 0.</p></dd>
+<dt>verbose</dt>
+<dd><p>logical. Whether to give a progress bar during model fitting.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -99,8 +101,7 @@ is also provided for compatability with the greater R ecosystem.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">adnimerge</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">VISCODE</span> <span class="op">==</span> <span class="st">'bl'</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">adnimerge</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">VISCODE</span> <span class="op">==</span> <span class="st">'bl'</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">model_spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="aba_model.html">aba_model</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
 <span class="r-in">  <span class="fu"><a href="set_data.html">set_data</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
@@ -113,7 +114,6 @@ is also provided for compatability with the greater R ecosystem.</p>
 <span class="r-in">  <span class="fu"><a href="set_stats.html">set_stats</a></span><span class="op">(</span><span class="st">'glm'</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">model</span> <span class="op">&lt;-</span> <span class="va">model_spec</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">aba_fit</span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
