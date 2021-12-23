@@ -100,6 +100,9 @@
     <loc>https://ncullen93.github.io/abaR/reference/fit.abaModel.html</loc>
   </url>
   <url>
+    <loc>https://ncullen93.github.io/abaR/reference/fit_boot.html</loc>
+  </url>
+  <url>
     <loc>https://ncullen93.github.io/abaR/reference/index.html</loc>
   </url>
   <url>
@@ -139,7 +142,7 @@
     <loc>https://ncullen93.github.io/abaR/reference/stat_lm.html</loc>
   </url>
   <url>
-    <loc>https://ncullen93.github.io/abaR/reference/stat_lme.html</loc>
+    <loc>https://ncullen93.github.io/abaR/reference/stat_lmer.html</loc>
   </url>
   <url>
     <loc>https://ncullen93.github.io/abaR/reference/stat_mmrm.html</loc>
