@@ -10,7 +10,7 @@
 coverage](https://codecov.io/gh/ncullen93/abaR/branch/main/graph/badge.svg)](https://app.codecov.io/gh/ncullen93/abaR?branch=main)
 <!-- badges: end -->
 
-The goals of the aba package are the following:
+The goals of the aba package are as follows:
 
 -   to facilitate sound statistical modelling in clinical research
 -   to provide advanced tools for biomarker-based planning of clinical
