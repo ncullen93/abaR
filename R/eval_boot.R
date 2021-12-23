@@ -118,3 +118,70 @@ fit_boot <- function(object, ntrials, verbose = FALSE) {
   model$fit_type <- 'boot'
   return(model)
 }
+
+summary_boot <- function(object,
+                         label,
+                         control = aba_control(),
+                         adjust = aba_adjust(),
+                         verbose = FALSE) {
+  if (length(object$evals) > 1) object$results <- object$results[[label]]
+
+  ## coefs ##
+  coefs_df <- object %>% calculate_coefs(control)
+
+  coefs_df0 <- coefs_df %>%
+    filter(.data$trial==0) %>%
+    select(-c(.data$trial, conf_low, conf_high))
+
+  coefs_df1 <- coefs_df %>%
+    filter(.data$trial != 0) %>%
+    group_by(group, outcome, stat, predictor, term) %>%
+    summarise(
+      conf_low = quantile(estimate, 0.025),
+      conf_high = quantile(estimate, 0.975),
+      .groups = 'keep'
+    ) %>%
+    ungroup()
+
+  coefs_df <- coefs_df0 %>%
+    left_join(
+      coefs_df1,
+      by = c("group", "outcome", "stat", "predictor", "term")
+    ) %>%
+    select(-pval, everything())
+
+  ## metrics ##
+  metrics_df <- object %>% calculate_metrics(control)
+
+  metrics_df0 <- metrics_df %>%
+    filter(.data$trial==0) %>%
+    select(-c(.data$trial, conf_low, conf_high))
+
+  metrics_df1 <- metrics_df %>%
+    filter(.data$trial != 0) %>%
+    group_by(group, outcome, stat, predictor, term) %>%
+    summarise(
+      conf_low = quantile(estimate, 0.025),
+      conf_high = quantile(estimate, 0.975),
+      .groups = 'keep'
+    ) %>%
+    ungroup() %>%
+    filter(
+      !term %in% c('nobs', 'pval')
+    )
+
+  metrics_df <- metrics_df0 %>%
+    left_join(
+      metrics_df1,
+      by = c("group", "outcome", "stat", "predictor", "term")
+    )
+
+  results = list(
+    coefs = coefs_df,
+    metrics = metrics_df
+  )
+
+  if (adjust$method != 'none') results <- adjust_pvals(results, adjust)
+
+  results
+}

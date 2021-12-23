@@ -53,76 +53,32 @@ aba_summary <- function(object,
                         verbose = FALSE) {
   if (!object$is_fit) stop('You cant summarise a model which has not been fit.
   Please call "aba_fit()" on your model first.')
+  model <- object
 
-  # calculate coefs
-  coefs_df <- object %>% calculate_coefs(control)
+  # go through all evals
+  evals <- model$evals
 
-  ## calculate confidence intervals from bootstrap if used
-  #if (object$fit_type == 'boot') {
-  #  coefs_df0 <- coefs_df %>%
-  #    filter(.data$boot==0) %>%
-  #    select(-c(.data$boot, conf_low, conf_high))
-#
-  #  coefs_df1 <- coefs_df %>%
-  #    filter(.data$boot != 0) %>%
-  #    group_by(group, outcome, stat, predictor, term) %>%
-  #    summarise(
-  #      conf_low = quantile(estimate, 0.025),
-  #      conf_high = quantile(estimate, 0.975),
-  #      .groups = 'keep'
-  #    ) %>%
-  #    ungroup()
-#
-  #  coefs_df <- coefs_df0 %>%
-  #    left_join(
-  #      coefs_df1,
-  #      by = c("group", "outcome", "stat", "predictor", "term")
-  #    ) %>%
-  #    select(-pval, everything())
-  #}
-
-  # calculate metrics
-  metrics_df <- object %>% calculate_metrics(control)
-
-  ## calculate confidence intervals from bootstrap if used
-  #if (object$fit_type == 'boot') {
-  #  metrics_df0 <- metrics_df %>%
-  #    filter(.data$boot==0) %>%
-  #    select(-c(.data$boot, conf_low, conf_high))
-#
-  #  metrics_df1 <- metrics_df %>%
-  #    filter(.data$boot != 0) %>%
-  #    group_by(group, outcome, stat, predictor, term) %>%
-  #    summarise(
-  #      conf_low = quantile(estimate, 0.025),
-  #      conf_high = quantile(estimate, 0.975),
-  #      .groups = 'keep'
-  #    ) %>%
-  #    ungroup() %>%
-  #    filter(
-  #      !term %in% c('nobs', 'pval')
-  #    )
-#
-  #  metrics_df <- metrics_df0 %>%
-  #    left_join(
-  #      metrics_df1,
-  #      by = c("group", "outcome", "stat", "predictor", "term")
-  #    )
-  #}
+  results <- evals %>%
+    purrr::imap(
+      function(.eval, .label) {
+         tmp_summary <- switch(
+          .eval$eval_type,
+          'standard' = model %>% summary_standard(.label, control, adjust, verbose),
+          'boot' = model %>% summary_boot(.label, control, adjust, verbose),
+          'traintest' = model %>% summary_traintest(.label, control, adjust, verbose),
+          'cv' = model %>% summary_cv(.label, control, adjust, verbose)
+        )
+        tmp_summary
+      }
+    )
+  if (length(evals) == 1) results <- results[[1]]
 
   s <- list(
-    results = list(
-      coefs = coefs_df,
-      metrics = metrics_df
-    ),
+    results = results,
     control = control,
     model = object,
     verbose = verbose
   )
-
-  if (adjust$method != 'none') {
-    s$results <- adjust_pvals(s$results, adjust)
-  }
 
   class(s) <- 'abaSummary'
 

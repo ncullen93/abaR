@@ -91,6 +91,7 @@ aba_fit <- function(object, verbose = FALSE) {
         tmp_model$results
       }
     )
+  if (length(evals) == 1) eval_results <- eval_results[[1]]
   model$results <- eval_results
   model$is_fit <- TRUE
   model

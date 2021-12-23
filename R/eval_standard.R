@@ -90,6 +90,27 @@ fit_standard <- function(object, verbose = FALSE) {
   model$fit_type <- 'standard'
   return(model)
 }
+
+summary_standard <- function(object,
+                             label,
+                             control = aba_control(),
+                             adjust = aba_adjust(),
+                             verbose = FALSE) {
+  if (length(object$evals) > 1) object$results <- object$results[[label]]
+
+  coefs_df <- object %>% calculate_coefs(control)
+  metrics_df <- object %>% calculate_metrics(control)
+
+  results = list(
+    coefs = coefs_df,
+    metrics = metrics_df
+  )
+
+  if (adjust$method != 'none') results <- adjust_pvals(results, adjust)
+
+  results
+}
+
 #' @export
 print.abaEval <- function(x, ...) {
   cat(x$eval_type)
