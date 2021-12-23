@@ -17,7 +17,7 @@ The goals of the aba package are as follows:
     trials
 -   to generate publication-ready tables and figures
 
-![overview image](man/figures/README-aba_overview.png)
+![overview image](man/figures/README-overview.png)
 
 With the aba package, it becomes easier to fit statistical models on
 permuatations of covariates / predictors / outcomes / groups, to make it
