@@ -2,7 +2,7 @@
 #'
 #' This function allows users to calculate power, required sample size, or
 #' percent change (i.e., treatment effect) on a fitted aba model that uses
-#' longitudinal stats such as `stat_lme`. Whichever argument is left as NULL
+#' longitudinal stats such as `stat_lmer`. Whichever argument is left as NULL
 #' will be the argument for which this function solves. Users can specify a
 #' range of values for any function arguments to test different assumptions.
 #'
@@ -11,7 +11,7 @@
 #' of the actual formulas involved.
 #'
 #' @param model aba model. The fitted aba model on which to calculate power.
-#'   This model should feature a longitudinal aba stat (e.g., `stat_lme`)
+#'   This model should feature a longitudinal aba stat (e.g., `stat_lmer`)
 #' @param n integer. The total minimum required sample size.
 #' @param pct_change double between 0 - 1. The expected treatment effect which
 #'   means the percent by which the slope will decrease in the treatment group.
@@ -53,7 +53,7 @@
 #' model <- data %>% aba_model() %>%
 #'   set_outcomes(CDRSB, ADAS13) %>%
 #'   set_covariates(AGE, GENDER, EDUCATION) %>%
-#'   set_stats(stat_lme(id = 'RID', time = 'YEARS_bl')) %>%
+#'   set_stats(stat_lmer(id = 'RID', time = 'YEARS_bl')) %>%
 #'   fit()
 #'
 #' # summarize aba model - not necessary here but good to see results

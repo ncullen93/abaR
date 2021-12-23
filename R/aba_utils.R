@@ -340,7 +340,7 @@ set_predictors <- function(model, ..., labels = NULL) {
 #' # those variables are expected to exist in the eventual data
 #' model <- aba_model() %>%
 #'   set_stats(
-#'     stat_lme(id = 'RID', time = 'YEARS_bl')
+#'     stat_lmer(id = 'RID', time = 'YEARS_bl')
 #'   )
 #'
 #' # you can see these extra stat params when you print the model

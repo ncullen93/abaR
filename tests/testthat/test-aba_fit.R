@@ -1,20 +1,3 @@
-test_that("bootstrap works", {
-  expect_error(
-    m <- adnimerge %>% dplyr::filter(VISCODE=='bl') %>%
-      aba_model() %>%
-      set_outcomes(MMSE) %>%
-      set_covariates(AGE) %>%
-      set_stats('lm') %>%
-      aba_fit(nboot = 5, verbose = TRUE),
-    NA
-  )
-
-  expect_error(
-    ss <- m %>% aba_summary(),
-    NA
-  )
-})
-
 
 test_that("fit with string inputs works", {
   expect_error(

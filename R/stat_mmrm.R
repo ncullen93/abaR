@@ -69,7 +69,7 @@ stat_mmrm <- function(id,
                       complete.cases = TRUE) {
   fns <- list(
     'fns' = list(
-      'formula' = formula_lme,
+      'formula' = formula_mmrm,
       'fit' = fit_mmrm,
       'tidy' = tidy_mmrm,
       'glance' = glance_mmrm
@@ -90,6 +90,30 @@ stat_mmrm <- function(id,
   class(fns) <- 'abaStat'
 
   return(fns)
+}
+
+# helper function for mmrm
+formula_mmrm <- function(outcome, predictors, covariates, extra_params) {
+  time <- extra_params$time
+  id <- extra_params$id
+  #interaction_vars <- extra_params$interaction_vars
+  interaction_vars <- c()
+  covariates <- covariates[!(covariates %in% interaction_vars)]
+
+  f <- paste(outcome, "~", time)
+  if (length(covariates) + length(predictors) > 0) f <- paste(f, '+')
+  if (length(covariates) > 0) {
+    f <- paste(f, paste(covariates, collapse = " + "))
+    if (length(interaction_vars) > 0) {
+      f <- paste(f, '+', paste0(interaction_vars, '*',
+                                time, collapse=' + '))
+    }
+    if (length(predictors) > 0) f <- paste(f, '+')
+  }
+  if (length(predictors) > 0) f <- paste(f, paste0(predictors, "*",
+                                                   time,
+                                                   collapse = " + "))
+  return(f)
 }
 
 # helper function for stat_mmrm

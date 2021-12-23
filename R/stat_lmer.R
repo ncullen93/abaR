@@ -1,9 +1,9 @@
-#' Create an lme stat object.
+#' Create an lmer stat object.
 #'
-#' This function creates an lme stat object which can be passed as input
+#' This function creates an lmer stat object which can be passed as input
 #' to the `set_stats()` function when building an aba model. This stat performs
-#' a linear mixed effects model analysis using the `lme` function from the
-#' `nlme` package. Please note that the default mode is to include an interaction
+#' a linear mixed effects model analysis using the `lmer` function from the
+#' `nlmer` package. Please note that the default mode is to include an interaction
 #' term between the `time` variable and each predictor - i.e., `time*predictor`
 #' will be in the model formula - but this does not happen for covariates. Also,
 #' this model fits random intercepts and random slopes. The data for this model
@@ -20,7 +20,7 @@
 #'   Note that complete cases are considering within each group - outcome
 #'   combination but across all predictor sets.
 #'
-#' @return An abaStat object with `lme` stat type.
+#' @return An abaStat object with `lmer` stat type.
 #' @export
 #'
 #' @examples
@@ -42,22 +42,22 @@
 #'   ) %>%
 #'   set_covariates(AGE, GENDER, EDUCATION) %>%
 #'   set_stats(
-#'     stat_lme(id = 'RID', time = 'YEARS_bl')
+#'     stat_lmer(id = 'RID', time = 'YEARS_bl')
 #'   ) %>%
 #'   fit()
 #'
 #' model_summary <- model %>% aba_summary()
 #'
-stat_lme <- function(id,
+stat_lmer <- function(id,
                      time,
                      std.beta = FALSE,
                      complete.cases = TRUE) {
   fns <- list(
     'fns' = list(
-      'formula' = formula_lme,
-      'fit' = fit_lme,
-      'tidy' = tidy_lme,
-      'glance' = glance_lme
+      'formula' = formula_lmer,
+      'fit' = fit_lmer,
+      'tidy' = tidy_lmer,
+      'glance' = glance_lmer
     ),
     'extra_params' = list(
       'id' = id,
@@ -68,14 +68,14 @@ stat_lme <- function(id,
       'complete.cases' = complete.cases
     )
   )
-  fns$stat_type <- 'lme'
+  fns$stat_type <- 'lmer'
   class(fns) <- 'abaStat'
 
   return(fns)
 }
 
-# helper function for lme
-formula_lme <- function(outcome, predictors, covariates, extra_params) {
+# helper function for lmer
+formula_lmer <- function(outcome, predictors, covariates, extra_params) {
   time <- extra_params$time
   id <- extra_params$id
   #interaction_vars <- extra_params$interaction_vars
@@ -93,62 +93,45 @@ formula_lme <- function(outcome, predictors, covariates, extra_params) {
     if (length(predictors) > 0) f <- paste(f, '+')
   }
   if (length(predictors) > 0) f <- paste(f, paste0(predictors, "*",
-                                                  time,
-                                                  collapse = " + "))
+                                                   time,
+                                                   collapse = " + "))
+  f <- glue('{f} + ({time} | {id})')
   return(f)
 }
 
-# helper function for lme
-fit_lme <- function(formula, data, extra_params) {
-  time <- extra_params$time
-  id <- extra_params$id
-  random_formula <- glue::glue('~ {time} | {id}')
-
+# helper function for lmer
+fit_lmer <- function(formula, data, extra_params) {
   model <-
-   tryCatch(
-     {
-       model <- nlme::lme(stats::formula(formula),
-                          random = stats::formula(random_formula),
-                          control = nlme::lmeControl(
-                            maxIter = 1e10,
-                            msMaxIter = 1000,
-                            opt = "optim"
-                          ),
-                          na.action = stats::na.omit,
-                          data = data, method = "REML")
-
-       model$call$fixed <- stats::formula(formula)
-       model$call$random <- stats::formula(random_formula)
-       model
-     },
-     error = function(cond) {
-       warning(
-         glue('Problem fitting model:
+    tryCatch(
+      {
+        model <- lmerTest::lmer(stats::formula(formula),
+                           na.action = stats::na.omit,
+                           data = data)
+        model@call$formula <- stats::formula(formula)
+        model
+      },
+      error = function(cond) {
+        warning(
+          glue('Problem fitting model:
          {formula}
          Check your variables for collinearity or missingness.
          Skipping for now...')
-       )
-       NULL
-     }
-   )
+        )
+        NULL
+      }
+    )
 
   return(model)
 }
 
-# helper function for lme
-tidy_lme <- function(model, predictors, covariates, ...) {
-
-  # include time in predictors
-  time_var <- as.character(model$call$random)[2] %>%
-    strsplit(' | ', fixed=TRUE) %>% unlist() %>% head(1)
-
+# helper function for lmer
+tidy_lmer <- function(model, predictors, covariates, ...) {
   tidy_df <- broom.mixed::tidy(model, effects='fixed', conf.int=TRUE)
 
   tidy_df <- tidy_df %>%
-    select(-c(.data$df)) %>%
+    select(-c(.data$effect, .data$df)) %>%
     filter(
-      !(.data$term %in% predictors)#,
-      #.data$term != time_var
+      !(.data$term %in% predictors)
     ) %>%
     mutate(
       term = strsplit(.data$term, ':') %>%
@@ -159,10 +142,10 @@ tidy_lme <- function(model, predictors, covariates, ...) {
 }
 
 
-# helper function for lme
-glance_lme <- function(x, ...) {
+# helper function for lmer
+glance_lmer <- function(x, ...) {
 
-  glance_df <- broom.mixed::glance(x) %>% #select(-logLik)
+  glance_df <- broom.mixed::glance(x) %>%
     dplyr::bind_cols(
       tibble::tibble(
         R2 = suppressWarnings(MuMIn::r.squaredGLMM(x)[1,][['R2m']])
@@ -172,8 +155,8 @@ glance_lme <- function(x, ...) {
   glance_df <- glance_df %>%
     bind_cols(
       tibble::tibble(
-        nobs = x$dims$N,
-        nsub = unname(x$dims$ngrps[1])
+        nobs = x@devcomp$dims[['n']],
+        nsub = nlevels(x@flist[[1]])
       )
     )
 

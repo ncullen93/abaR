@@ -58,7 +58,7 @@ aba_summary <- function(object,
   coefs_df <- object %>% calculate_coefs(control)
 
   # calculate confidence intervals from bootstrap if used
-  if (object$is_booted) {
+  if (object$fit_type == 'boot') {
     coefs_df0 <- coefs_df %>%
       filter(.data$boot==0) %>%
       select(-c(.data$boot, conf_low, conf_high))
@@ -85,7 +85,7 @@ aba_summary <- function(object,
   metrics_df <- object %>% calculate_metrics(control)
 
   # calculate confidence intervals from bootstrap if used
-  if (object$is_booted) {
+  if (object$fit_type == 'boot') {
     metrics_df0 <- metrics_df %>%
       filter(.data$boot==0) %>%
       select(-c(.data$boot, conf_low, conf_high))
@@ -130,7 +130,11 @@ aba_summary <- function(object,
 }
 
 #' @export
-summary.abaModel <- function(object, ...) {
+summary.abaModel <- function(object,
+                             control = aba_control(),
+                             adjust = aba_adjust(),
+                             verbose = FALSE,
+                             ...) {
   object %>% aba_summary(...)
 }
 

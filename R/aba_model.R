@@ -99,7 +99,8 @@ aba_model <- function(data = NULL,
     'covariates' = covariates,
     'stats' = stats,
     'results' = list(),
-    'is_fit' = FALSE
+    'is_fit' = FALSE,
+    'fit_type' = NA
   )
 
   class(m) <- 'abaModel'

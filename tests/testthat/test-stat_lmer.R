@@ -6,23 +6,21 @@ test_that("errors in model fit are properly handled", {
 
   # a few models failing should still works
   expect_error(
-    suppressWarnings(
-      model <- data %>% aba_model() %>%
-        set_groups(DX_bl == 'MCI', everyone()) %>%
-        set_outcomes(CDRSB) %>%
-        set_predictors(
-          PLASMA_PTAU181_bl,
-          PLASMA_NFL_bl,
-          PTAU_NFL_RATIO_bl,
-          c(PLASMA_PTAU181_bl, PLASMA_NFL_bl, PTAU_NFL_RATIO_bl),
-          labels = c('T', 'N', 'TN', 'TN2')
-        ) %>%
-        set_covariates(AGE, GENDER, EDUCATION) %>%
-        set_stats(
-          stat_lme(id='RID', time='YEARS_bl')
-        ) %>%
-        aba_fit()
-      ),
+    model <- data %>% aba_model() %>%
+      set_groups(DX_bl == 'MCI', everyone()) %>%
+      set_outcomes(CDRSB) %>%
+      set_predictors(
+        PLASMA_PTAU181_bl,
+        PLASMA_NFL_bl,
+        PTAU_NFL_RATIO_bl,
+        c(PLASMA_PTAU181_bl, PLASMA_NFL_bl, PTAU_NFL_RATIO_bl),
+        labels = c('T', 'N', 'TN', 'TN2')
+      ) %>%
+      set_covariates(AGE, GENDER, EDUCATION) %>%
+      set_stats(
+        stat_lmer(id='RID', time='YEARS_bl')
+      ) %>%
+      fit(),
     NA
   )
 
@@ -31,9 +29,8 @@ test_that("errors in model fit are properly handled", {
     NA
   )
 
-  # all models failing should give an error
+  # all models failing should not give an error
   expect_error(
-    suppressWarnings(
     model <- data %>% aba_model() %>%
       set_groups(DX_bl == 'MCI', everyone()) %>%
       set_outcomes(CDRSB) %>%
@@ -42,11 +39,10 @@ test_that("errors in model fit are properly handled", {
       ) %>%
       set_covariates(PLASMA_PTAU181_bl, PLASMA_NFL_bl, PTAU_NFL_RATIO_bl) %>%
       set_stats(
-        stat_lme(id='RID', time='YEARS_bl')
+        stat_lmer(id='RID', time='YEARS_bl')
       ) %>%
-      aba_fit()
-    ),
-    'failed to be fit'
+      aba_fit(),
+    NA
   )
 
 })
@@ -64,7 +60,7 @@ test_that("standard lme works", {
       ) %>%
       set_covariates(AGE, GENDER, EDUCATION) %>%
       set_stats(
-        stat_lme(id='RID', time='YEARS_bl')
+        stat_lmer(id='RID', time='YEARS_bl')
       ) %>%
       aba_fit(),
     NA
@@ -81,7 +77,7 @@ test_that("standard lme works", {
       ) %>%
       set_covariates(AGE, GENDER, EDUCATION) %>%
       set_stats(
-        stat_lme(id='RID', time='YEARS_bl')
+        stat_lmer(id='RID', time='YEARS_bl')
       ) %>%
       aba_fit() %>%
       aba_summary(),
@@ -102,17 +98,17 @@ test_that("forgetting parameters throws error", {
 
   expect_error(
     model %>%
-      set_stats(stat_lme(id='RID')) %>%
+      set_stats(stat_lmer(id='RID')) %>%
       aba_fit()
   )
   expect_error(
     model %>%
-      set_stats(stat_lme(time='YEARS_bl')) %>%
+      set_stats(stat_lmer(time='YEARS_bl')) %>%
       aba_fit()
   )
   expect_error(
     model %>%
-      set_stats(stat_lme()) %>%
+      set_stats(stat_lmer()) %>%
       aba_fit()
   )
 

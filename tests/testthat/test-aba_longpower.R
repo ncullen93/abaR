@@ -12,7 +12,7 @@ test_that("example works", {
   model <- data %>% aba_model() %>%
     set_outcomes(CDRSB, ADAS13) %>%
     set_covariates(AGE, GENDER, EDUCATION) %>%
-    set_stats(stat_lme(id = 'RID', time = 'YEARS_bl')) %>%
+    set_stats(stat_lmer(id = 'RID', time = 'YEARS_bl')) %>%
     fit()
   # summarize aba model - not necessary here but good to see results
   model_summary <- model %>% summary()

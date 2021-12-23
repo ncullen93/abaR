@@ -4,12 +4,10 @@
 \alias{aba_fit}
 \title{Fit an aba model.}
 \usage{
-aba_fit(object, nboot = 0, verbose = FALSE)
+aba_fit(object, verbose = FALSE)
 }
 \arguments{
 \item{object}{aba model The aba model to be fitted.}
-
-\item{nboot}{integer. Number of bootstrap samples to fit. Default is 0.}
 
 \item{verbose}{logical. Whether to give a progress bar during model fitting.}
 }

@@ -17,7 +17,7 @@ aba_longpower(
 }
 \arguments{
 \item{model}{aba model. The fitted aba model on which to calculate power.
-This model should feature a longitudinal aba stat (e.g., \code{stat_lme})}
+This model should feature a longitudinal aba stat (e.g., \code{stat_lmer})}
 
 \item{n}{integer. The total minimum required sample size.}
 
@@ -53,7 +53,7 @@ ways and which contains all the resulting calculations.
 \description{
 This function allows users to calculate power, required sample size, or
 percent change (i.e., treatment effect) on a fitted aba model that uses
-longitudinal stats such as \code{stat_lme}. Whichever argument is left as NULL
+longitudinal stats such as \code{stat_lmer}. Whichever argument is left as NULL
 will be the argument for which this function solves. Users can specify a
 range of values for any function arguments to test different assumptions.
 }
@@ -77,7 +77,7 @@ data <- adnimerge \%>\%
 model <- data \%>\% aba_model() \%>\%
   set_outcomes(CDRSB, ADAS13) \%>\%
   set_covariates(AGE, GENDER, EDUCATION) \%>\%
-  set_stats(stat_lme(id = 'RID', time = 'YEARS_bl')) \%>\%
+  set_stats(stat_lmer(id = 'RID', time = 'YEARS_bl')) \%>\%
   fit()
 
 # summarize aba model - not necessary here but good to see results

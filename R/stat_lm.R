@@ -63,6 +63,7 @@ stat_lm <- function(std.beta = FALSE,
   return(fns)
 }
 
+
 # helper function for lm
 formula_lm <- function(outcome, predictors, covariates, ...) {
   f <- paste0(outcome, " ~ ")
@@ -126,4 +127,10 @@ glance_lm <- function(fit, fit_basic, ...) {
     )
 
   return(glance_df)
+}
+
+# helper function for lm
+augment_lm <- function(model, newdata = NULL) {
+  x <- broom::augment(model, newdata = newdata)
+  x
 }
