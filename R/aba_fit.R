@@ -68,67 +68,32 @@ aba_fit <- function(object, verbose = FALSE) {
   model <- object
   if (is.null(model$groups)) model <- model %>% set_groups(everyone())
   if (is.null(model$predictors)) model$predictors <- list('Basic'=c())
+  if (is.null(model$evals)) model <- model %>% set_evals(eval_standard())
 
   # compile model
   fit_df <- model %>% aba_compile()
 
-  # progress bar
-  pb <- NULL
-  if (verbose) pb <- progress::progress_bar$new(total = nrow(fit_df))
+  # go through all evals
+  evals <- model$evals
 
-  fit_df <- fit_df %>%
-    group_by(group, outcome, stat) %>%
-    nest() %>%
-    rename(info=data) %>%
-    rowwise() %>%
-    mutate(
-      data = process_dataset(
-        data = model$data,
-        group = .data$group,
-        outcome = .data$outcome,
-        stat = .data$stat,
-        predictors = model$predictors,
-        covariates = model$covariates
-      )
-    ) %>%
-    ungroup() %>%
-    unnest(info)
-
-  # fit model
-  fit_df <- fit_df %>%
-    rowwise() %>%
-    mutate(
-      fit = fit_stat(
-        data = .data$data,
-        outcome = .data$outcome,
-        stat = .data$stat,
-        predictors = .data$predictor,
-        covariates = .data$covariate,
-        is_boot = FALSE,
-        pb = pb
-      )
-    ) %>%
-    ungroup()
-
-  # select only factor labels and fit
-  fit_df <- fit_df %>%
-    select(gid, oid, sid, pid, fit) %>%
-    rename(
-      group = gid,
-      outcome = oid,
-      stat = sid,
-      predictor = pid
+  eval_results <- evals %>%
+    purrr::imap(
+      function(.eval, .label) {
+        tmp_model <- switch(
+          .eval$eval_type,
+          'standard' = model %>% fit_standard(),
+          'boot' = model %>% fit_boot(ntrials=.eval$ntrials),
+          'traintest' = model %>%
+            fit_traintest(split = .eval$split, ntrials = .eval$ntrials),
+          'cv' = model %>%
+            fit_cv(nsplits = .eval$nsplits, ntrials = .eval$ntrials)
+        )
+        tmp_model$results
+      }
     )
-
-  # check that all models are not null
-  if (sum(purrr::map_lgl(fit_df$fit, ~!is.null(.))) == 0) {
-    stop('All models failed to be fit. Check your model setup.')
-  }
-
-  model$results <- fit_df
+  model$results <- eval_results
   model$is_fit <- TRUE
-  model$fit_type <- 'standard'
-  return(model)
+  model
 }
 
 # Generates the dataframe with all parameter combinations from a model spec.

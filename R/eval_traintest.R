@@ -1,19 +1,13 @@
-#' Fit an aba model using train-test sampling
+#' Create a train-test evaluator
 #'
-#' This function fits an aba model on training data and stores the test data
-#' for evaluation.
+#' @param split double between 0 and 1. percent of data to use as train set
+#' @param ntrials integer. number of train-test trials to run
 #'
-#' @param object aba model. The model to fit.
-#' @param split double between 0 and 1. Percent of data to sample for train set.
-#' @param ntrials integer. Number of trials to run.
-#' @param verbose logical. Whether to print updates using progress bar.
-#'
-#' @return a fitted aba model
+#' @return aba model
 #' @export
 #'
 #' @examples
 #' data <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
-#'
 #' model <- aba_model() %>%
 #'   set_data(data) %>%
 #'   set_groups(everyone()) %>%
@@ -22,9 +16,19 @@
 #'     PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl,
 #'     c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
 #'   ) %>%
-#'   set_stats('glm')
-#'
-#' model <- model %>% fit_traintest(split = 0.8, ntrials = 5)
+#'   set_stats('glm') %>%
+#'   set_evals('traintest') %>%
+#'   fit()
+eval_traintest <- function(split = 0.8, ntrials = 1) {
+  struct <- list(
+    split = split,
+    ntrials = ntrials
+  )
+  struct$eval_type <- 'traintest'
+  class(struct) <- 'abaEval'
+  struct
+}
+
 fit_traintest <- function(object, split = 0.8, ntrials = 1, verbose = FALSE) {
 
   model <- object

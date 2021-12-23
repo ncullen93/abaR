@@ -1,4 +1,4 @@
-test_that("fit_cv works", {
+test_that("eval_traintest works", {
   data <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
   model <- aba_model() %>%
     set_data(data) %>%
@@ -8,15 +8,14 @@ test_that("fit_cv works", {
       PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl,
       c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
     ) %>%
-    set_stats('glm')
+    set_stats('glm') %>%
+    set_evals(
+      eval_traintest(split = 0.8),
+      eval_traintest(split = 0.8, ntrials = 10)
+    )
 
   expect_error(
-    model <- model %>% fit_cv(nsplits = 3),
-    NA
-  )
-
-  expect_error(
-    model <- model %>% fit_cv(nsplits = 3, ntrials = 5),
+    model <- model %>% fit(),
     NA
   )
 })

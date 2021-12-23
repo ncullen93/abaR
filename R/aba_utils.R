@@ -377,6 +377,39 @@ set_stats <- function(model, ..., labels = NULL) {
   .model
 }
 
+
+set_evals <- function(model, ..., labels = NULL) {
+  .model <- model
+  evals <- list(...)
+
+  if ('list' %in% class(evals[[1]])) {
+    evals <- evals[[1]]
+    labels <- names(evals)
+  }
+
+  evals <- evals %>%
+    purrr::map(
+      function(x) {
+        if (is.character(x)) x <- aba_eval_lookup(x)
+        return(x)
+      }
+    )
+
+  # set labels
+  if (!is.null(labels)) {
+    names(evals) <- labels
+  } else {
+    eval_names <- evals %>% purrr::map_chr(~.$eval_type)
+    names(evals) <- make.names(eval_names, unique=T) %>%
+      stringr::str_replace('\\.','_')
+    #names(evals) <- paste0('E', seq_along(evals))
+  }
+
+  .model$evals <- evals
+  .model$is_fit <- FALSE
+  .model
+}
+
 #' Set the data of an aba model
 #'
 #' The raw data will be used to fit all of the statistical models. This data

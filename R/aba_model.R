@@ -89,7 +89,8 @@ aba_model <- function(data = NULL,
                       outcomes = NULL,
                       predictors = NULL,
                       covariates = NULL,
-                      stats = NULL) {
+                      stats = NULL,
+                      evals = NULL) {
 
   m <- list(
     'data' = data,
@@ -98,9 +99,9 @@ aba_model <- function(data = NULL,
     'predictors' = predictors,
     'covariates' = covariates,
     'stats' = stats,
+    'evals' = evals,
     'results' = list(),
-    'is_fit' = FALSE,
-    'fit_type' = NA
+    'is_fit' = FALSE
   )
 
   class(m) <- 'abaModel'
@@ -111,6 +112,7 @@ aba_model <- function(data = NULL,
   if (!is.null(predictors)) m <- m %>% set_predictors(predictors)
   if (!is.null(covariates)) m <- m %>% set_covariates(covariates)
   if (!is.null(stats)) m <- m %>% set_stats(stats)
+  if (!is.null(evals)) m <- m %>% set_evals(evals)
 
   return(
     m
@@ -129,17 +131,18 @@ print.abaModel <- function(x, ...) {
   predictor_vals <- model$predictors[-1]
   predictor_labels <- names(model$predictors[-1])
   stat_vals <- model$stats
+  eval_vals <- model$evals
 
-  fit_str <- glue('{ifelse(!model$is_fit, "not fitted", "fitted - ")}')
-  fit_str <- glue('{fit_str}{ifelse(model$is_fit,model$fit_type,"")}')
+  fit_str <- glue('{ifelse(!model$is_fit, "not fitted", "fitted")}')
   fit_str <- glue('ABA MODEL ({fit_str})')
   nchar_label <- nchar(fit_str)
   cat(rep('-', nchar_label), sep=''); cat('\n')
   cat(fit_str)
-  cat('\n'); cat(rep('-', nchar_label), sep=''); cat('\n'); cat('\n')
-  cat('Groups:\n   ')
+  cat('\n'); cat(rep('-', nchar_label), sep='');
   n_groups <- length(group_vals)
   if (n_groups > 0) {
+    cat('\n')
+    cat('Groups:\n   ')
     cat(group_labels[1:min(n_groups, 8)], sep='\n   ')
     if (n_groups >= 9) {
       cat('   ...\n   ')
@@ -159,8 +162,8 @@ print.abaModel <- function(x, ...) {
   }
 
   # COVARIATES #
-  cat('\nCovariates:\n   ')
   if (length(covariate_vals) > 0) {
+    cat('\nCovariates:\n   ')
     cat(covariate_vals)
     cat('\n')
   }
@@ -177,8 +180,15 @@ print.abaModel <- function(x, ...) {
   }
 
   # STAT #
-  cat('\nStats:\n   ')
   if (length(stat_vals) > 0) {
+    cat('\nStats:\n   ')
     stat_vals %>% purrr::walk(~cat(print(.),'\n   '))
   }
+
+  # EVAL #
+  if (length(eval_vals) > 0) {
+    cat('\nEvals:\n   ')
+    eval_vals %>% purrr::walk(~cat(print(.),'\n   '))
+  }
+
 }

@@ -10,7 +10,8 @@ aba_model(
   outcomes = NULL,
   predictors = NULL,
   covariates = NULL,
-  stats = NULL
+  stats = NULL,
+  evals = NULL
 )
 }
 \arguments{

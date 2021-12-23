@@ -57,58 +57,58 @@ aba_summary <- function(object,
   # calculate coefs
   coefs_df <- object %>% calculate_coefs(control)
 
-  # calculate confidence intervals from bootstrap if used
-  if (object$fit_type == 'boot') {
-    coefs_df0 <- coefs_df %>%
-      filter(.data$boot==0) %>%
-      select(-c(.data$boot, conf_low, conf_high))
-
-    coefs_df1 <- coefs_df %>%
-      filter(.data$boot != 0) %>%
-      group_by(group, outcome, stat, predictor, term) %>%
-      summarise(
-        conf_low = quantile(estimate, 0.025),
-        conf_high = quantile(estimate, 0.975),
-        .groups = 'keep'
-      ) %>%
-      ungroup()
-
-    coefs_df <- coefs_df0 %>%
-      left_join(
-        coefs_df1,
-        by = c("group", "outcome", "stat", "predictor", "term")
-      ) %>%
-      select(-pval, everything())
-  }
+  ## calculate confidence intervals from bootstrap if used
+  #if (object$fit_type == 'boot') {
+  #  coefs_df0 <- coefs_df %>%
+  #    filter(.data$boot==0) %>%
+  #    select(-c(.data$boot, conf_low, conf_high))
+#
+  #  coefs_df1 <- coefs_df %>%
+  #    filter(.data$boot != 0) %>%
+  #    group_by(group, outcome, stat, predictor, term) %>%
+  #    summarise(
+  #      conf_low = quantile(estimate, 0.025),
+  #      conf_high = quantile(estimate, 0.975),
+  #      .groups = 'keep'
+  #    ) %>%
+  #    ungroup()
+#
+  #  coefs_df <- coefs_df0 %>%
+  #    left_join(
+  #      coefs_df1,
+  #      by = c("group", "outcome", "stat", "predictor", "term")
+  #    ) %>%
+  #    select(-pval, everything())
+  #}
 
   # calculate metrics
   metrics_df <- object %>% calculate_metrics(control)
 
-  # calculate confidence intervals from bootstrap if used
-  if (object$fit_type == 'boot') {
-    metrics_df0 <- metrics_df %>%
-      filter(.data$boot==0) %>%
-      select(-c(.data$boot, conf_low, conf_high))
-
-    metrics_df1 <- metrics_df %>%
-      filter(.data$boot != 0) %>%
-      group_by(group, outcome, stat, predictor, term) %>%
-      summarise(
-        conf_low = quantile(estimate, 0.025),
-        conf_high = quantile(estimate, 0.975),
-        .groups = 'keep'
-      ) %>%
-      ungroup() %>%
-      filter(
-        !term %in% c('nobs', 'pval')
-      )
-
-    metrics_df <- metrics_df0 %>%
-      left_join(
-        metrics_df1,
-        by = c("group", "outcome", "stat", "predictor", "term")
-      )
-  }
+  ## calculate confidence intervals from bootstrap if used
+  #if (object$fit_type == 'boot') {
+  #  metrics_df0 <- metrics_df %>%
+  #    filter(.data$boot==0) %>%
+  #    select(-c(.data$boot, conf_low, conf_high))
+#
+  #  metrics_df1 <- metrics_df %>%
+  #    filter(.data$boot != 0) %>%
+  #    group_by(group, outcome, stat, predictor, term) %>%
+  #    summarise(
+  #      conf_low = quantile(estimate, 0.025),
+  #      conf_high = quantile(estimate, 0.975),
+  #      .groups = 'keep'
+  #    ) %>%
+  #    ungroup() %>%
+  #    filter(
+  #      !term %in% c('nobs', 'pval')
+  #    )
+#
+  #  metrics_df <- metrics_df0 %>%
+  #    left_join(
+  #      metrics_df1,
+  #      by = c("group", "outcome", "stat", "predictor", "term")
+  #    )
+  #}
 
   s <- list(
     results = list(

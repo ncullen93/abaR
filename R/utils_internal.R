@@ -113,6 +113,14 @@ aba_stat_lookup <- function(stat) {
   return(stat)
 }
 
+aba_eval_lookup <- function(evaluation) {
+  if (is.character(evaluation)) {
+    eval_fn <- methods::getFunction(glue::glue('eval_{evaluation}'))
+    evaluation <- eval_fn()
+  }
+  return(evaluation)
+}
+
 # generic for internal utility function emmeans
 run_emmeans <- function(fit, extra_params) {
   UseMethod('run_emmeans')
