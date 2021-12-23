@@ -178,9 +178,6 @@ fit_stat <- function(
 ) {
   if (!is.null(pb)) pb$tick()
 
-  # apply bootstrap
-  if (is_boot) data <- data[sample(1:nrow(data), nrow(data), replace=TRUE),]
-
   # fit the model
   my_formula <- stat$fns$formula(
     outcome, predictors, covariates, stat$extra_params

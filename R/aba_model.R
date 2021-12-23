@@ -130,10 +130,13 @@ print.abaModel <- function(x, ...) {
   predictor_labels <- names(model$predictors[-1])
   stat_vals <- model$stats
 
-  fit_str <- glue('{ifelse(!model$is_fit, "not ","")}fitted')
-  cat(glue('----------------\naba model ({fit_str})'))
-
-  cat('\n----------------\n')
+  fit_str <- glue('{ifelse(!model$is_fit, "not fitted", "fitted - ")}')
+  fit_str <- glue('{fit_str}{ifelse(model$is_fit,model$fit_type,"")}')
+  fit_str <- glue('ABA MODEL ({fit_str})')
+  nchar_label <- nchar(fit_str)
+  cat(rep('-', nchar_label), sep=''); cat('\n')
+  cat(fit_str)
+  cat('\n'); cat(rep('-', nchar_label), sep=''); cat('\n'); cat('\n')
   cat('Groups:\n   ')
   n_groups <- length(group_vals)
   if (n_groups > 0) {

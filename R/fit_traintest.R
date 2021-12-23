@@ -1,10 +1,11 @@
-#' Fit an aba model using bootstrap sampling
+#' Fit an aba model using train-test sampling
 #'
-#' This function fits an aba model first on the full dataset and then
-#' using bootrstrap sampling.
+#' This function fits an aba model on training data and stores the test data
+#' for evaluation.
 #'
 #' @param object aba model. The model to fit.
-#' @param ntrials integer. Number of bootstrap trials to run.
+#' @param split double between 0 and 1. Percent of data to sample for train set.
+#' @param ntrials integer. Number of trials to run.
 #' @param verbose logical. Whether to print updates using progress bar.
 #'
 #' @return a fitted aba model
@@ -13,7 +14,7 @@
 #' @examples
 #' data <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
 #'
-#' model_spec <- aba_model() %>%
+#' model <- aba_model() %>%
 #'   set_data(data) %>%
 #'   set_groups(everyone()) %>%
 #'   set_outcomes(ConvertedToAlzheimers, CSF_ABETA_STATUS_bl) %>%
@@ -23,25 +24,23 @@
 #'   ) %>%
 #'   set_stats('glm')
 #'
-#' model <- model_spec %>% fit_boot(ntrials = 5)
-fit_boot <- function(object, ntrials, verbose = FALSE) {
-  if (ntrials <= 1) stop('ntrials must be greater than 1.')
+#' model <- model %>% fit_traintest(split = 0.8, ntrials = 5)
+fit_traintest <- function(object, split = 0.8, ntrials = 1, verbose = FALSE) {
+
   model <- object
   if (is.null(model$groups)) model <- model %>% set_groups(everyone())
   if (is.null(model$predictors)) model$predictors <- list('Basic'=c())
 
   # compile model
   fit_df <- model %>% aba_compile()
-  ntrials <- 1 + ntrials
 
   # progress bar
   pb <- NULL
-  if (verbose) pb <- progress::progress_bar$new(total = ntrials*nrow(fit_df))
+  if (verbose) pb <- progress::progress_bar$new(total = nrow(fit_df))
 
   fit_df <- 1:ntrials %>%
     purrr::map(
       function(index) {
-        # add data
         fit_df <- fit_df %>%
           group_by(group, outcome, stat) %>%
           nest() %>%
@@ -59,16 +58,20 @@ fit_boot <- function(object, ntrials, verbose = FALSE) {
           ) %>%
           ungroup()
 
-        # apply bootstrap sampling to data
         fit_df <- fit_df %>%
           mutate(
             data = purrr::map(
               .data$data,
               function(data) {
-                data[sample(1:nrow(data), nrow(data), replace=TRUE),]
+                train_idx <- sample(1:nrow(data), split*nrow(data), replace=FALSE)
+                test_idx <- setdiff(1:nrow(data), train_idx)
+                data_train <- data[train_idx,]
+                data_test <- data[test_idx,]
+                list('data'=data_train, 'data_test'=data_test)
               }
             )
           ) %>%
+          unnest_wider(data) %>%
           unnest(info)
 
         # fit model
@@ -81,7 +84,6 @@ fit_boot <- function(object, ntrials, verbose = FALSE) {
               stat = .data$stat,
               predictors = .data$predictor,
               covariates = .data$covariate,
-              is_boot = index != 1,
               pb = pb
             )
           ) %>%
@@ -89,7 +91,7 @@ fit_boot <- function(object, ntrials, verbose = FALSE) {
 
         # select only factor labels and fit
         fit_df <- fit_df %>%
-          select(gid, oid, sid, pid, fit) %>%
+          select(gid, oid, sid, pid, fit, .data$data_test) %>%
           rename(
             group = gid,
             outcome = oid,
@@ -97,7 +99,7 @@ fit_boot <- function(object, ntrials, verbose = FALSE) {
             predictor = pid
           )
 
-        fit_df <- fit_df %>% mutate(trial = index - 1)
+        fit_df <- fit_df %>% mutate(trial = index)
 
         # check that all models are not null
         if (sum(purrr::map_lgl(fit_df$fit, ~!is.null(.))) == 0) {
@@ -110,6 +112,8 @@ fit_boot <- function(object, ntrials, verbose = FALSE) {
 
   model$results <- fit_df
   model$is_fit <- TRUE
-  model$fit_type <- 'boot'
+  model$fit_type <- 'traintest'
   return(model)
 }
+
+
