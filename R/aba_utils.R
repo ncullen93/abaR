@@ -324,7 +324,6 @@ set_predictors <- function(model, ..., labels = NULL) {
 #' @export
 #'
 #' @examples
-#'
 #' # create default stat object by specifying only a string
 #' model <- aba_model() %>%
 #'   set_stats('glm')
@@ -345,7 +344,6 @@ set_predictors <- function(model, ..., labels = NULL) {
 #'
 #' # you can see these extra stat params when you print the model
 #' print(model)
-#'
 set_stats <- function(model, ..., labels = NULL) {
   .model <- model
   stats <- list(...)
@@ -378,6 +376,38 @@ set_stats <- function(model, ..., labels = NULL) {
 }
 
 
+#' Set the evals of an aba model
+#'
+#' Evals are the ways in which you fit your stats on the data. The standard
+#' method is to simply fit the model on the entire dataset one time. However,
+#' there are additional methods such as bootstrap sampling, train-test splits,
+#' and cross validation. An aba model can have multiple evals, which can
+#' be useful if you want to test the difference between cross validation with
+#' five splits or three, for example.
+#'
+#' @param model aba model. The model to set the evals for.
+#' @param ... comma-separated strings or abaEval objects. The evals you wish
+#'   to set for the given model
+#' @param labels vector of strings (optional). The labels for each eval.
+#'
+#' @return aba model with evals set.
+#' @export
+#'
+#' @examples
+#' model <- aba_model() %>% set_evals('standard', 'boot', 'traintest', 'cv')
+#' model <- aba_model() %>%
+#'   set_evals(
+#'     eval_standard(),
+#'     eval_boot(ntrials = 100),
+#'     eval_traintest(split = 0.5, ntrials = 10),
+#'     eval_cv(nsplits = 3, ntrials = 10)
+#'   )
+#' model <- aba_model() %>%
+#'   set_evals(
+#'     eval_cv(nsplits = 3),
+#'     eval_cv(nsplits = 5),
+#'     labels = c('3-fold CV', '5-fold CV')
+#'   )
 set_evals <- function(model, ..., labels = NULL) {
   .model <- model
   evals <- list(...)
@@ -402,7 +432,6 @@ set_evals <- function(model, ..., labels = NULL) {
     eval_names <- evals %>% purrr::map_chr(~.$eval_type)
     names(evals) <- make.names(eval_names, unique=T) %>%
       stringr::str_replace('\\.','_')
-    #names(evals) <- paste0('E', seq_along(evals))
   }
 
   .model$evals <- evals

@@ -120,4 +120,9 @@ fit_traintest <- function(object, split = 0.8, ntrials = 1, verbose = FALSE) {
   return(model)
 }
 
-
+summary_traintest <- function(object,
+                              label,
+                              control = aba_control(),
+                              adjust = aba_adjust(),
+                              verbose = FALSE) {
+}

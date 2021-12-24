@@ -127,4 +127,10 @@ fit_cv <- function(object, nsplits = 5, ntrials = 1, verbose = FALSE) {
   return(model)
 }
 
+summary_cv <- function(object,
+                       label,
+                       control = aba_control(),
+                       adjust = aba_adjust(),
+                       verbose = FALSE) {
+}
 

@@ -29,6 +29,10 @@
 #'   primary functions are to 1) generate a suitable model formula given the
 #'   outcome - covariate - predictor combination, and 2) to actually fit the
 #'   statistical model.
+#' @param evals string or abaEveal object(s) with `eval_` prefix. Evals are
+#'   the ways in which your model is fit on the data. The standard method is
+#'   to simply fit the models on the entire data, but you can also fit models
+#'   using bootstrapping, train-test splits, or cross validation.
 #'
 #' @return An aba model which can be fitted using the `aba_fit()` function and
 #'   which can be modified in any manner.
@@ -151,9 +155,9 @@ print.abaModel <- function(x, ...) {
   }
 
   # OUTCOMES #
-  cat('\nOutcomes:\n   ')
   n_outcomes <- length(outcome_vals)
   if (n_outcomes > 0) {
+    cat('\nOutcomes:\n   ')
     cat(outcome_labels[1:min(n_outcomes, 8)], sep='\n   ')
     if (n_outcomes >= 9) {
       cat('   ...\n   ')
@@ -169,9 +173,9 @@ print.abaModel <- function(x, ...) {
   }
 
   # PREDICTORS #
-  cat('\nPredictors:\n   ')
   n_predictors <- length(predictor_vals)
   if (n_predictors > 0) {
+    cat('\nPredictors:\n   ')
     cat(predictor_labels[1:min(n_predictors, 8)], sep='\n   ')
     if (n_predictors >= 9) {
       cat('   ...\n   ')

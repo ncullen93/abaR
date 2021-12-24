@@ -36,7 +36,6 @@ determines whether to z-score all variables prior to model fitting, and
 available data within each group - outcome but across all predictor sets.
 }
 \examples{
-
 # create default stat object by specifying only a string
 model <- aba_model() \%>\%
   set_stats('glm')
@@ -57,5 +56,4 @@ model <- aba_model() \%>\%
 
 # you can see these extra stat params when you print the model
 print(model)
-
 }

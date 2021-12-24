@@ -37,6 +37,11 @@ the actual statistical models which you want to fit on the data. Their
 primary functions are to 1) generate a suitable model formula given the
 outcome - covariate - predictor combination, and 2) to actually fit the
 statistical model.}
+
+\item{evals}{string or abaEveal object(s) with \code{eval_} prefix. Evals are
+the ways in which your model is fit on the data. The standard method is
+to simply fit the models on the entire data, but you can also fit models
+using bootstrapping, train-test splits, or cross validation.}
 }
 \value{
 An aba model which can be fitted using the \code{aba_fit()} function and
