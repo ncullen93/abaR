@@ -142,6 +142,11 @@ the actual statistical models which you want to fit on the data. Their
 primary functions are to 1) generate a suitable model formula given the
 outcome - covariate - predictor combination, and 2) to actually fit the
 statistical model.</p></dd>
+<dt>evals</dt>
+<dd><p>string or abaEveal object(s) with <code>eval_</code> prefix. Evals are
+the ways in which your model is fit on the data. The standard method is
+to simply fit the models on the entire data, but you can also fit models
+using bootstrapping, train-test splits, or cross validation.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
