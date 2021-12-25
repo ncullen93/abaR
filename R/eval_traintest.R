@@ -120,9 +120,35 @@ fit_traintest <- function(object, split = 0.8, ntrials = 1, verbose = FALSE) {
   return(model)
 }
 
-summary_traintest <- function(object,
+summary_traintest <- function(model,
                               label,
                               control = aba_control(),
                               adjust = aba_adjust(),
                               verbose = FALSE) {
+  if (length(model$evals) > 1) model$results <- model$results[[label]]
+  results <- model$results
+
+  # grab stat object
+  results <- results %>%
+    mutate(
+      stat_obj = purrr::map(stat, ~model$stats[[.]])
+    )
+
+  # use evaluate function from stat object on fitted model and test data
+  results <- results %>%
+    mutate(
+      results_test = purrr::pmap(
+        list(stat_obj, fit, data_test),
+        function(stat_obj, fit, data_test) {
+          x <- stat_obj$fns$evaluate(fit, data_test)
+          x
+        }
+      )
+    )
+
+  results <- results %>%
+    select(-c(fit, data_test, stat_obj)) %>%
+    unnest(results_test)
+
+  results
 }

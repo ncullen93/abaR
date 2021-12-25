@@ -71,6 +71,7 @@ aba_summary <- function(object,
         tmp_summary
       }
     )
+
   if (length(evals) == 1) results <- results[[1]]
 
   s <- list(

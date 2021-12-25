@@ -51,7 +51,8 @@ stat_lm <- function(std.beta = FALSE,
       'formula' = formula_lm,
       'fit' = fit_lm,
       'tidy' = tidy_lm,
-      'glance' = glance_lm
+      'glance' = glance_lm,
+      'evaluate' = evaluate_lm
     ),
     'params' = list(
       'std.beta' = std.beta,
@@ -127,6 +128,32 @@ glance_lm <- function(fit, fit_basic, ...) {
     )
 
   return(glance_df)
+}
+
+evaluate_lm <- function(model, data_test) {
+  # train data
+  data_train <- broom::augment(model, newdata=model.frame(model) %>% tibble())
+
+  outcome <- names(data_train)[1]
+  # newdata with fitted results
+  data_test <- broom::augment(model, newdata=data_test)
+  data_test <- data_test %>% select(data_train %>% names())
+
+  # calculate metrics
+  train_metrics <- yardstick::metrics(
+    data_test, truth = {{ outcome }}, estimate = .fitted
+  ) %>% mutate(form = 'train')
+
+  test_metrics <- yardstick::metrics(
+    data_train, truth = {{ outcome }}, estimate = .fitted
+  ) %>% mutate(form = 'test')
+
+  x <- train_metrics %>%
+    bind_rows(test_metrics) %>%
+    select(-.estimator) %>%
+    pivot_wider(names_from=.metric, values_from=.estimate)
+
+  x
 }
 
 # helper function for lm
