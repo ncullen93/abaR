@@ -143,7 +143,7 @@ calculate_coefs <- function(object, control) {
 
 # helper function for aba_summary
 coefs_pivot_wider <- function(object, wider = FALSE) {
-  df <- object$results$coefs
+  df <- object$results$coefs %>% select(-any_of(c('bias')))
   control <- object$control
 
   # handle digits
@@ -288,8 +288,8 @@ calculate_metrics <- function(object, control) {
 }
 
 metrics_pivot_wider <- function(object) {
-
-  df <- object$results$metrics %>%
+  df <- object$results$metrics %>% select(-any_of(c('bias')))
+  df <- df %>%
     mutate(
       estimate = purrr::pmap_chr(
         list(

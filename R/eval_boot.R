@@ -119,6 +119,7 @@ fit_boot <- function(object, ntrials, verbose = FALSE) {
   return(model)
 }
 
+# todo: add pairwise comparisons of models/metrics across bootstrap samples
 summary_boot <- function(object,
                          label,
                          control = aba_control(),
@@ -131,7 +132,8 @@ summary_boot <- function(object,
 
   coefs_df0 <- coefs_df %>%
     filter(.data$trial==0) %>%
-    select(-c(.data$trial, conf_low, conf_high))
+    select(-c(.data$trial, conf_low, conf_high)) %>%
+    rename(estimate0 = estimate)
 
   coefs_df1 <- coefs_df %>%
     filter(.data$trial != 0) %>%
@@ -139,6 +141,7 @@ summary_boot <- function(object,
     summarise(
       conf_low = quantile(estimate, 0.025),
       conf_high = quantile(estimate, 0.975),
+      estimate = mean(estimate, na.rm=T),
       .groups = 'keep'
     ) %>%
     ungroup()
@@ -148,14 +151,16 @@ summary_boot <- function(object,
       coefs_df1,
       by = c("group", "outcome", "stat", "predictor", "term")
     ) %>%
-    select(-pval, everything())
+    mutate(bias = estimate - estimate0) %>%
+    select(group:term, estimate, conf_low, conf_high, pval, bias)
 
   ## metrics ##
   metrics_df <- object %>% calculate_metrics(control)
 
   metrics_df0 <- metrics_df %>%
     filter(.data$trial==0) %>%
-    select(-c(.data$trial, conf_low, conf_high))
+    select(-c(.data$trial, conf_low, conf_high)) %>%
+    rename(estimate0 = estimate)
 
   metrics_df1 <- metrics_df %>%
     filter(.data$trial != 0) %>%
@@ -163,18 +168,18 @@ summary_boot <- function(object,
     summarise(
       conf_low = quantile(estimate, 0.025),
       conf_high = quantile(estimate, 0.975),
+      estimate = mean(estimate, na.rm=T),
       .groups = 'keep'
     ) %>%
-    ungroup() %>%
-    filter(
-      !term %in% c('nobs', 'pval')
-    )
+    ungroup()
 
   metrics_df <- metrics_df0 %>%
     left_join(
       metrics_df1,
       by = c("group", "outcome", "stat", "predictor", "term")
-    )
+    ) %>%
+    mutate(bias = estimate - estimate0) %>%
+    select(group:term, estimate, conf_low, conf_high, bias)
 
   results = list(
     coefs = coefs_df,

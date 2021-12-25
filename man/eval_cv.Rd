@@ -4,10 +4,10 @@
 \alias{eval_cv}
 \title{Create a cross validation evaluator}
 \usage{
-eval_cv(nsplits = 5, ntrials = 1)
+eval_cv(nfolds = 5, ntrials = 1)
 }
 \arguments{
-\item{nsplits}{integer. number of cv splits}
+\item{nfolds}{integer. number of cv folds}
 
 \item{ntrials}{integer. number of cv trials to run}
 }

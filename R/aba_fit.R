@@ -86,7 +86,7 @@ aba_fit <- function(object, verbose = FALSE) {
           'traintest' = model %>%
             fit_traintest(split = .eval$split, ntrials = .eval$ntrials),
           'cv' = model %>%
-            fit_cv(nsplits = .eval$nsplits, ntrials = .eval$ntrials)
+            fit_cv(nfolds = .eval$nfolds, ntrials = .eval$ntrials)
         )
         tmp_model$results
       }
