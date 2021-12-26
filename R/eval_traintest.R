@@ -150,5 +150,16 @@ summary_traintest <- function(model,
     select(-c(fit, data_test, stat_obj)) %>%
     unnest(results_test)
 
+  # summarise values
+  results <- results %>%
+    pivot_longer(rmse:mae) %>%
+    group_by(group, outcome, stat, predictor, form, name) %>%
+    summarise(
+      error_mean = mean(value),
+      error_sd = sd(value),
+      .groups='keep'
+    ) %>%
+    ungroup()
+
   results
 }
