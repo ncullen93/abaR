@@ -263,8 +263,9 @@ as_table <- function(model_summary, label = NULL) {
     purrr::map(
       function(eval_idx) {
         eval_obj <- object$model$evals[[eval_idx]]
-        results <- object$results[[eval_idx]]
-        tbl <- eval_obj$fns$as_table(results, control)
+        res <- results[[eval_idx]]
+        tbl_fn <- getFunction(glue('as_table_{eval_obj$eval_type}'))
+        tbl <- tbl_fn(res, control)
         tbl
       }
     )
@@ -349,38 +350,60 @@ print.abaSummary <- function(x, ...) {
   a2 <- split[2]
 
   tbl <- x %>% as_table()
-  tbl_nested <- tbl %>%
-    group_by(
-      .data[[a1]],
-      .data[[a2]],
-      .data$stat
-    ) %>%
-    nest() %>%
-    mutate(
-      label =
-      glue('{tup(a1)}: {.data[[a1]]} | {tup(a2)}: {.data[[a2]]} | Stat: {stat}')
-    )
+  if (tibble::is_tibble(tbl)) tbl <- list(tbl)
+
+  tbls <- tbl %>% purrr::imap(
+    function(tbl, .tbl_label) {
+      tbl_nested <- tbl %>%
+        group_by(
+          .data[[a1]],
+          .data[[a2]],
+          .data$stat
+        ) %>%
+        nest() %>%
+        mutate(
+          label =
+            glue('{tup(a1)}: {.data[[a1]]} | {tup(a2)}: {.data[[a2]]} | Stat: {stat}'),
+          tbl_label = .tbl_label
+        )
+    }
+  )
+
+  tbls_nested <- tbls %>% bind_rows() %>% group_by(label, .add=T) %>% nest()
 
   tbl_split <- stats::setNames(
-    split(tbl_nested, 1:nrow(tbl_nested)),
-    tbl_nested$label
+    split(tbls_nested, 1:nrow(tbls_nested)),
+    tbls_nested$label
   )
 
   tbl_length <- length(tbl_split)
 
+  tbl_label_map <- list(
+    'coefs_metrics' = 'Coefficients & Metrics',
+    'contrasts' = 'Contrasts'
+  )
+
   tbl_split %>% purrr::iwalk(
     function(x,y) {
       nchar_label <- nchar(y)
-      cat('\n'); cat(rep('-', nchar_label), sep=''); cat('\n')
+      cat(rep('-', nchar_label), sep=''); cat('\n')
       cat(y)
       cat('\n'); cat(rep('-', nchar_label), sep=''); cat('\n')
 
       # coefficients
-      print(
-        x$data[[1]][,colMeans(is.na(x$data[[1]])) < 1]
-      )
+      all_data <- x$data[[1]]
+      for (row_idx in 1:nrow(all_data)) {
+        tmp_data <- all_data$data[[row_idx]]
+        tmp_label <- all_data$tbl_label[[row_idx]]
+        cat(tbl_label_map[[tmp_label]]); cat(':\n')
+        print(
+          tmp_data[,colMeans(is.na(tmp_data)) < 1]
+        )
+        cat('\n')
+      }
     }
   )
+
 }
 
 

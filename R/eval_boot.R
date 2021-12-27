@@ -288,7 +288,9 @@ summary_boot <- function(object,
           conf_high = estimate + 1.96 * std_err
         )
     }
-    contrasts_df <- contrasts_df %>% select(-std_err)
+    contrasts_df <- contrasts_df %>%
+      select(-c(term, std_err)) %>%
+      rename(predictor = predictor1)
   }
 
   results = list(
@@ -340,7 +342,7 @@ as_table_contrasts <- function(results, control) {
 
 as_table_boot <- function(results, control) {
   # table for coefs + metrics
-  tbl1 <- as_table_coefs_metrics(
+  tbl1 <- as_table_standard(
     results = results[c('coefs','metrics')],
     control = control
   )
@@ -351,7 +353,10 @@ as_table_boot <- function(results, control) {
     control = control
   )
 
-  list(tbl1, tbl2)
+  c(
+    tbl1,
+    list('contrasts' = tbl2)
+  )
 }
 
 print_summary_boot <- function(results) {

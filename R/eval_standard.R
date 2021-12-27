@@ -229,24 +229,16 @@ as_table_metrics <- function(results, control) {
   df
 }
 
-as_table_coefs_metrics <- function(results, control) {
+as_table_standard <- function(results, control) {
   coefs <- results$coefs %>% as_table_coefs(control)
   metrics <- results$metrics %>% as_table_metrics(control)
   tbl <- coefs %>%
     left_join(metrics, by=c('group','outcome','stat','predictor')) %>%
     select(all_of(colnames(coefs)),everything())
-  tbl
-}
-
-as_table_standard <- function(results, control) {
-  # table for coefs + metrics
-  tbl <- as_table_coefs_metrics(
-    results = results[c('coefs','metrics')],
-    control = control
+  list(
+    'coefs_metrics' = tbl
   )
-  tbl
 }
-
 
 #' @export
 print.abaEval <- function(x, ...) {
