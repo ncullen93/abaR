@@ -1,3 +1,11 @@
+#' @export
+summary.abaModel <- function(object,
+                             control = aba_control(),
+                             adjust = aba_adjust(),
+                             verbose = FALSE,
+                             ...) {
+  object %>% aba_summary(...)
+}
 
 #' Summarise a fitted aba model.
 #'
@@ -84,15 +92,6 @@ aba_summary <- function(object,
   class(s) <- 'abaSummary'
 
   return(s)
-}
-
-#' @export
-summary.abaModel <- function(object,
-                             control = aba_control(),
-                             adjust = aba_adjust(),
-                             verbose = FALSE,
-                             ...) {
-  object %>% aba_summary(...)
 }
 
 # helper function for aba summary
@@ -353,7 +352,7 @@ print.abaSummary <- function(x, ...) {
   if (tibble::is_tibble(tbl)) tbl <- list(tbl)
 
   tbls <- tbl %>% purrr::imap(
-    function(tbl, .tbl_label) {
+    function(tbl, tbl_label) {
       tbl_nested <- tbl %>%
         group_by(
           .data[[a1]],
@@ -364,7 +363,7 @@ print.abaSummary <- function(x, ...) {
         mutate(
           label =
             glue('{tup(a1)}: {.data[[a1]]} | {tup(a2)}: {.data[[a2]]} | Stat: {stat}'),
-          tbl_label = .tbl_label
+          tbl_label = tbl_label
         )
     }
   )
@@ -380,6 +379,7 @@ print.abaSummary <- function(x, ...) {
 
   tbl_label_map <- list(
     'coefs_metrics' = 'Coefficients & Metrics',
+    'coefs_metrics_boot' = 'Coefficients & Metrics (bootstrapped)',
     'contrasts' = 'Contrasts'
   )
 
@@ -390,7 +390,6 @@ print.abaSummary <- function(x, ...) {
       cat(y)
       cat('\n'); cat(rep('-', nchar_label), sep=''); cat('\n')
 
-      # coefficients
       all_data <- x$data[[1]]
       for (row_idx in 1:nrow(all_data)) {
         tmp_data <- all_data$data[[row_idx]]
@@ -403,7 +402,6 @@ print.abaSummary <- function(x, ...) {
       }
     }
   )
-
 }
 
 

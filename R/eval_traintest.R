@@ -32,13 +32,17 @@ eval_traintest <- function(split = 0.8,
                            ntrials = 1,
                            conf_type = c('norm', 'perc'),
                            contrasts = TRUE) {
+  conf_type <- match.arg(conf_type)
+
   struct <- list(
     split = split,
     ntrials = ntrials,
+    conf_type = conf_type,
     contrasts = contrasts
   )
   struct$eval_type <- 'traintest'
   class(struct) <- 'abaEval'
+
   struct
 }
 
@@ -133,6 +137,7 @@ fit_traintest <- function(object, split = 0.8, ntrials = 1, verbose = FALSE) {
   return(model)
 }
 
+
 summary_traintest <- function(model,
                               label,
                               control = aba_control(),
@@ -141,6 +146,8 @@ summary_traintest <- function(model,
   if (length(model$evals) > 1) model$results <- model$results[[label]]
   results <- model$results
   ntrials <- max(results$trial)
+  eval_obj <- model$evals[[label]]
+  conf_type <- eval_obj$conf_type
 
   # grab stat object
   results <- results %>%
@@ -177,14 +184,42 @@ summary_traintest <- function(model,
     ) %>%
     ungroup()
 
-  if (ntrials == 1) {
+  results_train <- results %>%
+    filter(form == 'train') %>%
+    select(group:predictor, name, estimate) %>%
+    rename(estimate_train = estimate)
+
+  results <- results %>% filter(form == 'test') %>% select(-form) %>%
+    left_join(
+      x_train,
+      by = c("group", "outcome", "stat", "predictor", "name")
+    ) %>%
+    mutate(
+      bias = estimate - estimate_train
+    ) %>%
+    select(-estimate_train) %>%
+    rename(term = name)
+
+  if (conf_type == 'norm') {
     results <- results %>%
       mutate(
-        std_err = NA,
-        conf_low = NA,
-        conf_high = NA
+        conf_low = estimate - 1.96 * std_err,
+        conf_high = estimate + 1.96 * std_err
       )
   }
 
+  if (ntrials == 1) results <- results %>% mutate(conf_low = NA, conf_high = NA)
+
+  results <- results %>%
+    select(group:term, estimate, conf_low, conf_high, bias)
+
+  #if (contrasts) {
+#
+  #}
+
   results
+}
+
+as_table_traintest <- function(results, control) {
+
 }

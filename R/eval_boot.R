@@ -342,25 +342,26 @@ as_table_contrasts <- function(results, control) {
 
 as_table_boot <- function(results, control) {
   # table for coefs + metrics
-  tbl1 <- as_table_standard(
+  tbl <- as_table_standard(
     results = results[c('coefs','metrics')],
     control = control
   )
+  names(tbl) <- c('coefs_metrics_boot')
 
-  # table for contrasts
-  tbl2 <- as_table_contrasts(
-    results = results[['contrasts']],
-    control = control
-  )
 
-  c(
-    tbl1,
-    list('contrasts' = tbl2)
-  )
-}
+  if ('contrasts' %in% names(results)) {
+    tbl2 <- as_table_contrasts(
+      results = results[['contrasts']],
+      control = control
+    )
 
-print_summary_boot <- function(results) {
+    tbl <- c(
+      tbl,
+      list('contrasts' = tbl2)
+    )
+  }
 
+  tbl
 }
 
 
