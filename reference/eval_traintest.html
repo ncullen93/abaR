@@ -71,7 +71,12 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">eval_traintest</span><span class="op">(</span>split <span class="op">=</span> <span class="fl">0.8</span>, ntrials <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">eval_traintest</span><span class="op">(</span>
+  split <span class="op">=</span> <span class="fl">0.8</span>,
+  ntrials <span class="op">=</span> <span class="fl">1</span>,
+  conf_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"norm"</span>, <span class="st">"perc"</span><span class="op">)</span>,
+  contrasts <span class="op">=</span> <span class="cn">TRUE</span>
+<span class="op">)</span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -80,10 +85,22 @@
 <dd><p>double between 0 and 1. percent of data to use as train set</p></dd>
 <dt>ntrials</dt>
 <dd><p>integer. number of train-test trials to run</p></dd>
+<dt>conf_type</dt>
+<dd><p>string. How to calculate confidence interval of performance
+metrics across trials: 'norm' calcualtes std err using the 'sd' function,
+'perc' calculats lower and upper conf values using the 'quantile' function.</p></dd>
+<dt>contrasts</dt>
+<dd><p>logical. Whether to compare test performance of fits within
+each group-outcome-stat combination (i.e., between predictors). This will
+result in a p-value for each model comparison as the proporiton of trials
+where one model had a lower performance than another model. Thus, a p-value
+of 0.05 indicates that one model performed worse than the other model 5%
+of the trials. If ntrials == 1, then this value can only be 0 or 1 to
+indicate which model is better.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>aba model</p>
+    <p>an aba model with modified evals parameter</p>
     </div>
 
     <div class="section level2">
