@@ -169,22 +169,22 @@ summary_boot <- function(object,
     ) %>%
     ungroup()
 
-  if (conf_type == 'norm') {
-    coefs_df_boot <- coefs_df_boot %>%
-      mutate(
-        conf_low = estimate_boot - 1.96 * std_err,
-        conf_high = estimate_boot + 1.96 * std_err
-      )
-  }
-
-  coefs_df_boot <- coefs_df_boot %>% select(-std_err)
-
   coefs_df_proc <- coefs_df_orig %>%
     left_join(
       coefs_df_boot,
       by = c("group", "outcome", "stat", "predictor", "term")
     ) %>%
-    mutate(bias = estimate - estimate_boot) %>%
+    mutate(bias = estimate_boot - estimate)
+
+  if (conf_type == 'norm') {
+    coefs_df_proc <- coefs_df_proc %>%
+      mutate(
+        conf_low = estimate - 1.96 * std_err,
+        conf_high = estimate + 1.96 * std_err
+      )
+  }
+
+  coefs_df_proc <- coefs_df_proc %>%
     select(group:term, estimate, conf_low, conf_high, pval, bias)
 
   #############
@@ -209,23 +209,24 @@ summary_boot <- function(object,
     ) %>%
     ungroup()
 
-  if (conf_type == 'norm') {
-    metrics_df_boot <- metrics_df_boot %>%
-      mutate(
-        conf_low = estimate_boot - 1.96 * std_err,
-        conf_high = estimate_boot + 1.96 * std_err
-      )
-  }
-
-  metrics_df_boot <- metrics_df_boot %>% select(-std_err)
-
   metrics_df_proc <- metrics_df_orig %>%
     left_join(
       metrics_df_boot,
       by = c("group", "outcome", "stat", "predictor", "term")
     ) %>%
-    mutate(bias = estimate - estimate_boot) %>%
+    mutate(bias = estimate_boot - estimate)
+
+  if (conf_type == 'norm') {
+    metrics_df_proc <- metrics_df_proc %>%
+      mutate(
+        conf_low = estimate - 1.96 * std_err,
+        conf_high = estimate + 1.96 * std_err
+      )
+  }
+
+  metrics_df_proc <- metrics_df_proc %>%
     select(group:term, estimate, conf_low, conf_high, bias)
+
 
   ###############
   ## contrasts ##
