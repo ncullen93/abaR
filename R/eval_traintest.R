@@ -84,7 +84,7 @@ fit_traintest <- function(object, split = 0.8, ntrials = 1, verbose = FALSE) {
             data = purrr::map(
               .data$data,
               function(data) {
-                train_idx <- sample(1:nrow(data), split*nrow(data), replace=FALSE)
+                train_idx <- sample(nrow(data), split*nrow(data), replace=FALSE)
                 test_idx <- setdiff(1:nrow(data), train_idx)
                 data_train <- data[train_idx,]
                 data_test <- data[test_idx,]
@@ -148,6 +148,7 @@ summary_traintest <- function(model,
   ntrials <- max(results$trial)
   eval_obj <- model$evals[[label]]
   conf_type <- eval_obj$conf_type
+  contrasts <- eval_obj$contrasts
 
   # grab stat object
   results <- results %>%
@@ -171,6 +172,9 @@ summary_traintest <- function(model,
     select(-c(fit, data_test, stat_obj)) %>%
     unnest(results_test)
 
+  # store for calculating contrasts later
+  results_raw <- results
+
   # summarise values
   results <- results %>%
     pivot_longer(rmse:mae) %>%
@@ -189,15 +193,13 @@ summary_traintest <- function(model,
     select(group:predictor, name, estimate) %>%
     rename(estimate_train = estimate)
 
-  results <- results %>% filter(form == 'test') %>% select(-form) %>%
+  results <- results %>%
+    filter(form == 'test') %>%
+    select(-form) %>%
     left_join(
-      x_train,
+      results_train,
       by = c("group", "outcome", "stat", "predictor", "name")
     ) %>%
-    mutate(
-      bias = estimate - estimate_train
-    ) %>%
-    select(-estimate_train) %>%
     rename(term = name)
 
   if (conf_type == 'norm') {
@@ -211,15 +213,100 @@ summary_traintest <- function(model,
   if (ntrials == 1) results <- results %>% mutate(conf_low = NA, conf_high = NA)
 
   results <- results %>%
-    select(group:term, estimate, conf_low, conf_high, bias)
+    select(group:term, estimate, conf_low, conf_high, estimate_train)
 
-  #if (contrasts) {
-#
-  #}
+  results_list <- list(
+    test_metrics = results
+  )
 
-  results
+  if (contrasts) {
+    metric <- results_raw %>% select(-c(group:form)) %>% names() %>% head(1)
+    contrasts_df <- results_raw %>%
+      filter(form == 'test') %>%
+      rename(estimate = {{ metric }}) %>%
+      select(group:form, estimate) %>%
+      pivot_wider(names_from=predictor, values_from=estimate)
+
+
+    xdf <- contrasts_df %>% select(all_of(unique(results_raw$predictor)))
+
+    cdf <- combn(data.frame(xdf), 2, FUN = function(x) x[,1] - x[,2]) %>%
+      data.frame() %>% tibble() %>%
+      set_names(
+        combn(unique(results_raw$predictor), 2,
+              FUN = function(o) paste0(o[[1]],'_',o[[2]]))
+      )
+
+    contrasts_df <- contrasts_df %>%
+      select(-all_of(unique(results_raw$predictor))) %>%
+      bind_cols(cdf)
+
+    contrasts_df <- contrasts_df %>%
+      group_by(group, outcome, stat) %>%
+      summarise(
+        across(colnames(cdf),
+               list(
+                 'estimate' = ~ mean(.x, na.rm=T),
+                 'stderr' = ~ sd(.x, na.rm=T),
+                 'conflow' = ~ quantile(.x, 0.025, na.rm=T),
+                 'confhigh' = ~ quantile(.x, 0.975, na.rm=T),
+                 'pval' = ~ mean(.x < 0, na.rm=T) # direction should be inferred
+               )),
+        .groups = 'keep'
+      ) %>%
+      ungroup()
+
+    contrasts_df <- contrasts_df %>%
+      pivot_longer(
+        cols = -c(group, outcome, stat),
+        names_to=c('predictor', 'predictor2', 'form'),
+        names_sep = '_'
+      ) %>%
+      pivot_wider(names_from = form, values_from = value) %>%
+      rename(conf_low = conflow, conf_high = confhigh, std_err = stderr)
+
+    if (conf_type == 'norm') {
+      contrasts_df <- contrasts_df %>%
+        mutate(
+          conf_low = estimate - 1.96 * std_err,
+          conf_high = estimate + 1.96 * std_err
+        )
+    }
+
+    contrasts_df <- contrasts_df %>%
+      select(-c(std_err))
+
+    results_list$contrasts <- contrasts_df
+  }
+
+  results_list
+}
+
+as_table_test_metrics <- function(results, control) {
+
 }
 
 as_table_traintest <- function(results, control) {
 
+  # test metrics table
+  tbl <- as_table_test_metrics(
+    results = results$test_metrics,
+    control = control
+  )
+  tbl <- list('test_metrics' = tbl)
+
+  # contrasts table
+  if ('contrasts' %in% names(results)) {
+    tbl2 <- as_table_contrasts(
+      results = results$contrasts,
+      control = control
+    )
+
+    tbl <- c(
+      tbl,
+      list('contrasts' = tbl2)
+    )
+  }
+
+  tbl
 }

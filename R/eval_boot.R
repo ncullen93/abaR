@@ -71,9 +71,9 @@ fit_boot <- function(object, ntrials, verbose = FALSE) {
           mutate(
             data = process_dataset(
               data = model$data,
-              group = .data$group,
-              outcome = .data$outcome,
-              stat = .data$stat,
+              group = group,
+              outcome = outcome,
+              stat = stat,
               predictors = model$predictors,
               covariates = model$covariates
             )
@@ -85,9 +85,9 @@ fit_boot <- function(object, ntrials, verbose = FALSE) {
           fit_df <- fit_df %>%
             mutate(
               data = purrr::map(
-                .data$data,
+                data,
                 function(data) {
-                  data[sample(1:nrow(data), nrow(data), replace=TRUE),]
+                  data[sample(nrow(data), nrow(data), replace=TRUE),]
                 }
               )
             )
@@ -173,8 +173,8 @@ summary_boot <- function(object,
     left_join(
       coefs_df_boot,
       by = c("group", "outcome", "stat", "predictor", "term")
-    ) %>%
-    mutate(bias = estimate_boot - estimate)
+    ) #%>%
+    #mutate(bias = estimate_boot - estimate)
 
   if (conf_type == 'norm') {
     coefs_df_proc <- coefs_df_proc %>%
@@ -185,7 +185,7 @@ summary_boot <- function(object,
   }
 
   coefs_df_proc <- coefs_df_proc %>%
-    select(group:term, estimate, conf_low, conf_high, pval, bias)
+    select(group:term, estimate, conf_low, conf_high, pval, estimate_boot)
 
   #############
   ## metrics ##
@@ -213,8 +213,7 @@ summary_boot <- function(object,
     left_join(
       metrics_df_boot,
       by = c("group", "outcome", "stat", "predictor", "term")
-    ) %>%
-    mutate(bias = estimate_boot - estimate)
+    )
 
   if (conf_type == 'norm') {
     metrics_df_proc <- metrics_df_proc %>%
@@ -225,7 +224,7 @@ summary_boot <- function(object,
   }
 
   metrics_df_proc <- metrics_df_proc %>%
-    select(group:term, estimate, conf_low, conf_high, bias)
+    select(group:term, estimate, conf_low, conf_high, estimate_boot)
 
 
   ###############
@@ -242,7 +241,6 @@ summary_boot <- function(object,
       select(-c(conf_low, conf_high)) %>%
       pivot_wider(names_from=predictor, values_from=estimate)
 
-
     xdf <- contrasts_df %>% select(all_of(unique(metrics_df$predictor)))
 
     cdf <- combn(data.frame(xdf), 2, FUN = function(x) x[,1] - x[,2]) %>%
@@ -255,7 +253,6 @@ summary_boot <- function(object,
     contrasts_df <- contrasts_df %>%
       select(-all_of(unique(metrics_df$predictor))) %>%
       bind_cols(cdf)
-
 
     contrasts_df <- contrasts_df %>%
       group_by(group, outcome, stat, term) %>%
@@ -275,7 +272,7 @@ summary_boot <- function(object,
     contrasts_df <- contrasts_df %>%
       pivot_longer(
         cols = -c(group, outcome, stat, term),
-        names_to=c('predictor1', 'predictor2', 'form'),
+        names_to=c('predictor', 'predictor2', 'form'),
         names_sep = '_'
       ) %>%
       pivot_wider(names_from = form, values_from = value) %>%
@@ -288,9 +285,9 @@ summary_boot <- function(object,
           conf_high = estimate + 1.96 * std_err
         )
     }
+
     contrasts_df <- contrasts_df %>%
-      select(-c(term, std_err)) %>%
-      rename(predictor = predictor1)
+      select(-c(term, std_err))
   }
 
   results = list(
