@@ -261,8 +261,11 @@ summary_boot <- function(object,
       summarise(
         across(colnames(cdf),
                list(
-                 'estimate' = ~ mean(.x),
-                 'pval' = ~ mean(.x > 0)
+                 'estimate' = ~ mean(.x, na.rm=T),
+                 'stderr' = ~ sd(.x, na.rm=T),
+                 'conflow' = ~ quantile(.x, 0.025, na.rm=T),
+                 'confhigh' = ~ quantile(.x, 0.975, na.rm=T),
+                 'pval' = ~ mean(.x > 0, na.rm=T)
                )),
         .groups = 'keep'
       ) %>%
@@ -274,7 +277,17 @@ summary_boot <- function(object,
         names_to=c('predictor1', 'predictor2', 'form'),
         names_sep = '_'
       ) %>%
-      pivot_wider(names_from = form, values_from = value)
+      pivot_wider(names_from = form, values_from = value) %>%
+      rename(conf_low = conflow, conf_high = confhigh, std_err = stderr)
+
+    if (conf_type == 'norm') {
+      contrasts_df <- contrasts_df %>%
+        mutate(
+          conf_low = estimate - 1.96 * std_err,
+          conf_high = estimate + 1.96 * std_err
+        )
+    }
+    contrasts_df <- contrasts_df %>% select(-std_err)
   }
 
   results = list(
