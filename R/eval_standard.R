@@ -64,7 +64,6 @@ fit_standard <- function(object, verbose = FALSE) {
         stat = .data$stat,
         predictors = .data$predictor,
         covariates = .data$covariate,
-        is_boot = FALSE,
         pb = pb
       )
     ) %>%

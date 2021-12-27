@@ -140,7 +140,7 @@ aba_compile <- function(object, ...) {
 
 # Makes a formula and fits the statsitical model from the given parameters.
 fit_stat <- function(
-  data, outcome, predictors, covariates, stat, is_boot, pb
+  data, outcome, predictors, covariates, stat, pb
 ) {
   if (!is.null(pb)) pb$tick()
 

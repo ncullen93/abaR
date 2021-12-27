@@ -65,19 +65,21 @@ fit_boot <- function(object, ntrials, verbose = FALSE) {
           ungroup()
 
         # apply bootstrap sampling to data
-        fit_df <- fit_df %>%
-          mutate(
-            data = purrr::map(
-              .data$data,
-              function(data) {
-                data[sample(1:nrow(data), nrow(data), replace=TRUE),]
-              }
+        if (index != 1) {
+          fit_df <- fit_df %>%
+            mutate(
+              data = purrr::map(
+                .data$data,
+                function(data) {
+                  data[sample(1:nrow(data), nrow(data), replace=TRUE),]
+                }
+              )
             )
-          ) %>%
-          unnest(info)
+        }
 
         # fit model
         fit_df <- fit_df %>%
+          unnest(info) %>%
           rowwise() %>%
           mutate(
             fit = fit_stat(
@@ -86,7 +88,6 @@ fit_boot <- function(object, ntrials, verbose = FALSE) {
               stat = .data$stat,
               predictors = .data$predictor,
               covariates = .data$covariate,
-              is_boot = index != 1,
               pb = pb
             )
           ) %>%
@@ -132,8 +133,7 @@ summary_boot <- function(object,
 
   coefs_df0 <- coefs_df %>%
     filter(.data$trial==0) %>%
-    select(-c(.data$trial, conf_low, conf_high)) %>%
-    rename(estimate0 = estimate)
+    select(-c(.data$trial, conf_low, conf_high))
 
   coefs_df1 <- coefs_df %>%
     filter(.data$trial != 0) %>%
@@ -141,7 +141,7 @@ summary_boot <- function(object,
     summarise(
       conf_low = quantile(estimate, 0.025),
       conf_high = quantile(estimate, 0.975),
-      estimate = mean(estimate, na.rm=T),
+      estimate_boot = mean(estimate, na.rm=T),
       .groups = 'keep'
     ) %>%
     ungroup()
@@ -151,7 +151,7 @@ summary_boot <- function(object,
       coefs_df1,
       by = c("group", "outcome", "stat", "predictor", "term")
     ) %>%
-    mutate(bias = estimate - estimate0) %>%
+    mutate(bias = estimate - estimate_boot) %>%
     select(group:term, estimate, conf_low, conf_high, pval, bias)
 
   ## metrics ##
@@ -159,8 +159,7 @@ summary_boot <- function(object,
 
   metrics_df0 <- metrics_df %>%
     filter(.data$trial==0) %>%
-    select(-c(.data$trial, conf_low, conf_high)) %>%
-    rename(estimate0 = estimate)
+    select(-c(.data$trial, conf_low, conf_high))
 
   metrics_df1 <- metrics_df %>%
     filter(.data$trial != 0) %>%
@@ -168,7 +167,7 @@ summary_boot <- function(object,
     summarise(
       conf_low = quantile(estimate, 0.025),
       conf_high = quantile(estimate, 0.975),
-      estimate = mean(estimate, na.rm=T),
+      estimate_boot = mean(estimate, na.rm=T),
       .groups = 'keep'
     ) %>%
     ungroup()
@@ -178,7 +177,7 @@ summary_boot <- function(object,
       metrics_df1,
       by = c("group", "outcome", "stat", "predictor", "term")
     ) %>%
-    mutate(bias = estimate - estimate0) %>%
+    mutate(bias = estimate - estimate_boot) %>%
     select(group:term, estimate, conf_low, conf_high, bias)
 
   results = list(
