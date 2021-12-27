@@ -2,8 +2,17 @@
 #'
 #' @param split double between 0 and 1. percent of data to use as train set
 #' @param ntrials integer. number of train-test trials to run
-#'
-#' @return aba model
+#' @param conf_type string. How to calculate confidence interval of performance
+#'   metrics across trials: 'norm' calcualtes std err using the 'sd' function,
+#'   'perc' calculats lower and upper conf values using the 'quantile' function.
+#' @param contrasts logical. Whether to compare test performance of fits within
+#'   each group-outcome-stat combination (i.e., between predictors). This will
+#'   result in a p-value for each model comparison as the proporiton of trials
+#'   where one model had a lower performance than another model. Thus, a p-value
+#'   of 0.05 indicates that one model performed worse than the other model 5%
+#'   of the trials. If ntrials == 1, then this value can only be 0 or 1 to
+#'   indicate which model is better.
+#' @return an aba model with modified evals parameter
 #' @export
 #'
 #' @examples
@@ -19,10 +28,14 @@
 #'   set_stats('glm') %>%
 #'   set_evals('traintest') %>%
 #'   fit()
-eval_traintest <- function(split = 0.8, ntrials = 1) {
+eval_traintest <- function(split = 0.8,
+                           ntrials = 1,
+                           conf_type = c('norm', 'perc'),
+                           contrasts = TRUE) {
   struct <- list(
     split = split,
-    ntrials = ntrials
+    ntrials = ntrials,
+    contrasts = contrasts
   )
   struct$eval_type <- 'traintest'
   class(struct) <- 'abaEval'
@@ -127,6 +140,7 @@ summary_traintest <- function(model,
                               verbose = FALSE) {
   if (length(model$evals) > 1) model$results <- model$results[[label]]
   results <- model$results
+  ntrials <- max(results$trial)
 
   # grab stat object
   results <- results %>%
@@ -155,11 +169,22 @@ summary_traintest <- function(model,
     pivot_longer(rmse:mae) %>%
     group_by(group, outcome, stat, predictor, form, name) %>%
     summarise(
-      error_mean = mean(value),
-      error_sd = sd(value),
+      estimate = mean(value),
+      std_err = sd(value),
+      conf_low = quantile(value, 0.025, na.rm=T),
+      conf_high = quantile(value, 0.975, na.rm=T),
       .groups='keep'
     ) %>%
     ungroup()
+
+  if (ntrials == 1) {
+    results <- results %>%
+      mutate(
+        std_err = NA,
+        conf_low = NA,
+        conf_high = NA
+      )
+  }
 
   results
 }

@@ -4,15 +4,32 @@
 \alias{eval_traintest}
 \title{Create a train-test evaluator}
 \usage{
-eval_traintest(split = 0.8, ntrials = 1)
+eval_traintest(
+  split = 0.8,
+  ntrials = 1,
+  conf_type = c("norm", "perc"),
+  contrasts = TRUE
+)
 }
 \arguments{
 \item{split}{double between 0 and 1. percent of data to use as train set}
 
 \item{ntrials}{integer. number of train-test trials to run}
+
+\item{conf_type}{string. How to calculate confidence interval of performance
+metrics across trials: 'norm' calcualtes std err using the 'sd' function,
+'perc' calculats lower and upper conf values using the 'quantile' function.}
+
+\item{contrasts}{logical. Whether to compare test performance of fits within
+each group-outcome-stat combination (i.e., between predictors). This will
+result in a p-value for each model comparison as the proporiton of trials
+where one model had a lower performance than another model. Thus, a p-value
+of 0.05 indicates that one model performed worse than the other model 5\%
+of the trials. If ntrials == 1, then this value can only be 0 or 1 to
+indicate which model is better.}
 }
 \value{
-aba model
+an aba model with modified evals parameter
 }
 \description{
 Create a train-test evaluator

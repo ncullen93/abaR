@@ -4,12 +4,29 @@
 \alias{eval_cv}
 \title{Create a cross validation evaluator}
 \usage{
-eval_cv(nfolds = 5, ntrials = 1)
+eval_cv(
+  nfolds = 5,
+  ntrials = 1,
+  conf_type = c("norm", "perc"),
+  contrasts = TRUE
+)
 }
 \arguments{
 \item{nfolds}{integer. number of cv folds}
 
 \item{ntrials}{integer. number of cv trials to run}
+
+\item{conf_type}{string. How to calculate confidence interval of performance
+metrics across trials: 'norm' calcualtes std err using the 'sd' function,
+'perc' calculats lower and upper conf values using the 'quantile' function.}
+
+\item{contrasts}{logical. Whether to compare test performance of fits within
+each group-outcome-stat combination (i.e., between predictors). This will
+result in a p-value for each model comparison as the proporiton of trials
+where one model had a lower performance than another model. Thus, a p-value
+of 0.05 indicates that one model performed worse than the other model 5\%
+of the trials. If ntrials == 1, then this value can only be 0 or 1 to
+indicate which model is better.}
 }
 \value{
 aba model

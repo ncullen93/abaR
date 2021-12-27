@@ -2,7 +2,16 @@
 #'
 #' @param nfolds integer. number of cv folds
 #' @param ntrials integer. number of cv trials to run
-#'
+#' @param conf_type string. How to calculate confidence interval of performance
+#'   metrics across trials: 'norm' calcualtes std err using the 'sd' function,
+#'   'perc' calculats lower and upper conf values using the 'quantile' function.
+#' @param contrasts logical. Whether to compare test performance of fits within
+#'   each group-outcome-stat combination (i.e., between predictors). This will
+#'   result in a p-value for each model comparison as the proporiton of trials
+#'   where one model had a lower performance than another model. Thus, a p-value
+#'   of 0.05 indicates that one model performed worse than the other model 5%
+#'   of the trials. If ntrials == 1, then this value can only be 0 or 1 to
+#'   indicate which model is better.
 #' @return aba model
 #' @export
 #'
@@ -19,7 +28,10 @@
 #'   set_stats('glm') %>%
 #'   set_evals('cv') %>%
 #'   fit()
-eval_cv <- function(nfolds = 5, ntrials = 1) {
+eval_cv <- function(nfolds = 5,
+                    ntrials = 1,
+                    conf_type = c('norm', 'perc'),
+                    contrasts = TRUE) {
   struct <- list(
     nfolds = nfolds,
     ntrials = ntrials
@@ -131,13 +143,18 @@ fit_cv <- function(object, nfolds = 5, ntrials = 1, verbose = FALSE) {
   return(model)
 }
 
+
+
+# add model comparisons
 summary_cv <- function(model,
-                              label,
-                              control = aba_control(),
-                              adjust = aba_adjust(),
-                              verbose = FALSE) {
+                       label,
+                       control = aba_control(),
+                       adjust = aba_adjust(),
+                       verbose = FALSE) {
   if (length(model$evals) > 1) model$results <- model$results[[label]]
   results <- model$results
+  ntrials <- max(results$trial)
+  nfols <- max(results$fold)
 
   # grab stat object
   results <- results %>%
@@ -161,6 +178,38 @@ summary_cv <- function(model,
     select(-c(fit, data_test, stat_obj)) %>%
     unnest(results_test)
 
+
+
+  # summarise across folds
+  results <- results %>%
+    pivot_longer(rmse:mae) %>%
+    group_by(group, outcome, stat, predictor, form, name, trial) %>%
+    summarise(
+      estimate_trial = mean(value),
+      .groups='keep'
+    ) %>%
+    ungroup()
+
+  # now summarise across trials
+  results <- results %>%
+    group_by(group, outcome, stat, predictor, form, name) %>%
+    summarise(
+      estimate = mean(estimate_trial),
+      std_err = sd(estimate_trial),
+      conf_low = quantile(estimate_trial, 0.025, na.rm=T),
+      conf_high = quantile(estimate_trial, 0.975, na.rm=T),
+      .groups='keep'
+    ) %>%
+    ungroup()
+
+  if (ntrials == 1) {
+    results <- results %>%
+      mutate(
+        std_err = NA,
+        conf_low = NA,
+        conf_high = NA
+      )
+  }
+
   results
 }
-

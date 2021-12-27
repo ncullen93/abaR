@@ -4,10 +4,22 @@
 \alias{eval_boot}
 \title{Create a bootstrap evaluator}
 \usage{
-eval_boot(ntrials = 10)
+eval_boot(ntrials = 10, conf_type = c("norm", "perc"), contrasts = TRUE)
 }
 \arguments{
 \item{ntrials}{integer. number of trials to perform}
+
+\item{conf_type}{string. How to calculate confidence interval of performance
+metrics across trials: 'norm' calcualtes std err using the 'sd' function,
+'perc' calculats lower and upper conf values using the 'quantile' function.}
+
+\item{contrasts}{logical. Whether to compare performance of fits within
+each group-outcome-stat combination (i.e., between predictors). This will
+result in a p-value for each model comparison as the proporiton of trials
+where one model had a lower performance than another model. Thus, a p-value
+of 0.05 indicates that one model performed worse than the other model 5\%
+of the trials. This is useful to compare models which are not overlapping
+in parameters and therefore cannot be compared using a typical anova call.}
 }
 \value{
 aba model
