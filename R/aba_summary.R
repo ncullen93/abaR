@@ -140,61 +140,6 @@ calculate_coefs <- function(object, control) {
   return(r)
 }
 
-
-# helper function for aba_summary
-coefs_pivot_wider <- function(object, wider = FALSE) {
-  df <- object$results$coefs %>% select(-any_of(c('bias')))
-  control <- object$control
-
-  # handle digits
-  df <- df %>%
-    mutate(
-      across(estimate:conf_high,
-             ~purrr::map_chr(., ~sprintf(glue('%.{control$coef_digits}f'), .))),
-      pval = purrr::map_chr(
-        pval,
-        ~clip_metric(
-          sprintf(glue('%.{control$pval_digits}f'), .),
-          control$pval_digits
-        )
-      )
-    )
-
-  df <- df %>%
-    mutate(
-      estimate = purrr::pmap_chr(
-        list(
-          est = .data$estimate,
-          lo = .data$conf_low,
-          hi = .data$conf_high,
-          pval = .data$pval
-        ),
-        coef_fmt
-      )
-    ) %>%
-    select(-c(conf_low, conf_high, pval)) %>%
-    pivot_wider(
-      names_from = term,
-      values_from = estimate
-    )
-
-  df
-}
-
-# helper function for aba summary
-coef_fmt <- function(est, lo, hi, pval) {
-  coef <- glue('{est}')
-  if (!is.na(lo) | !is.na(hi)) coef <- glue('{coef} [{lo}, {hi}]')
-  if (!is.na(pval)) {
-    if (grepl('<',pval)) {
-      coef <- glue('{coef} (P{pval})')
-    } else {
-      coef <- glue('{coef} (P={pval})')
-    }
-  }
-  coef
-}
-
 # helper function for aba_summary
 calculate_metrics <- function(object, control) {
   metric_vars <- c(
@@ -248,24 +193,6 @@ calculate_metrics <- function(object, control) {
       )
     )
 
-  ## coefficients
-  #r <- r %>%
-  #  mutate(
-  #    coefs = purrr::map2(
-  #      .data$stat_obj, .data$fit,
-  #      function(.stat, .fit) {
-  #        if (is.null(.fit)) return(NULL)
-  #        .stat$fns$tidy(.fit, all_variables, all_covariates) %>%
-  #          rename(
-  #            conf_low = conf.low,
-  #            conf_high = conf.high,
-  #            pval = p.value
-  #          ) %>%
-  #          select(term, estimate, conf_low, conf_high, pval)
-  #      }
-  #    )
-  #  )
-
   # remove aic if !complete_cases
   process_metrics <- function(m, c) {
     if (!c) m <- m %>% filter(!(term %in% c('aic')))
@@ -285,71 +212,6 @@ calculate_metrics <- function(object, control) {
     filter(!is.na(estimate))
 
   r
-}
-
-metrics_pivot_wider <- function(object) {
-  df <- object$results$metrics %>% select(-any_of(c('bias')))
-  df <- df %>%
-    mutate(
-      estimate = purrr::pmap_chr(
-        list(
-          est = .data$estimate,
-          lo = .data$conf_low,
-          hi = .data$conf_high,
-          term = .data$term
-        ),
-        metric_fmt,
-        control = object$control
-      )
-    ) %>%
-    select(-c(conf_low, conf_high)) %>%
-    pivot_wider(
-      names_from = term,
-      values_from = estimate
-    )
-
-  if ('pval' %in% colnames(df)) {
-    df <- df %>% mutate(
-      pval = purrr::map_chr(pval, clip_metric, object$control$pval_digits)
-    )
-  }
-
-  df
-}
-
-clip_metric <- function(metric, digits) {
-  if (is.na(metric)) return(metric)
-  if (metric == paste0('0.',paste0(rep('0', digits),collapse=''))) {
-    metric <- paste0('<0.',paste0(rep('0', digits-1),collapse=''),'1')
-  }
-  metric
-}
-
-# default digits that will never change
-default_digits_map <- list(
-  'nobs' = 0,
-  'nsub' = 0,
-  'nevent' = 0
-)
-
-# helper function for aba summary
-metric_fmt <- function(est, lo, hi, term, control) {
-
-  if (term %in% names(default_digits_map)) {
-    digits <- default_digits_map[[term]]
-  } else if (glue('{term}_digits') %in% names(control)) {
-    digits <- control[[glue('{term}_digits')]]
-  } else {
-    digits <- control$metric_digits
-  }
-  fmt <- glue('%.{digits}f')
-
-  metric <- glue('{sprintf({fmt}, est)}')
-  if (!is.na(lo)) {
-    metric <- glue('{metric} [{sprintf({fmt}, lo)}, {sprintf({fmt}, hi)}]')
-  }
-
-  metric
 }
 
 
@@ -389,13 +251,26 @@ metric_fmt <- function(est, lo, hi, term, control) {
 #' # convert summary to table
 #' my_table <- model_summary %>% as_table()
 #'
-as_table <- function(object) {
-  df1 <- object %>% coefs_pivot_wider()
-  df2 <- object %>% metrics_pivot_wider()
-  df <- df2 %>%
-    left_join(df1, by=c('group','outcome','stat','predictor')) %>%
-    select(all_of(df1 %>% names),everything())
-  df
+as_table <- function(model_summary, label = NULL) {
+  object <- model_summary
+  control <- object$control
+  n_evals <- length(object$model$evals)
+  results <- object$results
+
+  if (n_evals == 1) results <- list(results)
+
+  tables <- seq_along(object$model$evals) %>%
+    purrr::map(
+      function(eval_idx) {
+        eval_obj <- object$model$evals[[eval_idx]]
+        results <- object$results[[eval_idx]]
+        tbl <- eval_obj$fns$as_table(results, control)
+        tbl
+      }
+    )
+
+  if (n_evals == 1) tables <- tables[[1]]
+  tables
 }
 
 #' Convert an aba summary to a interactive react table

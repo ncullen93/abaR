@@ -301,3 +301,61 @@ summary_boot <- function(object,
 
   results
 }
+
+
+as_table_contrasts <- function(results, control) {
+  r <- results
+
+  r <- r %>%
+    mutate(
+      across(estimate:conf_high,
+             ~purrr::map_chr(., ~sprintf(glue('%.{control$coef_digits}f'), .))),
+      pval = purrr::map_chr(
+        pval,
+        ~clip_metric(
+          sprintf(glue('%.{control$pval_digits}f'), .),
+          control$pval_digits
+        )
+      )
+    ) %>%
+    mutate(
+      estimate = purrr::pmap_chr(
+        list(
+          est = .data$estimate,
+          lo = .data$conf_low,
+          hi = .data$conf_high,
+          pval = .data$pval
+        ),
+        coef_fmt
+      )
+    ) %>%
+    select(-c(conf_low, conf_high, pval))
+
+  r <- r %>%
+    pivot_wider(names_from = predictor2, values_from = estimate)
+
+  r
+}
+
+
+as_table_boot <- function(results, control) {
+  # table for coefs + metrics
+  tbl1 <- as_table_coefs_metrics(
+    results = results[c('coefs','metrics')],
+    control = control
+  )
+
+  # table for contrasts
+  tbl2 <- as_table_contrasts(
+    results = results[['contrasts']],
+    control = control
+  )
+
+  list(tbl1, tbl2)
+}
+
+print_summary_boot <- function(results) {
+
+}
+
+

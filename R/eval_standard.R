@@ -110,6 +110,144 @@ summary_standard <- function(object,
   results
 }
 
+
+# helper function for aba_summary
+as_table_coefs <- function(results, control) {
+  df <- results %>% select(-any_of(c('bias')))
+
+  # handle digits
+  df <- df %>%
+    mutate(
+      across(estimate:conf_high,
+             ~purrr::map_chr(., ~sprintf(glue('%.{control$coef_digits}f'), .))),
+      pval = purrr::map_chr(
+        pval,
+        ~clip_metric(
+          sprintf(glue('%.{control$pval_digits}f'), .),
+          control$pval_digits
+        )
+      )
+    )
+
+  df <- df %>%
+    mutate(
+      estimate = purrr::pmap_chr(
+        list(
+          est = .data$estimate,
+          lo = .data$conf_low,
+          hi = .data$conf_high,
+          pval = .data$pval
+        ),
+        coef_fmt
+      )
+    ) %>%
+    select(-c(conf_low, conf_high, pval)) %>%
+    pivot_wider(
+      names_from = term,
+      values_from = estimate
+    )
+
+  df
+}
+
+# helper function for aba summary
+coef_fmt <- function(est, lo, hi, pval) {
+  coef <- glue('{est}')
+  if (!is.na(lo) | !is.na(hi)) coef <- glue('{coef} [{lo}, {hi}]')
+  if (!is.na(pval)) {
+    if (grepl('<',pval)) {
+      coef <- glue('{coef} (P{pval})')
+    } else {
+      coef <- glue('{coef} (P={pval})')
+    }
+  }
+  coef
+}
+
+clip_metric <- function(metric, digits) {
+  if (is.na(metric)) return(metric)
+  if (metric == paste0('0.',paste0(rep('0', digits),collapse=''))) {
+    metric <- paste0('<0.',paste0(rep('0', digits-1),collapse=''),'1')
+  }
+  metric
+}
+
+# default digits that will never change
+default_digits_map <- list(
+  'nobs' = 0,
+  'nsub' = 0,
+  'nevent' = 0
+)
+
+# helper function for aba summary
+metric_fmt <- function(est, lo, hi, term, control) {
+
+  if (term %in% names(default_digits_map)) {
+    digits <- default_digits_map[[term]]
+  } else if (glue('{term}_digits') %in% names(control)) {
+    digits <- control[[glue('{term}_digits')]]
+  } else {
+    digits <- control$metric_digits
+  }
+  fmt <- glue('%.{digits}f')
+
+  metric <- glue('{sprintf({fmt}, est)}')
+  if (!is.na(lo)) {
+    metric <- glue('{metric} [{sprintf({fmt}, lo)}, {sprintf({fmt}, hi)}]')
+  }
+
+  metric
+}
+
+as_table_metrics <- function(results, control) {
+  df <- results %>% select(-any_of(c('bias')))
+  df <- df %>%
+    mutate(
+      estimate = purrr::pmap_chr(
+        list(
+          est = .data$estimate,
+          lo = .data$conf_low,
+          hi = .data$conf_high,
+          term = .data$term
+        ),
+        metric_fmt,
+        control = control
+      )
+    ) %>%
+    select(-c(conf_low, conf_high)) %>%
+    pivot_wider(
+      names_from = term,
+      values_from = estimate
+    )
+
+  if ('pval' %in% colnames(df)) {
+    df <- df %>% mutate(
+      pval = purrr::map_chr(pval, clip_metric, control$pval_digits)
+    )
+  }
+
+  df
+}
+
+as_table_coefs_metrics <- function(results, control) {
+  coefs <- results$coefs %>% as_table_coefs(control)
+  metrics <- results$metrics %>% as_table_metrics(control)
+  tbl <- coefs %>%
+    left_join(metrics, by=c('group','outcome','stat','predictor')) %>%
+    select(all_of(colnames(coefs)),everything())
+  tbl
+}
+
+as_table_standard <- function(results, control) {
+  # table for coefs + metrics
+  tbl <- as_table_coefs_metrics(
+    results = results[c('coefs','metrics')],
+    control = control
+  )
+  tbl
+}
+
+
 #' @export
 print.abaEval <- function(x, ...) {
   cat(x$eval_type)
