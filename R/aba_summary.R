@@ -380,7 +380,8 @@ print.abaSummary <- function(x, ...) {
   tbl_label_map <- list(
     'coefs_metrics' = 'Coefficients & Metrics',
     'coefs_metrics_boot' = 'Coefficients & Metrics (bootstrapped)',
-    'contrasts' = 'Contrasts'
+    'contrasts' = 'Contrasts',
+    'test_metrics' = 'Test Performance'
   )
 
   tbl_split %>% purrr::iwalk(

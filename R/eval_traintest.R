@@ -227,7 +227,6 @@ summary_traintest <- function(model,
       select(group:form, estimate) %>%
       pivot_wider(names_from=predictor, values_from=estimate)
 
-
     xdf <- contrasts_df %>% select(all_of(unique(results_raw$predictor)))
 
     cdf <- combn(data.frame(xdf), 2, FUN = function(x) x[,1] - x[,2]) %>%
@@ -283,7 +282,25 @@ summary_traintest <- function(model,
 }
 
 as_table_test_metrics <- function(results, control) {
+  r <- results %>%
+    mutate(
+      estimate = purrr::pmap_chr(
+        list(
+          est = .data$estimate,
+          lo = .data$conf_low,
+          hi = .data$conf_high,
+          term = .data$term
+        ),
+        metric_fmt,
+        control = control
+      )
+    ) %>%
+    select(-c(conf_low, conf_high, estimate_train))
 
+  r <- r %>%
+    pivot_wider(names_from = term, values_from = estimate)
+
+  r
 }
 
 as_table_traintest <- function(results, control) {

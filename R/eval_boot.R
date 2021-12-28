@@ -169,6 +169,7 @@ summary_boot <- function(object,
     ) %>%
     ungroup()
 
+
   coefs_df_proc <- coefs_df_orig %>%
     left_join(
       coefs_df_boot,
@@ -336,15 +337,33 @@ as_table_contrasts <- function(results, control) {
   r
 }
 
+as_table_standard_boot <- function(results, control) {
+  # not sure what to do with bootstrap estimate / bias right now
+  coefs <- results$coefs %>%
+    select(-estimate_boot) %>%
+    as_table_coefs(control)
+
+  # not sure what to do with bootstrap estimate / bias right now
+  metrics <- results$metrics %>%
+    select(-estimate_boot) %>%
+    as_table_metrics(control)
+
+  tbl <- coefs %>%
+    left_join(metrics, by=c('group','outcome','stat','predictor')) %>%
+    select(all_of(colnames(coefs)),everything())
+
+  list(
+    'coefs_metrics_boot' = tbl
+  )
+}
 
 as_table_boot <- function(results, control) {
+
   # table for coefs + metrics
-  tbl <- as_table_standard(
+  tbl <- as_table_standard_boot(
     results = results[c('coefs','metrics')],
     control = control
   )
-  names(tbl) <- c('coefs_metrics_boot')
-
 
   if ('contrasts' %in% names(results)) {
     tbl2 <- as_table_contrasts(
