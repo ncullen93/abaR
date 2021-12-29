@@ -1,4 +1,45 @@
+#' Get individual predictions from a fitted aba model
+#'
+#' This function allows you to get the fitted/predicted values from data
+#' used to fit an aba model or from new data. This is essentially an extension
+#' of the `broom::augment()` function.
+#'
+#' @param model a fitted aba model. The model to get predictions from.
+#' @param newdata dataframe (optional). New data to get predictions from. If
+#'   this is null, predictions will be provided for the data originally used
+#'   to fit the aba model
+#' @param merge logical. Whether to merge all the predictions into the original
+#'   dataset or to store the predictions for each group - outcome - stat combo
+#'   in a dataframe separately.
+#' @param augment logical. Whether to include original data with predictions.
+#'
+#' @return a dataframe with original data and with fitted/predicted values added
+#'   for each group-outcome-stat-predictor combination.
 #' @export
+#'
+#' @examples
+#' data <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
+#'
+#' model <- data %>% aba_model() %>%
+#'   set_groups(
+#'     everyone(),
+#'     DX_bl %in% c('MCI', 'AD')
+#'   ) %>%
+#'   set_outcomes(CDRSB_bl, MMSE_bl) %>%
+#'   set_predictors(
+#'     PLASMA_PTAU181_bl, PLASMA_NFL_bl,
+#'     c(PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+#'   ) %>%
+#'   set_covariates(AGE, GENDER, EDUCATION) %>%
+#'   set_stats('lm')
+#'
+#' model <- model %>% fit()
+#'
+#' # add model predictions to original data
+#' data_augmented <- model %>% aba_predict()
+#'
+#' # store predictions separately by group - outcome - stat combination
+#' data_augmented2 <- model %>% aba_predict(merge = FALSE)
 predict.abaModel <- function(
   object, newdata = NULL, merge = TRUE, augment = FALSE
 ) {
@@ -49,7 +90,7 @@ predict.abaModel <- function(
 #' data_augmented <- model %>% aba_predict()
 #'
 #' # store predictions separately by group - outcome - stat combination
-#' data_augmented2 <- model %>% aba_predict(merged = FALSE)
+#' data_augmented2 <- model %>% aba_predict(merge = FALSE)
 aba_predict <- function(
   model, newdata = NULL, merge = TRUE, augment = FALSE
 ) {
