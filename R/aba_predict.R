@@ -95,6 +95,7 @@ aba_predict <- function(
   model, newdata = NULL, merge = TRUE, augment = FALSE
 ) {
   results <- model$results
+  eval_type <- model$evals[[1]]$eval_type
 
   # if newdata is given, process it and add to results
   if (!is.null(newdata)) {
@@ -132,6 +133,10 @@ aba_predict <- function(
     results <- results %>% mutate(data_test = list(NULL))
     main_index <- model$index
     main_data <- model$data
+
+    if (eval_type == 'standard') {
+      results$trial <- list(NULL)
+    }
   }
 
   # get model predictions on data
@@ -139,16 +144,23 @@ aba_predict <- function(
     rowwise() %>%
     mutate(
       data = augment_helper(
-        fit, group, outcome, stat, predictor, data_test, augment, merge
+        fit, group, outcome, stat, predictor, data_test, augment, merge, trial
       )
     ) %>%
-    select(-data_test) %>%
+    select(-c(data_test, fit)) %>%
     ungroup()
+
+  if (eval_type == 'standard') results <- results %>% select(-trial)
 
   # merge all predictions with original dataset
   if (merge) {
+    if (eval_type == 'standard') {
+      results <- results %>% group_by(group, outcome, stat)
+    } else if (eval_type == 'boot') {
+      results <- results %>% group_by(group, outcome, stat, trial)
+    }
+
     results <- results %>%
-      group_by(group, outcome, stat) %>%
       nest() %>%
       mutate(
         data = purrr::map(
@@ -190,7 +202,7 @@ aba_predict <- function(
 }
 
 augment_helper <- function(
-  fit, group, outcome, stat, predictor, newdata, augment, merge
+  fit, group, outcome, stat, predictor, newdata, augment, merge, trial
 ) {
 
   df <- broom::augment(fit, newdata=newdata) %>%
@@ -200,6 +212,7 @@ augment_helper <- function(
 
   if (merge) {
     fit_label <- glue('.fitted__{group}__{outcome}__{stat}__{predictor}')
+    if (!is.null(trial)) fit_label <- glue('{fit_label}__{trial}')
     df <- df %>% rename({{ fit_label }} := .fitted)
   }
 
