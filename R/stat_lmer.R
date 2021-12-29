@@ -106,6 +106,7 @@ fit_lmer <- function(formula, data, extra_params) {
       {
         model <- lmerTest::lmer(stats::formula(formula),
                            na.action = stats::na.omit,
+                           REML = FALSE,
                            data = data)
         model@call$formula <- stats::formula(formula)
         model
@@ -143,7 +144,8 @@ tidy_lmer <- function(model, predictors, covariates, ...) {
 
 
 # helper function for lmer
-glance_lmer <- function(x, ...) {
+glance_lmer <- function(fit, fit_basic, ...) {
+  x <- fit
 
   glance_df <- broom.mixed::glance(x) %>%
     dplyr::bind_cols(
@@ -159,6 +161,14 @@ glance_lmer <- function(x, ...) {
         nsub = nlevels(x@flist[[1]])
       )
     )
+
+  # add comparison to null model
+  if (!is.null(fit_basic)) {
+    s <- stats::anova(fit, fit_basic)
+    null_pval <- s$`Pr(>Chisq)`[2]
+    glance_df <- glance_df %>%
+      bind_cols(tibble::tibble(Pval = null_pval))
+  }
 
   # pivot longer to be like coefficients
   glance_df <- glance_df %>%

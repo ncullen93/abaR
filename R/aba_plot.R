@@ -128,7 +128,7 @@ aba_plot_metric <- function(model_summary,
     ggplot(aes(x = .data$x, y = .data$estimate, color = .data$fill)) +
     geom_errorbar(
       aes(ymin = .data$conf_low, ymax = .data$conf_high),
-      position=position_dodge(0.5), size=0.5, width = 0.2
+      position=position_dodge(0.5), size=1, width = 0.2
     ) +
     geom_point(position = position_dodge(0.5), size = 4) +
     ylab(toupper(metric)) +
