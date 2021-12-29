@@ -434,6 +434,11 @@ set_evals <- function(model, ..., labels = NULL) {
       stringr::str_replace('\\.','_')
   }
 
+  if (length(evals) > 1) {
+    warning('Only one eval is supported at the moment. Taking the first.')
+    evals <- evals[1]
+  }
+
   .model$evals <- evals
   .model$is_fit <- FALSE
   .model

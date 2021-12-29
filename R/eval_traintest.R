@@ -46,12 +46,7 @@ eval_traintest <- function(split = 0.8,
   struct
 }
 
-fit_traintest <- function(object, split = 0.8, ntrials = 1, verbose = FALSE) {
-
-  model <- object
-  if (is.null(model$groups)) model <- model %>% set_groups(everyone())
-  if (is.null(model$predictors)) model$predictors <- list('Basic'=c())
-
+fit_traintest <- function(model, split = 0.8, ntrials = 1, verbose = FALSE) {
   # compile model
   fit_df <- model %>% aba_compile()
 

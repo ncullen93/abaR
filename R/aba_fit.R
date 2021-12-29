@@ -70,30 +70,22 @@ aba_fit <- function(object, verbose = FALSE) {
   if (is.null(model$predictors)) model$predictors <- list('Basic'=c())
   if (is.null(model$evals)) model <- model %>% set_evals(eval_standard())
 
-  # compile model
-  fit_df <- model %>% aba_compile()
+  # tag original data rows for future use (e.g. returning predictions)
+  model$data <- model$data %>%
+    mutate(.row_idx = row_number()) %>%
+    select(.row_idx, everything())
 
-  # go through all evals
-  evals <- model$evals
+  eval <- model$evals[[1]]
+  model <- switch(
+    eval$eval_type,
+    'standard' = model %>% fit_standard(),
+    'boot' = model %>% fit_boot(ntrials=eval$ntrials),
+    'traintest' = model %>%
+      fit_traintest(split = eval$split, ntrials = eval$ntrials),
+    'cv' = model %>%
+      fit_cv(nfolds = eval$nfolds, ntrials = eval$ntrials)
+  )
 
-  eval_results <- evals %>%
-    purrr::imap(
-      function(.eval, .label) {
-        tmp_model <- switch(
-          .eval$eval_type,
-          'standard' = model %>% fit_standard(),
-          'boot' = model %>% fit_boot(ntrials=.eval$ntrials),
-          'traintest' = model %>%
-            fit_traintest(split = .eval$split, ntrials = .eval$ntrials),
-          'cv' = model %>%
-            fit_cv(nfolds = .eval$nfolds, ntrials = .eval$ntrials)
-        )
-        tmp_model$results
-      }
-    )
-  if (length(evals) == 1) eval_results <- eval_results[[1]]
-  model$results <- eval_results
-  model$is_fit <- TRUE
   model
 }
 
@@ -248,7 +240,7 @@ process_dataset <- function(
   # only keep relevant variables to reduce memory
   data <- data %>%
     select(all_of(
-      c(outcome, predictors, covariates, extra_vars)
+      c('.row_idx', outcome, predictors, covariates, extra_vars)
     ))
 
   return(list(data))

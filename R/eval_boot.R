@@ -45,11 +45,8 @@ eval_boot <- function(ntrials = 10,
 }
 
 
-fit_boot <- function(object, ntrials, verbose = FALSE) {
+fit_boot <- function(model, ntrials, verbose = FALSE) {
   if (ntrials <= 1) stop('ntrials must be greater than 1.')
-  model <- object
-  if (is.null(model$groups)) model <- model %>% set_groups(everyone())
-  if (is.null(model$predictors)) model$predictors <- list('Basic'=c())
 
   # compile model
   fit_df <- model %>% aba_compile()

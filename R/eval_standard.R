@@ -23,12 +23,7 @@ eval_standard <- function() {
   struct
 }
 
-fit_standard <- function(object, verbose = FALSE) {
-  model <- object
-  if (is.null(model$groups)) model <- model %>% set_groups(everyone())
-  if (is.null(model$predictors)) model$predictors <- list('Basic'=c())
-  if (is.null(model$evals)) model <- model %>% set_evals(eval_standard())
-
+fit_standard <- function(model, verbose = FALSE) {
   # compile model
   fit_df <- model %>% aba_compile()
 
@@ -51,9 +46,18 @@ fit_standard <- function(object, verbose = FALSE) {
         covariates = model$covariates
       )
     ) %>%
-    ungroup() %>%
-    unnest(info)
+    ungroup()
 
+  index <- fit_df %>%
+    mutate(
+      group = purrr::map_chr(.data$info, ~.[['gid']][1]),
+      outcome = purrr::map_chr(.data$info, ~.[['oid']][1]),
+      stat = purrr::map_chr(.data$info, ~.[['sid']][1]),
+      .row_idx = purrr::map(.data$data, '.row_idx')
+    ) %>%
+    select(-c(info, data))
+
+  fit_df <- fit_df %>% unnest(info)
   # fit model
   fit_df <- fit_df %>%
     rowwise() %>%
@@ -85,6 +89,7 @@ fit_standard <- function(object, verbose = FALSE) {
   }
 
   model$results <- fit_df
+  model$index <- index
   model$is_fit <- TRUE
   model$fit_type <- 'standard'
   return(model)

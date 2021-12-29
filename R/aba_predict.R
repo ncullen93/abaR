@@ -8,8 +8,9 @@
 #' @param newdata dataframe (optional). New data to get predictions from. If
 #'   this is null, predictions will be provided for the data originally used
 #'   to fit the aba model
-#' @param include_data logical. Whether to also include the data with the
-#'   fitted/predicted values or just the fitted/predicted values for each fit.
+#' @param merged logical. Whether to merge all the predictions into the original
+#'   dataset or to store the predictions for each group - outcome - stat combo
+#'   in a dataframe separately.
 #'
 #' @return a dataframe with original data and with fitted/predicted values added
 #'   for each group-outcome-stat-predictor combination.
@@ -32,8 +33,13 @@
 #'   set_stats('lm')
 #'
 #' model <- model %>% fit()
+#'
+#' # add model predictions to original data
 #' data_augmented <- model %>% aba_predict()
-aba_predict <- function(model, newdata = NULL, include_data = TRUE) {
+#'
+#' # store predictions separately by group - outcome - stat combination
+#' data_augmented2 <- model %>% aba_predict(merged = FALSE)
+aba_predict <- function(model, newdata = NULL, merged = TRUE) {
   results <- model$results
 
   # if newdata is given, process it and add to results
@@ -71,11 +77,40 @@ aba_predict <- function(model, newdata = NULL, include_data = TRUE) {
     nest() %>%
     mutate(
       data_augment = purrr::map(
-        data, ~merge_datasets(.$data_augment, include_data)
+        data, ~merge_datasets(.$data_augment)
       )
     ) %>%
     ungroup() %>%
     select(-data)
+
+  # merge all predictions with original dataset
+  if (merged) {
+    # add in row index to each augmented data
+    results <- results %>%
+      left_join(model$index, by = c('group','outcome','stat'))
+
+    results <- results %>%
+      select(-c(group,outcome,stat)) %>%
+      mutate(
+        data = purrr::pmap(
+          list(data_augment, .row_idx),
+          function(data, idx) {
+            data <- data %>% select(contains('.fitted'))
+            data$.row_idx <- idx
+            data
+          }
+        )
+      )
+
+    results_df <- results$data %>%
+      reduce(left_join, by = '.row_idx') %>%
+      select(.row_idx, everything())
+
+    # add back into original data
+    results <- model$data %>%
+      left_join(results_df, by = '.row_idx') %>%
+      select(-.row_idx)
+  }
 
   results
 }
@@ -89,7 +124,7 @@ augment_helper <- function(fit, group, outcome, stat, predictor, newdata) {
   list(df)
 }
 
-merge_datasets <- function(data_list, include_data) {
+merge_datasets <- function(data_list) {
   data <- data_list[[1]]
   for (idx in seq_along(data_list)) {
     if (idx > 1) {
@@ -100,6 +135,5 @@ merge_datasets <- function(data_list, include_data) {
     }
   }
   data <- data %>% select(-contains('.fitted'), everything())
-  if (!include_data) data <- data %>% select(contains('.fitted'))
   data
 }

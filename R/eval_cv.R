@@ -45,12 +45,7 @@ eval_cv <- function(nfolds = 5,
   struct
 }
 
-fit_cv <- function(object, nfolds = 5, ntrials = 1, verbose = FALSE) {
-
-  model <- object
-  if (is.null(model$groups)) model <- model %>% set_groups(everyone())
-  if (is.null(model$predictors)) model$predictors <- list('Basic'=c())
-
+fit_cv <- function(model, nfolds = 5, ntrials = 1, verbose = FALSE) {
   # compile model
   fit_df <- model %>% aba_compile()
 
