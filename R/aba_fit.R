@@ -245,6 +245,12 @@ process_dataset <- function(
     }
   }
 
+  # only keep relevant variables to reduce memory
+  data <- data %>%
+    select(all_of(
+      c(outcome, predictors, covariates, extra_vars)
+    ))
+
   return(list(data))
 }
 

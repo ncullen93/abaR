@@ -17,7 +17,6 @@
 #' @export
 #'
 #' @examples
-#'
 #' data <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
 #'
 #' # fit lm model with continuous outcome variables
@@ -43,7 +42,6 @@
 #' # plot results
 #' fig1 <- model_summary %>% aba_plot_coef()
 #' fig2 <- model_summary %>% aba_plot_metric()
-#'
 stat_lm <- function(std.beta = FALSE,
                    complete.cases = TRUE) {
   fns <- list(

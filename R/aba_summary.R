@@ -69,13 +69,8 @@ aba_summary <- function(object,
   results <- evals %>%
     purrr::imap(
       function(.eval, .label) {
-         tmp_summary <- switch(
-          .eval$eval_type,
-          'standard' = model %>% summary_standard(.label, control, adjust, verbose),
-          'boot' = model %>% summary_boot(.label, control, adjust, verbose),
-          'traintest' = model %>% summary_traintest(.label, control, adjust, verbose),
-          'cv' = model %>% summary_cv(.label, control, adjust, verbose)
-        )
+        summary_fn <- getFunction(glue('summary_{.eval$eval_type}'))
+        tmp_summary <- summary_fn(model, .label, control, adjust, verbose)
         tmp_summary
       }
     )
@@ -250,8 +245,7 @@ calculate_metrics <- function(object, control) {
 #' # convert summary to table
 #' my_table <- model_summary %>% as_table()
 #'
-as_table <- function(model_summary, label = NULL) {
-  object <- model_summary
+as_table.abaSummary <- function(object) {
   control <- object$control
   n_evals <- length(object$model$evals)
   results <- object$results
@@ -271,6 +265,11 @@ as_table <- function(model_summary, label = NULL) {
 
   if (n_evals == 1) tables <- tables[[1]]
   tables
+}
+
+#' @export
+as_table <- function(object) {
+  UseMethod('as_table')
 }
 
 #' Convert an aba summary to a interactive react table

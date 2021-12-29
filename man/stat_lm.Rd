@@ -26,7 +26,6 @@ Coefficients will be presented as beta coefficients. Default metrics include
 adjusted R2.
 }
 \examples{
-
 data <- adnimerge \%>\% dplyr::filter(VISCODE == 'bl')
 
 # fit lm model with continuous outcome variables
@@ -52,5 +51,4 @@ model_summary <- model \%>\% summary()
 # plot results
 fig1 <- model_summary \%>\% aba_plot_coef()
 fig2 <- model_summary \%>\% aba_plot_metric()
-
 }
