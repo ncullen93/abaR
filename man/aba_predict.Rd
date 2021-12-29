@@ -4,7 +4,7 @@
 \alias{aba_predict}
 \title{Get individual predictions from a fitted aba model}
 \usage{
-aba_predict(model, newdata = NULL, merged = TRUE)
+aba_predict(model, newdata = NULL, merge = TRUE, augment = FALSE)
 }
 \arguments{
 \item{model}{a fitted aba model. The model to get predictions from.}
@@ -13,9 +13,11 @@ aba_predict(model, newdata = NULL, merged = TRUE)
 this is null, predictions will be provided for the data originally used
 to fit the aba model}
 
-\item{merged}{logical. Whether to merge all the predictions into the original
+\item{merge}{logical. Whether to merge all the predictions into the original
 dataset or to store the predictions for each group - outcome - stat combo
 in a dataframe separately.}
+
+\item{augment}{logical. Whether to include original data with predictions.}
 }
 \value{
 a dataframe with original data and with fitted/predicted values added

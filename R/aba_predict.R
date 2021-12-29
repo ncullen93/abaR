@@ -1,3 +1,13 @@
+#' @export
+predict.abaModel <- function(
+  object, newdata = NULL, merge = TRUE, augment = FALSE
+) {
+  aba_predict(
+    object, newdata = newdata, merge = merge, augment = augment
+  )
+}
+
+
 #' Get individual predictions from a fitted aba model
 #'
 #' This function allows you to get the fitted/predicted values from data
@@ -8,9 +18,10 @@
 #' @param newdata dataframe (optional). New data to get predictions from. If
 #'   this is null, predictions will be provided for the data originally used
 #'   to fit the aba model
-#' @param merged logical. Whether to merge all the predictions into the original
+#' @param merge logical. Whether to merge all the predictions into the original
 #'   dataset or to store the predictions for each group - outcome - stat combo
 #'   in a dataframe separately.
+#' @param augment logical. Whether to include original data with predictions.
 #'
 #' @return a dataframe with original data and with fitted/predicted values added
 #'   for each group-outcome-stat-predictor combination.
@@ -39,11 +50,16 @@
 #'
 #' # store predictions separately by group - outcome - stat combination
 #' data_augmented2 <- model %>% aba_predict(merged = FALSE)
-aba_predict <- function(model, newdata = NULL, merged = TRUE) {
+aba_predict <- function(
+  model, newdata = NULL, merge = TRUE, augment = FALSE
+) {
   results <- model$results
 
   # if newdata is given, process it and add to results
   if (!is.null(newdata)) {
+    # mark newdata with row index for merging later
+    newdata$.row_idx <- 1:nrow(newdata)
+
     results <- results %>%
       group_by(group, outcome, stat) %>%
       nest() %>%
@@ -59,41 +75,56 @@ aba_predict <- function(model, newdata = NULL, merged = TRUE) {
           covariates = model$covariates
         )
       ) %>%
-      ungroup() %>%
-      unnest(info)
+      ungroup()
+
+    # get row index for merging later
+    main_index <- results %>%
+      mutate(.row_idx = purrr::map(.data$data_test, '.row_idx')) %>%
+      select(-c(info, data_test))
+
+    main_data <- newdata
+    results <- results %>% unnest(info)
+
+    if (!merge) newdata$.row_idx <- NULL
+
   } else {
     results <- results %>% mutate(data_test = list(NULL))
+    main_index <- model$index
+    main_data <- model$data
   }
 
   # get model predictions on data
   results <- results %>%
     rowwise() %>%
     mutate(
-      data_augment = augment_helper(
-        fit, group, outcome, stat, predictor, data_test
+      data = augment_helper(
+        fit, group, outcome, stat, predictor, data_test, augment, merge
       )
     ) %>%
-    group_by(group, outcome, stat) %>%
-    nest() %>%
-    mutate(
-      data_augment = purrr::map(
-        data, ~merge_datasets(.$data_augment)
-      )
-    ) %>%
-    ungroup() %>%
-    select(-data)
+    select(-data_test) %>%
+    ungroup()
 
   # merge all predictions with original dataset
-  if (merged) {
+  if (merge) {
+    results <- results %>%
+      group_by(group, outcome, stat) %>%
+      nest() %>%
+      mutate(
+        data = purrr::map(
+          data, ~merge_datasets(.$data)
+        )
+      ) %>%
+      ungroup()
+
     # add in row index to each augmented data
     results <- results %>%
-      left_join(model$index, by = c('group','outcome','stat'))
+      left_join(main_index, by = c('group','outcome','stat'))
 
     results <- results %>%
       select(-c(group,outcome,stat)) %>%
       mutate(
         data = purrr::pmap(
-          list(data_augment, .row_idx),
+          list(data, .row_idx),
           function(data, idx) {
             data <- data %>% select(contains('.fitted'))
             data$.row_idx <- idx
@@ -107,24 +138,34 @@ aba_predict <- function(model, newdata = NULL, merged = TRUE) {
       select(.row_idx, everything())
 
     # add back into original data
-    results <- model$data %>%
+    results <- main_data %>%
       left_join(results_df, by = '.row_idx') %>%
       select(-.row_idx)
+
+    if (!augment) results <- results %>% select(contains('.fitted'))
   }
 
   results
 }
 
-augment_helper <- function(fit, group, outcome, stat, predictor, newdata) {
-  fit_label <- glue('.fitted__{group}__{outcome}__{stat}__{predictor}')
+augment_helper <- function(
+  fit, group, outcome, stat, predictor, newdata, augment, merge
+) {
+
   df <- broom::augment(fit, newdata=newdata) %>%
-    rename({{ fit_label }} := .fitted)
-  fit_idx <- which(colnames(df) == fit_label)
-  df <- df %>% select(1:all_of(fit_idx))
+    select(1:all_of('.fitted'))
+
+  if (!augment) df <- df %>% select(.fitted)
+
+  if (merge) {
+    fit_label <- glue('.fitted__{group}__{outcome}__{stat}__{predictor}')
+    df <- df %>% rename({{ fit_label }} := .fitted)
+  }
+
   list(df)
 }
 
-merge_datasets <- function(data_list) {
+merge_datasets <- function(data_list, include_data) {
   data <- data_list[[1]]
   for (idx in seq_along(data_list)) {
     if (idx > 1) {
