@@ -103,13 +103,13 @@ glance_glm <- function(x, x0, ...) {
   # add other metrics here... sens, spec, ppv, npv, etc..
   # ...
 
-  # Optimal Cutoff
-  cut_model <- OptimalCutpoints::optimal.cutpoints(
-    .Predicted ~ .Truth,
-    data = data,
-    tag.healthy=0, direction='<', methods='Youden'
-  )
-  cut_val <- cut_model$Youden$Global$optimal.cutoff$cutoff[1]
+  ## Optimal Cutoff
+  #cut_model <- OptimalCutpoints::optimal.cutpoints(
+  #  .Predicted ~ .Truth,
+  #  data = data,
+  #  tag.healthy=0, direction='<', methods='Youden'
+  #)
+  #cut_val <- cut_model$Youden$Global$optimal.cutoff$cutoff[1]
 
   # compare current model to null model
   if (!is.null(fit0)) {
@@ -125,7 +125,7 @@ glance_glm <- function(x, x0, ...) {
     bind_cols(
       tibble::tibble(
         AUC = auc_val,
-        Cut = cut_val
+        #Cut = cut_val
       )
     )
 
