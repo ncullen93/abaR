@@ -127,15 +127,3 @@ get_model_data <- function(fit) {
   data$.Truth <- factor(data[[outcome]])
   data
 }
-
-
-
-
-
-
-
-
-
-
-
-
