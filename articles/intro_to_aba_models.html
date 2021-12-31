@@ -159,10 +159,10 @@
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">model_summary</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">model_summary</span><span class="op">)</span>
-<span class="co">#&gt; </span>
 <span class="co">#&gt; ----------------------------------------------------------------------------</span>
 <span class="co">#&gt; Group: DX_bl %in% c("MCI", "AD") | Outcome: ConvertedToAlzheimers | Stat: S1</span>
 <span class="co">#&gt; ----------------------------------------------------------------------------</span>
+<span class="co">#&gt; Coefficients &amp; Metrics:</span>
 <span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 10</span></span>
 <span class="co">#&gt;   predictor AGE    GENDER  EDUCATION  PLASMA_PTAU181_… PLASMA_NFL_bl auc  </span>
 <span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
@@ -175,6 +175,7 @@
 <span class="co">#&gt; --------------------------------------------------------------------------</span>
 <span class="co">#&gt; Group: DX_bl %in% c("MCI", "AD") | Outcome: CSF_ABETA_STATUS_bl | Stat: S1</span>
 <span class="co">#&gt; --------------------------------------------------------------------------</span>
+<span class="co">#&gt; Coefficients &amp; Metrics:</span>
 <span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 10</span></span>
 <span class="co">#&gt;   predictor AGE    GENDER  EDUCATION  PLASMA_PTAU181_… PLASMA_NFL_bl auc  </span>
 <span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>

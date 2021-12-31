@@ -37,7 +37,13 @@
     <loc>https://ncullen93.github.io/abaR/reference/aba_demographics.html</loc>
   </url>
   <url>
+    <loc>https://ncullen93.github.io/abaR/reference/aba_diagnosticpower.html</loc>
+  </url>
+  <url>
     <loc>https://ncullen93.github.io/abaR/reference/aba_emmeans.html</loc>
+  </url>
+  <url>
+    <loc>https://ncullen93.github.io/abaR/reference/aba_evaluate.html</loc>
   </url>
   <url>
     <loc>https://ncullen93.github.io/abaR/reference/aba_fit.html</loc>
@@ -59,6 +65,9 @@
   </url>
   <url>
     <loc>https://ncullen93.github.io/abaR/reference/aba_plot_roc.html</loc>
+  </url>
+  <url>
+    <loc>https://ncullen93.github.io/abaR/reference/aba_predict.html</loc>
   </url>
   <url>
     <loc>https://ncullen93.github.io/abaR/reference/aba_read.html</loc>
@@ -88,10 +97,10 @@
     <loc>https://ncullen93.github.io/abaR/reference/all_levels.html</loc>
   </url>
   <url>
-    <loc>https://ncullen93.github.io/abaR/reference/as_reactable.html</loc>
+    <loc>https://ncullen93.github.io/abaR/reference/as_reactable.abaSummary.html</loc>
   </url>
   <url>
-    <loc>https://ncullen93.github.io/abaR/reference/as_table.html</loc>
+    <loc>https://ncullen93.github.io/abaR/reference/as_table.abaSummary.html</loc>
   </url>
   <url>
     <loc>https://ncullen93.github.io/abaR/reference/eval_boot.html</loc>
@@ -116,6 +125,9 @@
   </url>
   <url>
     <loc>https://ncullen93.github.io/abaR/reference/pipe.html</loc>
+  </url>
+  <url>
+    <loc>https://ncullen93.github.io/abaR/reference/predict.abaModel.html</loc>
   </url>
   <url>
     <loc>https://ncullen93.github.io/abaR/reference/reexports.html</loc>
@@ -152,6 +164,9 @@
   </url>
   <url>
     <loc>https://ncullen93.github.io/abaR/reference/stat_lm.html</loc>
+  </url>
+  <url>
+    <loc>https://ncullen93.github.io/abaR/reference/stat_lme.html</loc>
   </url>
   <url>
     <loc>https://ncullen93.github.io/abaR/reference/stat_lmer.html</loc>

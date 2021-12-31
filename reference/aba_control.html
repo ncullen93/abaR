@@ -126,10 +126,10 @@ for model coefficients</p></dd>
 <span class="r-in"><span class="co"># no control -&gt; default</span></span>
 <span class="r-in"><span class="va">model_summary</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="aba_summary.html">aba_summary</a></span><span class="op">(</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">model_summary</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ---------------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Group: Everyone | Outcome: CSF_ABETA_STATUS_bl | Stat: S1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ---------------------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients &amp; Metrics:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 4 × 10</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   predictor AGE    GENDER  EDUCATION  PLASMA_PTAU181_… PLASMA_NFL_bl auc  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
@@ -138,22 +138,23 @@ for model coefficients</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> M2        1.00 … 1.43 [… 0.94 [0.8… <span style="color: #BB0000;">NA</span>               2.27 [1.48, … 0.63…</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> M3        1.00 … 1.33 [… 0.96 [0.8… 3.67 [2.61, 5.2… 1.29 [0.81, … 0.72…</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 3 more variables: aic &lt;chr&gt;, pval &lt;chr&gt;, nobs &lt;chr&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># add a control object - don't include covariate coefficients</span></span>
 <span class="r-in"><span class="va">my_control</span> <span class="op">&lt;-</span> <span class="fu">aba_control</span><span class="op">(</span>include_covariates <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">model_summary2</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="aba_summary.html">aba_summary</a></span><span class="op">(</span>control <span class="op">=</span> <span class="va">my_control</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">model_summary2</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ---------------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Group: Everyone | Outcome: CSF_ABETA_STATUS_bl | Stat: S1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ---------------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 4 × 7</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients &amp; Metrics:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 7</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   predictor PLASMA_PTAU181_bl   PLASMA_NFL_bl    auc     aic   pval  nobs </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Basic     <span style="color: #BB0000;">NA</span>                  <span style="color: #BB0000;">NA</span>               0.58 [… 874   1.00… 645  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> M1        3.89 [2.80, 5.52] … <span style="color: #BB0000;">NA</span>               0.72 [… 799   &lt;0.0… 645  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> M2        <span style="color: #BB0000;">NA</span>                  2.27 [1.48, 3.5… 0.63 [… 862   0.00… 645  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> M3        3.67 [2.61, 5.29] … 1.29 [0.81, 2.0… 0.72 [… 800   &lt;0.0… 645  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> M1        3.89 [2.80, 5.52] … <span style="color: #BB0000;">NA</span>               0.72 [… 799   &lt;0.0… 645  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> M2        <span style="color: #BB0000;">NA</span>                  2.27 [1.48, 3.5… 0.63 [… 862   0.00… 645  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> M3        3.67 [2.61, 5.29] … 1.29 [0.81, 2.0… 0.72 [… 800   &lt;0.0… 645  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>
