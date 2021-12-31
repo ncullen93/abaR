@@ -308,8 +308,8 @@ as_table <- function(object) {
 #' # convert summary to table
 #' my_table <- model_summary %>% as_reactable()
 #'
-as_reactable <- function(object) {
-  mytable <- object %>% as_table() %>%
+as_reactable.abaSummary <- function(object) {
+  mytable <- object %>% as_table() %>% map_df(~.x) %>%
     tidyr::unite('grouping', group, outcome, stat, sep=' | ')
 
   reactable::reactable(mytable, groupBy=c('grouping'),
@@ -328,6 +328,11 @@ as_reactable <- function(object) {
                                     fontSize = "14px"),
                        compact=F,
                        striped = TRUE)
+}
+
+#' @export
+as_reactable <- function(object) {
+  UseMethod('as_reactable')
 }
 
 tup <- function(x) {

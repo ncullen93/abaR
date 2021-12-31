@@ -198,12 +198,12 @@ run_selection <- function(object,
     rowwise() %>%
     mutate(
       value_summary = list(aba_summary(.data$value)),
-      coef_summary = list(.data$value_summary %>%
-                            coefs_pivot_wider() %>%
+      coef_summary = list(.data$value_summary$results$coefs %>%
+                            as_table_coefs() %>%
                             filter(predictor=='Basic') %>%
                             select(-c(group:predictor))),
-      metric_summary = list(.data$value_summary %>%
-                              metrics_pivot_wider() %>%
+      metric_summary = list(.data$value_summary$results$metrics %>%
+                              as_table_metrics() %>%
                               filter(predictor=='Basic') %>%
                               select(-c(group:predictor, pval, nobs)))
     )

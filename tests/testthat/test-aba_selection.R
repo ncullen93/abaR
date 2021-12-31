@@ -10,7 +10,11 @@ test_that("example works", {
     set_covariates(AGE, GENDER, EDUCATION) %>%
     set_stats('glm') %>%
     aba_fit()
-  model_summary <- model %>% aba_summary()
+  model_summary <- model %>% aba_summary
+
+  devtools::load_all()
+  model_selection <- model %>% aba_selection(verbose=F)
+
   # default selection - forward selection by AIC with threshold = -2
   skip_on_cran()
   expect_error(

@@ -21,7 +21,7 @@ test_that("example works", {
     set_stats(
       stat_mmrm(id = 'RID', time = 'VISCODE', treatment = 'TREATMENT')
     ) %>%
-    aba_fit()
+    fit()
 
   # run emmeans
   skip_on_cran()

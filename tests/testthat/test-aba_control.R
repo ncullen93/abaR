@@ -16,7 +16,7 @@ test_that("digits works", {
     fit()
 
   check_digits <- function(ms, metric, digits) {
-    ms %>% as_table() %>% pull({{ metric }}) %>%
+    ms %>% as_table() %>% map_df(~.) %>% pull({{ metric }}) %>%
       map_int(~nchar(strsplit(.,'\\.')[[1]][[2]])) %>%
       map_lgl(~.!=digits) %>% sum() == 0
   }
@@ -24,7 +24,7 @@ test_that("digits works", {
   ms <- model %>% aba_summary()
   expect_true(check_digits(ms, 'pval', 4))
   expect_identical(
-    ms %>% as_table() %>% pull('aic') %>% head(1),
+    ms %>% as_table() %>% map_df(~.) %>% pull('aic') %>% head(1),
     '874'
   )
   my_ctrl <- aba_control(pval_digits = 5, aic_digits = 1)
@@ -37,7 +37,7 @@ test_that("digits works", {
   expect_true(check_digits(ms2, 'pval', 3))
   expect_true(check_digits(ms2, 'aic', 2))
   expect_identical(
-    ms2 %>% as_table() %>% pull('auc') %>% head(1),
+    ms2 %>% as_table() %>% map_df(~.) %>% pull('auc') %>% head(1),
     "0.576 [0.532, 0.621]"
   )
 
@@ -45,21 +45,21 @@ test_that("digits works", {
   my_ctrl <- aba_control(coef_digits = 3)
   ms2 <- model %>% aba_summary(control = my_ctrl)
   expect_identical(
-    ms2 %>% as_table() %>% pull(PLASMA_NFL_bl) %>% tail(1),
+    ms2 %>% as_table() %>% map_df(~.) %>% pull(PLASMA_NFL_bl) %>% tail(1),
     '1.121 [0.912, 1.378] (P=0.2781)'
   )
 
   my_ctrl <- aba_control(coef_digits = 1)
   ms2 <- model %>% aba_summary(control = my_ctrl)
   expect_identical(
-    ms2 %>% as_table() %>% pull(PLASMA_NFL_bl) %>% tail(1),
+    ms2 %>% as_table() %>% map_df(~.) %>% pull(PLASMA_NFL_bl) %>% tail(1),
     '1.1 [0.9, 1.4] (P=0.2781)'
   )
 
   my_ctrl <- aba_control(coef_digits = 0, pval_digits = 3)
   ms2 <- model %>% aba_summary(control = my_ctrl)
   expect_identical(
-    ms2 %>% as_table() %>% pull(PLASMA_NFL_bl) %>% tail(1),
+    ms2 %>% as_table() %>% map_df(~.) %>% pull(PLASMA_NFL_bl) %>% tail(1),
     '1 [1, 1] (P=0.278)'
   )
 })
@@ -90,7 +90,7 @@ test_that('include controls work', {
 
   # include covariates
   ms <- model %>% aba_summary(control = aba_control(include_intercept = TRUE))
-  n <- ms %>% as_table() %>% names()
+  n <- ms %>% as_table() %>% map_df(~.) %>% names()
   expect_true("(Intercept)" %in% n)
 
 })

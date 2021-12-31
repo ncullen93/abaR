@@ -204,11 +204,17 @@ process_dataset <- function(
     }
   }
 
+  # extra variables passed directly to stat object
+  extra_vars <- unname(unlist(stat$extra_params))
+  if ('baseline_suffix' %in% names(stat$extra_params)) {
+    blx <- stat$extra_params$baseline_suffix
+    extra_vars <- c(extra_vars, glue('{outcome}_{blx}'))
+  }
+  extra_vars <- extra_vars[extra_vars %in% names(data)]
+
   # only check complete cases if there are predictors or covariates
   if (has_predictors | has_covariates) {
     # add extra variables that may be provided directly to a stat object
-    extra_vars <- unname(unlist(stat$extra_params))
-    extra_vars <- extra_vars[extra_vars %in% names(data)]
 
     check_vars <- c(covariates, predictors, extra_vars)
 

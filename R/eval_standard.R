@@ -117,7 +117,7 @@ summary_standard <- function(object,
 
 
 # helper function for aba_summary
-as_table_coefs <- function(results, control) {
+as_table_coefs <- function(results, control = aba_control()) {
   df <- results %>% select(-any_of(c('bias')))
 
   # handle digits
@@ -204,7 +204,7 @@ metric_fmt <- function(est, lo, hi, term, control) {
   metric
 }
 
-as_table_metrics <- function(results, control) {
+as_table_metrics <- function(results, control = aba_control()) {
   df <- results %>% select(-any_of(c('bias')))
   df <- df %>%
     mutate(

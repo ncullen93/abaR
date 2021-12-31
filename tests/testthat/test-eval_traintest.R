@@ -10,8 +10,7 @@ test_that("eval_traintest works", {
     ) %>%
     set_stats('glm') %>%
     set_evals(
-      eval_traintest(split = 0.8),
-      eval_traintest(split = 0.8, ntrials = 10)
+      eval_traintest(split = 0.8)
     )
 
   expect_error(

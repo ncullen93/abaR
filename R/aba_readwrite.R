@@ -78,6 +78,7 @@ aba_write.abaSummary <- function(object,
   file_base <- stringr::str_split(filename, '\\.')[[1]][1]
 
   if (format %in% c('table', 'raw')) {
+    # enhancement: support write for other evals
     results <- object$results$coefs %>%
       mutate(form = 'coef') %>%
       bind_rows(
@@ -109,6 +110,9 @@ save_helper <- function(results, filename, split) {
     if (length(split) != 2) stop('split must have length == 2.')
     a1 <- split[1]
     a2 <- split[2]
+
+    # enhancement: save all result tables (contrasts?)
+    results <- results[[1]]
 
     tbl_nested <- results %>%
       group_by(

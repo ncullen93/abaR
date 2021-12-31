@@ -10,8 +10,7 @@ test_that("eval_cv works", {
     ) %>%
     set_stats('glm') %>%
     set_evals(
-      eval_cv(nsplits = 3),
-      eval_cv(nsplits = 3, ntrials = 5)
+      eval_cv(nfolds = 3, ntrials=5)
     )
 
   expect_error(

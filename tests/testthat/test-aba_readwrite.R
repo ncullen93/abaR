@@ -50,6 +50,8 @@ test_that("example works", {
     NA
   )
 
+  devtools::load_all()
+  model_summary %>% aba_write(tmp_filename_xlsx, split=TRUE)
   expect_error(
     model_summary %>% aba_write(tmp_filename_xlsx, split=TRUE),
     NA
@@ -83,36 +85,4 @@ test_that("save and load works", {
     model,
     NA
   )
-
-  # create temp dir to save to
-  # TODO !!
-
-  #expect_error(
-  #  model_spec %>% aba_write('~/desktop/myspec.rda'),
-  #  NA
-  #)
-  #model_spec %>% aba_write('~/desktop/myspec.rda')
-
-  #expect_error(
-  #  model_spec2 <- aba_read('~/desktop/myspec.rda'),
-  #  NA
-  #)
-  #model_spec2 <- aba_read('~/desktop/myspec.rda')
-  #model2 <- df %>% aba_model(spec=model_spec2) %>% aba_fit()
-
-  ## save model
-  #expect_error(
-  #  model %>% aba_write('~/desktop/mymodel.rda',
-  #                     include_data = FALSE, include_fit = FALSE),
-  #  NA
-  #)
-  #model %>% aba_write('~/desktop/mymodel.rda',
-  #                   include_data = FALSE, include_fit = FALSE)
-  #expect_error(
-  #  model3 <- aba_read('~/desktop/mymodel.rda'),
-  #  NA
-  #)
-  #model3 <- aba_read('~/desktop/mymodel.rda')
-  #model3 <- model3 %>% set_data(df) %>% aba_fit()
-
 })
