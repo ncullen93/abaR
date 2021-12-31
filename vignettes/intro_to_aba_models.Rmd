@@ -77,7 +77,6 @@ Now that our aba model has been fit, the next natural thing to do is to call the
 
 ```{r}
 model_summary <- model %>% summary()
-print(model_summary)
 ```
 
 As you see, summarizing an aba model is the way to collect all the important information. When you print an aba summary to the console, it will be formatted in a nice manner allowing you to inspect the results. As you will see later, which values are included in the summary and how they are formatted is completely customizable. 
