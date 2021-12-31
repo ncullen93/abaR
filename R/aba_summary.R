@@ -69,7 +69,7 @@ aba_summary <- function(object,
   results <- evals %>%
     purrr::imap(
       function(.eval, .label) {
-        summary_fn <- getFunction(glue('summary_{.eval$eval_type}'))
+        summary_fn <- methods::getFunction(glue('summary_{.eval$eval_type}'))
         tmp_summary <- summary_fn(model, .label, control, adjust, verbose)
         tmp_summary
       }
@@ -222,7 +222,6 @@ calculate_metrics <- function(object, control) {
 #' @export
 #'
 #' @examples
-#'
 #' # use built-in data
 #' data <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
 #'
@@ -244,7 +243,6 @@ calculate_metrics <- function(object, control) {
 #'
 #' # convert summary to table
 #' my_table <- model_summary %>% as_table()
-#'
 as_table.abaSummary <- function(object) {
   control <- object$control
   n_evals <- length(object$model$evals)
@@ -257,7 +255,7 @@ as_table.abaSummary <- function(object) {
       function(eval_idx) {
         eval_obj <- object$model$evals[[eval_idx]]
         res <- results[[eval_idx]]
-        tbl_fn <- getFunction(glue('as_table_{eval_obj$eval_type}'))
+        tbl_fn <- methods::getFunction(glue('as_table_{eval_obj$eval_type}'))
         tbl <- tbl_fn(res, control)
         tbl
       }
@@ -267,7 +265,40 @@ as_table.abaSummary <- function(object) {
   tables
 }
 
+#' Convert an aba summary to a nicely formatted table
+#'
+#' This function allows you to format an aba summary in the same way
+#' which it is printed to the console using the `print` function. However,
+#' only one dataframe will result (i.e., the tables will not be split by
+#' group - outcome - stat combinations).
+#'
+#' @param object abaSummary. The aba summary to format as a table.
+#'
+#' @return a tibble
 #' @export
+#'
+#' @examples
+#' # use built-in data
+#' data <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
+#'
+#' # fit an aba model
+#' model <- data %>% aba_model() %>%
+#'   set_groups(everyone()) %>%
+#'   set_outcomes(PET_ABETA_STATUS_bl) %>%
+#'   set_predictors(
+#'     PLASMA_PTAU181_bl,
+#'     PLASMA_NFL_bl,
+#'     c(PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+#'   ) %>%
+#'   set_covariates(AGE, GENDER, EDUCATION) %>%
+#'   set_stats('glm') %>%
+#'   fit()
+#'
+#' # default aba summary
+#' model_summary <- model %>% aba_summary()
+#'
+#' # convert summary to table
+#' my_table <- model_summary %>% as_table()
 as_table <- function(object) {
   UseMethod('as_table')
 }
@@ -285,7 +316,6 @@ as_table <- function(object) {
 #' @export
 #'
 #' @examples
-#'
 #' # use built-in data
 #' data <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
 #'
@@ -307,7 +337,6 @@ as_table <- function(object) {
 #'
 #' # convert summary to table
 #' my_table <- model_summary %>% as_reactable()
-#'
 as_reactable.abaSummary <- function(object) {
   mytable <- object %>% as_table() %>% map_df(~.x) %>%
     tidyr::unite('grouping', group, outcome, stat, sep=' | ')
@@ -330,7 +359,40 @@ as_reactable.abaSummary <- function(object) {
                        striped = TRUE)
 }
 
+#' Convert an aba summary to a interactive react table
+#'
+#' This function allows you to format an aba summary in the same way
+#' which it is printed to the console using the `print` function. And then
+#' it will be converted to an interactive react table that can be explored
+#' in the Rstudio viewer or in a Shiny app.
+#'
+#' @param object abaSummary. The aba summary to format as a reacttable.
+#'
+#' @return A reactable object from the reactable package
 #' @export
+#'
+#' @examples
+#' # use built-in data
+#' data <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
+#'
+#' # fit an aba model
+#' model <- data %>% aba_model() %>%
+#'   set_groups(everyone()) %>%
+#'   set_outcomes(PET_ABETA_STATUS_bl) %>%
+#'   set_predictors(
+#'     PLASMA_PTAU181_bl,
+#'     PLASMA_NFL_bl,
+#'     c(PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+#'   ) %>%
+#'   set_covariates(AGE, GENDER, EDUCATION) %>%
+#'   set_stats('glm') %>%
+#'   fit()
+#'
+#' # default aba summary
+#' model_summary <- model %>% aba_summary()
+#'
+#' # convert summary to table
+#' my_table <- model_summary %>% as_reactable()
 as_reactable <- function(object) {
   UseMethod('as_reactable')
 }
@@ -372,7 +434,7 @@ print.abaSummary <- function(x, ...) {
     }
   )
 
-  tbls_nested <- tbls %>% bind_rows() %>% group_by(label, .add=T) %>% nest()
+  tbls_nested <- tbls %>% bind_rows() %>% group_by(.data$label, .add=T) %>% nest()
 
   tbl_split <- stats::setNames(
     split(tbls_nested, 1:nrow(tbls_nested)),

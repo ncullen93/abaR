@@ -32,6 +32,10 @@ utils::globalVariables(
     'pid', 'power', 'power_fit', 'predictor', 'predictor_se', 'pval',
     'pval_adj', 'quantile', 'sid', 'tail', 'term', 'threshold',
     'time', 'treatment', 'tria', 'value', 'value_summary',
-    'yval', 'info', 'trial', 'where', 'val'
+    'yval', 'info', 'trial', 'where', 'val', '.row_idx', 'data_test',
+    'predictor2', 'estimate_boot', 'estimate_train', '.fitted',
+    '.estimator', '.metric', '.estimate', 'fold', 'conflow', 'confhigh',
+    'stat_obj', 'form', 'std_err', 'deviance', 'results_test',
+    'estimate_trial'
   )
 )

@@ -131,7 +131,7 @@ glance_lm <- function(fit, fit_basic, ...) {
 evaluate_lm <- function(model, data_test) {
 
   # train data
-  data_train <- broom::augment(model, newdata=tibble(model.frame(model)))
+  data_train <- broom::augment(model, newdata=tibble(stats::model.frame(model)))
   outcome <- names(data_train)[1]
 
   # test data with fitted results

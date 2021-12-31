@@ -241,10 +241,10 @@ summary_boot <- function(object,
 
     xdf <- contrasts_df %>% select(all_of(unique(metrics_df$predictor)))
 
-    cdf <- combn(data.frame(xdf), 2, FUN = function(x) x[,1] - x[,2]) %>%
+    cdf <- utils::combn(data.frame(xdf), 2, FUN = function(x) x[,1] - x[,2]) %>%
       data.frame() %>% tibble() %>%
       set_names(
-        combn(unique(metrics_df$predictor), 2,
+        utils::combn(unique(metrics_df$predictor), 2,
               FUN = function(o) paste0(o[[1]],'_',o[[2]]))
       )
 

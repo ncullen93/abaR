@@ -172,7 +172,7 @@ summary_traintest <- function(model,
 
   # summarise values
   results <- results %>%
-    pivot_longer(rmse:mae) %>%
+    pivot_longer(.data$rmse:.data$mae) %>%
     group_by(group, outcome, stat, predictor, form, name) %>%
     summarise(
       estimate = mean(value),
@@ -224,10 +224,10 @@ summary_traintest <- function(model,
 
     xdf <- contrasts_df %>% select(all_of(unique(results_raw$predictor)))
 
-    cdf <- combn(data.frame(xdf), 2, FUN = function(x) x[,1] - x[,2]) %>%
+    cdf <- utils::combn(data.frame(xdf), 2, FUN = function(x) x[,1] - x[,2]) %>%
       data.frame() %>% tibble() %>%
       set_names(
-        combn(unique(results_raw$predictor), 2,
+        utils::combn(unique(results_raw$predictor), 2,
               FUN = function(o) paste0(o[[1]],'_',o[[2]]))
       )
 

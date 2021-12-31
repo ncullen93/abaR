@@ -4,14 +4,9 @@
 #' used to fit an aba model or from new data. This is essentially an extension
 #' of the `broom::augment()` function.
 #'
-#' @param model a fitted aba model. The model to get predictions from.
-#' @param newdata dataframe (optional). New data to get predictions from. If
-#'   this is null, predictions will be provided for the data originally used
-#'   to fit the aba model
-#' @param merge logical. Whether to merge all the predictions into the original
-#'   dataset or to store the predictions for each group - outcome - stat combo
-#'   in a dataframe separately.
-#' @param augment logical. Whether to include original data with predictions.
+#' @param object a fitted aba model. The model to get predictions from.
+#' @param ... additional parameters. Accepted: newdata, merge, augment. See
+#'   `aba_fit()` for more information.
 #'
 #' @return a dataframe with original data and with fitted/predicted values added
 #'   for each group-outcome-stat-predictor combination.
@@ -40,12 +35,8 @@
 #'
 #' # store predictions separately by group - outcome - stat combination
 #' data_augmented2 <- model %>% aba_predict(merge = FALSE)
-predict.abaModel <- function(
-  object, newdata = NULL, merge = TRUE, augment = FALSE
-) {
-  aba_predict(
-    object, newdata = newdata, merge = merge, augment = augment
-  )
+predict.abaModel <- function(object, ...) {
+  aba_predict(object, ...)
 }
 
 

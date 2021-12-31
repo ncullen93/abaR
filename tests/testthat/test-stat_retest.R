@@ -1,5 +1,5 @@
 test_that("example works", {
-  devtools::load_all()
+
   data <- adnimerge %>%
     dplyr::filter(
       VISCODE %in% c('bl' ,'m06', 'm12'),

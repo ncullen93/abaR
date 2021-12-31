@@ -59,7 +59,7 @@ aba_diagnosticpower <- function(model,
         }
       )
     ) %>%
-    unnest_wider(result)
+    unnest_wider(.data$result)
 
   results <- results %>% select(-fit)
 
@@ -80,7 +80,7 @@ calculate_diagnostic_power <- function(fit, delta, n, metric) {
     sens <- NULL
   }
 
-  result <- power.diagnostic.test(
+  result <- MKmisc::power.diagnostic.test(
     sens = sens,
     spec = spec,
     n = n,
@@ -121,7 +121,7 @@ get_model_cutpoint <- function(model_data) {
 }
 
 get_model_data <- function(fit) {
-  data <- model.frame(fit)
+  data <- stats::model.frame(fit)
   outcome <- colnames(data)[1]
   data$.Predicted <- stats::predict(fit, type='response')
   data$.Truth <- factor(data[[outcome]])

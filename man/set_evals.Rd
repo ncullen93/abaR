@@ -26,18 +26,22 @@ be useful if you want to test the difference between cross validation with
 five splits or three, for example.
 }
 \examples{
-model <- aba_model() \%>\% set_evals('standard', 'boot', 'traintest', 'cv')
 model <- aba_model() \%>\%
   set_evals(
-    eval_standard(),
-    eval_boot(ntrials = 100),
-    eval_traintest(split = 0.5, ntrials = 10),
-    eval_cv(nsplits = 3, ntrials = 10)
+    'standard'
+    #'boot',
+    #'traintest',
+    #'cv'
   )
 model <- aba_model() \%>\%
   set_evals(
-    eval_cv(nsplits = 3),
-    eval_cv(nsplits = 5),
-    labels = c('3-fold CV', '5-fold CV')
+    eval_standard()
+    #eval_boot(ntrials = 100),
+    #eval_traintest(split = 0.5, ntrials = 10),
+    #eval_cv(nfolds = 3, ntrials = 10)
+  )
+model <- aba_model() \%>\%
+  set_evals(
+    eval_cv(nfolds = 3)
   )
 }

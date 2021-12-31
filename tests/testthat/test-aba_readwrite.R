@@ -50,8 +50,6 @@ test_that("example works", {
     NA
   )
 
-  devtools::load_all()
-  model_summary %>% aba_write(tmp_filename_xlsx, split=TRUE)
   expect_error(
     model_summary %>% aba_write(tmp_filename_xlsx, split=TRUE),
     NA

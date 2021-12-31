@@ -19,7 +19,6 @@ only one dataframe will result (i.e., the tables will not be split by
 group - outcome - stat combinations).
 }
 \examples{
-
 # use built-in data
 data <- adnimerge \%>\% dplyr::filter(VISCODE == 'bl')
 
@@ -41,5 +40,4 @@ model_summary <- model \%>\% aba_summary()
 
 # convert summary to table
 my_table <- model_summary \%>\% as_table()
-
 }
