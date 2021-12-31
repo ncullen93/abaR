@@ -78,23 +78,16 @@ of the <code><a href="https://generics.r-lib.org/reference/augment.html" class="
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S3 method for abaModel</span>
-<span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">object</span>, newdata <span class="op">=</span> <span class="cn">NULL</span>, merge <span class="op">=</span> <span class="cn">TRUE</span>, augment <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
-    <dl><dt>newdata</dt>
-<dd><p>dataframe (optional). New data to get predictions from. If
-this is null, predictions will be provided for the data originally used
-to fit the aba model</p></dd>
-<dt>merge</dt>
-<dd><p>logical. Whether to merge all the predictions into the original
-dataset or to store the predictions for each group - outcome - stat combo
-in a dataframe separately.</p></dd>
-<dt>augment</dt>
-<dd><p>logical. Whether to include original data with predictions.</p></dd>
-<dt>model</dt>
+    <dl><dt>object</dt>
 <dd><p>a fitted aba model. The model to get predictions from.</p></dd>
+<dt>...</dt>
+<dd><p>additional parameters. Accepted: newdata, merge, augment. See
+<code><a href="aba_fit.html">aba_fit()</a></code> for more information.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
