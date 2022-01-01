@@ -179,7 +179,7 @@ set_outcomes <- function(model, ..., labels = NULL) {
 #' model <- aba_model() %>%
 #'   set_covariates('AGE', 'GENDER', 'EDUCATION')
 #'
-set_covariates <- function(model, ...) {
+set_covariates <- function(model, ..., .include_basic = TRUE) {
   object <- model
   object <-
     tryCatch(
@@ -197,6 +197,7 @@ set_covariates <- function(model, ...) {
       }
     )
   object$is_fit <- FALSE
+  object$include_basic <- .include_basic
   object
 }
 

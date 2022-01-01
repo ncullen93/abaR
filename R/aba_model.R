@@ -33,6 +33,8 @@
 #'   the ways in which your model is fit on the data. The standard method is
 #'   to simply fit the models on the entire data, but you can also fit models
 #'   using bootstrapping, train-test splits, or cross validation.
+#' @param include_basic logical. Whether to fit a "basic" model which includes
+#'   only covariates.
 #'
 #' @return An aba model which can be fitted using the `aba_fit()` function and
 #'   which can be modified in any manner.
@@ -94,7 +96,8 @@ aba_model <- function(data = NULL,
                       predictors = NULL,
                       covariates = NULL,
                       stats = NULL,
-                      evals = NULL) {
+                      evals = NULL,
+                      include_basic = TRUE) {
 
   m <- list(
     'data' = data,
@@ -114,7 +117,9 @@ aba_model <- function(data = NULL,
   if (!is.null(groups)) m <- m %>% set_groups(groups)
   if (!is.null(outcomes)) m <- m %>% set_outcomes(outcomes)
   if (!is.null(predictors)) m <- m %>% set_predictors(predictors)
-  if (!is.null(covariates)) m <- m %>% set_covariates(covariates)
+  if (!is.null(covariates)) {
+    m <- m %>% set_covariates(covariates, .include_basic = include_basic)
+  }
   if (!is.null(stats)) m <- m %>% set_stats(stats)
   if (!is.null(evals)) m <- m %>% set_evals(evals)
 

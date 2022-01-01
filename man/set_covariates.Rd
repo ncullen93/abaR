@@ -4,7 +4,7 @@
 \alias{set_covariates}
 \title{Set the covariates of an aba model.}
 \usage{
-set_covariates(model, ...)
+set_covariates(model, ..., .include_basic = TRUE)
 }
 \arguments{
 \item{model}{an aba model. The model for which you want to set covariates.}

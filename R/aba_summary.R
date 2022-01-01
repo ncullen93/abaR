@@ -165,7 +165,9 @@ calculate_metrics <- function(object, control) {
   # models fit on different sizes of data (e.g., pvalue and aic is not valid)
   r <- r %>%
     rowwise() %>%
-    mutate(complete_cases = object$stats[[.data$stat]]$params$complete.cases) %>%
+    mutate(
+      complete_cases = object$stats[[.data$stat]]$params$complete.cases
+    ) %>%
     ungroup() %>%
     mutate(fit_basic = ifelse(
       .data$complete_cases,

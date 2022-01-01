@@ -106,7 +106,9 @@ aba_compile <- function(object, ...) {
   stats <- list(model$stats)
 
   predictors <- model$predictors
-  if (!is.null(model$covariates)) predictors <- c(list('Basic'=c()), predictors)
+  if (!is.null(model$covariates)) {
+    if (model$include_basic) predictors <- c(list('Basic'=c()), predictors)
+  }
   predictors <- list(predictors)
 
   if (is.null(model$data)) stop('You must set data before fitting.')

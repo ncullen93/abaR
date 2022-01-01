@@ -11,7 +11,8 @@ aba_model(
   predictors = NULL,
   covariates = NULL,
   stats = NULL,
-  evals = NULL
+  evals = NULL,
+  include_basic = TRUE
 )
 }
 \arguments{
@@ -42,6 +43,9 @@ statistical model.}
 the ways in which your model is fit on the data. The standard method is
 to simply fit the models on the entire data, but you can also fit models
 using bootstrapping, train-test splits, or cross validation.}
+
+\item{include_basic}{logical. Whether to fit a "basic" model which includes
+only covariates.}
 }
 \value{
 An aba model which can be fitted using the \code{aba_fit()} function and
