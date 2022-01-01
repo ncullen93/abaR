@@ -69,7 +69,9 @@ aba_fit <- function(object, verbose = FALSE) {
 
   # check for not fully specified model
   if (is.null(model$predictors) & is.null(model$covariates)) {
-    stop('Must set at least one of covariates or predictors before fitting.')
+    if (!model$stats[[1]]$stat_type %in% c('retest')) {
+      stop('Must set at least one of covariates or predictors before fitting.')
+    }
   }
   if (is.null(model$outcomes)) stop('Must set outcomes before fitting.')
   if (is.null(model$stats)) stop('Must set stats before fitting.')
