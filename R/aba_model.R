@@ -132,8 +132,15 @@ print.abaModel <- function(x, ...) {
   outcome_vals <- model$outcomes
   outcome_labels <- names(model$outcomes)
   covariate_vals <- model$covariates
-  predictor_vals <- model$predictors[-1]
-  predictor_labels <- names(model$predictors[-1])
+  predictor_vals <- model$predictors
+  predictor_labels <- names(model$predictors)
+  if (length(predictor_labels) > 0) {
+    if (predictor_labels[1] == 'Basic') {
+      predictor_vars <- predictor_vals[-1]
+      predictor_labels <- predictor_labels[-1]
+    }
+  }
+
   stat_vals <- model$stats
   eval_vals <- model$evals
 

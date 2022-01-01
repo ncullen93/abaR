@@ -75,9 +75,7 @@ aba_fit <- function(object, verbose = FALSE) {
   }
   if (is.null(model$outcomes)) stop('Must set outcomes before fitting.')
   if (is.null(model$stats)) stop('Must set stats before fitting.')
-
   if (is.null(model$groups)) model <- model %>% set_groups(everyone())
-  if (is.null(model$predictors)) model$predictors <- list('Basic'=c())
   if (is.null(model$evals)) model <- model %>% set_evals(eval_standard())
 
   # tag original data rows for future use (e.g. returning predictions)
@@ -106,7 +104,10 @@ aba_compile <- function(object, ...) {
   groups <- list(model$groups)
   outcomes <- list(model$outcomes)
   stats <- list(model$stats)
-  predictors <- list(model$predictors)
+
+  predictors <- model$predictors
+  if (!is.null(model$covariates)) predictors <- c(list('Basic'=c()), predictors)
+  predictors <- list(predictors)
 
   if (is.null(model$data)) stop('You must set data before fitting.')
   if (length(outcomes) == 0) stop('You must set at least one outcome.')
@@ -129,12 +130,8 @@ aba_compile <- function(object, ...) {
     unnest_longer(.data$outcome, indices_to='oid', simplify=FALSE) %>%
     unnest_longer(.data$stat, indices_to='sid', simplify=FALSE) %>%
     unnest_longer(.data$predictor, indices_to='pid', simplify=FALSE) %>%
-    mutate(
-      covariate = list(covariate_vals)
-    ) %>%
-    arrange(
-      .data$group, .data$outcome, .data$stat
-    ) %>%
+    mutate(covariate = list(covariate_vals)) %>%
+    arrange(.data$group, .data$outcome, .data$stat) %>%
     select(-contains('id'), everything())
 
   return(r)

@@ -152,12 +152,12 @@ calculate_metrics <- function(object, control) {
   r <- object$results %>%
     group_by(group, outcome, stat) %>%
     mutate(
-      fit_basic = list(
-        ifelse(sum('Basic' %in% .data$predictor) > 0,
+      fit_basic =
+        ifelse(
+          sum('Basic' %in% .data$predictor) > 0,
           .data$fit[.data$predictor == 'Basic'],
-          NULL
+          list(NULL)
         )
-      )[[1]]
     ) %>%
     ungroup()
 
@@ -167,7 +167,11 @@ calculate_metrics <- function(object, control) {
     rowwise() %>%
     mutate(complete_cases = object$stats[[.data$stat]]$params$complete.cases) %>%
     ungroup() %>%
-    mutate(fit_basic = ifelse(.data$complete_cases, fit_basic, list(NULL)))
+    mutate(fit_basic = ifelse(
+      .data$complete_cases,
+      fit_basic,
+      list(NULL)
+    ))
 
   # coefficients
   r <- r %>%
@@ -407,7 +411,9 @@ print.abaSummary <- function(x, ...) {
 
   split <- c('group', 'outcome')
   if (length(x$model$outcomes) >= 5*length(x$model$predictors)) {
-    split <- c('group', 'predictor')
+    if (!is.null(x$model$predictors)) {
+      split <- c('group', 'predictor')
+    }
   }
   if ('split' %in% names(params)) split <- params$split
   if (length(split) != 2) stop('split must have length == 2.')

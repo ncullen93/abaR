@@ -275,7 +275,6 @@ set_predictors <- function(model, ..., labels = NULL) {
         } else {
           names(x) <- paste0('M', seq_along(x))
         }
-        x <- c(list('Basic' = c()), x)
         object$predictors <- x
         object
       },
@@ -287,7 +286,6 @@ set_predictors <- function(model, ..., labels = NULL) {
         if (is.null(names(x))) {
           names(x) <- names(x) <- paste0('M', seq_along(x))
         }
-        x <- c(list('Basic' = c()), x)
         object$predictors <- x
         object
       }
