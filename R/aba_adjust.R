@@ -60,7 +60,7 @@ adjust_pvals <- function(results, adjust) {
   .target <- adjust$target
 
   # adjust metrics
-  if ('metric' %in% .target) {
+  if (('metric' %in% .target) & ('pval' %in% results$metrics$term)) {
     r_adj <- results$metrics %>%
       filter(term == 'pval') %>%
       group_by(

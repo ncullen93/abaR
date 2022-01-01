@@ -109,6 +109,8 @@ aba_compile <- function(object, ...) {
   if (!is.null(model$covariates)) {
     if (model$include_basic) predictors <- c(list('Basic'=c()), predictors)
   }
+  # hack for stat_retest because it doesn't allow covariates or predictors..
+  if (model$stats[[1]]$stat_type == 'retest') predictors <- list('Basic'=c())
   predictors <- list(predictors)
 
   if (is.null(model$data)) stop('You must set data before fitting.')
@@ -124,6 +126,7 @@ aba_compile <- function(object, ...) {
     'stat' = stats,
     'predictor' = predictors
   )
+
 
   # create initial dataframe of the factor names
   r <- val_list %>%
