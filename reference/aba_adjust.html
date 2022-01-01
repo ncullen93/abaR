@@ -115,10 +115,14 @@ p-values changed according to how the user specified.</p>
 <span class="r-in"><span class="co"># default - correct within group, outcome, and stat (x4 comparisons)</span></span>
 <span class="r-in"><span class="va">model_summary_adj</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
 <span class="r-in">  <span class="fu"><a href="aba_summary.html">aba_summary</a></span><span class="op">(</span>adjust <span class="op">=</span> <span class="fu">aba_adjust</span><span class="op">(</span>method<span class="op">=</span><span class="st">'bonferroni'</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> Can't subset columns that don't exist.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> Column `estimate` doesn't exist.</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># correct within group but across outcomes (x8 comparisons)</span></span>
 <span class="r-in"><span class="va">model_summary_adj2</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
 <span class="r-in">  <span class="fu"><a href="aba_summary.html">aba_summary</a></span><span class="op">(</span>adjust<span class="op">=</span><span class="fu">aba_adjust</span><span class="op">(</span>method<span class="op">=</span><span class="st">'bonferroni'</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'group'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> Can't subset columns that don't exist.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> Column `estimate` doesn't exist.</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># correct only model P-values, not coefficient P-values</span></span>
 <span class="r-in"><span class="va">model_summary_adj3</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
