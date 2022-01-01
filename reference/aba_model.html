@@ -113,7 +113,8 @@ statistical fits.</p></li>
   predictors <span class="op">=</span> <span class="cn">NULL</span>,
   covariates <span class="op">=</span> <span class="cn">NULL</span>,
   stats <span class="op">=</span> <span class="cn">NULL</span>,
-  evals <span class="op">=</span> <span class="cn">NULL</span>
+  evals <span class="op">=</span> <span class="cn">NULL</span>,
+  include_basic <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -147,6 +148,9 @@ statistical model.</p></dd>
 the ways in which your model is fit on the data. The standard method is
 to simply fit the models on the entire data, but you can also fit models
 using bootstrapping, train-test splits, or cross validation.</p></dd>
+<dt>include_basic</dt>
+<dd><p>logical. Whether to fit a "basic" model which includes
+only covariates.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
