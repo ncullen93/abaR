@@ -66,6 +66,14 @@ fit.abaModel <- function(object, ...) {
 #' model <- model_spec %>% aba_fit()
 aba_fit <- function(object, verbose = FALSE) {
   model <- object
+
+  # check for not fully specified model
+  if (is.null(model$predictors) & is.null(model$covariates)) {
+    stop('Must set at least one of covariates or predictors before fitting.')
+  }
+  if (is.null(model$outcomes)) stop('Must set outcomes before fitting.')
+  if (is.null(model$stats)) stop('Must set stats before fitting.')
+
   if (is.null(model$groups)) model <- model %>% set_groups(everyone())
   if (is.null(model$predictors)) model$predictors <- list('Basic'=c())
   if (is.null(model$evals)) model <- model %>% set_evals(eval_standard())
