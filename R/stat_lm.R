@@ -43,7 +43,7 @@
 #' fig1 <- model_summary %>% aba_plot_coef()
 #' fig2 <- model_summary %>% aba_plot_metric()
 stat_lm <- function(std.beta = FALSE,
-                   complete.cases = TRUE) {
+                    complete.cases = TRUE) {
   fns <- list(
     'fns' = list(
       'formula' = formula_lm,

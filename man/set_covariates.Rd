@@ -12,6 +12,9 @@ set_covariates(model, ..., .include_basic = TRUE)
 \item{...}{strings or variables. This comma-separated collection of values
 will become the single set of covariates. If you supply actual variables,
 then the data of the aba model should already be set.}
+
+\item{.include_basic}{logical. Whether to fit a model of only covariates
+("basic" model).}
 }
 \value{
 An aba model with covariates set.

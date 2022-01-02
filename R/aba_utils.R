@@ -161,6 +161,8 @@ set_outcomes <- function(model, ..., labels = NULL) {
 #' @param ... strings or variables. This comma-separated collection of values
 #'   will become the single set of covariates. If you supply actual variables,
 #'   then the data of the aba model should already be set.
+#' @param .include_basic logical. Whether to fit a model of only covariates
+#'   ("basic" model).
 #'
 #' @return An aba model with covariates set.
 #'
