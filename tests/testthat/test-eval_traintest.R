@@ -8,13 +8,18 @@ test_that("eval_traintest works", {
       PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl,
       c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
     ) %>%
-    set_stats('glm') %>%
+    set_stats('lm') %>%
     set_evals(
       eval_traintest(split = 0.8)
     )
 
   expect_error(
     model <- model %>% fit(),
+    NA
+  )
+
+  expect_error(
+    s <- model %>% summary(),
     NA
   )
 })

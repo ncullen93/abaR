@@ -15,4 +15,9 @@ test_that("eval_boot works", {
     model <- model %>% fit(),
     NA
   )
+
+  expect_error(
+    s <- model %>% summary(),
+    NA
+  )
 })
