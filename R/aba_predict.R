@@ -120,6 +120,10 @@ aba_predict <- function(
 
     if (!merge) newdata$.row_idx <- NULL
 
+    if (eval_type == 'standard') {
+      results$trial <- list(NULL)
+    }
+
   } else {
     results <- results %>% mutate(data_test = list(NULL))
     main_index <- model$index
