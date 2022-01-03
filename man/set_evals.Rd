@@ -4,15 +4,15 @@
 \alias{set_evals}
 \title{Set the evals of an aba model}
 \usage{
-set_evals(model, ..., labels = NULL)
+set_evals(.model, ..., .labels = NULL)
 }
 \arguments{
-\item{model}{aba model. The model to set the evals for.}
+\item{.model}{aba model. The model to set the evals for.}
 
 \item{...}{comma-separated strings or abaEval objects. The evals you wish
 to set for the given model}
 
-\item{labels}{vector of strings (optional). The labels for each eval.}
+\item{.labels}{vector of strings (optional). The .labels for each eval.}
 }
 \value{
 aba model with evals set.

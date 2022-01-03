@@ -14,7 +14,7 @@ test_that("errors in model fit are properly handled", {
         PLASMA_NFL_bl,
         PTAU_NFL_RATIO_bl,
         c(PLASMA_PTAU181_bl, PLASMA_NFL_bl, PTAU_NFL_RATIO_bl),
-        labels = c('T', 'N', 'TN', 'TN2')
+        .labels = c('T', 'N', 'TN', 'TN2')
       ) %>%
       set_covariates(AGE, GENDER, EDUCATION) %>%
       set_stats(

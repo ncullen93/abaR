@@ -9,11 +9,11 @@ test_that("example works", {
     set_groups(
       everyone(),
       CSF_ABETA_STATUS_bl == 1,
-      labels = c('CU', 'CU AB-')
+      .labels = c('CU', 'CU AB-')
     ) %>%
     set_outcomes(
       ADAS13, MMSE,
-      labels = c('ADAS13', 'MMSE')
+      .labels = c('ADAS13', 'MMSE')
     ) %>%
     set_stats(
       stat_retest(id = 'RID', time = 'VISCODE')
@@ -25,11 +25,11 @@ test_that("example works", {
       set_groups(
         everyone(),
         CSF_ABETA_STATUS_bl == 1,
-        labels = c('CU', 'CU AB-')
+        .labels = c('CU', 'CU AB-')
       ) %>%
       set_outcomes(
         ADAS13, MMSE,
-        labels = c('ADAS13', 'MMSE')
+        .labels = c('ADAS13', 'MMSE')
       ) %>%
       set_stats(
         stat_retest(id = 'RID', time = 'VISCODE')
@@ -67,11 +67,11 @@ test_that("accidental grouped data as input still works", {
       set_groups(
         everyone(),
         CSF_ABETA_STATUS_bl == 1,
-        labels = c('CU', 'CU AB-')
+        .labels = c('CU', 'CU AB-')
       ) %>%
       set_outcomes(
         ADAS13, MMSE,
-        labels = c('ADAS13', 'MMSE')
+        .labels = c('ADAS13', 'MMSE')
       ) %>%
       set_stats(
         stat_retest(id = 'RID', time = 'VISCODE')

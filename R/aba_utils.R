@@ -6,16 +6,16 @@
 #' inputs and logical functions of variables (provided that the data is already
 #' set for the aba model). The inputs should be separated
 #' by a comma, where each input is a different group. You can also specify
-#' labels for each group.
+#' .labels for each group.
 #'
 #' Note that `everyone()` or `"everyone()"` can be used to specify a group with
 #' no filtering. This can be useful when you want to fit models on the entire
 #' group and on a sub-group.
 #'
-#' @param model An aba model. The model for which you want to set groups.
+#' @param .model An aba model. The model for which you want to set groups.
 #' @param ... comma-separated strings or logical expressions. This specifies
 #'   the subsets of the data by which the aba model will filter.
-#' @param labels vector of strings. Optional labels for printing & plotting.
+#' @param .labels vector of strings. Optional .labels for printing & plotting.
 #'
 #' @return An aba model with groups set to the given input.
 #
@@ -33,13 +33,13 @@
 #'   )
 #' print(model)
 #'
-#' # specify labels which will be used later for printing & plotting
+#' # specify .labels which will be used later for printing & plotting
 #' model <- data %>% aba_model() %>%
 #'   set_groups(
 #'     everyone(),
 #'     DX_bl == 'CU',
 #'     (DX_bl %in% c('MCI','AD')) & (CSF_ABETA_bl < 880),
-#'     labels = c('All participants', 'CU-only', 'Ab+ MCI & AD')
+#'     .labels = c('All participants', 'CU-only', 'Ab+ MCI & AD')
 #'   )
 #' print(model)
 #'
@@ -52,8 +52,8 @@
 #'   )
 #' print(model)
 #'
-set_groups <- function(model, ..., labels = NULL) {
-  object <- model
+set_groups <- function(.model, ..., .labels = NULL) {
+  object <- .model
   object <-
     tryCatch(
       {
@@ -62,7 +62,7 @@ set_groups <- function(model, ..., labels = NULL) {
         x <- as.list(unlist(x))
         names(x) <- x
         names(x)[names(x)=='everyone()'] <- 'Everyone'
-        if (!is.null(labels)) names(x) <- labels
+        if (!is.null(.labels)) names(x) <- .labels
 
         object$groups <- x
         object
@@ -87,13 +87,13 @@ set_groups <- function(model, ..., labels = NULL) {
 #' variables of the statistical models. This function supports both string
 #' inputs and actual variables as found in tidy-selection. The inputs should be
 #' separated by a comma, where each input is a different outcome You can also
-#' specify labels for each outcome.
+#' specify .labels for each outcome.
 #'
-#' @param model An aba model. The model for which you want to set outcomes
+#' @param .model An aba model. The model for which you want to set outcomes
 #' @param ... strings or variables. Each comma-seperated value will be a
 #'   new outcome. If you give variables, then the data of the aba model should
 #'   already be set.
-#' @param labels vector of strings. Optional labels for printing & plotting.
+#' @param .labels vector of strings. Optional .labels for printing & plotting.
 #'
 #' @return An aba model with outcomes set.
 #'
@@ -107,25 +107,25 @@ set_groups <- function(model, ..., labels = NULL) {
 #'   set_data(data) %>%
 #'   set_outcomes(CDRSB, ADAS13, MMSE)
 #'
-#' # supply labels
+#' # supply .labels
 #' model <- aba_model() %>%
 #'   set_data(data) %>%
-#'   set_outcomes(CDRSB, ADAS13, MMSE, labels=c('CDR-SB','ADAS-13','MMSE'))
+#'   set_outcomes(CDRSB, ADAS13, MMSE, .labels = c('CDR-SB','ADAS-13','MMSE'))
 #'
 #' # supply strings - data does not need to be set first here. But it will
 #' # result in an error if these variables do not éxist in the eventual data.
 #' model <- aba_model() %>%
 #'   set_outcomes('CDRSB', 'ADAS13', 'MMSE')
-set_outcomes <- function(model, ..., labels = NULL) {
-  object <- model
+set_outcomes <- function(.model, ..., .labels = NULL) {
+  object <- .model
   object <-
     tryCatch(
       {
 
         # expect not a list input
         x <- parse_select_expr(..., data=object$data) %>% unlist()
-        if (!is.null(labels)) {
-          names(x) <- labels
+        if (!is.null(.labels)) {
+          names(x) <- .labels
         } else {
           names(x) <- x#paste0('O', seq_along(x))
         }
@@ -137,7 +137,7 @@ set_outcomes <- function(model, ..., labels = NULL) {
         # try with expectation of list input
         x <- list(...)[[1]]
         if (class(x) == 'character') x <- as.list(x)
-        if (!is.null(labels)) names(x) <- labels
+        if (!is.null(.labels)) names(x) <- .labels
         if (is.null(names(x))) names(x) <- x#paste0('O', seq_along(x))
         object$outcomes <- x
         object
@@ -157,7 +157,7 @@ set_outcomes <- function(model, ..., labels = NULL) {
 #' inputs and actual variables. The inputs should be separated
 #' by a comma, where all variables together is the single covariate set.
 #'
-#' @param model an aba model. The model for which you want to set covariates.
+#' @param .model an aba model. The model for which you want to set covariates.
 #' @param ... strings or variables. This comma-separated collection of values
 #'   will become the single set of covariates. If you supply actual variables,
 #'   then the data of the aba model should already be set.
@@ -181,8 +181,8 @@ set_outcomes <- function(model, ..., labels = NULL) {
 #' model <- aba_model() %>%
 #'   set_covariates('AGE', 'GENDER', 'EDUCATION')
 #'
-set_covariates <- function(model, ..., .include_basic = TRUE) {
-  object <- model
+set_covariates <- function(.model, ..., .include_basic = TRUE) {
+  object <- .model
   object <-
     tryCatch(
       {
@@ -213,12 +213,12 @@ set_covariates <- function(model, ..., .include_basic = TRUE) {
 #' also supports tidy-selection functions like `contains` and `starts_with` which
 #' allows convenient selection of many variables at once with common names.
 #'
-#' @param model An aba model. The model for which you want to set predictors
+#' @param .model An aba model. The model for which you want to set predictors
 #' @param ... strings or variables or tidy-selection functions. Each
 #'   comma-separated value will be a new
 #'   predictor set. If you supply actual variables, then the data of the aba
 #'   model should already be set.
-#' @param labels vector of strings. Optional labels for printing & plotting.
+#' @param .labels vector of strings. Optional .labels for printing & plotting.
 #'
 #' @return An aba model with predictors set.
 #'
@@ -263,8 +263,8 @@ set_covariates <- function(model, ..., .include_basic = TRUE) {
 #'     c('PLASMA_ABETA_bl', 'PLASMA_PTAU181_bl', 'PLASMA_NFL_bl')
 #'   )
 #'
-set_predictors <- function(model, ..., labels = NULL) {
-  object <- model
+set_predictors <- function(.model, ..., .labels = NULL) {
+  object <- .model
   object <-
     tryCatch(
       {
@@ -273,8 +273,8 @@ set_predictors <- function(model, ..., labels = NULL) {
 
         if (is.list(x[[1]])) x <- x[[1]]
 
-        if (!is.null(labels)) {
-          names(x) <- labels
+        if (!is.null(.labels)) {
+          names(x) <- .labels
         } else {
           names(x) <- paste0('M', seq_along(x))
         }
@@ -313,12 +313,12 @@ set_predictors <- function(model, ..., labels = NULL) {
 #' `complete.cases` which determines whether to only use individuals with all
 #' available data within each group - outcome but across all predictor sets.
 #'
-#' @param model an aba model. The model on which to set stats.
+#' @param .model an aba model. The model on which to set stats.
 #' @param ... strings or aba stat object. Each comma-separated value will be
 #'   a different stat. If you specify a string, then the default stat params
 #'   will be used. Some stats require that you actually call them (e.g. `stat_lme`)
 #'   because they require other parameters like `id` and `time` variables.
-#' @param labels vector of strings. Labels for printing & plotting.
+#' @param .labels vector of strings. .labels for printing & plotting.
 #'
 #' @return An abaModel object with stats sets.
 #'
@@ -345,15 +345,15 @@ set_predictors <- function(model, ..., labels = NULL) {
 #'
 #' # you can see these extra stat params when you print the model
 #' print(model)
-set_stats <- function(model, ..., labels = NULL) {
-  .model <- model
+set_stats <- function(.model, ..., .labels = NULL) {
+  .model <- .model
   stats <- list(...)
   # check if list
   is_list <- 'list' %in% class(stats[[1]])
   #is_list <- !('abaStat' %in%class(stats[[1]])) & (length(stats[[1]]) > 1)
   if (is_list) {
     stats <- stats[[1]]
-    labels <- names(stats)
+    .labels <- names(stats)
   }
 
   stats <- stats %>%
@@ -364,9 +364,9 @@ set_stats <- function(model, ..., labels = NULL) {
       }
     )
 
-  # set labels
-  if (!is.null(labels)) {
-    names(stats) <- labels
+  # set .labels
+  if (!is.null(.labels)) {
+    names(stats) <- .labels
   } else {
     names(stats) <- paste0('S', seq_along(stats))
   }
@@ -386,10 +386,10 @@ set_stats <- function(model, ..., labels = NULL) {
 #' be useful if you want to test the difference between cross validation with
 #' five splits or three, for example.
 #'
-#' @param model aba model. The model to set the evals for.
+#' @param .model aba model. The model to set the evals for.
 #' @param ... comma-separated strings or abaEval objects. The evals you wish
 #'   to set for the given model
-#' @param labels vector of strings (optional). The labels for each eval.
+#' @param .labels vector of strings (optional). The .labels for each eval.
 #'
 #' @return aba model with evals set.
 #' @export
@@ -413,13 +413,13 @@ set_stats <- function(model, ..., labels = NULL) {
 #'   set_evals(
 #'     eval_cv(nfolds = 3)
 #'   )
-set_evals <- function(model, ..., labels = NULL) {
-  .model <- model
+set_evals <- function(.model, ..., .labels = NULL) {
+  .model <- .model
   evals <- list(...)
 
   if ('list' %in% class(evals[[1]])) {
     evals <- evals[[1]]
-    labels <- names(evals)
+    .labels <- names(evals)
   }
 
   evals <- evals %>%
@@ -430,9 +430,9 @@ set_evals <- function(model, ..., labels = NULL) {
       }
     )
 
-  # set labels
-  if (!is.null(labels)) {
-    names(evals) <- labels
+  # set .labels
+  if (!is.null(.labels)) {
+    names(evals) <- .labels
   } else {
     eval_names <- evals %>% purrr::map_chr(~.$eval_type)
     names(evals) <- make.names(eval_names, unique=T) %>%

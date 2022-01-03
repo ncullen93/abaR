@@ -32,14 +32,14 @@ test_that("setting outcomes using tidy selection works as expected", {
   )
 
   m4 <- df %>% aba_model() %>%
-    set_outcomes(outcomes3, labels=names(my_outcomes))
+    set_outcomes(outcomes3, .labels=names(my_outcomes))
   expect_equal(
     m4$outcomes,
     my_outcomes
   )
 
   m5 <- df %>% aba_model() %>% set_outcomes(CSF_ABETA_bl:CSF_TAU_bl,
-                                            labels=names(my_outcomes))
+                                            .labels=names(my_outcomes))
   expect_equal(
     m5$outcomes,
     my_outcomes
@@ -79,18 +79,18 @@ test_that('different ways to set models work', {
       fit(),
   NA)
 
-  # all with labels supplied separately from values
+  # all with .labels supplied separately from values
   expect_error(
     model3 <- df %>% aba_model() %>%
-      set_groups(everyone(), labels=c('All')) %>%
+      set_groups(everyone(), .labels=c('All')) %>%
       set_outcomes(ConvertedToAlzheimers, CSF_ABETA_STATUS_bl,
-                   labels = c('AD','ABETA')) %>%
+                   .labels = c('AD','ABETA')) %>%
       set_predictors(
         PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl,
         c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl),
-        labels = c('A','T','N','ATN')
+        .labels = c('A','T','N','ATN')
       ) %>%
-      set_stats('glm', labels='glm1') %>%
+      set_stats('glm', .labels='glm1') %>%
       fit(),
   NA)
 

@@ -4,17 +4,17 @@
 \alias{set_predictors}
 \title{Set the predictors of an aba model.}
 \usage{
-set_predictors(model, ..., labels = NULL)
+set_predictors(.model, ..., .labels = NULL)
 }
 \arguments{
-\item{model}{An aba model. The model for which you want to set predictors}
+\item{.model}{An aba model. The model for which you want to set predictors}
 
 \item{...}{strings or variables or tidy-selection functions. Each
 comma-separated value will be a new
 predictor set. If you supply actual variables, then the data of the aba
 model should already be set.}
 
-\item{labels}{vector of strings. Optional labels for printing & plotting.}
+\item{.labels}{vector of strings. Optional .labels for printing & plotting.}
 }
 \value{
 An aba model with predictors set.

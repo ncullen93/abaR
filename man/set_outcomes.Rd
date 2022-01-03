@@ -4,16 +4,16 @@
 \alias{set_outcomes}
 \title{Set the outcomes of an aba model.}
 \usage{
-set_outcomes(model, ..., labels = NULL)
+set_outcomes(.model, ..., .labels = NULL)
 }
 \arguments{
-\item{model}{An aba model. The model for which you want to set outcomes}
+\item{.model}{An aba model. The model for which you want to set outcomes}
 
 \item{...}{strings or variables. Each comma-seperated value will be a
 new outcome. If you give variables, then the data of the aba model should
 already be set.}
 
-\item{labels}{vector of strings. Optional labels for printing & plotting.}
+\item{.labels}{vector of strings. Optional .labels for printing & plotting.}
 }
 \value{
 An aba model with outcomes set.
@@ -23,7 +23,7 @@ Outcomes are the dependent
 variables of the statistical models. This function supports both string
 inputs and actual variables as found in tidy-selection. The inputs should be
 separated by a comma, where each input is a different outcome You can also
-specify labels for each outcome.
+specify .labels for each outcome.
 }
 \examples{
 data <- adnimerge \%>\% dplyr::filter(VISCODE == 'bl')
@@ -33,10 +33,10 @@ model <- aba_model() \%>\%
   set_data(data) \%>\%
   set_outcomes(CDRSB, ADAS13, MMSE)
 
-# supply labels
+# supply .labels
 model <- aba_model() \%>\%
   set_data(data) \%>\%
-  set_outcomes(CDRSB, ADAS13, MMSE, labels=c('CDR-SB','ADAS-13','MMSE'))
+  set_outcomes(CDRSB, ADAS13, MMSE, .labels = c('CDR-SB','ADAS-13','MMSE'))
 
 # supply strings - data does not need to be set first here. But it will
 # result in an error if these variables do not éxist in the eventual data.

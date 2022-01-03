@@ -91,6 +91,7 @@ aba_write.abaSummary <- function(object,
       )
     if (format == 'table') {
       results <- object %>% as_table()
+      # enhancement: save all result tables (e.g., contrasts) instead of first
       results <- results[[1]]
     }
     save_helper(results, filename, split)
@@ -122,9 +123,6 @@ save_helper <- function(results, filename, split) {
     if (length(split) != 2) stop('split must have length == 2.')
     a1 <- split[1]
     a2 <- split[2]
-
-    # enhancement: save all result tables (contrasts?)
-    results <- results[[1]]
 
     tbl_nested <- results %>%
       group_by(

@@ -4,15 +4,15 @@
 \alias{set_groups}
 \title{Set the groups of an aba model.}
 \usage{
-set_groups(model, ..., labels = NULL)
+set_groups(.model, ..., .labels = NULL)
 }
 \arguments{
-\item{model}{An aba model. The model for which you want to set groups.}
+\item{.model}{An aba model. The model for which you want to set groups.}
 
 \item{...}{comma-separated strings or logical expressions. This specifies
 the subsets of the data by which the aba model will filter.}
 
-\item{labels}{vector of strings. Optional labels for printing & plotting.}
+\item{.labels}{vector of strings. Optional .labels for printing & plotting.}
 }
 \value{
 An aba model with groups set to the given input.
@@ -23,7 +23,7 @@ models on. This function supports both string
 inputs and logical functions of variables (provided that the data is already
 set for the aba model). The inputs should be separated
 by a comma, where each input is a different group. You can also specify
-labels for each group.
+.labels for each group.
 }
 \details{
 Note that \code{everyone()} or \code{"everyone()"} can be used to specify a group with
@@ -42,13 +42,13 @@ model <- data \%>\% aba_model() \%>\%
   )
 print(model)
 
-# specify labels which will be used later for printing & plotting
+# specify .labels which will be used later for printing & plotting
 model <- data \%>\% aba_model() \%>\%
   set_groups(
     everyone(),
     DX_bl == 'CU',
     (DX_bl \%in\% c('MCI','AD')) & (CSF_ABETA_bl < 880),
-    labels = c('All participants', 'CU-only', 'Ab+ MCI & AD')
+    .labels = c('All participants', 'CU-only', 'Ab+ MCI & AD')
   )
 print(model)
 
