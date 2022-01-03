@@ -40,11 +40,11 @@
 #'   set_groups(
 #'     everyone(),
 #'     CSF_ABETA_STATUS_bl == 1,
-#'     labels = c('CU', 'CU AB-')
+#'     .labels = c('CU', 'CU AB-')
 #'   ) %>%
 #'   set_outcomes(
 #'     ADAS13, MMSE,
-#'     labels = c('ADAS13', 'MMSE')
+#'     .labels = c('ADAS13', 'MMSE')
 #'   ) %>%
 #'   set_stats(
 #'     stat_retest(id = 'RID', time = 'VISCODE')

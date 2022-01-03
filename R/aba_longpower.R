@@ -80,7 +80,7 @@
 #'     everyone(),
 #'     (CSF_ABETA_bl < 880) & (CSF_PTAU_bl > 24),
 #'     (CSF_ABETA_bl < 880) & (CSF_PTAU_bl > 24) & (MRI_HIPP_bl < 6000),
-#'     labels = c('DX + COG', 'DX + COG + CSF', 'DX + COG + CSF + MRI')
+#'     .labels = c('DX + COG', 'DX + COG + CSF', 'DX + COG + CSF + MRI')
 #'   ) %>%
 #'   fit()
 #'

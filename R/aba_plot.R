@@ -44,11 +44,11 @@ aba_plot <- function(object, ...) {
 #'   set_data(adnimerge %>% dplyr::filter(VISCODE == 'bl')) %>%
 #'   set_groups(everyone()) %>%
 #'   set_outcomes(ConvertedToAlzheimers, CSF_ABETA_STATUS_bl,
-#'                labels=c('Conversion to AD', 'CSF Abeta Status')) %>%
+#'                .labels=c('Conversion to AD', 'CSF Abeta Status')) %>%
 #'   set_predictors(
 #'     PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl,
 #'     c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl),
-#'     labels = c('A','T','N','ATN')
+#'     .labels = c('A','T','N','ATN')
 #'   ) %>%
 #'   set_stats(stat_glm(std.beta=TRUE)) %>%
 #'   fit()
@@ -190,11 +190,11 @@ aba_plot_metric <- function(model_summary,
 #'   set_data(adnimerge %>% dplyr::filter(VISCODE == 'bl')) %>%
 #'   set_groups(everyone()) %>%
 #'   set_outcomes(ConvertedToAlzheimers, CSF_ABETA_STATUS_bl,
-#'                labels=c('Conversion to AD', 'CSF Abeta Status')) %>%
+#'                .labels=c('Conversion to AD', 'CSF Abeta Status')) %>%
 #'   set_predictors(
 #'     PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl,
 #'     c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl),
-#'     labels = c('A','T','N','ATN')
+#'     .labels = c('A','T','N','ATN')
 #'   ) %>%
 #'   set_stats(stat_glm(std.beta=TRUE)) %>%
 #'   fit()
