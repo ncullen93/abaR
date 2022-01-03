@@ -75,10 +75,13 @@ aba_write.abaSummary <- function(object,
                                  split = FALSE) {
   format <- match.arg(format)
   file_ext <- stringr::str_split(filename, '\\.')[[1]] %>% tail(1)
-  if (!file_ext %in% c('csv', 'xlsx')) stop('Unsupported extension')
+
   file_base <- stringr::str_split(filename, '\\.')[[1]][1]
 
   if (format %in% c('table', 'raw')) {
+    if (!file_ext %in% c('csv', 'txt', 'xls', 'xlsx')) {
+      stop('Unsupported extension')
+    }
     # enhancement: support write for other evals
     results <- object$results$coefs %>%
       mutate(form = 'coef') %>%
