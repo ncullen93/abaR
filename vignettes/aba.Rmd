@@ -29,10 +29,10 @@ model_spec <- aba_model() %>%
   set_groups(
     everyone(),
     DX_bl %in% c('MCI','AD'),
-    labels = c('All','MCI+AD')
+    .labels = c('All','MCI+AD')
   ) %>%
   set_outcomes(ConvertedToAlzheimers, CSF_ABETA_STATUS_bl,
-               labels=c('AD','CSF Abeta')) %>%
+               .labels=c('AD','CSF Abeta')) %>%
   set_predictors(
     PLASMA_ABETA_bl,
     PLASMA_PTAU181_bl,
