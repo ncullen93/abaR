@@ -75,6 +75,7 @@ aba_write.abaSummary <- function(object,
                                  split = FALSE) {
   format <- match.arg(format)
   file_ext <- stringr::str_split(filename, '\\.')[[1]] %>% tail(1)
+  if (!file_ext %in% c('csv', 'xlsx')) stop('Unsupported extension')
   file_base <- stringr::str_split(filename, '\\.')[[1]][1]
 
   if (format %in% c('table', 'raw')) {
@@ -85,7 +86,10 @@ aba_write.abaSummary <- function(object,
         object$results$metrics %>%
           mutate(form = 'metric')
       )
-    if (format == 'table') results <- object %>% as_table()
+    if (format == 'table') {
+      results <- object %>% as_table()
+      results <- results[[1]]
+    }
     save_helper(results, filename, split)
   } else {
     saveRDS(object = object, file = filename)
@@ -99,7 +103,12 @@ save_helper <- function(results, filename, split) {
   # if no split, just save entire file
   # otherwise, split and save in separate files
   if (split[1] == FALSE) {
-    results %>% utils::write.csv(filename, row.names = FALSE)
+    if (file_ext == 'csv') {
+      results %>% utils::write.csv(filename, row.names = FALSE)
+    } else if (file_ext == 'xlsx') {
+      results %>% writexl::write_xlsx(filename)
+    }
+
   } else {
     if (split[1] == TRUE) {
       split <- c('group', 'outcome')
