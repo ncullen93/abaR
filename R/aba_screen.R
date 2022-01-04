@@ -184,7 +184,7 @@ fit_screen <- function(object, ...) {
   object$results <- screen_results
   object$results_summary <- screen_results_summary %>%
     select(
-      predictor:include_n,
+      group, outcome, stat, predictor, threshold, cost_multiplier, include_n,
       all_of(
         apply(expand.grid(c('','_conf_lo','_conf_hi'), all_metrics),
               1, function(x) paste0(x[2],x[1]))
