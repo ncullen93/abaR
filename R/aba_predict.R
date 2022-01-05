@@ -200,7 +200,7 @@ augment_helper <- function(
   fit, group, outcome, stat, predictor, newdata, augment, merge, trial
 ) {
 
-  df <- broom::augment(fit, newdata=newdata) %>%
+  df <- broom::augment(fit, newdata=newdata, type.predict='response') %>%
     select(1:all_of('.fitted'))
 
   if (!augment) df <- df %>% select(.fitted)

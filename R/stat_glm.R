@@ -157,14 +157,13 @@ glance_glm <- function(x, x0, ...) {
 #' This function plots ROC curves across group - outcome - stat combinations
 #' and currently supports `stat_glm`.
 #'
-#' @param object abaSummary. A summary of an aba model with `stat_glm` type.
+#' @param model abaModel. A fitted aba model with `stat_glm` type.
 #'
 #' @return a ggplot with roc curves for all predictor sets across each
 #'   group - outcome - stat combination
 #' @export
 #'
 #' @examples
-#'
 #' data <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
 #'
 #' # fit glm model with binary outcome variables
@@ -180,13 +179,9 @@ glance_glm <- function(x, x0, ...) {
 #'   ) %>%
 #'   fit()
 #'
-#' # summarise glm model
-#' model_summary <- model %>% summary()
-#'
-#' fig <- model_summary %>% aba_plot_roc()
-#'
-aba_plot_roc <- function(object) {
-  model <- object$model
+#' fig <- model %>% aba_plot_roc()
+aba_plot_roc <- function(model) {
+  if ('abaSummary' %in% class(model)) model <- model$model
 
   # nest data by distinct group - outcome pairs
   plot_df <- model$results %>%
@@ -263,3 +258,79 @@ plot_roc_single <- function(models, stat, group, outcome, predictor, data, ...) 
   list(g)
 }
 
+
+#' Plot risk density split by binary outcome class
+#'
+#' This function plots risk density curves across group - outcome - stat
+#' combinations and split by binary outcome. It currently supports `stat_glm`.
+#'
+#' @param model abaModel. A fitted aba model with `stat_glm` type.
+#'
+#' @return a ggplot with risk density curves split by binary outcome value.
+#' @export
+#'
+#' @examples
+#' data <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
+#'
+#' # fit glm model with binary outcome variables
+#' model <- data %>% aba_model() %>%
+#'   set_groups(everyone()) %>%
+#'   set_outcomes(ConvertedToAlzheimers, CSF_ABETA_STATUS_bl) %>%
+#'   set_predictors(
+#'     PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl,
+#'     c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+#'   ) %>%
+#'   set_stats(
+#'     stat_glm(std.beta = TRUE)
+#'   ) %>%
+#'   fit()
+#'
+#' fig <- model %>% aba_plot_riskdensity()
+aba_plot_riskdensity <- function(model,
+                                 risk_type = c('absolute', 'relative'),
+                                 include_basic = TRUE) {
+  risk_type <- match.arg(risk_type)
+
+  df_risk <- model %>%
+    predict(augment=T, merge=F)
+
+  if (!include_basic) df_risk <- df_risk %>% filter(predictor != 'Basic')
+
+  df_risk <- df_risk %>%
+    rowwise() %>%
+    mutate(
+      fig = plot_riskdensity_single(
+        data = .data$data,
+        risk_type = risk_type
+      )
+    ) %>%
+    ungroup() %>%
+    select(-data)
+
+  df_risk
+}
+
+percentile <- function(x) {
+  (x - min(x)) / (max(x) - min(x))
+}
+
+plot_riskdensity_single <- function(data, risk_type) {
+  outcome <- colnames(data)[1]
+  if (!is.factor(data[[outcome]])) data[[outcome]] <- factor(data[[outcome]])
+  if (risk_type == 'relative') {
+    data <- data %>% mutate(.fitted = percentile(.fitted))
+  }
+
+  data <- data %>% mutate(.fitted = 100 * .fitted)
+
+  g <- data %>%
+    ggplot(aes(x = .fitted, group = .data[[outcome]], fill = .data[[outcome]])) +
+    geom_density(aes(y = ..density.. * 100), alpha = 0.5) +
+    theme_aba(axis_title = TRUE) +
+    xlab(ifelse(risk_type == 'absolute', 'Absolute risk (%)', 'Relative risk (%)')) +
+    ylab('Density (%)')
+
+  g <- ggpubr::set_palette(g, 'jama')
+
+  list(g)
+}
