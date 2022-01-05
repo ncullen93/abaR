@@ -64,7 +64,10 @@
     <loc>https://ncullen93.github.io/abaR/reference/aba_plot_metric.html</loc>
   </url>
   <url>
-    <loc>https://ncullen93.github.io/abaR/reference/aba_plot_riskdensity.html</loc>
+    <loc>https://ncullen93.github.io/abaR/reference/aba_plot_predictor_risk.html</loc>
+  </url>
+  <url>
+    <loc>https://ncullen93.github.io/abaR/reference/aba_plot_risk_density.html</loc>
   </url>
   <url>
     <loc>https://ncullen93.github.io/abaR/reference/aba_plot_roc.html</loc>
