@@ -7,11 +7,15 @@
 aba_plot_risk_density(
   model,
   risk_type = c("absolute", "relative"),
-  include_basic = TRUE
+  drop_basic = FALSE
 )
 }
 \arguments{
 \item{model}{abaModel. A fitted aba model with \code{stat_glm} type.}
+
+\item{risk_type}{string. Whether to use absolute or relative risk.}
+
+\item{drop_basic}{logical. Whether to drop the basic model or not.}
 }
 \value{
 a ggplot with risk density curves split by binary outcome value.
@@ -36,5 +40,5 @@ model <- data \%>\% aba_model() \%>\%
   ) \%>\%
   fit()
 
-fig <- model \%>\% aba_plot_riskdensity()
+fig <- model \%>\% aba_plot_risk_density()
 }

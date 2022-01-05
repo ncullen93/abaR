@@ -8,6 +8,11 @@ aba_plot_roc(model, drop_facet_labels = FALSE)
 }
 \arguments{
 \item{model}{abaModel. A fitted aba model with \code{stat_glm} type.}
+
+\item{drop_facet_labels}{logical. Whether to remove facet labels from plots.
+The facet labels tell you what the group and outcome is for the plot.
+Sometimes these labels are unnecessary when you have only one group and
+one outcome, or when you want to add labels in another way.}
 }
 \value{
 a ggplot with roc curves for all predictor sets across each

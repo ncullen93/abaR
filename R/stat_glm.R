@@ -158,6 +158,10 @@ glance_glm <- function(x, x0, ...) {
 #' and currently supports `stat_glm`.
 #'
 #' @param model abaModel. A fitted aba model with `stat_glm` type.
+#' @param drop_facet_labels logical. Whether to remove facet labels from plots.
+#'   The facet labels tell you what the group and outcome is for the plot.
+#'   Sometimes these labels are unnecessary when you have only one group and
+#'   one outcome, or when you want to add labels in another way.
 #'
 #' @return a ggplot with roc curves for all predictor sets across each
 #'   group - outcome - stat combination
@@ -259,6 +263,8 @@ plot_roc_single <- function(models, stat, group, outcome, predictor, data,
 #' combinations and split by binary outcome. It currently supports `stat_glm`.
 #'
 #' @param model abaModel. A fitted aba model with `stat_glm` type.
+#' @param risk_type string. Whether to use absolute or relative risk.
+#' @param drop_basic logical. Whether to drop the basic model or not.
 #'
 #' @return a ggplot with risk density curves split by binary outcome value.
 #' @export
@@ -279,16 +285,16 @@ plot_roc_single <- function(models, stat, group, outcome, predictor, data,
 #'   ) %>%
 #'   fit()
 #'
-#' fig <- model %>% aba_plot_riskdensity()
+#' fig <- model %>% aba_plot_risk_density()
 aba_plot_risk_density <- function(model,
-                                 risk_type = c('absolute', 'relative'),
-                                 include_basic = TRUE) {
+                                  risk_type = c('absolute', 'relative'),
+                                  drop_basic = FALSE) {
   risk_type <- match.arg(risk_type)
 
   df_risk <- model %>%
-    predict(augment=T, merge=F)
+    aba_predict(augment=T, merge=F)
 
-  if (!include_basic) df_risk <- df_risk %>% filter(predictor != 'Basic')
+  if (drop_basic) df_risk <- df_risk %>% filter(predictor != 'Basic')
 
   df_risk <- df_risk %>%
     rowwise() %>%
@@ -319,7 +325,7 @@ plot_risk_density_single <- function(data, risk_type) {
 
   g <- data %>%
     ggplot(aes(x = .fitted, group = .data[[outcome]], fill = .data[[outcome]])) +
-    geom_density(aes(y = ..density.. * 100), alpha = 0.5) +
+    geom_density(aes(y = .data$..density.. * 100), alpha = 0.5) +
     theme_aba(axis_title = TRUE) +
     xlab(ifelse(risk_type == 'absolute', 'Absolute risk (%)', 'Relative risk (%)')) +
     ylab('Density (%)')
@@ -358,7 +364,7 @@ plot_risk_density_single <- function(data, risk_type) {
 #' g <- model %>% aba_plot_predictor_risk()
 #' fig <- g$fig[[1]] # plot of interest
 aba_plot_predictor_risk <- function(model, term_labels = NULL) {
-  res <- model %>% predict(augment=T, merge=F)
+  res <- model %>% aba_predict(augment=T, merge=F)
 
   res <- res %>%
     mutate(
