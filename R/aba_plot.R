@@ -352,8 +352,8 @@ theme_aba <- function(base_size = 16,
     theme(
       text = element_text(size=base_size, family=family, color='black'),
       legend.position = legend.position,
-      legend.margin = margin(5, 0, -5, 0),
-      plot.margin = unit(c(0.5, 1.5, 0.5, 0.5), "lines"),
+      legend.margin = margin(5, 0, 0, 0),
+      plot.margin = unit(c(0.5, 1.5, 0.75, 0.5), "lines"),
       panel.spacing = unit(1.5, "lines"),
       strip.background = element_blank(),
       strip.text = element_text(color='black',
@@ -367,10 +367,11 @@ theme_aba <- function(base_size = 16,
       axis.ticks.length.x = unit(0.2,"cm"),
       axis.line.y.left=element_line(size=1.2),
       axis.text.y = element_text(
-        color='black', margin = margin(t = 0, r = 3, b = 0, l = 6)
+        color='black', margin = margin(t = 0, r = 3, b = 0, l = 0),
+        hjust=1
       ),
       axis.text.x = element_text(
-        color='black', margin = margin(t = 3, r = 0, b = 6, l = 0)
+        color='black', margin = margin(t = 4, r = 0, b = 6, l = 0)
       )
     )
 

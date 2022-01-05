@@ -180,13 +180,15 @@ glance_glm <- function(x, x0, ...) {
 #'   fit()
 #'
 #' fig <- model %>% aba_plot_roc()
-aba_plot_roc <- function(model) {
+aba_plot_roc <- function(model, drop_facet_labels = FALSE) {
   if ('abaSummary' %in% class(model)) model <- model$model
 
   # nest data by distinct group - outcome pairs
   plot_df <- model$results %>%
     group_by(.data$group, .data$outcome, .data$stat) %>%
     nest()
+
+  n_combos <- nrow(plot_df)
 
   # create a plot for each group - outcome pair
   plot_df <- plot_df %>%
@@ -198,19 +200,21 @@ aba_plot_roc <- function(model) {
         group = .data$group,
         outcome = .data$outcome,
         predictor = .data$data$predictor,
-        data = model$data
+        data = model$data,
+        drop_facet_labels = drop_facet_labels
       )
     )
 
   g <- ggpubr::ggarrange(
     plotlist = plot_df$plots,
-    common.legend = TRUE
+    common.legend = ifelse(n_combos > 1, TRUE, FALSE)
   )
   return(g)
 }
 
 # helper function for aba_plot_roc
-plot_roc_single <- function(models, stat, group, outcome, predictor, data, ...) {
+plot_roc_single <- function(models, stat, group, outcome, predictor, data,
+                            drop_facet_labels) {
   group.name <- group
   outcome.name <- outcome
   tmp.models <- models
@@ -232,26 +236,16 @@ plot_roc_single <- function(models, stat, group, outcome, predictor, data, ...) 
       }
     )
 
-  g <- pROC::ggroc(roc.list, size=0.8) +
+  g <- pROC::ggroc(roc.list) +
     geom_segment(aes(x = 100, xend = 0, y = 0, yend = 100),
-                 alpha=0.1, color="grey", linetype="solid") +
-    facet_wrap(.~paste0(outcome,' | ', group)) +
-    xlab('Specificity, %') + ylab('Sensitivity, %') +
-    theme_classic(base_size=16) +
-    theme(legend.position='top',
-          legend.margin = margin(5, 1, 1, 1),
-          plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "lines"),
-          legend.key.width = unit(0.75,"cm"),
-          legend.text=element_text(size=10),
-          panel.spacing = unit(1.5, "lines"),
-          strip.background = element_blank(),
-          strip.text = element_text(face = "bold", size = 16, vjust = 1.25),
-          plot.title = element_text(hjust = 0.5),
-          legend.title=element_blank()) +
-    theme(panel.grid.major.x = element_blank(),
-          panel.grid.major.y = element_line(
-            colour = "black",
-            size = 0.2, linetype = "dotted"))
+                 alpha=0.1, color="grey", linetype="solid")
+
+  if (!drop_facet_labels) g <- g + facet_wrap(.~paste0(outcome,' | ', group))
+
+  g <- g +
+    xlab('Specificity (%)') + ylab('Sensitivity (%)') +
+    theme_aba(axis_title = TRUE)
+
   if (length(roc.list) < 8) {
     g <- ggpubr::set_palette(g, 'jama')
   }
@@ -286,7 +280,7 @@ plot_roc_single <- function(models, stat, group, outcome, predictor, data, ...) 
 #'   fit()
 #'
 #' fig <- model %>% aba_plot_riskdensity()
-aba_plot_riskdensity <- function(model,
+aba_plot_risk_density <- function(model,
                                  risk_type = c('absolute', 'relative'),
                                  include_basic = TRUE) {
   risk_type <- match.arg(risk_type)
@@ -299,7 +293,7 @@ aba_plot_riskdensity <- function(model,
   df_risk <- df_risk %>%
     rowwise() %>%
     mutate(
-      fig = plot_riskdensity_single(
+      fig = plot_risk_density_single(
         data = .data$data,
         risk_type = risk_type
       )
@@ -314,7 +308,7 @@ percentile <- function(x) {
   (x - min(x)) / (max(x) - min(x))
 }
 
-plot_riskdensity_single <- function(data, risk_type) {
+plot_risk_density_single <- function(data, risk_type) {
   outcome <- colnames(data)[1]
   if (!is.factor(data[[outcome]])) data[[outcome]] <- factor(data[[outcome]])
   if (risk_type == 'relative') {
@@ -333,4 +327,74 @@ plot_riskdensity_single <- function(data, risk_type) {
   g <- ggpubr::set_palette(g, 'jama')
 
   list(g)
+}
+
+
+#' Plot predictor values versus predicted risk from fitted aba model
+#'
+#' This function plots real predictor values versus predicted risk (either
+#' absolute or relative) from a fitted aba model with glm stats.
+#'
+#' @param model fitted abaModel. The model to plot
+#' @param term_labels list. Names and values of predictors and their labels
+#'   to replace them with in the plot.
+#'
+#' @return a ggplot
+#' @export
+#'
+#' @examples
+#' data <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
+#' # fit glm model with binary outcome variables
+#' model <- data %>% aba_model() %>%
+#'   set_groups(everyone()) %>%
+#'   set_outcomes(CSF_ABETA_STATUS_bl) %>%
+#'   set_predictors(
+#'     c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+#'   ) %>%
+#'   set_stats(
+#'     stat_glm(std.beta = FALSE)
+#'   ) %>%
+#'   fit()
+#' g <- model %>% aba_plot_predictor_risk()
+#' fig <- g$fig[[1]] # plot of interest
+aba_plot_predictor_risk <- function(model, term_labels = NULL) {
+  res <- model %>% predict(augment=T, merge=F)
+
+  res <- res %>%
+    mutate(
+      fig = purrr::map(
+        data,
+        function(res) {
+
+          res <- res %>%
+            pivot_longer(-c(1, ncol(res)))
+
+          # replace variable names with user-specified labels if given
+          if (!is.null(term_labels)) {
+            if (!is.list(term_labels)) stop('term_labels should be a list.')
+            res <- res %>%
+              mutate(
+                name = map_chr(
+                  name, ~ifelse(. %in% names(term_labels), term_labels[[.]], .)
+                )
+              )
+          }
+
+          outcome <- colnames(res)[1]
+          res$outcome <- factor(res[[outcome]])
+
+          g <- res %>%
+            ggplot(aes(x=value, y = 100*.fitted, color=outcome)) +
+            geom_point() +
+            facet_wrap(.~name, scales = 'free')+
+            theme_aba(axis_title = TRUE) +
+            ylab('Predicted absolute risk (%)') +
+            xlab('Biomarker value')
+
+          g <- ggpubr::set_palette(g, 'jama')
+          g
+        }
+      )
+    )
+  res
 }

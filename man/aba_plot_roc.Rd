@@ -4,7 +4,7 @@
 \alias{aba_plot_roc}
 \title{Plot ROC curves from an aba model}
 \usage{
-aba_plot_roc(model)
+aba_plot_roc(model, drop_facet_labels = FALSE)
 }
 \arguments{
 \item{model}{abaModel. A fitted aba model with \code{stat_glm} type.}
