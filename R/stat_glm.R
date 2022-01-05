@@ -202,6 +202,7 @@ aba_plot_roc <- function(object) {
         stat = .data$data$stat,
         group = .data$group,
         outcome = .data$outcome,
+        predictor = .data$data$predictor,
         data = model$data
       )
     )
@@ -214,24 +215,27 @@ aba_plot_roc <- function(object) {
 }
 
 # helper function for aba_plot_roc
-plot_roc_single <- function(models, stat, group, outcome, data, ...) {
+plot_roc_single <- function(models, stat, group, outcome, predictor, data, ...) {
   group.name <- group
   outcome.name <- outcome
   tmp.models <- models
 
-  roc.list <- tmp.models %>% purrr::map(
-    function(tmp.model) {
-      # get dataset from model
-      data <- stats::model.frame(tmp.model)
 
-      data$tmp.outcome <- data[,as.character(tmp.model$formula)[2]]
-      data$tmp.outcome.pred <- stats::predict(tmp.model, type = "response")
+  roc.list <- tmp.models %>%
+    set_names(predictor) %>%
+    purrr::map(
+      function(tmp.model) {
+        # get dataset from model
+        data <- stats::model.frame(tmp.model)
 
-      res <- pROC::roc(tmp.outcome ~ tmp.outcome.pred,
-                       quiet = TRUE, ci=T, data=data, percent=TRUE)
-      return(res)
-    }
-  )
+        data$tmp.outcome <- data[,as.character(tmp.model$formula)[2]]
+        data$tmp.outcome.pred <- stats::predict(tmp.model, type = "response")
+
+        res <- pROC::roc(tmp.outcome ~ tmp.outcome.pred,
+                         quiet = TRUE, ci=T, data=data, percent=TRUE)
+        return(res)
+      }
+    )
 
   g <- pROC::ggroc(roc.list, size=0.8) +
     geom_segment(aes(x = 100, xend = 0, y = 0, yend = 100),
