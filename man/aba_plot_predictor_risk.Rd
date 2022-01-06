@@ -33,5 +33,4 @@ model <- data \%>\% aba_model() \%>\%
   ) \%>\%
   fit()
 g <- model \%>\% aba_plot_predictor_risk()
-fig <- g$fig[[1]] # plot of interest
 }

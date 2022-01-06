@@ -362,7 +362,6 @@ plot_risk_density_single <- function(data, risk_type) {
 #'   ) %>%
 #'   fit()
 #' g <- model %>% aba_plot_predictor_risk()
-#' fig <- g$fig[[1]] # plot of interest
 aba_plot_predictor_risk <- function(model, term_labels = NULL) {
   res <- model %>% aba_predict(augment=T, merge=F)
 

@@ -11,7 +11,7 @@ theme_aba(
   legend_title = FALSE,
   facet_labels = TRUE,
   axis_title = FALSE,
-  family = c("Tahoma", "Helvetica", "Verdana")
+  family = c("Helvetica", "Tahoma", "Verdana")
 )
 }
 \arguments{

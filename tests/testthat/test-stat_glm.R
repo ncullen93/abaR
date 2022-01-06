@@ -45,3 +45,45 @@ test_that("complete.cases=F works", {
     NA
   )
 })
+
+test_that("plot risk density example works", {
+  data <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
+  # fit glm model with binary outcome variables
+  model <- data %>% aba_model() %>%
+    set_groups(everyone()) %>%
+    set_outcomes(ConvertedToAlzheimers, CSF_ABETA_STATUS_bl) %>%
+    set_predictors(
+      PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl,
+      c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+    ) %>%
+    set_stats(
+      stat_glm(std.beta = TRUE)
+    ) %>%
+    fit()
+
+  expect_error(
+    fig <- model %>% aba_plot_risk_density(),
+    NA
+  )
+})
+
+
+test_that("plot predictor risk example works", {
+  data <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
+  # fit glm model with binary outcome variables
+  model <- data %>% aba_model() %>%
+    set_groups(everyone()) %>%
+    set_outcomes(CSF_ABETA_STATUS_bl) %>%
+    set_predictors(
+      c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+    ) %>%
+    set_stats(
+      stat_glm(std.beta = FALSE)
+    ) %>%
+    fit()
+
+  expect_error(
+    g <- model %>% aba_plot_predictor_risk(),
+    NA
+  )
+})

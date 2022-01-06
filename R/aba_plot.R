@@ -344,7 +344,7 @@ theme_aba <- function(base_size = 16,
                       legend_title = FALSE,
                       facet_labels = TRUE,
                       axis_title = FALSE,
-                      family = c('Tahoma', 'Helvetica', 'Verdana')) {
+                      family = c('Helvetica', 'Tahoma', 'Verdana')) {
 
   family <- match.arg(family)
 
