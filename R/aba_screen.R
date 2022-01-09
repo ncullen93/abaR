@@ -230,7 +230,9 @@ run_screen_model <- function(fit,
   base_cost <- base_test_n * cost_multiplier
 
   data_included <- data_fit %>% filter(.Included == 1)
-  model_rate <- mean(data_included$.Truth)
+  # get the value of the outcome associated with positivity (not always just "1")
+  positive_outcome_val <- unique(data_included$.Truth)[2]
+  model_rate <- mean(data_included$.Truth == positive_outcome_val)
   model_test_n <- ceiling(include_n / model_rate)
   model_screen_n <- ceiling(model_test_n / threshold)
   model_cost <- model_test_n * cost_multiplier + model_screen_n * 1
