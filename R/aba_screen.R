@@ -170,8 +170,8 @@ fit_screen <- function(object, ...) {
         summarise(
           across(all_of(all_metrics),
                  list(
-                   'conf_lo' = ~quantile(., 0.025),
-                   'conf_hi' = ~quantile(., 0.975)
+                   'conf_lo' = ~quantile(., 0.025, na.rm=T),
+                   'conf_hi' = ~quantile(., 0.975, na.rm=T)
                  )),
           .groups = 'keep'
         ) %>%
@@ -209,6 +209,13 @@ run_screen_model <- function(fit,
       .Truth = .data[[outcome]]
     )
 
+  if ((threshold > max(data_fit$.Predicted)) & (risk_type == 'absolute')) {
+    warning('Threshold is greater than max predicted risk.')
+  }
+
+  # get the value of the outcome associated with positivity (not always just "1")
+  positive_outcome_val <- unique(data_fit$.Truth)[2]
+
   if (risk_type == 'relative') {
     cut_val <- unname(quantile(data_fit$.Predicted, 1 - threshold))
   } else if (risk_type == 'absolute') {
@@ -230,13 +237,21 @@ run_screen_model <- function(fit,
   base_cost <- base_test_n * cost_multiplier
 
   data_included <- data_fit %>% filter(.Included == 1)
-  # get the value of the outcome associated with positivity (not always just "1")
-  positive_outcome_val <- unique(data_included$.Truth)[2]
+
   model_rate <- mean(data_included$.Truth == positive_outcome_val)
   model_test_n <- ceiling(include_n / model_rate)
   model_screen_n <- ceiling(model_test_n / threshold)
   model_cost <- model_test_n * cost_multiplier + model_screen_n * 1
   model_cost_save <- 100 * (base_cost - model_cost) / base_cost
+
+
+  if (nrow(data_included) == 0) {
+    model_rate <- NA
+    model_test_n <- NA
+    model_screen_n <- NA
+    model_cost <- NA
+    model_cost_save <- NA
+  }
 
   results_df <- tibble::tibble(
     base_rate,
@@ -248,5 +263,6 @@ run_screen_model <- function(fit,
     model_cost,
     model_cost_save
   )
+
   return(results_df)
 }
