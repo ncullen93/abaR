@@ -86,12 +86,12 @@ aba_fit <- function(object, verbose = FALSE) {
   eval <- model$evals[[1]]
   model <- switch(
     eval$eval_type,
-    'standard' = model %>% fit_standard(),
-    'boot' = model %>% fit_boot(ntrials=eval$ntrials),
+    'standard' = model %>% fit_standard(verbose = verbose),
+    'boot' = model %>% fit_boot(ntrials=eval$ntrials, verbose = verbose),
     'traintest' = model %>%
-      fit_traintest(split = eval$split, ntrials = eval$ntrials),
+      fit_traintest(split = eval$split, ntrials = eval$ntrials, verbose = verbose),
     'cv' = model %>%
-      fit_cv(nfolds = eval$nfolds, ntrials = eval$ntrials)
+      fit_cv(nfolds = eval$nfolds, ntrials = eval$ntrials, verbose = verbose)
   )
 
   model

@@ -282,9 +282,17 @@ set_predictors <- function(.model, ..., .labels = NULL) {
         object
       },
       error = function(cond) {
-
         # try with expectation of list input
-        x <- list(...)[[1]]
+        # if that also fails, then there is a missing predictor
+        x <- tryCatch(
+          {
+            list(...)[[1]]
+          },
+          error = function(cond2) {
+            stop('One or more predictors are missing from data.')
+          }
+        )
+
         if (class(x) == 'character') x <- list(x)
         if (is.null(names(x))) {
           names(x) <- names(x) <- paste0('M', seq_along(x))
