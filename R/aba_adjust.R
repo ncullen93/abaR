@@ -88,9 +88,15 @@ adjust_pvals <- function(results, adjust) {
       ) %>%
       unnest(cols = c(data, estimate_adj)) %>%
       ungroup() %>%
-      select(-estimate) %>%
-      rename(estimate = estimate_adj) %>%
-      select(group:predictor, estimate, everything())
+      rename(
+        pval = estimate_adj,
+        pval_unadj = estimate
+      ) %>%
+      select(-term) %>%
+      pivot_longer(cols = c(pval, pval_unadj),
+                   names_to = 'term',
+                   values_to = 'estimate') %>%
+      select(group, outcome, stat, predictor, term, estimate, conf_low, conf_high)
 
     results$metrics <- results$metrics %>%
       filter(term != 'pval') %>%
@@ -119,9 +125,7 @@ adjust_pvals <- function(results, adjust) {
       unnest(cols = c(data, pval_adj)) %>%
       ungroup() %>%
       select(-pval) %>%
-      rename(
-        pval = pval_adj
-      )
+      rename(pval = pval_adj)
 
     results$coefs <- r_adj
   }
