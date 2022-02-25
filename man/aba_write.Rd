@@ -7,7 +7,7 @@
 aba_write(
   object,
   filename,
-  format = c("table", "raw", "object"),
+  format = c("table", "raw", "object", "raw_custom"),
   split = FALSE
 )
 }
@@ -20,8 +20,8 @@ aba_write(
 \item{format}{string. How to save the object to file. Options include
 "table" (formatted results like you see when you print the object to the
 console), "raw" (long-form results like what you see when you call
-\code{object$results}), or "object" (the actual aba object which can be later
-be loaded into memory and used again).}
+\code{object$results}),  "object" (the actual aba object which can be later
+be loaded into memory and used again), or "raw_wide".}
 
 \item{split}{logical. Whether to save the results in split files (for
 csv) or split sheets (for excel) based on group - outcome - stat

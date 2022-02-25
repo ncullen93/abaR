@@ -1,4 +1,3 @@
-
 #' Set the groups of an aba model.
 #'
 #' Groups are the filtered subsets of data which you want to fit statistical
@@ -81,6 +80,13 @@ set_groups <- function(.model, ..., .labels = NULL) {
   object
 }
 
+
+check_label_uniqueness <- function(x) {
+  if (length(x) != length(unique(x))) {
+    stop('Labels (.labels) must all be unique.')
+  }
+}
+
 #' Set the outcomes of an aba model.
 #'
 #' Outcomes are the dependent
@@ -121,10 +127,10 @@ set_outcomes <- function(.model, ..., .labels = NULL) {
   object <-
     tryCatch(
       {
-
         # expect not a list input
         x <- parse_select_expr(..., data=object$data) %>% unlist()
         if (!is.null(.labels)) {
+          check_label_uniqueness(.labels)
           names(x) <- .labels
         } else {
           names(x) <- x#paste0('O', seq_along(x))
@@ -137,7 +143,10 @@ set_outcomes <- function(.model, ..., .labels = NULL) {
         # try with expectation of list input
         x <- list(...)[[1]]
         if (class(x) == 'character') x <- as.list(x)
-        if (!is.null(.labels)) names(x) <- .labels
+        if (!is.null(.labels)) {
+          check_label_uniqueness(.labels)
+          names(x) <- .labels
+        }
         if (is.null(names(x))) names(x) <- x#paste0('O', seq_along(x))
         object$outcomes <- x
         object
@@ -274,6 +283,7 @@ set_predictors <- function(.model, ..., .labels = NULL) {
         if (is.list(x[[1]])) x <- x[[1]]
 
         if (!is.null(.labels)) {
+          check_label_uniqueness(.labels)
           names(x) <- .labels
         } else {
           names(x) <- paste0('M', seq_along(x))
@@ -374,6 +384,7 @@ set_stats <- function(.model, ..., .labels = NULL) {
 
   # set .labels
   if (!is.null(.labels)) {
+    check_label_uniqueness(.labels)
     names(stats) <- .labels
   } else {
     names(stats) <- paste0('S', seq_along(stats))
@@ -440,6 +451,7 @@ set_evals <- function(.model, ..., .labels = NULL) {
 
   # set .labels
   if (!is.null(.labels)) {
+    check_label_uniqueness(.labels)
     names(evals) <- .labels
   } else {
     eval_names <- evals %>% purrr::map_chr(~.$eval_type)

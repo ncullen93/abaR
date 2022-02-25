@@ -11,8 +11,8 @@
 #' @param format string. How to save the object to file. Options include
 #'   "table" (formatted results like you see when you print the object to the
 #'   console), "raw" (long-form results like what you see when you call
-#'   `object$results`), or "object" (the actual aba object which can be later
-#'   be loaded into memory and used again).
+#'   `object$results`),  "object" (the actual aba object which can be later
+#'   be loaded into memory and used again), or "raw_wide".
 #' @param split logical. Whether to save the results in split files (for
 #' csv) or split sheets (for excel) based on group - outcome - stat
 #' combinations. This argument is ignored if format == "object".
@@ -62,7 +62,7 @@
 #'
 aba_write <- function(object,
                       filename,
-                      format = c('table', 'raw', 'object'),
+                      format = c('table', 'raw', 'object', 'raw_custom'),
                       split = FALSE) {
   UseMethod('aba_write')
 }
@@ -71,24 +71,44 @@ aba_write <- function(object,
 #' @export
 aba_write.abaSummary <- function(object,
                                  filename,
-                                 format = c('table', 'raw', 'object'),
+                                 format = c('table', 'raw', 'object', 'raw_custom'),
                                  split = FALSE) {
   format <- match.arg(format)
   file_ext <- stringr::str_split(filename, '\\.')[[1]] %>% tail(1)
 
   file_base <- stringr::str_split(filename, '\\.')[[1]][1]
 
-  if (format %in% c('table', 'raw')) {
+  if (format %in% c('table', 'raw', 'raw_custom')) {
     if (!file_ext %in% c('csv', 'txt', 'xls', 'xlsx')) {
       stop('Unsupported extension')
     }
+
     # enhancement: support write for other evals
-    results <- object$results$coefs %>%
-      mutate(form = 'coef') %>%
-      bind_rows(
-        object$results$metrics %>%
-          mutate(form = 'metric')
-      )
+    if (format == 'raw_custom') {
+      results2 <- object$results$metrics %>%
+        select(-c(conf_low, conf_high)) %>%
+        pivot_wider(
+          names_from = 'term',
+          values_from=c('estimate')
+        ) %>%
+        rename(model_pval = pval)
+
+      results <- object$results$coefs %>%
+        left_join(
+          results2,
+          by = c('group', 'outcome', 'stat', 'predictor')
+        )
+    } else {
+      results <- object$results$coefs %>%
+        mutate(form = 'coef') %>%
+        bind_rows(
+          object$results$metrics %>%
+            mutate(form = 'metric')
+        )
+    }
+
+    print(results)
+
     if (format == 'table') {
       results <- object %>% as_table()
       # enhancement: save all result tables (e.g., contrasts) instead of first
