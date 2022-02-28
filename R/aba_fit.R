@@ -174,6 +174,13 @@ process_dataset <- function(
   # process predictors and covariates; check if they exist
   predictors <- predictors %>% unlist() %>% unique()
   predictors <- predictors[predictors != '']
+
+  # check if predictors have interaction terms
+  predictors <- predictors %>%
+    stringr::str_split(' \\* ') %>%
+    unlist() %>%
+    unique()
+
   has_predictors <- length(predictors) > 0
   has_covariates <- length(covariates) > 0
 
