@@ -54,7 +54,6 @@
 #'
 #' # load summary back to file to show it works
 #' model_summary2 <- aba_read(tmp_filename_rda)
-#' print(model_summary2)
 #'
 #' # delete temp files
 #' removed <- file.remove(tmp_filename_csv)
@@ -106,8 +105,6 @@ aba_write.abaSummary <- function(object,
             mutate(form = 'metric')
         )
     }
-
-    print(results)
 
     if (format == 'table') {
       results <- object %>% as_table()
