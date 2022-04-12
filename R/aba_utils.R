@@ -228,6 +228,9 @@ set_covariates <- function(.model, ..., .include_basic = TRUE) {
 #'   predictor set. If you supply actual variables, then the data of the aba
 #'   model should already be set.
 #' @param .labels vector of strings. Optional .labels for printing & plotting.
+#' @param .split boolean. Whether to split all variables into separate predictors
+#'   or keep together as one combined predictor. Only relevant when setting
+#'   predictors with one vector or using things like "starts_with(...)"
 #'
 #' @return An aba model with predictors set.
 #'
@@ -272,7 +275,7 @@ set_covariates <- function(.model, ..., .include_basic = TRUE) {
 #'     c('PLASMA_ABETA_bl', 'PLASMA_PTAU181_bl', 'PLASMA_NFL_bl')
 #'   )
 #'
-set_predictors <- function(.model, ..., .labels = NULL) {
+set_predictors <- function(.model, ..., .labels = NULL, .split = FALSE) {
   object <- .model
   object <-
     tryCatch(
@@ -287,6 +290,11 @@ set_predictors <- function(.model, ..., .labels = NULL) {
           names(x) <- .labels
         } else {
           names(x) <- paste0('M', seq_along(x))
+        }
+
+        if (.split) {
+          x <- x %>% unlist()
+          x <- x %>% set_names(paste0('M', seq_along(x)))
         }
         object$predictors <- x
         object
@@ -306,6 +314,10 @@ set_predictors <- function(.model, ..., .labels = NULL) {
         if (class(x) == 'character') x <- list(x)
         if (is.null(names(x))) {
           names(x) <- names(x) <- paste0('M', seq_along(x))
+        }
+        if (.split) {
+          x <- x %>% unlist()
+          x <- x %>% set_names(paste0('M', seq_along(x)))
         }
         object$predictors <- x
         object
