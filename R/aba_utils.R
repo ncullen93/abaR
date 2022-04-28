@@ -227,7 +227,8 @@ set_covariates <- function(.model, ..., .include_basic = TRUE) {
 #'   comma-separated value will be a new
 #'   predictor set. If you supply actual variables, then the data of the aba
 #'   model should already be set.
-#' @param .labels vector of strings. Optional .labels for printing & plotting.
+#' @param .labels vector of strings. Optional .labels for printing & plotting. If 
+#'   .labels is set to "self" then the labels will be the predictor values also.
 #' @param .split boolean. Whether to split all variables into separate predictors
 #'   or keep together as one combined predictor. Only relevant when setting
 #'   predictors with one vector or using things like "starts_with(...)"
@@ -323,6 +324,10 @@ set_predictors <- function(.model, ..., .labels = NULL, .split = FALSE) {
         object
       }
     )
+
+  if (!is.null(.labels) && (.labels == 'self')) {
+    names(object$predictors) <- object$predictors %>% unlist() %>% unname()
+  }
   object$is_fit <- FALSE
   object
 }
