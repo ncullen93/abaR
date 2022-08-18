@@ -79,7 +79,7 @@ aba_emmeans <- function(model) {
   emmeans_df <- r %>%
     select(group:predictor, emmeans) %>%
     unnest(emmeans) %>%
-    select(-c(df, statistic, std.error)) %>%
+    select(-c(df, statistic)) %>%
     rename(
       conf_low = conf.low,
       conf_high = conf.high
@@ -92,7 +92,7 @@ aba_emmeans <- function(model) {
   pairs_df <- r %>%
     select(group:predictor, pairs) %>%
     unnest(pairs) %>%
-    select(-c(term, null.value, df, statistic, std.error)) %>%
+    select(-c(term, null.value, df, statistic)) %>%
     rename(
       conf_low = conf.low,
       conf_high = conf.high
@@ -249,14 +249,16 @@ plot_emmeans_helper <- function(group, outcome, stat, predictor, object) {
   is_neg <- df1[nrow(df1),][['estimate']] < 0
   legend_y <- ifelse(is_neg, 0.1, 0.95)
 
-  nudge_y <- max(abs(df1$estimate)) / 15
+  nudge_y <- max(abs(df1$estimate)) / 30
 
   g <- df1 %>%
     ggplot(aes(x=time, y=estimate, group=treatment, color=treatment)) +
     geom_hline(yintercept=0, size=0.5, color='gray', linetype='solid')+
     geom_line(size=1, position=position_dodge(width=dodge_width)) +
     geom_point(aes(shape=treatment), position=position_dodge(width=dodge_width), size=3) +
-    geom_errorbar(aes(ymin=conf_low, ymax=conf_high), width=1*dodge_width,
+    #geom_errorbar(aes(ymin=conf_low, ymax=conf_high), width=1*dodge_width,
+    #              size=1, position=position_dodge(width=dodge_width)) +
+    geom_errorbar(aes(ymin=estimate-std.error, ymax=estimate+std.error), width=1*dodge_width,
                   size=1, position=position_dodge(width=dodge_width)) +
     geom_text(
       data=df2,
