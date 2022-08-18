@@ -100,7 +100,7 @@ formula_mmrm <- function(outcome, predictors, covariates, extra_params) {
   interaction_vars <- c()
   covariates <- covariates[!(covariates %in% interaction_vars)]
 
-  f <- paste(outcome, "~", time)
+  f <- paste(outcome, "~ -1 + ", time)
   if (length(covariates) + length(predictors) > 0) f <- paste(f, '+')
   if (length(covariates) > 0) {
     f <- paste(f, paste(covariates, collapse = " + "))
@@ -134,8 +134,9 @@ fit_mmrm <- function(formula, data, extra_params) {
     formula <- glue('{formula} + {outcome}_{bl_suffix}*{time}')
   }
 
+
   # make correlation and weights form
-  correlation_form <- glue::glue('~ 1 | {id}')
+  correlation_form <- glue::glue('~ time_dbl | {id}')
   weights_form <- glue::glue('~ 1 | {time}')
 
   # make sure data is in the right format:
@@ -153,8 +154,10 @@ fit_mmrm <- function(formula, data, extra_params) {
 
   data <- data_original %>%
     filter(.data[[time]] != first_visit) %>%
-    mutate({{ time }} := factor(.data[[time]]))
+    mutate({{ time }} := factor(.data[[time]])) %>%
+    mutate(time_dbl = as.numeric(.data[[time]]))
 
+  print(formula)
   # fit the model
   model <- nlme::gls(
     stats::formula(formula),
