@@ -170,7 +170,7 @@ summary_cv <- function(model,
       results_test = purrr::pmap(
         list(stat_obj, fit, data_test),
         function(stat_obj, fit, data_test) {
-          # if error happens here, then the stat has no evaluate function
+          # if an error happens here, then the stat has no evaluate function
           x <- stat_obj$fns$evaluate(fit, data_test)
           x
         }
