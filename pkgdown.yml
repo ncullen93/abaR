@@ -1,10 +1,10 @@
 pandoc: 2.7.3
-pkgdown: 2.0.2
+pkgdown: 2.0.6
 pkgdown_sha: ~
 articles:
   aba: aba.html
   intro_to_aba_models: intro_to_aba_models.html
-last_built: 2022-02-28T14:37Z
+last_built: 2022-08-30T07:51Z
 urls:
   reference: https://ncullen93.github.io/abaR/reference
   article: https://ncullen93.github.io/abaR/articles

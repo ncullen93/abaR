@@ -8,8 +8,8 @@
 <meta name="description" content="aba">
 <title>An introduction to aba models • aba</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.1.0/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.1.0/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="../deps/bootstrap-5.1.3/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.1.3/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <meta property="og:title" content="An introduction to aba models">
@@ -84,7 +84,7 @@
 
 
 <script src="intro_to_aba_models_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
-  <main id="main"><div class="page-header">
+  <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>An introduction to aba models</h1>
             
       
@@ -100,8 +100,8 @@
 <p>An <code>aba_model</code> is the core function of the <code>aba</code> package. An aba model contains all the information about your data and the factors of your analysis. Once you have fit an aba model, you can do many cool things with it like creating publication-ready tables and figures or use it to make decisions about a future clinical trial.</p>
 <p>In this introduction tutorial, you will learn about the main components of an aba model and get a glimpse into the awesome functionalities of the aba package.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ncullen93/abaR/" class="external-link">aba</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span>, warn.conflicts <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ncullen93/abaR/" class="external-link">aba</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span>, warn.conflicts <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="a-basic-example">A basic example<a class="anchor" aria-label="anchor" href="#a-basic-example"></a>
@@ -117,63 +117,63 @@
 </ul>
 <p>These are the things you will define in your aba model. What follows is a basic example of fitting an aba model to perform logistic regression on two different sub-groups of our data, with two different outcomes, with three different combinations of predictor variables, and with three fixed covariate variables:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">adnimerge</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">VISCODE</span> <span class="op">==</span> <span class="st">'bl'</span><span class="op">)</span>
-
-<span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/aba_model.html">aba_model</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/set_data.html">set_data</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/set_groups.html">set_groups</a></span><span class="op">(</span><span class="va">DX_bl</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'MCI'</span>,<span class="st">'AD'</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/set_outcomes.html">set_outcomes</a></span><span class="op">(</span><span class="va">ConvertedToAlzheimers</span>, <span class="va">CSF_ABETA_STATUS_bl</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/set_predictors.html">set_predictors</a></span><span class="op">(</span>
-    <span class="va">PLASMA_PTAU181_bl</span>,
-    <span class="va">PLASMA_NFL_bl</span>,
-    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">PLASMA_PTAU181_bl</span>, <span class="va">PLASMA_NFL_bl</span><span class="op">)</span>
-  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/set_covariates.html">set_covariates</a></span><span class="op">(</span><span class="va">AGE</span>, <span class="va">GENDER</span>, <span class="va">EDUCATION</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/set_stats.html">set_stats</a></span><span class="op">(</span><span class="fu"><a href="../reference/stat_glm.html">stat_glm</a></span><span class="op">(</span>std.beta<span class="op">=</span><span class="cn">T</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">adnimerge</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">VISCODE</span> <span class="op">==</span> <span class="st">'bl'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/aba_model.html">aba_model</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/set_data.html">set_data</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/set_groups.html">set_groups</a></span><span class="op">(</span><span class="va">DX_bl</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'MCI'</span>,<span class="st">'AD'</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/set_outcomes.html">set_outcomes</a></span><span class="op">(</span><span class="va">ConvertedToAlzheimers</span>, <span class="va">CSF_ABETA_STATUS_bl</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/set_predictors.html">set_predictors</a></span><span class="op">(</span></span>
+<span>    <span class="va">PLASMA_PTAU181_bl</span>,</span>
+<span>    <span class="va">PLASMA_NFL_bl</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">PLASMA_PTAU181_bl</span>, <span class="va">PLASMA_NFL_bl</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/set_covariates.html">set_covariates</a></span><span class="op">(</span><span class="va">AGE</span>, <span class="va">GENDER</span>, <span class="va">EDUCATION</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/set_stats.html">set_stats</a></span><span class="op">(</span><span class="fu"><a href="../reference/stat_glm.html">stat_glm</a></span><span class="op">(</span>std.beta<span class="op">=</span><span class="cn">T</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>As you see here, we set all the various factors of the aba model using the <code>set_*</code> functions. These functions modify and build up the aba model. We can print our aba model to the console at any time to get a nice overview of what our model contains:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span>
-<span class="co">#&gt; ----------------------</span>
-<span class="co">#&gt; ABA MODEL (not fitted)</span>
-<span class="co">#&gt; ----------------------</span>
-<span class="co">#&gt; Groups:</span>
-<span class="co">#&gt;    DX_bl %in% c("MCI", "AD")</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Outcomes:</span>
-<span class="co">#&gt;    ConvertedToAlzheimers</span>
-<span class="co">#&gt;    CSF_ABETA_STATUS_bl</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Covariates:</span>
-<span class="co">#&gt;    AGE GENDER EDUCATION</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Predictors:</span>
-<span class="co">#&gt;    M1</span>
-<span class="co">#&gt;    M2</span>
-<span class="co">#&gt;    M3</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Stats:</span>
-<span class="co">#&gt;    glm </span>
-<span class="co">#&gt; </span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ----------------------</span></span>
+<span><span class="co">#&gt; ABA MODEL (not fitted)</span></span>
+<span><span class="co">#&gt; ----------------------</span></span>
+<span><span class="co">#&gt; Groups:</span></span>
+<span><span class="co">#&gt;    DX_bl %in% c("MCI", "AD")</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Outcomes:</span></span>
+<span><span class="co">#&gt;    ConvertedToAlzheimers</span></span>
+<span><span class="co">#&gt;    CSF_ABETA_STATUS_bl</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Covariates:</span></span>
+<span><span class="co">#&gt;    AGE GENDER EDUCATION</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Predictors:</span></span>
+<span><span class="co">#&gt;    M1</span></span>
+<span><span class="co">#&gt;    M2</span></span>
+<span><span class="co">#&gt;    M3</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Stats:</span></span>
+<span><span class="co">#&gt;    glm </span></span>
+<span><span class="co">#&gt; </span></span></code></pre></div>
 <p>We can see that everything we set is included, along with some automatically generated labels (e.g., ‘G1’ and ‘G2’ for groups) that we will dig further into later.</p>
 <p>In any case, once you’ve sufficiently defined your model – an aba model needs at least some data, one or more outcomes and stats, and either one or more predictor or covariate – then you should call the <code><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit()</a></code> function. This function will trigger the actual fitting of your stats on all the different group - outcome - predictor combinations.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">model</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>Now that our aba model has been fit, the next natural thing to do is to call the <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> function to gather up the coefficients and metrics of each statistical fit.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">model_summary</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">model_summary</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>As you see, summarizing an aba model is the way to collect all the important information. When you print an aba summary to the console, it will be formatted in a nice manner allowing you to inspect the results. As you will see later, which values are included in the summary and how they are formatted is completely customizable.</p>
 <p>Although viewing a nicely formatted summary table is a good way to understand our results, plotting the variable coefficients and model metrics can provide deeper insight. Therefore, there are multiple plotting functions in aba which work out-of-the-box with aba summaries.</p>
 <p>This includes <code><a href="../reference/aba_plot_coef.html">aba_plot_coef()</a></code> for plotting coeffficients:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">model_summary</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/aba_plot_coef.html">aba_plot_coef</a></span><span class="op">(</span>coord_flip<span class="op">=</span><span class="cn">T</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">model_summary</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/aba_plot_coef.html">aba_plot_coef</a></span><span class="op">(</span>coord_flip<span class="op">=</span><span class="cn">T</span><span class="op">)</span></span></code></pre></div>
 <p><img src="intro_to_aba_models_files/figure-html/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;"></p>
 <p>And <code><a href="../reference/aba_plot_metric.html">aba_plot_metric()</a></code> for plotting overall model metrics (in this case, AUC):</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">model_summary</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/aba_plot_metric.html">aba_plot_metric</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">model_summary</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/aba_plot_metric.html">aba_plot_metric</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="intro_to_aba_models_files/figure-html/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;"></p>
 <p>Moreover, each stat has its own special plotting functions that allow you to look further into the results. In this case, we used a logistic regression model (<code><a href="../reference/stat_glm.html">stat_glm()</a></code>) which is useful for making ROC curves:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">model_summary</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/aba_plot_roc.html">aba_plot_roc</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">model_summary</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/aba_plot_roc.html">aba_plot_roc</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="intro_to_aba_models_files/figure-html/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -189,7 +189,7 @@
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
     </footer>

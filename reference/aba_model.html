@@ -12,7 +12,7 @@ statistical fits.
 
 results: the resulting fitted statistics.
 
-"><title>Create an aba model. — aba_model • aba</title><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.1.0/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.1.0/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous"><!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet"><meta property="og:title" content="Create an aba model. — aba_model"><meta property="og:description" content="An aba model is the foundational object in the aba package. It is composed
+"><title>Create an aba model. — aba_model • aba</title><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.1.3/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.1.3/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous"><!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet"><meta property="og:title" content="Create an aba model. — aba_model"><meta property="og:description" content="An aba model is the foundational object in the aba package. It is composed
 of the following:
 data: a data.frame to be used to fit the statistical models
 spec: the specification for the aba model composed of the following:
@@ -106,80 +106,97 @@ statistical fits.</p></li>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">aba_model</span><span class="op">(</span>
-  data <span class="op">=</span> <span class="cn">NULL</span>,
-  groups <span class="op">=</span> <span class="cn">NULL</span>,
-  outcomes <span class="op">=</span> <span class="cn">NULL</span>,
-  predictors <span class="op">=</span> <span class="cn">NULL</span>,
-  covariates <span class="op">=</span> <span class="cn">NULL</span>,
-  stats <span class="op">=</span> <span class="cn">NULL</span>,
-  evals <span class="op">=</span> <span class="cn">NULL</span>,
-  include_basic <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">aba_model</span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  groups <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  outcomes <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  predictors <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  covariates <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  stats <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  evals <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  include_basic <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>data</dt>
 <dd><p>data.frame the data to use for the object</p></dd>
+
+
 <dt>groups</dt>
 <dd><p>vector or list of logical statements as trings. Groups are
 subsets of the data on which different models will be fit.</p></dd>
+
+
 <dt>outcomes</dt>
 <dd><p>vector or list of strings Outcomes are the dependent
 variables in the statistical fits.</p></dd>
+
+
 <dt>predictors</dt>
 <dd><p>vector or list of strings Predictors are independent
 variables which you want to vary. You can include variables on their own
 or in combination with others. A collection of variables is referred to as
 a <code>predictor</code> and unique variables are referred to as a <code>term</code>.</p></dd>
+
+
 <dt>covariates</dt>
 <dd><p>vector of strings Covariates are independent variables
 which remain fixed across all statistical fits and are therefore always
 included with the different combinations of predictors.</p></dd>
+
+
 <dt>stats</dt>
 <dd><p>string or abaStat object(s) with <code>stat_</code> prefix. Stats are
 the actual statistical models which you want to fit on the data. Their
 primary functions are to 1) generate a suitable model formula given the
 outcome - covariate - predictor combination, and 2) to actually fit the
 statistical model.</p></dd>
+
+
 <dt>evals</dt>
 <dd><p>string or abaEveal object(s) with <code>eval_</code> prefix. Evals are
 the ways in which your model is fit on the data. The standard method is
 to simply fit the models on the entire data, but you can also fit models
 using bootstrapping, train-test splits, or cross validation.</p></dd>
+
+
 <dt>include_basic</dt>
 <dd><p>logical. Whether to fit a "basic" model which includes
 only covariates.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>An aba model which can be fitted using the <code><a href="aba_fit.html">aba_fit()</a></code> function and
+    
+
+<p>An aba model which can be fitted using the <code><a href="aba_fit.html">aba_fit()</a></code> function and
 which can be modified in any manner.</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="co"># use built-in data and only take the baseline visit</span></span>
-<span class="r-in"><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">adnimerge</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">VISCODE</span> <span class="op">==</span> <span class="st">'bl'</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Create aba model w/ data, groups, outcomes, covariates, predictors, stats.</span></span>
-<span class="r-in"><span class="co"># Note that we start with piping the data into the aba_model... This is</span></span>
-<span class="r-in"><span class="co"># possible because `data` is the first argument of the `aba_model()` function</span></span>
-<span class="r-in"><span class="co"># and is useful because it gives auto-completion of variables names in Rstudio.</span></span>
-<span class="r-in"><span class="va">model</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">aba_model</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="set_groups.html">set_groups</a></span><span class="op">(</span><span class="fu"><a href="everyone.html">everyone</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">DX_bl</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'MCI'</span>,<span class="st">'AD'</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="set_outcomes.html">set_outcomes</a></span><span class="op">(</span><span class="va">ConvertedToAlzheimers</span>, <span class="va">CSF_ABETA_STATUS_bl</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="set_covariates.html">set_covariates</a></span><span class="op">(</span><span class="va">AGE</span>, <span class="va">GENDER</span>, <span class="va">EDUCATION</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="set_predictors.html">set_predictors</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="va">PLASMA_ABETA_bl</span>, <span class="va">PLASMA_PTAU181_bl</span>, <span class="va">PLASMA_NFL_bl</span>,</span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">PLASMA_ABETA_bl</span>, <span class="va">PLASMA_PTAU181_bl</span>, <span class="va">PLASMA_NFL_bl</span><span class="op">)</span></span>
-<span class="r-in">  <span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="set_stats.html">set_stats</a></span><span class="op">(</span><span class="st">'glm'</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># get a useful view of the model spec:</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># use built-in data and only take the baseline visit</span></span></span>
+<span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">adnimerge</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">VISCODE</span> <span class="op">==</span> <span class="st">'bl'</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create aba model w/ data, groups, outcomes, covariates, predictors, stats.</span></span></span>
+<span class="r-in"><span><span class="co"># Note that we start with piping the data into the aba_model... This is</span></span></span>
+<span class="r-in"><span><span class="co"># possible because `data` is the first argument of the `aba_model()` function</span></span></span>
+<span class="r-in"><span><span class="co"># and is useful because it gives auto-completion of variables names in Rstudio.</span></span></span>
+<span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">aba_model</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="set_groups.html">set_groups</a></span><span class="op">(</span><span class="fu"><a href="everyone.html">everyone</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">DX_bl</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'MCI'</span>,<span class="st">'AD'</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="set_outcomes.html">set_outcomes</a></span><span class="op">(</span><span class="va">ConvertedToAlzheimers</span>, <span class="va">CSF_ABETA_STATUS_bl</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="set_covariates.html">set_covariates</a></span><span class="op">(</span><span class="va">AGE</span>, <span class="va">GENDER</span>, <span class="va">EDUCATION</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="set_predictors.html">set_predictors</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="va">PLASMA_ABETA_bl</span>, <span class="va">PLASMA_PTAU181_bl</span>, <span class="va">PLASMA_NFL_bl</span>,</span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">PLASMA_ABETA_bl</span>, <span class="va">PLASMA_PTAU181_bl</span>, <span class="va">PLASMA_NFL_bl</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="set_stats.html">set_stats</a></span><span class="op">(</span><span class="st">'glm'</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># get a useful view of the model spec:</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ----------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ABA MODEL (not fitted)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ----------------------</span>
@@ -203,15 +220,15 @@ which can be modified in any manner.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Stats:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    glm </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># model specs can be modified to build on one another and save time when</span></span>
-<span class="r-in"><span class="co"># doing sensitivity analyses. Here, we create the same model as before but</span></span>
-<span class="r-in"><span class="co"># just add APOE4 as covariate.</span></span>
-<span class="r-in"><span class="va">model2</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="set_covariates.html">set_covariates</a></span><span class="op">(</span><span class="va">AGE</span>, <span class="va">GENDER</span>, <span class="va">EDUCATION</span>, <span class="va">APOE4</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># see this change in the model print</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">model2</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># model specs can be modified to build on one another and save time when</span></span></span>
+<span class="r-in"><span><span class="co"># doing sensitivity analyses. Here, we create the same model as before but</span></span></span>
+<span class="r-in"><span><span class="co"># just add APOE4 as covariate.</span></span></span>
+<span class="r-in"><span><span class="va">model2</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="set_covariates.html">set_covariates</a></span><span class="op">(</span><span class="va">AGE</span>, <span class="va">GENDER</span>, <span class="va">EDUCATION</span>, <span class="va">APOE4</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># see this change in the model print</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">model2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ----------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ABA MODEL (not fitted)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ----------------------</span>
@@ -235,140 +252,143 @@ which can be modified in any manner.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Stats:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    glm </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Calling the `fit()` function actually triggers fitting of statistics.</span></span>
-<span class="r-in"><span class="va">model</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">model2</span> <span class="op">&lt;-</span> <span class="va">model2</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Access the raw results in case you care about that:</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">model</span><span class="op">$</span><span class="va">results</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Calling the `fit()` function actually triggers fitting of statistics.</span></span></span>
+<span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">model2</span> <span class="op">&lt;-</span> <span class="va">model2</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Access the raw results in case you care about that:</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">model</span><span class="op">$</span><span class="va">results</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 20 × 5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    group                           outcome           stat  predictor fit  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;lis&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> <span style="color: #949494;">"</span>Everyone<span style="color: #949494;">"</span>                      ConvertedToAlzhe… S1    Basic     <span style="color: #949494;">&lt;glm&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> <span style="color: #949494;">"</span>Everyone<span style="color: #949494;">"</span>                      ConvertedToAlzhe… S1    M1        <span style="color: #949494;">&lt;glm&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> <span style="color: #949494;">"</span>Everyone<span style="color: #949494;">"</span>                      ConvertedToAlzhe… S1    M2        <span style="color: #949494;">&lt;glm&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> <span style="color: #949494;">"</span>Everyone<span style="color: #949494;">"</span>                      ConvertedToAlzhe… S1    M3        <span style="color: #949494;">&lt;glm&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> <span style="color: #949494;">"</span>Everyone<span style="color: #949494;">"</span>                      ConvertedToAlzhe… S1    M4        <span style="color: #949494;">&lt;glm&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> <span style="color: #949494;">"</span>Everyone<span style="color: #949494;">"</span>                      CSF_ABETA_STATUS… S1    Basic     <span style="color: #949494;">&lt;glm&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> <span style="color: #949494;">"</span>Everyone<span style="color: #949494;">"</span>                      CSF_ABETA_STATUS… S1    M1        <span style="color: #949494;">&lt;glm&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> <span style="color: #949494;">"</span>Everyone<span style="color: #949494;">"</span>                      CSF_ABETA_STATUS… S1    M2        <span style="color: #949494;">&lt;glm&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> <span style="color: #949494;">"</span>Everyone<span style="color: #949494;">"</span>                      CSF_ABETA_STATUS… S1    M3        <span style="color: #949494;">&lt;glm&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> <span style="color: #949494;">"</span>Everyone<span style="color: #949494;">"</span>                      CSF_ABETA_STATUS… S1    M4        <span style="color: #949494;">&lt;glm&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> <span style="color: #949494;">"</span>DX_bl %in% c(\"MCI\", \"AD\")<span style="color: #949494;">"</span> ConvertedToAlzhe… S1    Basic     <span style="color: #949494;">&lt;glm&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span> <span style="color: #949494;">"</span>DX_bl %in% c(\"MCI\", \"AD\")<span style="color: #949494;">"</span> ConvertedToAlzhe… S1    M1        <span style="color: #949494;">&lt;glm&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">13</span> <span style="color: #949494;">"</span>DX_bl %in% c(\"MCI\", \"AD\")<span style="color: #949494;">"</span> ConvertedToAlzhe… S1    M2        <span style="color: #949494;">&lt;glm&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">14</span> <span style="color: #949494;">"</span>DX_bl %in% c(\"MCI\", \"AD\")<span style="color: #949494;">"</span> ConvertedToAlzhe… S1    M3        <span style="color: #949494;">&lt;glm&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">15</span> <span style="color: #949494;">"</span>DX_bl %in% c(\"MCI\", \"AD\")<span style="color: #949494;">"</span> ConvertedToAlzhe… S1    M4        <span style="color: #949494;">&lt;glm&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">16</span> <span style="color: #949494;">"</span>DX_bl %in% c(\"MCI\", \"AD\")<span style="color: #949494;">"</span> CSF_ABETA_STATUS… S1    Basic     <span style="color: #949494;">&lt;glm&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">17</span> <span style="color: #949494;">"</span>DX_bl %in% c(\"MCI\", \"AD\")<span style="color: #949494;">"</span> CSF_ABETA_STATUS… S1    M1        <span style="color: #949494;">&lt;glm&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">18</span> <span style="color: #949494;">"</span>DX_bl %in% c(\"MCI\", \"AD\")<span style="color: #949494;">"</span> CSF_ABETA_STATUS… S1    M2        <span style="color: #949494;">&lt;glm&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">19</span> <span style="color: #949494;">"</span>DX_bl %in% c(\"MCI\", \"AD\")<span style="color: #949494;">"</span> CSF_ABETA_STATUS… S1    M3        <span style="color: #949494;">&lt;glm&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">20</span> <span style="color: #949494;">"</span>DX_bl %in% c(\"MCI\", \"AD\")<span style="color: #949494;">"</span> CSF_ABETA_STATUS… S1    M4        <span style="color: #949494;">&lt;glm&gt;</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Calling the `summary()` function summarises covariates and metrics in</span></span>
-<span class="r-in"><span class="co"># a useful manner</span></span>
-<span class="r-in"><span class="va">model_summary</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">model2_summary</span> <span class="op">&lt;-</span> <span class="va">model2</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># see a nicely formatted print out of the summary</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">model_summary</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    group                           outcome             stat  predi…¹ fit  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lis&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> <span style="color: #949494;">"</span>Everyone<span style="color: #949494;">"</span>                      ConvertedToAlzheim… S1    Basic   <span style="color: #949494;">&lt;glm&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> <span style="color: #949494;">"</span>Everyone<span style="color: #949494;">"</span>                      ConvertedToAlzheim… S1    M1      <span style="color: #949494;">&lt;glm&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> <span style="color: #949494;">"</span>Everyone<span style="color: #949494;">"</span>                      ConvertedToAlzheim… S1    M2      <span style="color: #949494;">&lt;glm&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> <span style="color: #949494;">"</span>Everyone<span style="color: #949494;">"</span>                      ConvertedToAlzheim… S1    M3      <span style="color: #949494;">&lt;glm&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> <span style="color: #949494;">"</span>Everyone<span style="color: #949494;">"</span>                      ConvertedToAlzheim… S1    M4      <span style="color: #949494;">&lt;glm&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> <span style="color: #949494;">"</span>Everyone<span style="color: #949494;">"</span>                      CSF_ABETA_STATUS_bl S1    Basic   <span style="color: #949494;">&lt;glm&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> <span style="color: #949494;">"</span>Everyone<span style="color: #949494;">"</span>                      CSF_ABETA_STATUS_bl S1    M1      <span style="color: #949494;">&lt;glm&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> <span style="color: #949494;">"</span>Everyone<span style="color: #949494;">"</span>                      CSF_ABETA_STATUS_bl S1    M2      <span style="color: #949494;">&lt;glm&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> <span style="color: #949494;">"</span>Everyone<span style="color: #949494;">"</span>                      CSF_ABETA_STATUS_bl S1    M3      <span style="color: #949494;">&lt;glm&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> <span style="color: #949494;">"</span>Everyone<span style="color: #949494;">"</span>                      CSF_ABETA_STATUS_bl S1    M4      <span style="color: #949494;">&lt;glm&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> <span style="color: #949494;">"</span>DX_bl %in% c(\"MCI\", \"AD\")<span style="color: #949494;">"</span> ConvertedToAlzheim… S1    Basic   <span style="color: #949494;">&lt;glm&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span> <span style="color: #949494;">"</span>DX_bl %in% c(\"MCI\", \"AD\")<span style="color: #949494;">"</span> ConvertedToAlzheim… S1    M1      <span style="color: #949494;">&lt;glm&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">13</span> <span style="color: #949494;">"</span>DX_bl %in% c(\"MCI\", \"AD\")<span style="color: #949494;">"</span> ConvertedToAlzheim… S1    M2      <span style="color: #949494;">&lt;glm&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">14</span> <span style="color: #949494;">"</span>DX_bl %in% c(\"MCI\", \"AD\")<span style="color: #949494;">"</span> ConvertedToAlzheim… S1    M3      <span style="color: #949494;">&lt;glm&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">15</span> <span style="color: #949494;">"</span>DX_bl %in% c(\"MCI\", \"AD\")<span style="color: #949494;">"</span> ConvertedToAlzheim… S1    M4      <span style="color: #949494;">&lt;glm&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">16</span> <span style="color: #949494;">"</span>DX_bl %in% c(\"MCI\", \"AD\")<span style="color: #949494;">"</span> CSF_ABETA_STATUS_bl S1    Basic   <span style="color: #949494;">&lt;glm&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">17</span> <span style="color: #949494;">"</span>DX_bl %in% c(\"MCI\", \"AD\")<span style="color: #949494;">"</span> CSF_ABETA_STATUS_bl S1    M1      <span style="color: #949494;">&lt;glm&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">18</span> <span style="color: #949494;">"</span>DX_bl %in% c(\"MCI\", \"AD\")<span style="color: #949494;">"</span> CSF_ABETA_STATUS_bl S1    M2      <span style="color: #949494;">&lt;glm&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">19</span> <span style="color: #949494;">"</span>DX_bl %in% c(\"MCI\", \"AD\")<span style="color: #949494;">"</span> CSF_ABETA_STATUS_bl S1    M3      <span style="color: #949494;">&lt;glm&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">20</span> <span style="color: #949494;">"</span>DX_bl %in% c(\"MCI\", \"AD\")<span style="color: #949494;">"</span> CSF_ABETA_STATUS_bl S1    M4      <span style="color: #949494;">&lt;glm&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with abbreviated variable name ¹​predictor</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Calling the `summary()` function summarises covariates and metrics in</span></span></span>
+<span class="r-in"><span><span class="co"># a useful manner</span></span></span>
+<span class="r-in"><span><span class="va">model_summary</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">model2_summary</span> <span class="op">&lt;-</span> <span class="va">model2</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># see a nicely formatted print out of the summary</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">model_summary</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -----------------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Group: Everyone | Outcome: ConvertedToAlzheimers | Stat: S1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -----------------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients &amp; Metrics:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 11</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   predictor AGE          GENDER EDUCATION PLASMA_ABETA_bl PLASMA_PTAU181_…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Basic     1.03 [0.96,… 0.70 … 1.02 [0.… <span style="color: #BB0000;">NA</span>              <span style="color: #BB0000;">NA</span>              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> M1        1.03 [0.95,… 0.66 … 1.02 [0.… 0.00 [0.00, 38… <span style="color: #BB0000;">NA</span>              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> M2        1.01 [0.94,… 0.75 … 1.01 [0.… <span style="color: #BB0000;">NA</span>              2.65 [1.07, 6.9…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> M3        0.95 [0.87,… 0.82 … 1.04 [0.… <span style="color: #BB0000;">NA</span>              <span style="color: #BB0000;">NA</span>              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> M4        0.94 [0.85,… 0.75 … 1.05 [0.… 0.00 [0.00, 64… 2.10 [0.79, 5.9…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 5 more variables: PLASMA_NFL_bl &lt;chr&gt;, auc &lt;chr&gt;, aic &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   pval &lt;chr&gt;, nobs &lt;chr&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   predictor AGE   GENDER EDUCA…¹ PLASM…² PLASM…³ PLASM…⁴ auc   aic   pval </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Basic     1.03… 0.70 … 1.02 [… <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>      0.58… 123   1.00…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> M1        1.03… 0.66 … 1.02 [… 0.00 [… <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>      0.61… 124   0.36…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> M2        1.01… 0.75 … 1.01 [… <span style="color: #BB0000;">NA</span>      2.65 [… <span style="color: #BB0000;">NA</span>      0.70… 120   0.03…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> M3        0.95… 0.82 … 1.04 [… <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>      15.47 … 0.75… 112   0.00…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> M4        0.94… 0.75 … 1.05 [… 0.00 [… 2.10 [… 12.64 … 0.79… 114   0.00…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 1 more variable: nobs &lt;chr&gt;, and abbreviated variable names</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ¹​EDUCATION, ²​PLASMA_ABETA_bl, ³​PLASMA_PTAU181_bl, ⁴​PLASMA_NFL_bl</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ---------------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Group: Everyone | Outcome: CSF_ABETA_STATUS_bl | Stat: S1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ---------------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients &amp; Metrics:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 11</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   predictor AGE          GENDER EDUCATION PLASMA_ABETA_bl PLASMA_PTAU181_…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Basic     1.06 [1.01,… 1.27 … 0.99 [0.… <span style="color: #BB0000;">NA</span>              <span style="color: #BB0000;">NA</span>              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> M1        1.03 [0.98,… 1.01 … 1.00 [0.… 0.00 [0.00, 0.… <span style="color: #BB0000;">NA</span>              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> M2        1.04 [0.99,… 1.33 … 0.99 [0.… <span style="color: #BB0000;">NA</span>              3.28 [1.71, 6.9…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> M3        1.06 [1.01,… 1.27 … 0.98 [0.… <span style="color: #BB0000;">NA</span>              <span style="color: #BB0000;">NA</span>              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> M4        1.04 [0.98,… 1.09 … 1.00 [0.… 0.00 [0.00, 0.… 2.64 [1.36, 5.6…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 5 more variables: PLASMA_NFL_bl &lt;chr&gt;, auc &lt;chr&gt;, aic &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   pval &lt;chr&gt;, nobs &lt;chr&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   predictor AGE   GENDER EDUCA…¹ PLASM…² PLASM…³ PLASM…⁴ auc   aic   pval </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Basic     1.06… 1.27 … 0.99 [… <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>      0.61… 213   1.00…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> M1        1.03… 1.01 … 1.00 [… 0.00 [… <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>      0.74… 199   0.00…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> M2        1.04… 1.33 … 0.99 [… <span style="color: #BB0000;">NA</span>      3.28 [… <span style="color: #BB0000;">NA</span>      0.71… 200   0.00…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> M3        1.06… 1.27 … 0.98 [… <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>      0.81 [… 0.61… 215   0.66…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> M4        1.04… 1.09 … 1.00 [… 0.00 [… 2.64 [… 0.57 [… 0.76… 194   &lt;0.0…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 1 more variable: nobs &lt;chr&gt;, and abbreviated variable names</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ¹​EDUCATION, ²​PLASMA_ABETA_bl, ³​PLASMA_PTAU181_bl, ⁴​PLASMA_NFL_bl</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ----------------------------------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Group: DX_bl %in% c("MCI", "AD") | Outcome: ConvertedToAlzheimers | Stat: S1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ----------------------------------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients &amp; Metrics:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 11</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   predictor AGE          GENDER EDUCATION PLASMA_ABETA_bl PLASMA_PTAU181_…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Basic     1.06 [0.98,… 0.74 … 1.05 [0.… <span style="color: #BB0000;">NA</span>              <span style="color: #BB0000;">NA</span>              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> M1        1.05 [0.97,… 0.73 … 1.04 [0.… 0.00 [0.00, 41… <span style="color: #BB0000;">NA</span>              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> M2        1.06 [0.97,… 0.76 … 1.08 [0.… <span style="color: #BB0000;">NA</span>              3.56 [1.19, 12.…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> M3        0.99 [0.90,… 0.75 … 1.13 [0.… <span style="color: #BB0000;">NA</span>              <span style="color: #BB0000;">NA</span>              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> M4        0.99 [0.89,… 0.76 … 1.17 [0.… 0.76 [0.00, 57… 3.29 [1.05, 12.…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 5 more variables: PLASMA_NFL_bl &lt;chr&gt;, auc &lt;chr&gt;, aic &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   pval &lt;chr&gt;, nobs &lt;chr&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   predictor AGE   GENDER EDUCA…¹ PLASM…² PLASM…³ PLASM…⁴ auc   aic   pval </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Basic     1.06… 0.74 … 1.05 [… <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>      0.65… 84    1.00…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> M1        1.05… 0.73 … 1.04 [… 0.00 [… <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>      0.66… 86    0.54…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> M2        1.06… 0.76 … 1.08 [… <span style="color: #BB0000;">NA</span>      3.56 [… <span style="color: #BB0000;">NA</span>      0.74… 81    0.02…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> M3        0.99… 0.75 … 1.13 [… <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>      14.16 … 0.72… 79    0.00…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> M4        0.99… 0.76 … 1.17 [… 0.76 [… 3.29 [… 13.27 … 0.78… 78    0.00…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 1 more variable: nobs &lt;chr&gt;, and abbreviated variable names</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ¹​EDUCATION, ²​PLASMA_ABETA_bl, ³​PLASMA_PTAU181_bl, ⁴​PLASMA_NFL_bl</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Group: DX_bl %in% c("MCI", "AD") | Outcome: CSF_ABETA_STATUS_bl | Stat: S1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients &amp; Metrics:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 11</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   predictor AGE          GENDER EDUCATION PLASMA_ABETA_bl PLASMA_PTAU181_…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Basic     1.05 [0.98,… 2.31 … 0.96 [0.… <span style="color: #BB0000;">NA</span>              <span style="color: #BB0000;">NA</span>              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> M1        1.01 [0.94,… 2.41 … 0.96 [0.… 0.00 [0.00, 0.… <span style="color: #BB0000;">NA</span>              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> M2        1.05 [0.98,… 2.46 … 0.99 [0.… <span style="color: #BB0000;">NA</span>              2.93 [1.18, 8.2…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> M3        1.04 [0.97,… 2.29 … 0.97 [0.… <span style="color: #BB0000;">NA</span>              <span style="color: #BB0000;">NA</span>              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> M4        1.01 [0.93,… 2.45 … 0.98 [0.… 0.00 [0.00, 0.… 2.06 [0.80, 5.8…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 5 more variables: PLASMA_NFL_bl &lt;chr&gt;, auc &lt;chr&gt;, aic &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   pval &lt;chr&gt;, nobs &lt;chr&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   predictor AGE   GENDER EDUCA…¹ PLASM…² PLASM…³ PLASM…⁴ auc   aic   pval </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Basic     1.05… 2.31 … 0.96 [… <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>      0.64… 103   1.00…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> M1        1.01… 2.41 … 0.96 [… 0.00 [… <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>      0.76… 96    0.00…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> M2        1.05… 2.46 … 0.99 [… <span style="color: #BB0000;">NA</span>      2.93 [… <span style="color: #BB0000;">NA</span>      0.72… 100   0.01…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> M3        1.04… 2.29 … 0.97 [… <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>      1.19 [… 0.63… 105   0.79…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> M4        1.01… 2.45 … 0.98 [… 0.00 [… 2.06 [… 1.23 [… 0.78… 97    0.00…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 1 more variable: nobs &lt;chr&gt;, and abbreviated variable names</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ¹​EDUCATION, ²​PLASMA_ABETA_bl, ³​PLASMA_PTAU181_bl, ⁴​PLASMA_NFL_bl</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># or access the raw summary results:</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">model_summary</span><span class="op">$</span><span class="va">results</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># or access the raw summary results:</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">model_summary</span><span class="op">$</span><span class="va">results</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $coefs</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 84 × 9</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    group   outcome stat  predictor term  estimate conf_low conf_high  pval</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> Everyo… Conver… S1    Basic     AGE    1.03<span style="color: #949494;">e</span>+0 9.62<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span>    1.11<span style="color: #949494;">e</span>0 0.361</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> Everyo… Conver… S1    Basic     GEND…  7.00<span style="color: #949494;">e</span><span style="color: #BB0000;">-1</span> 2.32<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span>    2.00<span style="color: #949494;">e</span>0 0.510</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> Everyo… Conver… S1    Basic     EDUC…  1.02<span style="color: #949494;">e</span>+0 8.32<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span>    1.26<span style="color: #949494;">e</span>0 0.868</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> Everyo… Conver… S1    M1        AGE    1.03<span style="color: #949494;">e</span>+0 9.52<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span>    1.11<span style="color: #949494;">e</span>0 0.507</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> Everyo… Conver… S1    M1        GEND…  6.57<span style="color: #949494;">e</span><span style="color: #BB0000;">-1</span> 2.15<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span>    1.90<span style="color: #949494;">e</span>0 0.443</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> Everyo… Conver… S1    M1        EDUC…  1.02<span style="color: #949494;">e</span>+0 8.36<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span>    1.26<span style="color: #949494;">e</span>0 0.833</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> Everyo… Conver… S1    M1        PLAS…  1.44<span style="color: #949494;">e</span><span style="color: #BB0000;">-8</span> 4.99<span style="color: #949494;">e</span><span style="color: #BB0000;">-26</span>    3.90<span style="color: #949494;">e</span>8 0.368</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> Everyo… Conver… S1    M2        AGE    1.01<span style="color: #949494;">e</span>+0 9.41<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span>    1.09<span style="color: #949494;">e</span>0 0.715</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> Everyo… Conver… S1    M2        GEND…  7.52<span style="color: #949494;">e</span><span style="color: #BB0000;">-1</span> 2.41<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span>    2.23<span style="color: #949494;">e</span>0 0.610</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> Everyo… Conver… S1    M2        EDUC…  1.01<span style="color: #949494;">e</span>+0 8.19<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span>    1.25<span style="color: #949494;">e</span>0 0.937</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 74 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    group    outcome     stat  predi…¹ term  estim…² conf_low conf_…³  pval</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> Everyone ConvertedT… S1    Basic   AGE   1.03<span style="color: #949494;">e</span>+0 9.62<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span>  1.11<span style="color: #949494;">e</span>0 0.361</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> Everyone ConvertedT… S1    Basic   GEND… 7.00<span style="color: #949494;">e</span><span style="color: #BB0000;">-1</span> 2.32<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span>  2.00<span style="color: #949494;">e</span>0 0.510</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> Everyone ConvertedT… S1    Basic   EDUC… 1.02<span style="color: #949494;">e</span>+0 8.32<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span>  1.26<span style="color: #949494;">e</span>0 0.868</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> Everyone ConvertedT… S1    M1      AGE   1.03<span style="color: #949494;">e</span>+0 9.52<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span>  1.11<span style="color: #949494;">e</span>0 0.507</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> Everyone ConvertedT… S1    M1      GEND… 6.57<span style="color: #949494;">e</span><span style="color: #BB0000;">-1</span> 2.15<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span>  1.90<span style="color: #949494;">e</span>0 0.443</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> Everyone ConvertedT… S1    M1      EDUC… 1.02<span style="color: #949494;">e</span>+0 8.36<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span>  1.26<span style="color: #949494;">e</span>0 0.833</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> Everyone ConvertedT… S1    M1      PLAS… 1.44<span style="color: #949494;">e</span><span style="color: #BB0000;">-8</span> 4.99<span style="color: #949494;">e</span><span style="color: #BB0000;">-26</span>  3.90<span style="color: #949494;">e</span>8 0.368</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> Everyone ConvertedT… S1    M2      AGE   1.01<span style="color: #949494;">e</span>+0 9.41<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span>  1.09<span style="color: #949494;">e</span>0 0.715</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> Everyone ConvertedT… S1    M2      GEND… 7.52<span style="color: #949494;">e</span><span style="color: #BB0000;">-1</span> 2.41<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span>  2.23<span style="color: #949494;">e</span>0 0.610</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> Everyone ConvertedT… S1    M2      EDUC… 1.01<span style="color: #949494;">e</span>+0 8.19<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span>  1.25<span style="color: #949494;">e</span>0 0.937</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 74 more rows, and abbreviated variable names ¹​predictor,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ²​estimate, ³​conf_high</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $metrics</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 80 × 8</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    group    outcome      stat  predictor term  estimate conf_low conf_high</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> Everyone ConvertedTo… S1    Basic     auc      0.576    0.416     0.735</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> Everyone ConvertedTo… S1    Basic     aic    123.      <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> Everyone ConvertedTo… S1    Basic     pval     1       <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> Everyone ConvertedTo… S1    Basic     nobs   198       <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> Everyone ConvertedTo… S1    M1        auc      0.606    0.454     0.757</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> Everyone ConvertedTo… S1    M1        aic    124.      <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> Everyone ConvertedTo… S1    M1        pval     0.361   <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> Everyone ConvertedTo… S1    M1        nobs   198       <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> Everyone ConvertedTo… S1    M2        auc      0.701    0.591     0.812</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> Everyone ConvertedTo… S1    M2        aic    120.      <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 70 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    group    outcome            stat  predi…¹ term  estim…² conf_…³ conf_…⁴</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> Everyone ConvertedToAlzhei… S1    Basic   auc     0.576   0.416   0.735</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> Everyone ConvertedToAlzhei… S1    Basic   aic   123.     <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> Everyone ConvertedToAlzhei… S1    Basic   pval    1      <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> Everyone ConvertedToAlzhei… S1    Basic   nobs  198      <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> Everyone ConvertedToAlzhei… S1    M1      auc     0.606   0.454   0.757</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> Everyone ConvertedToAlzhei… S1    M1      aic   124.     <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> Everyone ConvertedToAlzhei… S1    M1      pval    0.361  <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> Everyone ConvertedToAlzhei… S1    M1      nobs  198      <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> Everyone ConvertedToAlzhei… S1    M2      auc     0.701   0.591   0.812</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> Everyone ConvertedToAlzhei… S1    M2      aic   120.     <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 70 more rows, and abbreviated variable names ¹​predictor,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ²​estimate, ³​conf_low, ⁴​conf_high</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -380,7 +400,7 @@ which can be modified in any manner.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
     </footer></div>
