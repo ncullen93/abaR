@@ -48,7 +48,8 @@ stat_glm <- function(std.beta = FALSE,
       'formula' = formula_lm,
       'fit' = fit_glm,
       'tidy' = tidy_glm,
-      'glance' = glance_glm
+      'glance' = glance_glm,
+      'evaluate' = evaluate_glm
     ),
     'params' = list(
       'std.beta' = std.beta,
@@ -150,6 +151,41 @@ glance_glm <- function(x, x0, ...) {
   return(glance_df)
 }
 
+
+evaluate_glm <- function(model, data_test) {
+
+  # train data
+  data_train <- broom::augment(
+    model,
+    newdata=tibble(stats::model.frame(model)),
+    type.predict = 'response'
+  )
+  outcome <- names(data_train)[1]
+
+  # test data with fitted results
+  data_test <- broom::augment(
+    model,
+    newdata=data_test,
+    type.predict = 'response'
+  )
+  data_test <- data_test %>% select(data_train %>% names())
+
+  # calculate metrics
+  train_metrics <- yardstick::metrics(
+    data_train, truth = {{ outcome }}, estimate = .fitted
+  ) %>% mutate(form = 'train')
+
+  test_metrics <- yardstick::metrics(
+    data_test, truth = {{ outcome }}, estimate = .fitted
+  ) %>% mutate(form = 'test')
+
+  x <- train_metrics %>%
+    bind_rows(test_metrics) %>%
+    select(-.estimator) %>%
+    pivot_wider(names_from = .metric, values_from = .estimate)
+
+  x
+}
 
 
 #' Plot ROC curves from an aba model

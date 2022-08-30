@@ -23,3 +23,30 @@ test_that("eval_cv works", {
     NA
   )
 })
+
+
+test_that("eval_cv with glm works", {
+  data <- adnimerge %>% dplyr::filter(VISCODE == 'bl')
+  model <- aba_model() %>%
+    set_data(data) %>%
+    set_groups(everyone()) %>%
+    set_outcomes(ConvertedToAlzheimers) %>%
+    set_predictors(
+      PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl,
+      c(PLASMA_ABETA_bl, PLASMA_PTAU181_bl, PLASMA_NFL_bl)
+    ) %>%
+    set_stats('glm') %>%
+    set_evals(
+      eval_cv(nfolds = 3, ntrials=5)
+    )
+
+  expect_error(
+    model <- model %>% fit(),
+    NA
+  )
+
+  expect_error(
+    s <- model %>% summary(),
+    NA
+  )
+})

@@ -275,7 +275,7 @@ plot_emmeans_helper <- function(group, outcome, stat, predictor, object) {
   }
 
   g <- g +
-    xlab('Time from baseline') +
+    xlab('Weeks from baseline') +
     ylab('Adjusted mean change\nfrom baseline (SE)') +
     theme_classic(base_size = 18) +
     theme(legend.position=c(0.05, legend_y),
