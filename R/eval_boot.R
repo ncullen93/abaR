@@ -152,7 +152,7 @@ summary_boot <- function(object,
 
   coefs_df_orig <- coefs_df %>%
     filter(.data$trial==0) %>%
-    select(-c(.data$trial, conf_low, conf_high))
+    select(-c('trial', 'conf_low', 'conf_high'))
 
   coefs_df_boot <- coefs_df %>%
     filter(.data$trial != 0) %>%
@@ -193,7 +193,7 @@ summary_boot <- function(object,
 
   metrics_df_orig <- metrics_df %>%
     filter(.data$trial==0) %>%
-    select(-c(.data$trial, conf_low, conf_high))
+    select(-c('trial', 'conf_low', 'conf_high'))
 
   metrics_df_boot <- metrics_df %>%
     filter(.data$trial != 0) %>%

@@ -145,7 +145,7 @@ tidy_lme <- function(model, predictors, covariates, ...) {
   tidy_df <- broom.mixed::tidy(model, effects='fixed', conf.int=TRUE)
 
   tidy_df <- tidy_df %>%
-    select(-c(.data$df)) %>%
+    select(-c('df')) %>%
     filter(
       !(.data$term %in% predictors)#,
       #.data$term != time_var

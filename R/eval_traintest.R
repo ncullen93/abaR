@@ -107,7 +107,7 @@ fit_traintest <- function(model, split = 0.8, ntrials = 1, verbose = FALSE) {
 
         # select only factor labels and fit
         fit_df <- fit_df %>%
-          select(gid, oid, sid, pid, fit, .data$data_test) %>%
+          select('gid', 'oid', 'sid', 'pid', 'fit', 'data_test') %>%
           rename(
             group = gid,
             outcome = oid,
@@ -170,7 +170,7 @@ summary_traintest <- function(model,
   # store for calculating contrasts later
   results_raw <- results
 
-  metrics <- results %>% select(-c(.data$group:.data$form)) %>% colnames()
+  metrics <- results %>% select(-c('group':'form')) %>% colnames()
 
   # summarise values
   results <- results %>%

@@ -227,7 +227,7 @@ set_covariates <- function(.model, ..., .include_basic = TRUE) {
 #'   comma-separated value will be a new
 #'   predictor set. If you supply actual variables, then the data of the aba
 #'   model should already be set.
-#' @param .labels vector of strings. Optional .labels for printing & plotting. If 
+#' @param .labels vector of strings. Optional .labels for printing & plotting. If
 #'   .labels is set to "self" then the labels will be the predictor values also.
 #' @param .split boolean. Whether to split all variables into separate predictors
 #'   or keep together as one combined predictor. Only relevant when setting
@@ -281,6 +281,7 @@ set_predictors <- function(.model, ..., .labels = NULL, .split = FALSE) {
   object <-
     tryCatch(
       {
+
         # expect not a list input
         x <- parse_select_expr(..., data=object$data)
 

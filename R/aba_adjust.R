@@ -71,7 +71,6 @@ adjust_pvals <- function(results, adjust) {
         estimate_adj = purrr::map(
           .data$data,
           function(x) {
-
             # dont include basic model in comparison
             if ('predictor' %in% names(x)) {
               is_basic <- x$predictor == 'Basic'
@@ -92,11 +91,12 @@ adjust_pvals <- function(results, adjust) {
         pval = estimate_adj,
         pval_unadj = estimate
       ) %>%
-      select(-term) %>%
+      select(-'term') %>%
       pivot_longer(cols = c(pval, pval_unadj),
                    names_to = 'term',
                    values_to = 'estimate') %>%
-      select(group, outcome, stat, predictor, term, estimate, conf_low, conf_high)
+      select('group', 'outcome', 'stat', 'predictor',
+             'term', 'estimate', 'conf_low', 'conf_high')
 
     results$metrics <- results$metrics %>%
       filter(term != 'pval') %>%
@@ -124,7 +124,7 @@ adjust_pvals <- function(results, adjust) {
       ) %>%
       unnest(cols = c(data, pval_adj)) %>%
       ungroup() %>%
-      select(-pval) %>%
+      select(-'pval') %>%
       rename(pval = pval_adj)
 
     results$coefs <- r_adj

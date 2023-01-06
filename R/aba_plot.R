@@ -360,12 +360,12 @@ theme_aba <- function(base_size = 16,
                                 size = base_size, vjust = 0,
                                 margin = margin(b=10)),
       plot.title = element_text(hjust = 0.5),
-      axis.line.x.bottom = element_line(size=1.2),
-      axis.ticks.y = element_line(size=1.2),
+      axis.line.x.bottom = element_line(linewidth=1.2),
+      axis.ticks.y = element_line(linewidth=1.2),
       axis.ticks.length.y = unit(0.2,"cm"),
-      axis.ticks.x = element_line(size=1.2),
+      axis.ticks.x = element_line(linewidth=1.2),
       axis.ticks.length.x = unit(0.2,"cm"),
-      axis.line.y.left=element_line(size=1.2),
+      axis.line.y.left=element_line(linewidth=1.2),
       axis.text.y = element_text(
         color='black', margin = margin(t = 0, r = 3, b = 0, l = 0),
         hjust=1
@@ -387,13 +387,15 @@ theme_aba <- function(base_size = 16,
   if (coord_flip) {
     t <- t %+replace%
       theme(panel.grid.major.y = element_blank(),
-            panel.grid.major.x = element_line(colour = "gray", size = 0.2,
+            panel.grid.major.x = element_line(colour = "gray",
+                                              linewidth = 0.2,
                                               linetype = "solid"))
     if (!axis_title) t <- t %+replace% theme(axis.title.y = element_blank())
   } else {
     t <- t %+replace%
       theme(panel.grid.major.x = element_blank(),
-            panel.grid.major.y = element_line(colour = "gray", size = 0.2,
+            panel.grid.major.y = element_line(colour = "gray",
+                                              linewidth = 0.2,
                                               linetype = "solid"))
     if (!axis_title) t <- t %+replace% theme(axis.title.x = element_blank())
   }

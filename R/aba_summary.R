@@ -117,8 +117,8 @@ calculate_coefs <- function(object, control) {
 
   # unnest coefficient tables and remove NA coefficients
   r <- r %>%
-    select(-.data$fit) %>%
-    unnest(.data$coefs) %>%
+    select(-'fit') %>%
+    unnest('coefs') %>%
     filter(!is.na(estimate))
 
   # remove covariates if specified

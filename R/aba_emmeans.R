@@ -254,10 +254,8 @@ plot_emmeans_helper <- function(group, outcome, stat, predictor, object) {
   g <- df1 %>%
     ggplot(aes(x=time, y=estimate, group=treatment, color=treatment)) +
     geom_hline(yintercept=0, size=0.5, color='gray', linetype='solid')+
-    geom_line(size=1, position=position_dodge(width=dodge_width)) +
+    geom_line(linewidth=1, position=position_dodge(width=dodge_width)) +
     geom_point(aes(shape=treatment), position=position_dodge(width=dodge_width), size=3) +
-    #geom_errorbar(aes(ymin=conf_low, ymax=conf_high), width=1*dodge_width,
-    #              size=1, position=position_dodge(width=dodge_width)) +
     geom_errorbar(aes(ymin=estimate-std.error, ymax=estimate+std.error), width=1*dodge_width,
                   size=1, position=position_dodge(width=dodge_width)) +
     geom_text(

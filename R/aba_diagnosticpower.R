@@ -59,7 +59,7 @@ aba_diagnosticpower <- function(model,
         }
       )
     ) %>%
-    unnest_wider(.data$result)
+    unnest_wider('result')
 
   results <- results %>% select(-fit)
 

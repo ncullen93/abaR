@@ -130,7 +130,7 @@ tidy_lmer <- function(model, predictors, covariates, ...) {
   tidy_df <- broom.mixed::tidy(model, effects='fixed', conf.int=TRUE)
 
   tidy_df <- tidy_df %>%
-    select(-c(.data$effect, .data$df)) %>%
+    select(-c('effect', 'df')) %>%
     filter(
       !(.data$term %in% predictors)
     ) %>%

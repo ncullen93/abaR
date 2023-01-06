@@ -139,7 +139,7 @@ aba_longpower <- function(model,
   # unnest
   res_df <- res_df %>%
     select(
-      group:predictor, power_fit
+      'group':'predictor', 'power_fit'
     ) %>%
     unnest(power_fit)
 
@@ -217,7 +217,7 @@ aba_plot.abaLongpower <- function(object, ...) {
 
   g <- res_df %>%
     ggplot(aes(x = pct_change, y = n*1.2, color = power, group = power)) +
-    geom_line(size=2) +
+    geom_line(linewidth=2) +
     facet_wrap(paste0('Outcome: ', outcome) ~ paste0('Inclusion: ', group)) +
     xlab('Treatment effect') +
     ylab('Sample size') +

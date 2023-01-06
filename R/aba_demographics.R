@@ -69,12 +69,11 @@ aba_demographics <- function(model,
   ]
 
   factor_vars <- c()
-  data <- data %>% mutate(across(all_vars, as.numeric))
+  data <- data %>% mutate(across(all_of(all_vars), as.numeric))
   # TODO...
   # check if time variable is present in any stats
   # describe only baseline if longitudinal data is used
   if (is.null(strata)) {
-    print('here')
     tbl <- suppressWarnings(
       tableone::CreateTableOne(
         vars = all_vars,
@@ -84,7 +83,6 @@ aba_demographics <- function(model,
       )
     )
   } else {
-    print('here')
     tbl <- suppressWarnings(
       tableone::CreateTableOne(
         vars = all_vars,
