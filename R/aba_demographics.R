@@ -46,7 +46,7 @@ aba_demographics <- function(model,
                              add_vars = NULL,
                              data_filter = NULL) {
   object <- model
-  data <- object$data
+  data <- data.frame(object$data)
   if (!is.null(data_filter)){
     data <- data %>% filter(rlang::eval_tidy(rlang::parse_expr(data_filter)))
   }
@@ -62,27 +62,33 @@ aba_demographics <- function(model,
 
   if (!is.null(add_vars)) all_vars <- c(all_vars, add_vars)
 
+  # some issue here with columns being "labelled" columns and having
+  # multiple classes
   factor_vars <- all_vars[
-    all_vars %>% purrr::map_lgl(~class(data[[.]]) %in% c('character', 'factor'))
+    all_vars %>% purrr::map_lgl(~class(data[[.]])[1] == 'factor')
   ]
 
+  factor_vars <- c()
+  data <- data %>% mutate(across(all_vars, as.numeric))
   # TODO...
   # check if time variable is present in any stats
   # describe only baseline if longitudinal data is used
   if (is.null(strata)) {
+    print('here')
     tbl <- suppressWarnings(
       tableone::CreateTableOne(
         vars = all_vars,
-        factorVars = factor_vars,
+        factorVars = NULL,
         data = data,
         test = TRUE, includeNA = TRUE, addOverall = T
       )
     )
   } else {
+    print('here')
     tbl <- suppressWarnings(
       tableone::CreateTableOne(
         vars = all_vars,
-        factorVars = factor_vars,
+        factorVars = NULL,
         data = data,
         strata = strata,
         test = TRUE, includeNA = TRUE, addOverall = T

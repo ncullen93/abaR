@@ -31,7 +31,7 @@
 eval_cv <- function(nfolds = 5,
                     ntrials = 1,
                     conf_type = c('norm', 'perc'),
-                    contrasts = TRUE) {
+                    contrasts = FALSE) {
   conf_type <- match.arg(conf_type)
 
   struct <- list(
@@ -181,9 +181,13 @@ summary_cv <- function(model,
     select(-c(fit, data_test, stat_obj)) %>%
     unnest(results_test)
 
+
+  metrics <- results %>% select(-c(.data$group:.data$form)) %>% colnames()
+
   # summarise across folds
   results <- results %>%
-    pivot_longer(.data$rmse:.data$mae) %>%
+    #pivot_longer(.data$rmse:.data$mae) %>%
+    pivot_longer(all_of(metrics)) %>%
     group_by(group, outcome, stat, predictor, form, name, trial) %>%
     summarise(
       estimate_trial = mean(value),

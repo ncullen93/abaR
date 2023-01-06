@@ -161,7 +161,8 @@ evaluate_glm <- function(model, data_test) {
     type.predict = 'response'
   )
   outcome <- names(data_train)[1]
-
+  #print(data_train)
+  
   # test data with fitted results
   data_test <- broom::augment(
     model,
@@ -170,14 +171,31 @@ evaluate_glm <- function(model, data_test) {
   )
   data_test <- data_test %>% select(data_train %>% names())
 
-  # calculate metrics
-  train_metrics <- yardstick::metrics(
-    data_train, truth = {{ outcome }}, estimate = .fitted
-  ) %>% mutate(form = 'train')
+  data_train$.outcome <- data_train[[outcome]]
+  data_test$.outcome <- data_test[[outcome]]
 
-  test_metrics <- yardstick::metrics(
-    data_test, truth = {{ outcome }}, estimate = .fitted
-  ) %>% mutate(form = 'test')
+  # calculate metrics
+  roc_obj_train <- pROC::roc(data_train, .outcome, .fitted, ci = TRUE, quiet = TRUE)
+  auc_train <- roc_obj_train$auc[1]
+
+  train_metrics <- data.frame(.metric = c('auc'), .estimator=c('standard'),
+                              .estimate = auc_train, form = 'train')
+
+
+  roc_obj_test <- pROC::roc(data_test, .outcome, .fitted, ci = TRUE, quiet = TRUE)
+  auc_test <- roc_obj_test$auc[1]
+
+  test_metrics <- data.frame(.metric = c('auc'), .estimator=c('standard'),
+                              .estimate = auc_test, form = 'test')
+
+  #train_metrics <- yardstick::metrics(
+  #  data_train, truth = {{ outcome }}, estimate = .fitted
+  #) %>% mutate(form = 'train')
+#
+  #print(train_metrics)
+  #test_metrics <- yardstick::metrics(
+  #  data_test, truth = {{ outcome }}, estimate = .fitted
+  #) %>% mutate(form = 'test')
 
   x <- train_metrics %>%
     bind_rows(test_metrics) %>%

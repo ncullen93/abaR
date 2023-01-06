@@ -170,9 +170,12 @@ summary_traintest <- function(model,
   # store for calculating contrasts later
   results_raw <- results
 
+  metrics <- results %>% select(-c(.data$group:.data$form)) %>% colnames()
+
   # summarise values
   results <- results %>%
-    pivot_longer(.data$rmse:.data$mae) %>%
+    #pivot_longer(.data$rmse:.data$mae) %>%
+    pivot_longer(all_of(metrics)) %>%
     group_by(group, outcome, stat, predictor, form, name) %>%
     summarise(
       estimate = mean(value),

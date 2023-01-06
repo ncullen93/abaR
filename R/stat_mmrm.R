@@ -157,7 +157,7 @@ fit_mmrm <- function(formula, data, extra_params) {
     mutate({{ time }} := factor(.data[[time]])) %>%
     mutate(time_dbl = as.numeric(.data[[time]]))
 
-  print(formula)
+   # print(data)
   # fit the model
   model <- nlme::gls(
     stats::formula(formula),
