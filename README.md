@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# Automated biomarker analysis
+# Automated biomarker analysis (aba)
 
 <!-- badges: start -->
 
@@ -12,10 +12,10 @@ coverage](https://codecov.io/gh/ncullen93/abaR/branch/main/graph/badge.svg)](htt
 
 The goals of the aba package are as follows:
 
--   to facilitate sound statistical modelling in clinical research
--   to provide advanced tools for biomarker-based planning of clinical
-    trials
--   to generate publication-ready tables and figures
+- to facilitate sound statistical modelling in clinical research
+- to provide advanced tools for biomarker-based planning of clinical
+  trials
+- to generate publication-ready tables and figures
 
 ![overview image](man/figures/README-overview.png)
 
@@ -75,29 +75,29 @@ fig <- model_summary %>% aba_plot_coef(palette = 'lancet')
 Some publications whose analysis has been done partially or completely
 with functions from the aba package are featured here:
 
--   [Individualized prognosis of cognitive decline and dementia in mild
-    cognitive impairment based on plasma biomarker
-    combinations](https://www.nature.com/articles/s43587-020-00003-5) NC
-    Cullen, A Leuzy, S Palmqvist, S Janelidze, E Stomrud, P Pesini, et
-    al. Nature Aging, 2021
+- [Individualized prognosis of cognitive decline and dementia in mild
+  cognitive impairment based on plasma biomarker
+  combinations](https://www.nature.com/articles/s43587-020-00003-5) NC
+  Cullen, A Leuzy, S Palmqvist, S Janelidze, E Stomrud, P Pesini, et
+  al. Nature Aging, 2021
 
--   [Prediction of future Alzheimer’s disease dementia using plasma
-    phospho-tau combined with other accessible
-    measures](https://www.nature.com/articles/s41591-021-01348-z) S
-    Palmqvist, P Tideman, N Cullen, H Zetterberg, K Blennow, JL Dage, et
-    al. Nature Medicine, 2021
+- [Prediction of future Alzheimer’s disease dementia using plasma
+  phospho-tau combined with other accessible
+  measures](https://www.nature.com/articles/s41591-021-01348-z) S
+  Palmqvist, P Tideman, N Cullen, H Zetterberg, K Blennow, JL Dage, et
+  al. Nature Medicine, 2021
 
--   [Plasma biomarkers of Alzheimer’s disease improve prediction of
-    cognitive decline in cognitively unimpaired elderly
-    populations](https://www.nature.com/articles/s41467-021-23746-0) NC
-    Cullen, A Leuzy, S Janelidze, S Palmqvist, AL Svenningsson, et
-    al. Nature Communications, 2021
+- [Plasma biomarkers of Alzheimer’s disease improve prediction of
+  cognitive decline in cognitively unimpaired elderly
+  populations](https://www.nature.com/articles/s41467-021-23746-0) NC
+  Cullen, A Leuzy, S Janelidze, S Palmqvist, AL Svenningsson, et
+  al. Nature Communications, 2021
 
--   [Comparing progression biomarkers in clinical trials of early
-    Alzheimer’s
-    disease](https://onlinelibrary.wiley.com/doi/full/10.1002/acn3.51158)
-    NC Cullen, H Zetterberg, PS Insel, B Olsson, U Andreasson, et
-    al. Annals of Clinical and Translational Neurology 7 (9), 1661-1673
+- [Comparing progression biomarkers in clinical trials of early
+  Alzheimer’s
+  disease](https://onlinelibrary.wiley.com/doi/full/10.1002/acn3.51158)
+  NC Cullen, H Zetterberg, PS Insel, B Olsson, U Andreasson, et
+  al. Annals of Clinical and Translational Neurology 7 (9), 1661-1673
 
 ### Cite
 

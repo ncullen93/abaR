@@ -12,7 +12,7 @@ knitr::opts_chunk$set(
   out.width = "100%"
 )
 ```
-# Automated biomarker analysis
+# Automated biomarker analysis (aba)
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/ncullen93/abaR/workflows/R-CMD-check/badge.svg)](https://github.com/ncullen93/abaR/actions)
 [![Codecov test coverage](https://codecov.io/gh/ncullen93/abaR/branch/main/graph/badge.svg)](https://app.codecov.io/gh/ncullen93/abaR?branch=main)
