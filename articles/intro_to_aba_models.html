@@ -179,7 +179,15 @@ either one or more predictor or covariate – then you should call the
 fitting of your stats on all the different group - outcome - predictor
 combinations.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION"</span></span>
+<span><span class="co">#&gt; [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + PLASMA_PTAU181_bl"</span></span>
+<span><span class="co">#&gt; [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + PLASMA_NFL_bl"</span></span>
+<span><span class="co">#&gt; [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span></span>
+<span><span class="co">#&gt; [1] "CSF_ABETA_STATUS_bl ~ AGE + GENDER + EDUCATION"</span></span>
+<span><span class="co">#&gt; [1] "CSF_ABETA_STATUS_bl ~ AGE + GENDER + EDUCATION + PLASMA_PTAU181_bl"</span></span>
+<span><span class="co">#&gt; [1] "CSF_ABETA_STATUS_bl ~ AGE + GENDER + EDUCATION + PLASMA_NFL_bl"</span></span>
+<span><span class="co">#&gt; [1] "CSF_ABETA_STATUS_bl ~ AGE + GENDER + EDUCATION + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span></span></code></pre></div>
 <p>Now that our aba model has been fit, the next natural thing to do is
 to call the <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> function to gather up the
 coefficients and metrics of each statistical fit.</p>

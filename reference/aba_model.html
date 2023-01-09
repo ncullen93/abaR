@@ -255,7 +255,47 @@ which can be modified in any manner.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Calling the `fit()` function actually triggers fitting of statistics.</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + PLASMA_ABETA_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + PLASMA_PTAU181_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "CSF_ABETA_STATUS_bl ~ AGE + GENDER + EDUCATION"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "CSF_ABETA_STATUS_bl ~ AGE + GENDER + EDUCATION + PLASMA_ABETA_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "CSF_ABETA_STATUS_bl ~ AGE + GENDER + EDUCATION + PLASMA_PTAU181_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "CSF_ABETA_STATUS_bl ~ AGE + GENDER + EDUCATION + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "CSF_ABETA_STATUS_bl ~ AGE + GENDER + EDUCATION + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + PLASMA_ABETA_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + PLASMA_PTAU181_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "CSF_ABETA_STATUS_bl ~ AGE + GENDER + EDUCATION"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "CSF_ABETA_STATUS_bl ~ AGE + GENDER + EDUCATION + PLASMA_ABETA_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "CSF_ABETA_STATUS_bl ~ AGE + GENDER + EDUCATION + PLASMA_PTAU181_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "CSF_ABETA_STATUS_bl ~ AGE + GENDER + EDUCATION + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "CSF_ABETA_STATUS_bl ~ AGE + GENDER + EDUCATION + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
 <span class="r-in"><span><span class="va">model2</span> <span class="op">&lt;-</span> <span class="va">model2</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + APOE4"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + APOE4 + PLASMA_ABETA_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + APOE4 + PLASMA_PTAU181_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + APOE4 + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + APOE4 + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "CSF_ABETA_STATUS_bl ~ AGE + GENDER + EDUCATION + APOE4"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "CSF_ABETA_STATUS_bl ~ AGE + GENDER + EDUCATION + APOE4 + PLASMA_ABETA_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "CSF_ABETA_STATUS_bl ~ AGE + GENDER + EDUCATION + APOE4 + PLASMA_PTAU181_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "CSF_ABETA_STATUS_bl ~ AGE + GENDER + EDUCATION + APOE4 + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "CSF_ABETA_STATUS_bl ~ AGE + GENDER + EDUCATION + APOE4 + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + APOE4"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + APOE4 + PLASMA_ABETA_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + APOE4 + PLASMA_PTAU181_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + APOE4 + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + APOE4 + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "CSF_ABETA_STATUS_bl ~ AGE + GENDER + EDUCATION + APOE4"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "CSF_ABETA_STATUS_bl ~ AGE + GENDER + EDUCATION + APOE4 + PLASMA_ABETA_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "CSF_ABETA_STATUS_bl ~ AGE + GENDER + EDUCATION + APOE4 + PLASMA_PTAU181_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "CSF_ABETA_STATUS_bl ~ AGE + GENDER + EDUCATION + APOE4 + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "CSF_ABETA_STATUS_bl ~ AGE + GENDER + EDUCATION + APOE4 + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Access the raw results in case you care about that:</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">model</span><span class="op">$</span><span class="va">results</span><span class="op">)</span></span></span>

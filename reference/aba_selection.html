@@ -150,20 +150,82 @@ group - outcome - stat combination.</p>
 <span class="r-in"><span>  <span class="fu"><a href="set_covariates.html">set_covariates</a></span><span class="op">(</span><span class="va">AGE</span>, <span class="va">GENDER</span>, <span class="va">EDUCATION</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="set_stats.html">set_stats</a></span><span class="op">(</span><span class="st">'glm'</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="aba_fit.html">aba_fit</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + MMSE_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CSF_ABETA_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CSF_PTAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + PLASMA_ABETA_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + PLASMA_PTAU181_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + PET_ABETA_bl"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">model_summary</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="aba_summary.html">aba_summary</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># default selection - forward selection by AIC with threshold = -2</span></span></span>
 <span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="va">model_selection</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">aba_selection</span><span class="op">(</span>verbose<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + MMSE_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CSF_ABETA_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CSF_PTAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + PLASMA_ABETA_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + PLASMA_PTAU181_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + PET_ABETA_bl"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Round:  1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  ADAS13_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + CDRSB_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MMSE_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + CSF_ABETA_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + CSF_PTAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + PLASMA_ABETA_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + PLASMA_PTAU181_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + PET_ABETA_bl"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Round:  2 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  MRI_HIPP_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + MMSE_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CSF_ABETA_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CSF_PTAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + PLASMA_ABETA_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + PLASMA_PTAU181_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + PET_ABETA_bl"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Round:  3 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  CDRSB_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl + MMSE_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl + CSF_ABETA_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl + CSF_PTAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl + PLASMA_ABETA_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl + PLASMA_PTAU181_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl + PET_ABETA_bl"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Round:  4 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  PLASMA_NFL_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl + PLASMA_NFL_bl + MMSE_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl + PLASMA_NFL_bl + CSF_ABETA_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl + PLASMA_NFL_bl + CSF_PTAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl + PLASMA_NFL_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl + PLASMA_NFL_bl + PLASMA_ABETA_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl + PLASMA_NFL_bl + PLASMA_PTAU181_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl + PLASMA_NFL_bl + PET_ABETA_bl"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Round:  5 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> No improvement - stopping</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
@@ -171,16 +233,73 @@ group - outcome - stat combination.</p>
 <span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="va">model_selection</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu">aba_selection</span><span class="op">(</span>criteria <span class="op">=</span> <span class="st">'pval'</span>, threshold<span class="op">=</span><span class="fl">0.1</span>, verbose<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + MMSE_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CSF_ABETA_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CSF_PTAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + PLASMA_ABETA_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + PLASMA_PTAU181_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + PET_ABETA_bl"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Round:  1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  ADAS13_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + CDRSB_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MMSE_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + CSF_ABETA_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + CSF_PTAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + PLASMA_ABETA_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + PLASMA_PTAU181_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + PET_ABETA_bl"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Round:  2 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  MRI_HIPP_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + MMSE_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CSF_ABETA_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CSF_PTAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + PLASMA_ABETA_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + PLASMA_PTAU181_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + PET_ABETA_bl"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Round:  3 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  CDRSB_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl + MMSE_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl + CSF_ABETA_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl + CSF_PTAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl + PLASMA_ABETA_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl + PLASMA_PTAU181_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl + PET_ABETA_bl"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Round:  4 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  PLASMA_NFL_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl + PLASMA_NFL_bl + MMSE_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl + PLASMA_NFL_bl + CSF_ABETA_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl + PLASMA_NFL_bl + CSF_PTAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl + PLASMA_NFL_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl + PLASMA_NFL_bl + PLASMA_ABETA_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl + PLASMA_NFL_bl + PLASMA_PTAU181_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl + PLASMA_NFL_bl + PET_ABETA_bl"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Round:  5 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  PLASMA_PTAU181_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl + PLASMA_NFL_bl + PLASMA_PTAU181_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl + PLASMA_NFL_bl + PLASMA_PTAU181_bl + MMSE_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl + PLASMA_NFL_bl + PLASMA_PTAU181_bl + CSF_ABETA_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl + PLASMA_NFL_bl + PLASMA_PTAU181_bl + CSF_PTAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl + PLASMA_NFL_bl + PLASMA_PTAU181_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl + PLASMA_NFL_bl + PLASMA_PTAU181_bl + PLASMA_ABETA_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + ADAS13_bl + MRI_HIPP_bl + CDRSB_bl + PLASMA_NFL_bl + PLASMA_PTAU181_bl + PET_ABETA_bl"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Round:  6 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> No improvement - stopping</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
@@ -194,18 +313,42 @@ group - outcome - stat combination.</p>
 <span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">PET_ABETA_bl</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="aba_fit.html">aba_fit</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + PET_ABETA_bl"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">model_summary2</span> <span class="op">&lt;-</span> <span class="va">model2</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="aba_summary.html">aba_summary</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="va">model_selection2</span> <span class="op">&lt;-</span> <span class="va">model2</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu">aba_selection</span><span class="op">(</span>criteria<span class="op">=</span><span class="st">'pval'</span>, threshold<span class="op">=</span><span class="fl">0.1</span>, verbose<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + PET_ABETA_bl"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Round:  1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  CDRSB_bl ADAS13_bl MMSE_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl + MRI_HIPP_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl + PET_ABETA_bl"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Round:  2 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  MRI_HIPP_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl + MRI_HIPP_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl + MRI_HIPP_bl + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl + MRI_HIPP_bl + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl + MRI_HIPP_bl + PET_ABETA_bl"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Round:  3 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  PLASMA_ABETA_bl PLASMA_PTAU181_bl PLASMA_NFL_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl + MRI_HIPP_bl + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl + MRI_HIPP_bl + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl + MRI_HIPP_bl + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl + PET_ABETA_bl"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Round:  4 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> No improvement - stopping</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
@@ -214,19 +357,67 @@ group - outcome - stat combination.</p>
 <span class="r-in"><span><span class="va">model3</span> <span class="op">&lt;-</span> <span class="va">model2</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="set_outcomes.html">set_outcomes</a></span><span class="op">(</span><span class="va">ConvertedToAlzheimers</span>, <span class="va">ConvertedToDementia</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="aba_fit.html">aba_fit</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + PET_ABETA_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + PET_ABETA_bl"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="va">model_selection3</span> <span class="op">&lt;-</span> <span class="va">model3</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu">aba_selection</span><span class="op">(</span>criteria<span class="op">=</span><span class="st">'pval'</span>, threshold<span class="op">=</span><span class="fl">0.1</span>, verbose<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + PET_ABETA_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + PET_ABETA_bl"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Round:  1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  CDRSB_bl ADAS13_bl MMSE_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl + MRI_HIPP_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl + PET_ABETA_bl"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  MRI_HIPP_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + CDRSB_bl + ADAS13_bl + MMSE_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + PET_ABETA_bl"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Round:  2 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  MRI_HIPP_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl + MRI_HIPP_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl + MRI_HIPP_bl + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl + MRI_HIPP_bl + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl + MRI_HIPP_bl + PET_ABETA_bl"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  CDRSB_bl ADAS13_bl MMSE_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + CDRSB_bl + ADAS13_bl + MMSE_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + CDRSB_bl + ADAS13_bl + MMSE_bl + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + CDRSB_bl + ADAS13_bl + MMSE_bl + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + CDRSB_bl + ADAS13_bl + MMSE_bl + PET_ABETA_bl"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Round:  3 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  PLASMA_ABETA_bl PLASMA_PTAU181_bl PLASMA_NFL_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl + MRI_HIPP_bl + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl + MRI_HIPP_bl + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl + MRI_HIPP_bl + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl + PET_ABETA_bl"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  PLASMA_ABETA_bl PLASMA_PTAU181_bl PLASMA_NFL_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + CDRSB_bl + ADAS13_bl + MMSE_bl + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + CDRSB_bl + ADAS13_bl + MMSE_bl + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + CDRSB_bl + ADAS13_bl + MMSE_bl + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl + PET_ABETA_bl"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Round:  4 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> No improvement - stopping</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> No improvement - stopping</span>
@@ -236,24 +427,117 @@ group - outcome - stat combination.</p>
 <span class="r-in"><span><span class="va">model4</span> <span class="op">&lt;-</span> <span class="va">model3</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="set_groups.html">set_groups</a></span><span class="op">(</span><span class="fu"><a href="everyone.html">everyone</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">DX_bl</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'MCI'</span>,<span class="st">'AD'</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="aba_fit.html">aba_fit</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + PET_ABETA_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + PET_ABETA_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + PET_ABETA_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + PET_ABETA_bl"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="va">model_selection4</span> <span class="op">&lt;-</span> <span class="va">model4</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu">aba_selection</span><span class="op">(</span>criteria<span class="op">=</span><span class="st">'pval'</span>, threshold<span class="op">=</span><span class="fl">0.1</span>, verbose<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + PET_ABETA_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + PET_ABETA_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + PET_ABETA_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + PET_ABETA_bl"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Round:  1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  CDRSB_bl ADAS13_bl MMSE_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl + MRI_HIPP_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl + PET_ABETA_bl"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  MRI_HIPP_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + CDRSB_bl + ADAS13_bl + MMSE_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + PET_ABETA_bl"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  MRI_HIPP_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + CDRSB_bl + ADAS13_bl + MMSE_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + PET_ABETA_bl"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  MRI_HIPP_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + CDRSB_bl + ADAS13_bl + MMSE_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + PET_ABETA_bl"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Round:  2 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  MRI_HIPP_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl + MRI_HIPP_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl + MRI_HIPP_bl + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl + MRI_HIPP_bl + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl + MRI_HIPP_bl + PET_ABETA_bl"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  CDRSB_bl ADAS13_bl MMSE_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + CDRSB_bl + ADAS13_bl + MMSE_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + CDRSB_bl + ADAS13_bl + MMSE_bl + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + CDRSB_bl + ADAS13_bl + MMSE_bl + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + CDRSB_bl + ADAS13_bl + MMSE_bl + PET_ABETA_bl"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  CSF_ABETA_bl CSF_PTAU_bl CSF_TAU_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl + CDRSB_bl + ADAS13_bl + MMSE_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl + PET_ABETA_bl"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  CSF_ABETA_bl CSF_PTAU_bl CSF_TAU_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl + CDRSB_bl + ADAS13_bl + MMSE_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl + PET_ABETA_bl"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Round:  3 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  PLASMA_ABETA_bl PLASMA_PTAU181_bl PLASMA_NFL_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl + MRI_HIPP_bl + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl + MRI_HIPP_bl + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + CDRSB_bl + ADAS13_bl + MMSE_bl + MRI_HIPP_bl + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl + PET_ABETA_bl"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  PLASMA_ABETA_bl PLASMA_PTAU181_bl PLASMA_NFL_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + CDRSB_bl + ADAS13_bl + MMSE_bl + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + CDRSB_bl + ADAS13_bl + MMSE_bl + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToDementia ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + CDRSB_bl + ADAS13_bl + MMSE_bl + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl + PET_ABETA_bl"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Improvement:  PLASMA_ABETA_bl PLASMA_PTAU181_bl PLASMA_NFL_bl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl + CDRSB_bl + ADAS13_bl + MMSE_bl"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConvertedToAlzheimers ~ AGE + GENDER + EDUCATION + MRI_HIPP_bl + CSF_ABETA_bl + CSF_PTAU_bl + CSF_TAU_bl + PLASMA_ABETA_bl + PLASMA_PTAU181_bl + PLASMA_NFL_bl + PET_ABETA_bl"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> No improvement - stopping</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Round:  4 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> No improvement - stopping</span>

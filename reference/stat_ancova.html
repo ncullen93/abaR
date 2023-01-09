@@ -156,6 +156,8 @@ combination but across all predictor sets.</p></dd>
 <span class="r-in"><span>    <span class="fu">stat_ancova</span><span class="op">(</span>treatment <span class="op">=</span> <span class="st">'TREATMENT'</span>, baseline_suffix <span class="op">=</span> <span class="st">'bl'</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "CDRSB ~ AGE + GENDER + EDUCATION"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ADAS13 ~ AGE + GENDER + EDUCATION"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># summarise model. treatment effect will be shown in the treatment coefficient</span></span></span>
 <span class="r-in"><span><span class="va">ancova_summary</span> <span class="op">&lt;-</span> <span class="va">ancova_model</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="op">)</span></span></span>
