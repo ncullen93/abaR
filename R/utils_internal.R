@@ -1,3 +1,22 @@
+# replace predictors/covariates with their polynomial expansion terms
+make_poly_formula <- function(poly, myvars) {
+  if (is.numeric(poly)) {
+    # consistent polynomial expansion for all predictors/covariates
+    myvars <- as.character(glue::glue(
+      'poly({myvars}, {poly}, raw = TRUE)'
+    ))
+  } else if (is.list(poly)) {
+    # polynomial expansion for only the given variables
+    pvars <- names(poly)
+    for (pvar in pvars) {
+      myvars[myvars==pvar] <- as.character(glue::glue(
+        'poly({pvar}, {poly[[pvar]]}, raw = TRUE)'
+      ))
+    }
+  }
+  myvars
+}
+
 # take character/tidy inputs for SELECTION and turn to strings
 parse_select_expr <- function(..., data) {
   rlang::enexprs(...) %>% purrr::map(
@@ -131,8 +150,14 @@ print.abaStat <- function(x, ...) {
     cat('(')
     ep <- x$extra_params
     for (ix in seq_along(ep)) {
-      cat(names(ep)[ix], ' = ', ep[[ix]], sep='')
-      if (ix != length(ep)) cat(' | ')
+      if (!is.null(ep[[ix]])) {
+        if (is.list(ep[[ix]])) {
+          cat(names(ep)[ix], ' = LIST', sep='')
+        } else {
+          cat(names(ep)[ix], ' = ', ep[[ix]], sep='')
+        }
+        if (ix != length(ep)) cat(' | ')
+      }
     }
     cat(')')
   }

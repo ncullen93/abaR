@@ -6,6 +6,10 @@
 #' Coefficients will be presented as beta coefficients. Default metrics include
 #' adjusted R2.
 #'
+#' @param poly numeric or list. Whether to use polynomial regression.
+#'   Supplying a single number will call poly(..., #NUMBER#, raw=TRUE) on
+#'   every covariate and predictor. Supplying a list allows you to perform
+#'   a polynomial expansion on specific variables. NULL means no polynomials.
 #' @param std.beta logical. Whether to standardize model predictors and
 #'   covariates prior to analysis.
 #' @param complete.cases  logical. Whether to only include the subset of data
@@ -42,8 +46,26 @@
 #' # plot results
 #' fig1 <- model_summary %>% aba_plot_coef()
 #' fig2 <- model_summary %>% aba_plot_metric()
+#'
+#' ## polynomial regression ##
+#' model <- data %>%
+#'   aba_model() %>%
+#'   set_outcomes(MRI_HIPP_bl) %>%
+#'   set_covariates(
+#'     c('AGE', 'EDUCATION')
+#'   ) %>%
+#'   set_stats(
+#'     stat_lm(),
+#'     stat_lm(poly = list(AGE=1)),
+#'     stat_lm(poly = 2),
+#'     stat_lm(poly = list(AGE = 2))
+#'   ) %>%
+#'   fit()
+#'
+#' model_summary <- model %>% summary()
 stat_lm <- function(std.beta = FALSE,
-                    complete.cases = TRUE) {
+                    complete.cases = TRUE,
+                    poly = NULL) {
   fns <- list(
     'fns' = list(
       'formula' = formula_lm,
@@ -52,6 +74,7 @@ stat_lm <- function(std.beta = FALSE,
       'glance' = glance_lm,
       'evaluate' = evaluate_lm
     ),
+    'extra_params' = list('poly' = poly),
     'params' = list(
       'std.beta' = std.beta,
       'complete.cases' = complete.cases
@@ -64,14 +87,19 @@ stat_lm <- function(std.beta = FALSE,
 
 
 # helper function for lm
-formula_lm <- function(outcome, predictors, covariates, ...) {
+formula_lm <- function(outcome, predictors, covariates, extra_params) {
   f <- paste0(outcome, " ~ ")
+
+  covariates <- make_poly_formula(extra_params$poly, covariates)
+  predictors <- make_poly_formula(extra_params$poly, predictors)
+
   if (length(covariates) > 0) {
     f <- paste0(f, paste(covariates, collapse = " + "))
     if (length(predictors) > 0) f <- paste0(f, ' + ')
   }
   if (length(predictors) > 0) f <- paste0(f, paste(predictors, collapse = " + "))
   if (length(covariates) + length(predictors) == 0) f <- paste0(f, '1')
+  print(f)
   return(f)
 }
 

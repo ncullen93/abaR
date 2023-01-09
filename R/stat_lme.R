@@ -13,6 +13,10 @@
 #'   subject id to be used for random intercepts and random slopes.
 #' @param time string. This is the time variable in the data which represents
 #'   the time from baseline that the visit occured.
+#' @param poly numeric or list. Whether to use polynomial regression.
+#'   Supplying a single number will call poly(..., #NUMBER#, raw=TRUE) on
+#'   every covariate and predictor. Supplying a list allows you to perform
+#'   a polynomial expansion on specific variables. NULL means no polynomials.
 #' @param std.beta logical. Whether to standardize model predictors and
 #'   covariates prior to analysis.
 #' @param complete.cases  logical. Whether to only include the subset of data
@@ -50,6 +54,7 @@
 #'
 stat_lme <- function(id,
                      time,
+                     poly = NULL,
                      std.beta = FALSE,
                      complete.cases = TRUE) {
   fns <- list(
@@ -61,7 +66,8 @@ stat_lme <- function(id,
     ),
     'extra_params' = list(
       'id' = id,
-      'time' = time
+      'time' = time,
+      'poly' = poly
     ),
     'params' = list(
       'std.beta' = std.beta,
@@ -78,9 +84,14 @@ stat_lme <- function(id,
 formula_lme <- function(outcome, predictors, covariates, extra_params) {
   time <- extra_params$time
   id <- extra_params$id
-  #interaction_vars <- extra_params$interaction_vars
+
   interaction_vars <- c()
   covariates <- covariates[!(covariates %in% interaction_vars)]
+
+  # handle polynomial expansions
+  time <- make_poly_formula(extra_params$poly, time)
+  covariates <- make_poly_formula(extra_params$poly, covariates)
+  predictors <- make_poly_formula(extra_params$poly, predictors)
 
   f <- paste(outcome, "~", time)
   if (length(covariates) + length(predictors) > 0) f <- paste(f, '+')
@@ -95,6 +106,7 @@ formula_lme <- function(outcome, predictors, covariates, extra_params) {
   if (length(predictors) > 0) f <- paste(f, paste0(predictors, "*",
                                                   time,
                                                   collapse = " + "))
+  print(f)
   return(f)
 }
 
