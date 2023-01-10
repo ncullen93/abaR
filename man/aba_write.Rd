@@ -69,7 +69,6 @@ model_summary \%>\% aba_write(tmp_filename_rda, format = 'object')
 
 # load summary back to file to show it works
 model_summary2 <- aba_read(tmp_filename_rda)
-print(model_summary2)
 
 # delete temp files
 removed <- file.remove(tmp_filename_csv)

@@ -4,7 +4,7 @@
 \alias{stat_lme}
 \title{Create an lme stat object.}
 \usage{
-stat_lme(id, time, std.beta = FALSE, complete.cases = TRUE)
+stat_lme(id, time, poly = NULL, std.beta = FALSE, complete.cases = TRUE)
 }
 \arguments{
 \item{id}{string. This is the variable in the data which represents the
@@ -12,6 +12,11 @@ subject id to be used for random intercepts and random slopes.}
 
 \item{time}{string. This is the time variable in the data which represents
 the time from baseline that the visit occured.}
+
+\item{poly}{numeric or list. Whether to use polynomial regression.
+Supplying a single number will call poly(..., #NUMBER#, raw=TRUE) on
+every covariate and predictor. Supplying a list allows you to perform
+a polynomial expansion on specific variables. NULL means no polynomials.}
 
 \item{std.beta}{logical. Whether to standardize model predictors and
 covariates prior to analysis.}

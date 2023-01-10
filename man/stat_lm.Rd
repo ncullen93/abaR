@@ -4,7 +4,7 @@
 \alias{stat_lm}
 \title{Create an lm stat object.}
 \usage{
-stat_lm(std.beta = FALSE, complete.cases = TRUE)
+stat_lm(std.beta = FALSE, complete.cases = TRUE, poly = NULL)
 }
 \arguments{
 \item{std.beta}{logical. Whether to standardize model predictors and
@@ -14,6 +14,11 @@ covariates prior to analysis.}
 with no missing data for any of the outcomes, predictors, or covariates.
 Note that complete cases are considering within each group - outcome
 combination but across all predictor sets.}
+
+\item{poly}{numeric or list. Whether to use polynomial regression.
+Supplying a single number will call poly(..., #NUMBER#, raw=TRUE) on
+every covariate and predictor. Supplying a list allows you to perform
+a polynomial expansion on specific variables. NULL means no polynomials.}
 }
 \value{
 An abaStat object with \code{lm} stat type.
@@ -51,4 +56,21 @@ model_summary <- model \%>\% summary()
 # plot results
 fig1 <- model_summary \%>\% aba_plot_coef()
 fig2 <- model_summary \%>\% aba_plot_metric()
+
+## polynomial regression ##
+model <- data \%>\%
+  aba_model() \%>\%
+  set_outcomes(MRI_HIPP_bl) \%>\%
+  set_covariates(
+    c('AGE', 'EDUCATION')
+  ) \%>\%
+  set_stats(
+    stat_lm(),
+    stat_lm(poly = list(AGE=1)),
+    stat_lm(poly = 2),
+    stat_lm(poly = list(AGE = 2))
+  ) \%>\%
+  fit()
+
+model_summary <- model \%>\% summary()
 }

@@ -8,7 +8,7 @@ eval_cv(
   nfolds = 5,
   ntrials = 1,
   conf_type = c("norm", "perc"),
-  contrasts = TRUE
+  contrasts = FALSE
 )
 }
 \arguments{

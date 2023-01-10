@@ -4,7 +4,7 @@
 \alias{set_predictors}
 \title{Set the predictors of an aba model.}
 \usage{
-set_predictors(.model, ..., .labels = NULL)
+set_predictors(.model, ..., .labels = NULL, .split = FALSE)
 }
 \arguments{
 \item{.model}{An aba model. The model for which you want to set predictors}
@@ -14,7 +14,12 @@ comma-separated value will be a new
 predictor set. If you supply actual variables, then the data of the aba
 model should already be set.}
 
-\item{.labels}{vector of strings. Optional .labels for printing & plotting.}
+\item{.labels}{vector of strings. Optional .labels for printing & plotting. If
+.labels is set to "self" then the labels will be the predictor values also.}
+
+\item{.split}{boolean. Whether to split all variables into separate predictors
+or keep together as one combined predictor. Only relevant when setting
+predictors with one vector or using things like "starts_with(...)"}
 }
 \value{
 An aba model with predictors set.
