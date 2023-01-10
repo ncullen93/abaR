@@ -4,7 +4,17 @@
 \alias{aba_plot_trajectory}
 \title{Plot trajectories of fitted longitudinal stats}
 \usage{
-aba_plot_trajectory(model, time_vals = NULL, level = 0)
+aba_plot_trajectory(
+  model,
+  time_at = NULL,
+  at = NULL,
+  expand = NULL,
+  reduce_fn = mean,
+  include_ranef = FALSE,
+  time_label = "Time",
+  outcome_label = "Outcome",
+  include_basic = TRUE
+)
 }
 \arguments{
 \item{level}{}
@@ -13,4 +23,63 @@ aba_plot_trajectory(model, time_vals = NULL, level = 0)
 level=0: group-level estimates
 level=1: individual-level estimates
 level=2: individual-level observations
+}
+\examples{
+data <- aba::adnimerge \%>\%
+  filter(
+    AGE > 20,
+    YEARS_bl <= 3.5,
+    DX_bl == 'MCI'
+  )
+data_bl <- data \%>\% filter(VISCODE == 'bl')
+
+model <- data \%>\%
+  rename(XID = RID) \%>\%
+  aba_model() \%>\%
+  set_outcomes(ADAS13, CDRSB) \%>\%
+  set_predictors(c(AGE, CSF_ABETA_bl)) \%>\%
+  set_stats(
+    stat_lme(id = 'XID', time = 'YEARS_bl', poly=2)
+  ) \%>\%
+  fit()
+
+model \%>\%
+  aba_plot_trajectory(
+    time_at=seq(0,3,length.out=20)
+  )
+
+model \%>\%
+  aba_plot_trajectory(
+    time_at=seq(0,3,length.out=20),
+    include_ranef = T
+  )
+
+
+# two different stats
+model <- data \%>\%
+  rename(XID = RID) \%>\%
+  aba_model() \%>\%
+  set_outcomes(ADAS13, CDRSB) \%>\%
+  set_predictors(c(AGE, CSF_ABETA_bl)) \%>\%
+  set_stats(
+    stat_lme(id = 'XID', time = 'YEARS_bl'),
+    stat_lme(id = 'XID', time = 'YEARS_bl', poly=2)
+  ) \%>\%
+  fit()
+
+# two different stats
+model \%>\%
+  aba_plot_trajectory(
+    time_at=seq(0,3,length.out=20),
+    include_ranef = T
+  )
+
+# two stats and "at" vars
+model \%>\%
+  aba_plot_trajectory(
+    time_at=seq(0,3,length.out=20),
+    include_ranef = T,
+    at = list('AGE'=c(50,80))
+  )
+
 }
