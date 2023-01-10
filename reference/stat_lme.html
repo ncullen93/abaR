@@ -92,7 +92,7 @@ should be in long format with one row per subject-visit.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">stat_lme</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, std.beta <span class="op">=</span> <span class="cn">FALSE</span>, complete.cases <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">stat_lme</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, poly <span class="op">=</span> <span class="cn">NULL</span>, std.beta <span class="op">=</span> <span class="cn">FALSE</span>, complete.cases <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -105,6 +105,13 @@ subject id to be used for random intercepts and random slopes.</p></dd>
 <dt>time</dt>
 <dd><p>string. This is the time variable in the data which represents
 the time from baseline that the visit occured.</p></dd>
+
+
+<dt>poly</dt>
+<dd><p>numeric or list. Whether to use polynomial regression.
+Supplying a single number will call poly(..., #NUMBER#, raw=TRUE) on
+every covariate and predictor. Supplying a list allows you to perform
+a polynomial expansion on specific variables. NULL means no polynomials.</p></dd>
 
 
 <dt>std.beta</dt>

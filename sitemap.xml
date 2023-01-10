@@ -49,6 +49,9 @@
     <loc>https://ncullen93.github.io/abaR/reference/aba_fit.html</loc>
   </url>
   <url>
+    <loc>https://ncullen93.github.io/abaR/reference/aba_grid.html</loc>
+  </url>
+  <url>
     <loc>https://ncullen93.github.io/abaR/reference/aba_longpower.html</loc>
   </url>
   <url>
@@ -73,6 +76,9 @@
     <loc>https://ncullen93.github.io/abaR/reference/aba_plot_roc.html</loc>
   </url>
   <url>
+    <loc>https://ncullen93.github.io/abaR/reference/aba_plot_trajectory.html</loc>
+  </url>
+  <url>
     <loc>https://ncullen93.github.io/abaR/reference/aba_predict.html</loc>
   </url>
   <url>
@@ -89,6 +95,9 @@
   </url>
   <url>
     <loc>https://ncullen93.github.io/abaR/reference/aba_summary.html</loc>
+  </url>
+  <url>
+    <loc>https://ncullen93.github.io/abaR/reference/aba_trajectory.html</loc>
   </url>
   <url>
     <loc>https://ncullen93.github.io/abaR/reference/aba_write.html</loc>

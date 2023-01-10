@@ -89,7 +89,7 @@ allows convenient selection of many variables at once with common names.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">set_predictors</span><span class="op">(</span><span class="va">.model</span>, <span class="va">...</span>, .labels <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">set_predictors</span><span class="op">(</span><span class="va">.model</span>, <span class="va">...</span>, .labels <span class="op">=</span> <span class="cn">NULL</span>, .split <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -106,7 +106,14 @@ model should already be set.</p></dd>
 
 
 <dt>.labels</dt>
-<dd><p>vector of strings. Optional .labels for printing &amp; plotting.</p></dd>
+<dd><p>vector of strings. Optional .labels for printing &amp; plotting. If
+.labels is set to "self" then the labels will be the predictor values also.</p></dd>
+
+
+<dt>.split</dt>
+<dd><p>boolean. Whether to split all variables into separate predictors
+or keep together as one combined predictor. Only relevant when setting
+predictors with one vector or using things like "starts_with(...)"</p></dd>
 
 </dl></div>
     <div class="section level2">

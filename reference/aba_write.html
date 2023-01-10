@@ -160,33 +160,6 @@ combinations. This argument is ignored if format == "object".</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># load summary back to file to show it works</span></span></span>
 <span class="r-in"><span><span class="va">model_summary2</span> <span class="op">&lt;-</span> <span class="fu"><a href="aba_read.html">aba_read</a></span><span class="op">(</span><span class="va">tmp_filename_rda</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">model_summary2</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -----------------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Group: Everyone | Outcome: ConvertedToAlzheimers | Stat: S1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -----------------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients &amp; Metrics:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 4 × 7</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   predictor PLASMA_ABETA_bl              PLASM…¹ PLASM…² auc   aic   nobs </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> M1        0.00 [0.00, 36292220.66] (P… <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>      0.56… 119   198  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> M2        <span style="color: #BB0000;">NA</span>                           2.76 [… <span style="color: #BB0000;">NA</span>      0.69… 115   198  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> M3        <span style="color: #BB0000;">NA</span>                           <span style="color: #BB0000;">NA</span>      9.97 [… 0.74… 108   198  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> M4        2.42 [0.00, 192692312785625… 1.91 [… 7.62 [… 0.78… 110   198  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with abbreviated variable names ¹​PLASMA_PTAU181_bl, ²​PLASMA_NFL_bl</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ---------------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Group: Everyone | Outcome: CSF_ABETA_STATUS_bl | Stat: S1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ---------------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients &amp; Metrics:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 4 × 7</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   predictor PLASMA_ABETA_bl              PLASM…¹ PLASM…² auc   aic   nobs </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> M1        0.00 [0.00, 0.00] (P=0.0001) <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>      0.74… 194   153  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> M2        <span style="color: #BB0000;">NA</span>                           3.57 [… <span style="color: #BB0000;">NA</span>      0.70… 198   153  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> M3        <span style="color: #BB0000;">NA</span>                           <span style="color: #BB0000;">NA</span>      1.50 [… 0.57… 214   153  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> M4        0.00 [0.00, 0.00] (P=0.0018) 2.60 [… 0.80 [… 0.76… 190   153  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with abbreviated variable names ¹​PLASMA_PTAU181_bl, ²​PLASMA_NFL_bl</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># delete temp files</span></span></span>
 <span class="r-in"><span><span class="va">removed</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.remove</a></span><span class="op">(</span><span class="va">tmp_filename_csv</span><span class="op">)</span></span></span>
