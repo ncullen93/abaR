@@ -177,9 +177,9 @@ a polynomial expansion on specific variables. NULL means no polynomials.</p></dd
 <span class="r-in"><span>  <span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "MRI_HIPP_bl ~ AGE + EDUCATION"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "MRI_HIPP_bl ~ poly(AGE, 1, raw = TRUE) + EDUCATION"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "MRI_HIPP_bl ~ poly(AGE, 2, raw = TRUE) + poly(EDUCATION, 2, raw = TRUE)"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "MRI_HIPP_bl ~ poly(AGE, 2, raw = TRUE) + EDUCATION"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "MRI_HIPP_bl ~ stats::poly(AGE, 1, raw = TRUE) + EDUCATION"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "MRI_HIPP_bl ~ stats::poly(AGE, 2, raw = TRUE) + stats::poly(EDUCATION, 2, raw = TRUE)"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "MRI_HIPP_bl ~ stats::poly(AGE, 2, raw = TRUE) + EDUCATION"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">model_summary</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="op">)</span></span></span>
 </code></pre></div>
