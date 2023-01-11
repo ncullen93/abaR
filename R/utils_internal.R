@@ -1,16 +1,32 @@
+# replace predictors/covariates/time with a related splines (ns) term
+make_splines_formula <- function(splines, var) {
+  if (length(splines) == 1) {
+    # consistent polynomial expansion for all predictors/covariates
+    var <- as.character(glue::glue(
+      'splines::ns({var}, df = {splines})'
+    ))
+  } else if (length(splines) > 1) {
+    splines <- paste0(splines, collapse=',')
+    var <- as.character(glue::glue(
+      'splines::ns({var}, knots = c({splines}))'
+    ))
+  }
+  var
+}
+
 # replace predictors/covariates with their polynomial expansion terms
 make_poly_formula <- function(poly, myvars) {
   if (is.numeric(poly)) {
     # consistent polynomial expansion for all predictors/covariates
     myvars <- as.character(glue::glue(
-      'poly({myvars}, {poly}, raw = TRUE)'
+      'stats::poly({myvars}, {poly}, raw = TRUE)'
     ))
   } else if (is.list(poly)) {
     # polynomial expansion for only the given variables
     pvars <- names(poly)
     for (pvar in pvars) {
       myvars[myvars==pvar] <- as.character(glue::glue(
-        'poly({pvar}, {poly[[pvar]]}, raw = TRUE)'
+        'stats::poly({pvar}, {poly[[pvar]]}, raw = TRUE)'
       ))
     }
   }

@@ -17,6 +17,11 @@
 #'   Supplying a single number will call poly(..., #NUMBER#, raw=TRUE) on
 #'   every covariate and predictor. Supplying a list allows you to perform
 #'   a polynomial expansion on specific variables. NULL means no polynomials.
+#' @param splines numeric or vector. If this is one single value, then this
+#'   will be interpreted as the number of knots ("df") whose location will be
+#'   determined automatically according to the `splines::ns()` function. If
+#'   this is a vector of values, then this will be interpreted as the location
+#'   of the knots ("knots"). See the `splines::ns()` function for more info.
 #' @param std.beta logical. Whether to standardize model predictors and
 #'   covariates prior to analysis.
 #' @param complete.cases  logical. Whether to only include the subset of data
@@ -55,6 +60,7 @@
 stat_lme <- function(id,
                      time,
                      poly = NULL,
+                     splines = NULL,
                      std.beta = FALSE,
                      complete.cases = TRUE) {
   fns <- list(
@@ -67,7 +73,8 @@ stat_lme <- function(id,
     'extra_params' = list(
       'id' = id,
       'time' = time,
-      'poly' = poly
+      'poly' = poly,
+      'splines' = splines
     ),
     'params' = list(
       'std.beta' = std.beta,
@@ -90,6 +97,7 @@ formula_lme <- function(outcome, predictors, covariates, extra_params) {
 
   # handle polynomial expansions
   time <- make_poly_formula(extra_params$poly, time)
+  time <- make_splines_formula(extra_params$splines, time)
   covariates <- make_poly_formula(extra_params$poly, covariates)
   predictors <- make_poly_formula(extra_params$poly, predictors)
 
@@ -106,7 +114,6 @@ formula_lme <- function(outcome, predictors, covariates, extra_params) {
   if (length(predictors) > 0) f <- paste(f, paste0(predictors, "*",
                                                   time,
                                                   collapse = " + "))
-  print(f)
   return(f)
 }
 
@@ -159,8 +166,7 @@ tidy_lme <- function(model, predictors, covariates, ...) {
   tidy_df <- tidy_df %>%
     select(-c('df')) %>%
     filter(
-      !(.data$term %in% predictors)#,
-      #.data$term != time_var
+      !(.data$term %in% predictors)
     ) %>%
     mutate(
       term = strsplit(.data$term, ':') %>%

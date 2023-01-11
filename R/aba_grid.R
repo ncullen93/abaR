@@ -123,13 +123,12 @@ aba_grid <- function(model,
 #'
 #' # two different stats
 #' model <- data %>%
-#'   rename(XID = RID) %>%
 #'   aba_model() %>%
 #'   set_outcomes(ADAS13, CDRSB) %>%
 #'   set_predictors(c(AGE, CSF_ABETA_bl)) %>%
 #'   set_stats(
-#'     stat_lme(id = 'XID', time = 'YEARS_bl'),
-#'     stat_lme(id = 'XID', time = 'YEARS_bl', poly=2)
+#'     stat_lme(id = 'RID', time = 'YEARS_bl'),
+#'     stat_lme(id = 'RID', time = 'YEARS_bl', poly=2)
 #'   ) %>%
 #'   fit()
 #'
