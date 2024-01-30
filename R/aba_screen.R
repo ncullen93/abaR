@@ -118,7 +118,7 @@ fit_screen <- function(object, ...) {
 
   model_results <- model_results %>%
     right_join(
-      param_list %>% purrr::cross_df(),
+      param_list %>% tidyr::expand_grid(),
       by = 'predictor'
     )
 

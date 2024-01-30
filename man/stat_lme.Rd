@@ -4,7 +4,14 @@
 \alias{stat_lme}
 \title{Create an lme stat object.}
 \usage{
-stat_lme(id, time, poly = NULL, std.beta = FALSE, complete.cases = TRUE)
+stat_lme(
+  id,
+  time,
+  poly = NULL,
+  splines = NULL,
+  std.beta = FALSE,
+  complete.cases = TRUE
+)
 }
 \arguments{
 \item{id}{string. This is the variable in the data which represents the
@@ -17,6 +24,12 @@ the time from baseline that the visit occured.}
 Supplying a single number will call poly(..., #NUMBER#, raw=TRUE) on
 every covariate and predictor. Supplying a list allows you to perform
 a polynomial expansion on specific variables. NULL means no polynomials.}
+
+\item{splines}{numeric or vector. If this is one single value, then this
+will be interpreted as the number of knots ("df") whose location will be
+determined automatically according to the \code{splines::ns()} function. If
+this is a vector of values, then this will be interpreted as the location
+of the knots ("knots"). See the \code{splines::ns()} function for more info.}
 
 \item{std.beta}{logical. Whether to standardize model predictors and
 covariates prior to analysis.}

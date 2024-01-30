@@ -130,7 +130,7 @@ aba_compile <- function(object, ...) {
 
   # create initial dataframe of the factor names
   r <- val_list %>%
-    purrr::cross_df() %>%
+    tidyr::expand_grid() %>%
     unnest_longer('group', indices_to='gid', simplify=FALSE) %>%
     unnest_longer('outcome', indices_to='oid', simplify=FALSE) %>%
     unnest_longer('stat', indices_to='sid', simplify=FALSE) %>%

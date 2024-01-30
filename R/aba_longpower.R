@@ -125,7 +125,7 @@ aba_longpower <- function(model,
     sig_level = as.vector(sig_level),
     dropout = as.vector(dropout)
   ) %>%
-    purrr::cross_df()
+    tidyr::expand_grid()
 
   # run power analysis
   res_df <- res_df %>%
