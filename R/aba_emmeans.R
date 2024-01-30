@@ -249,19 +249,27 @@ plot_emmeans_helper <- function(group, outcome, stat, predictor, object) {
   is_neg <- df1[nrow(df1),][['estimate']] < 0
   legend_y <- ifelse(is_neg, 0.1, 0.95)
 
-  nudge_y <- max(abs(df1$estimate)) / 30
+  nudge_y <- max(abs(df1$estimate)) / 25
 
   g <- df1 %>%
     ggplot(aes(x=time, y=estimate, group=treatment, color=treatment)) +
     geom_hline(yintercept=0, size=0.5, color='gray', linetype='solid')+
     geom_line(linewidth=1, position=position_dodge(width=dodge_width)) +
     geom_point(aes(shape=treatment), position=position_dodge(width=dodge_width), size=3) +
-    geom_errorbar(aes(ymin=estimate-std.error, ymax=estimate+std.error), width=1*dodge_width,
+    #geom_errorbar(aes(ymin=estimate-std.error, ymax=estimate+std.error), width=1*dodge_width,
+    #              size=1, position=position_dodge(width=dodge_width)) +
+    geom_errorbar(aes(ymin=conf_low, ymax=conf_high), width=1*dodge_width,
                   size=1, position=position_dodge(width=dodge_width)) +
     geom_text(
       data=df2,
-      aes(x=time, y=yval, label=paste0('P=', sprintf('%.4f',pval))),
-      size=5, color='black', show.legend = FALSE, nudge_y = nudge_y
+      aes(
+        x=time, y=yval,
+        label=ifelse(pval < 0.0005, '***',
+                     ifelse(pval < 0.005, '**',
+                            ifelse(pval < 0.05, '*',
+                                   '')))
+      ),
+      size=10, color='black', show.legend = FALSE, nudge_y = nudge_y
     ) +
     scale_x_continuous(breaks=unique(df1$time),
                        expand = c(0.03, 0.03, 0.1, 0))
@@ -274,7 +282,7 @@ plot_emmeans_helper <- function(group, outcome, stat, predictor, object) {
 
   g <- g +
     xlab('Weeks from baseline') +
-    ylab('Adjusted mean change\nfrom baseline (±SE)') +
+    ylab('Adjusted mean change\nfrom baseline (±CI)') +
     theme_classic(base_size = 18) +
     theme(legend.position=c(0.05, legend_y),
           legend.justification = c(0.05,legend_y),
